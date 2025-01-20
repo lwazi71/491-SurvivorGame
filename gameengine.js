@@ -11,6 +11,8 @@ class GameEngine {
 
         // Information on the input
         this.click = null;
+        this.leftclick = null;
+        this.rightclick = null;
         this.mouse = null;
         this.wheel = null;
         this.keys = {};
@@ -54,6 +56,7 @@ class GameEngine {
                 console.log("CLICK", getXandY(e));
             }
             this.click = getXandY(e);
+            this.leftclick = true;
         });
 
         this.ctx.canvas.addEventListener("wheel", e => {
@@ -70,6 +73,7 @@ class GameEngine {
             }
             e.preventDefault(); // Prevent Context Menu
             this.rightclick = getXandY(e);
+            this.rightclick = true;
         });
 
         this.ctx.canvas.addEventListener("keydown", event => this.keys[event.key] = true);
