@@ -1,7 +1,7 @@
 class GreenGhoul {
     constructor(game) {
         this.game = game;
-        this.animator = new Animator(ASSET_MANAGER.getAsset("./Sprites/monster1.png"),6,0,56,108,8,0.2);
+        this.animator = new Animator(ASSET_MANAGER.getAsset("./Sprites/monster1.png"),6,0,56,108,8,0.1);
 };
 
 update() {
