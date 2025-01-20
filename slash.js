@@ -11,8 +11,8 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
          * @param {*} angle the angle of the slash depending on where our mouse is
          * @param {*} slashType what our slash should look like
          */
-        constructor(game, x, y, attackSpritePath, slashScale, attackDamge, angle, slashDirection) { //game will be the game engine!
-            Object.assign(this, {game, x, y, attackSpritePath, slashScale, attackDamge, angle, slashDirection}); //slashType: 0 = right to left, 1 = left to right, 2 = second slash right to left, 3 = second slash left to right
+        constructor(game, x, y, attackSpritePath, slashScale, attackDamge, angle, slashDirection, attackDamage, personX, personY) { //game will be the game engine!
+            Object.assign(this, {game, x, y, attackSpritePath, slashScale, attackDamge, angle, slashDirection, attackDamage}); //slashType: 0 = right to left, 1 = left to right, 2 = second slash right to left, 3 = second slash left to right
             
 
             this.spriteSheet = ASSET_MANAGER.getAsset(this.attackSpritePath);
@@ -47,7 +47,7 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
             
             // Adjust the circle's center position to be more towards the slash
             // Calculate the offset distance from character center
-            const offsetDistance = this.slashDistance + this.radius - 4; //Add radius to move circle further out. -4 to make circle kind of smaller
+            const offsetDistance = this.slashDistance + this.radius; //Add radius to move circle further out. -4 to make circle kind of smaller
             
             // Calculate the center position based on the angle and offset
             const centerX = this.game.adventurer.x + (32 * 2.8) / 2 + Math.cos(this.angle) * offsetDistance + 5;
@@ -98,6 +98,16 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
             if (this.slashTimer <= 0) {
                 this.removeFromWorld = true;
             }
+
+
+            // Check collision with zombies
+            // for (const entity of this.game.entities) {
+            //     if (entity instanceof Zombie && !entity.dead) { // Only check for alive zombies
+            //         if (this.BC.collidesWithBox(entity.BB)) { // Assuming you use a circle for slash
+            //             entity.takeDamage(this.attackDamage); // Apply damage to zombie
+            //         }
+            //     }
+            // }
         }
 
 

@@ -14,7 +14,7 @@ class Barrel {
     } 
 
     updateBB() {
-        this.BB = new BoundingBox((this.x + 14) - this.game.camera.x, (this.y + 11) - this.game.camera.y, 22, 35);
+        this.BB = new BoundingBox((this.x + 14), (this.y + 11), 22, 35);
     }
 
     loadAnimations() {
@@ -44,7 +44,7 @@ class Barrel {
 
         ctx.strokeStyle = 'Red';
 
-        ctx.strokeRect(this.BB.x, this.BB.y, this.BB.width, this.BB.height);
+        ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
     }
 
 }

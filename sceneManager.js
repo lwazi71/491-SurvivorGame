@@ -16,6 +16,8 @@ class SceneManager {
         if(!adventurer) this.game.addEntity(this.adventurer);
         // this.game.addEntity(new Adventurer(this.game, 0, 0));
         this.game.addEntity(new Barrel(this.game, 100, 100, false));
+
+        this.game.addEntity(new Zombie(this.game, 400, 400));
     }
 
 

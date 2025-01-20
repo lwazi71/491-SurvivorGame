@@ -48,7 +48,8 @@ class Adventurer { //every entity should have update and draw!
         this.attackCooldownTimer = 0;
         this.slashType = 0; //0 = default right slash animation, 1 = up animation
         this.slashDistance = 27; //Distance from character center to slash
-        this.slashScale = 4.5; 
+        this.slashScale = 5; 
+        this.swordUpgrade = 0; //maybe use for upgrading sword later? If we upgrade a sword, we could change colors?
 
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
 
@@ -64,7 +65,7 @@ class Adventurer { //every entity should have update and draw!
     updateBB() {
         this.lastBB = this.BB; //we gotta know where we were before changing the scene
         if (this.state != 4 || this.state != 5 || this.state != 6) {
-            this.BB = new BoundingBox((this.x + 33 - this.game.camera.x), (this.y + 24 - this.game.camera.y ), 32 , 32 + 27);
+            this.BB = new BoundingBox(this.x + 33, this.y + 24, 32 , 32 + 27);
         } 
        // this.BB = new BoundingBox(this.x, this.y, 32, 32);
     }
@@ -412,8 +413,11 @@ class Adventurer { //every entity should have update and draw!
         const slashX = this.x + Math.cos(angle) * this.slashDistance; //where the slash should be
         const slashY = this.y + Math.sin(angle) * this.slashDistance;
 
-        this.game.addEntity(new AttackSlash(this.game, slashX, slashY, "./Sprites/Slash/red-slash.png", this.slashScale, 10, angle, slashDirection));
-        
+        if (this.swordUpgrade == 0) {
+            this.game.addEntity(new AttackSlash(this.game, slashX, slashY, "./Sprites/Slash/red-slash.png", this.slashScale, 10, angle, slashDirection, 5));
+
+        }
+
         //Reset all possible attack animations
         this.animations[4][0].elapsedTime = 0; //Attack 1 right
         this.animations[4][1].elapsedTime = 0; //Attack 1 left
@@ -503,7 +507,7 @@ class Adventurer { //every entity should have update and draw!
         
             //will show the bound box of our player
              ctx.strokeStyle = 'Red';
-             ctx.strokeRect(this.BB.x, this.BB.y, this.BB.width, this.BB.height);
+             ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
      
     };
 }

@@ -18,6 +18,8 @@ ASSET_MANAGER.queueDownload("./Sprites/Objects/shadow.png");
 ASSET_MANAGER.queueDownload("./Sprites/Slash/red-slash.png");
 ASSET_MANAGER.queueDownload("./Sprites/Slash/red-slash-flipped.png");
 
+ASSET_MANAGER.queueDownload("./Sprites/Zombie/Zombie.png");
+ASSET_MANAGER.queueDownload("./Sprites/Zombie/Zombie-Flipped.png");
 
 
 
