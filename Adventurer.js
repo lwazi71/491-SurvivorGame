@@ -16,6 +16,9 @@ class Adventurer { //every entity should have update and draw!
         this.state = 0; //0 = idle, 1 = walking, 2 = run, 3 = jumping, 4 = attack1, 5 = attack2, 6 = attack3, 7 = roll, 8 = ladder, 9 = bow, 10 = damaged
         this.facing = 0; //0 = right, 1 = left, 2 = up, 3 = down
         this.dead = false;
+        this.deathAnimationTimer = 8 * 0.12;
+
+
         this.climbingLadder = false;
         //this.attack
         this.invincible = false;
@@ -203,7 +206,20 @@ class Adventurer { //every entity should have update and draw!
 
 
     update() {
-        if (this.dead) return;
+        // if (this.dead) return;
+        if (this.dead) {
+            // Handle death animation
+            this.deathAnimationTimer -= this.game.clockTick;
+    
+            if (this.deathAnimationTimer > 0) {
+                // Keep playing the death animation
+                return;
+            } else {
+                // Remove zombie from world after the animation finishes
+                this.removeFromWorld = true;
+                return;
+            }
+        }
 
         //Handle damage animation time so it isnt infinite. This is when player gets damaged
         if (this.isPlayingDamageAnimation) {
@@ -533,9 +549,9 @@ class Adventurer { //every entity should have update and draw!
 
        
         if (this.dead) {
-            this.deadAnim.drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
-            this.removeFromWorld = true;
-
+            if (this.deathAnimationTimer > 0) {
+                this.deadAnim.drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
+            }
         } else if (this.isPlayingDamageAnimation) {
             ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 33) - this.game.camera.x, (this.y + 77) - this.game.camera.y, 32, 16); //draw a shadow underneath our character
             this.animations[10][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale); 
