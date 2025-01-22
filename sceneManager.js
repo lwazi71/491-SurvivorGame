@@ -18,6 +18,17 @@ class SceneManager {
         this.game.addEntity(new Barrel(this.game, 100, 100, false));
 
         this.game.addEntity(new Zombie(this.game, 400, 400));
+        this.game.addEntity(new Zombie(this.game, 200, 400));
+        this.game.addEntity(new Zombie(this.game, 300, 450));
+        this.game.addEntity(new Zombie(this.game, 130, 400));
+        this.game.addEntity(new Zombie(this.game, 323, 400));
+        this.game.addEntity(new Zombie(this.game, 513, 400));
+        this.game.addEntity(new Zombie(this.game, 42, 60));
+        this.game.addEntity(new Zombie(this.game, 42, 400));
+      
+
+        this.game.addEntity(new Cyclops(this.game, 300, 300));
+
     }
 
 
@@ -27,8 +38,8 @@ class SceneManager {
         const midPointY = PARAMS.CANVAS_HEIGHT / 2 ;
 
         //Update camera position to middle of the player
-        this.x = this.adventurer.x - midPointX + (32 * 2.8)/2 + 20; //Hard code to add 25 because character was not yet in the middle of the canvas screen. (Was more bottom right)
-        this.y = this.adventurer.y - midPointY + (32 * 2.8)/2 + 20; //Same with 15
+        this.x = this.adventurer.x - midPointX + (32 * 2.8)/2 + 20; //Hard code to add 20 because character was not yet in the middle of the canvas screen. (Was more bottom right)
+        this.y = this.adventurer.y - midPointY + (32 * 2.8)/2 + 20; //Same here
     }
 
 

@@ -13,7 +13,7 @@ class Adventurer { //every entity should have update and draw!
         this.speed = 220;
 
 
-        this.state = 0; //0 = idle, 1 = walking, 2 = run, 3 = jumping, 4 = attack1, 5 = attack2, 6 = attack3, 7 = roll, 8 = ladder, 9 = bow
+        this.state = 0; //0 = idle, 1 = walking, 2 = run, 3 = jumping, 4 = attack1, 5 = attack2, 6 = attack3, 7 = roll, 8 = ladder, 9 = bow, 10 = damaged
         this.facing = 0; //0 = right, 1 = left, 2 = up, 3 = down
         this.dead = false;
         this.climbingLadder = false;
@@ -21,7 +21,12 @@ class Adventurer { //every entity should have update and draw!
         this.invincible = false;
         this.velocity = {x: 0, y: 0};
         this.lastMove = 0;
-        this.maxHealth = 100; //max hp of player
+        this.health = 100; //default max health of the player
+
+        //player getting damaged
+        this.damageAnimationTimer = 0;
+        this.damageAnimationDuration = 0.2; // Duration of damage animation
+        this.isPlayingDamageAnimation = false;
         
 
         this.currentWeapon = 0; //sword = 0, bow = 1
@@ -48,8 +53,11 @@ class Adventurer { //every entity should have update and draw!
         this.attackCooldownTimer = 0;
         this.slashType = 0; //0 = default right slash animation, 1 = up animation
         this.slashDistance = 27; //Distance from character center to slash
-        this.slashScale = 5; 
+        this.slashScale = 2.3; //we could upgrade slash scale, and increase the range of our sword
         this.swordUpgrade = 0; //maybe use for upgrading sword later? If we upgrade a sword, we could change colors?
+        this.knockback = 2000; // Base force of knockback
+        this.attackDamage = 5; 
+
 
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
 
@@ -72,7 +80,7 @@ class Adventurer { //every entity should have update and draw!
 
     //helper functions
     loadAnimation() {
-        for (var i = 0; i < 10; i++) {
+        for (var i = 0; i < 11; i++) {
             this.animations.push([]);
             for (var j = 0; j < 4; j++) {
                 this.animations[i].push([]);
@@ -148,6 +156,21 @@ class Adventurer { //every entity should have update and draw!
         //bow left
         this.animations[9][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/BowLeft.png"), 3, -8, 32, 32, 7.9, 0.12, true, false);
 
+
+        //damaged to the right/up
+        this.animations[10][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 32, 192, 32, 32, 3, 0.12, false, false);
+
+        //damaged to the left/down
+        this.animations[10][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 32, 449, 32, 32, 3, 0.12, false, false);
+
+        //damaged to when hit looking up
+        this.animations[10][2] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 32, 192, 32, 32, 3, 0.12, false, false);
+
+        //damaged when hit looking down
+        this.animations[10][3] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 32, 192, 32, 32, 3, 0.12, false, false);
+
+
+
         //death animation
         this.deadAnim = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 0, 448, 32, 32, 8, 0.12, false, false); 
 
@@ -182,9 +205,14 @@ class Adventurer { //every entity should have update and draw!
     update() {
         if (this.dead) return;
 
-        // if (this.velocity.x == 0 && this.state == 0 && this.clockTick == 10) { //idle animation after a couple seconds?
-            
-        // }
+        //Handle damage animation time so it isnt infinite. This is when player gets damaged
+        if (this.isPlayingDamageAnimation) {
+            this.damageAnimationTimer -= this.game.clockTick;
+            if (this.damageAnimationTimer <= 0) {
+                this.isPlayingDamageAnimation = false; //should turn off when damage animation is over
+                this.state = 0; // Return to idle state
+            }
+        }
 
         //this is used as the cooldown for rolling
         if (!this.canRoll) {
@@ -269,6 +297,7 @@ class Adventurer { //every entity should have update and draw!
                 this.animations[0][this.facing].elapsedTime = 0;
             }
         }
+
 
         //for ladders maybe do, if the bounding boxes are touching or near each other and the user clicks on e?
 
@@ -414,7 +443,7 @@ class Adventurer { //every entity should have update and draw!
         const slashY = this.y + Math.sin(angle) * this.slashDistance;
 
         if (this.swordUpgrade == 0) {
-            this.game.addEntity(new AttackSlash(this.game, slashX, slashY, "./Sprites/Slash/red-slash.png", this.slashScale, 10, angle, slashDirection, 5));
+            this.game.addEntity(new AttackSlash(this.game, slashX, slashY, "./Sprites/Slash/red-slash.png", this.slashScale, angle, slashDirection, this.attackDamage, this.knockback, this));
 
         }
 
@@ -433,22 +462,30 @@ class Adventurer { //every entity should have update and draw!
 
 
 
-    mouseRotationHandler() {
-        if (this.game.mouse == null) return(0); //Catches exception start of Engine
-        var dx = (this.game.getMouseWorldPosX()) - (this.posX); //282/2 Accounting for difference in center of thing.
-        var dy = (this.game.getMouseWorldPosY()) - (this.posY);
-        //this.printMouseCoordinates()
-
-        return (Math.atan2(dy, dx));
+    takeDamage(amount) {
+        if (!this.invincible) {
+            console.log(this.health);
+            this.health -= amount;
+            if (this.health <= 0) {
+                this.dead = true;
+                console.log("Player is dead!");
+               // ASSET_MANAGER.pauseBackgroundMusic();
+            } else {
+                this.state = 10;
+                this.isPlayingDamageAnimation = true;
+                this.damageAnimationTimer = this.damageAnimationDuration;
+                if (this.facing === 0 || this.facing === 2) {
+                    this.animations[10][0].elapsedTime = 0;
+                } else {
+                    this.animations[10][1].elapsedTime = 0;
+                }
+            }
+        }
+  
     }
 
-    draw(ctx) {
-
-        
-        //ctx.drawImage(ASSET_MANAGER.getAsset("./HollowKnight.png"), 0, 0);
-        
+    draw(ctx) {        
         //we get the tick from the game engine! Hence why we passed gameEngine in the constructor parameters
-       // this.animator.drawFrame(this.game.clockTick, ctx, this.x , this.y, 2.8); //we're putting her at pixel 25 x 25 on canvas
     //    const characterCenterX = this.x + (32 * 2.8) / 2 - 25;
     //    const characterCenterY = this.y + (32 * 2.8) / 2 - 25;
     //    const radius = 50;
@@ -497,8 +534,12 @@ class Adventurer { //every entity should have update and draw!
        
         if (this.dead) {
             this.deadAnim.drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
-        } else {
+            this.removeFromWorld = true;
 
+        } else if (this.isPlayingDamageAnimation) {
+            ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 33) - this.game.camera.x, (this.y + 77) - this.game.camera.y, 32, 16); //draw a shadow underneath our character
+            this.animations[10][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale); 
+        } else {
             //might need to change the - 25. Try to figure out another way to center the character without hardcoding 
             ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 33) - this.game.camera.x, (this.y + 77) - this.game.camera.y, 32, 16); //draw a shadow underneath our character
             this.animations[this.state][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale); //we're putting her at pixel 25 x 25 on canvas

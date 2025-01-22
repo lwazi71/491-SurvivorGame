@@ -11,8 +11,9 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
          * @param {*} angle the angle of the slash depending on where our mouse is
          * @param {*} slashType what our slash should look like
          */
-        constructor(game, x, y, attackSpritePath, slashScale, attackDamge, angle, slashDirection, attackDamage, personX, personY) { //game will be the game engine!
-            Object.assign(this, {game, x, y, attackSpritePath, slashScale, attackDamge, angle, slashDirection, attackDamage}); //slashType: 0 = right to left, 1 = left to right, 2 = second slash right to left, 3 = second slash left to right
+        constructor(game, x, y, attackSpritePath, slashScale, angle, slashDirection, attackDamage, knockback, person) { //game will be the game engine!
+            //slashDirection: 0 = right to left, 1 = left to right, 2 = second slash right to left, 3 = second slash left to right
+            Object.assign(this, {game, x, y, attackSpritePath, slashScale, angle, slashDirection, attackDamage, knockback, person}); 
             
 
             this.spriteSheet = ASSET_MANAGER.getAsset(this.attackSpritePath);
@@ -27,7 +28,11 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
                  // Updated sprite properties for 128x128
             this.spriteWidth = 128;
             this.spriteHeight = 128;
-           // this.scale = 2.8; // Reduced scale since sprite is larger
+
+            // Add a Set to track which entities have been hit by this slash
+            this.hitEntities = new Set();
+
+
 
             this.slashDistance = 27;
             
@@ -50,20 +55,22 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
             const offsetDistance = this.slashDistance + this.radius; //Add radius to move circle further out. -4 to make circle kind of smaller
             
             // Calculate the center position based on the angle and offset
-            const centerX = this.game.adventurer.x + (32 * 2.8) / 2 + Math.cos(this.angle) * offsetDistance + 5;
-            const centerY = this.game.adventurer.y + (32 * 2.8) / 2 + Math.sin(this.angle) * offsetDistance + 10;
+            const centerX = this.person.x + (32 * 2.8) / 2 + Math.cos(this.angle) * offsetDistance + 5;
+            const centerY = this.person.y + (32 * 2.8) / 2 + Math.sin(this.angle) * offsetDistance + 10;
             
             // Create bounding circle at the adjusted position
             this.BC = new BoundingCircle(centerX, centerY, this.radius);    
         }
 
+        //updates position on where our slash animation is
         updatePosition() {
 
             // Center of the adventurer
-            const characterCenterX = this.game.adventurer.x + (32 * 2.8) / 2; //2.8 because it's the scale increase size of our player. 
-            const characterCenterY = this.game.adventurer.y + (32 * 2.8) / 2;
+            const characterCenterX = this.person.x + (32 * 2.8) / 2; //2.8 because it's the scale increase size of our player. 
+            const characterCenterY = this.person.y + (32 * 2.8) / 2;
 
-            // Update position using the angle and radius
+            //Update position using the angle and radius.
+            //This is mainly for our animation
             this.x = characterCenterX + Math.cos(this.angle) * this.slashDistance - (this.spriteWidth * this.slashScale) / 2;
             this.y = characterCenterY + Math.sin(this.angle) * this.slashDistance - (this.spriteHeight * this.slashScale) / 2; 
         }
@@ -93,6 +100,37 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
             //Update position every frame. The slash will try to match with player movement
             this.updatePosition();
             this.updateBC();
+
+
+            // Check for collisions with zombies
+            const entities = this.game.entities;
+            for (let i = 0; i < entities.length; i++) {
+                let entity = entities[i];
+                if (entity instanceof Zombie && !entity.dead) {
+                    // Only apply damage if we haven't hit this zombie yet
+                    if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
+                        // Add the zombie to our hit set
+                        this.hitEntities.add(entity);
+                        
+                        //Calculate the knockback TRUE CENTER of the slash circle for knockback source
+                        const centerX = this.person.x + (32 * 2.8) / 2 + Math.cos(this.angle) * this.slashDistance;
+                        const centerY = this.person.y + (32 * 2.8) / 2 + Math.sin(this.angle) * this.slashDistance;
+
+    
+                        //Pass the center coordinates for knockback calculation and Apply damage and trigger damage state
+                        entity.takeDamage(this.attackDamage, this.knockback, centerX, centerY);
+                        entity.state = 3; // Set to damaged state
+                        entity.damageTimer = 0.4;
+                        entity.damaged = true;
+
+                        
+                        // Check for death
+                        if (entity.health <= 0) {
+                            entity.dead = true;
+                        }
+                    }
+                }
+            }
             
             //Slash duration. Once it's done, we'll remove this entity from the world as the player is done attacking.
             if (this.slashTimer <= 0) {
@@ -109,6 +147,7 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
             //     }
             // }
         }
+
 
 
 

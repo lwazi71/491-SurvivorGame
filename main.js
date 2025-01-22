@@ -21,6 +21,7 @@ ASSET_MANAGER.queueDownload("./Sprites/Slash/red-slash-flipped.png");
 ASSET_MANAGER.queueDownload("./Sprites/Zombie/Zombie.png");
 ASSET_MANAGER.queueDownload("./Sprites/Zombie/Zombie-Flipped.png");
 
+ASSET_MANAGER.queueDownload("./Sprites/Cyclops/Cyclops.png")
 
 
 
