@@ -2,18 +2,18 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
 
         /**
          * 
-         * @param {*} game 
-         * @param {*} x 
-         * @param {*} y 
+         * @param {*} game GameEngine
+         * @param {*} x Where we want to start our circle on x
+         * @param {*} y Where we want to start our circle on y
          * @param {*} attackSpritePath sprite path to the attack slash animation
-         * @param {*} radius 
+         * @param {*} radius How big the radius of our circle slash will be
          * @param {*} attackDamge how much the slash will do if enemies are in it
          * @param {*} angle the angle of the slash depending on where our mouse is
          * @param {*} slashType what our slash should look like
          */
-        constructor(game, x, y, attackSpritePath, slashScale, angle, slashDirection, attackDamage, knockback, person) { //game will be the game engine!
+        constructor(game, x, y, attackSpritePath, slashScale, angle, slashDirection, attackDamage, knockback, person, friendly) { //game will be the game engine!
             //slashDirection: 0 = right to left, 1 = left to right, 2 = second slash right to left, 3 = second slash left to right
-            Object.assign(this, {game, x, y, attackSpritePath, slashScale, angle, slashDirection, attackDamage, knockback, person}); 
+            Object.assign(this, {game, x, y, attackSpritePath, slashScale, angle, slashDirection, attackDamage, knockback, person, friendly}); 
             
 
             this.spriteSheet = ASSET_MANAGER.getAsset(this.attackSpritePath);
@@ -31,8 +31,6 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
 
             // Add a Set to track which entities have been hit by this slash
             this.hitEntities = new Set();
-
-
 
             this.slashDistance = 27;
             
@@ -106,7 +104,8 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
             const entities = this.game.entities;
             for (let i = 0; i < entities.length; i++) {
                 let entity = entities[i];
-                if (entity instanceof Zombie && !entity.dead) {
+                if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul) 
+                    && !entity.dead) {
                     // Only apply damage if we haven't hit this zombie yet
                     if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
                         // Add the zombie to our hit set
@@ -116,18 +115,46 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
                         const centerX = this.person.x + (32 * 2.8) / 2 + Math.cos(this.angle) * this.slashDistance;
                         const centerY = this.person.y + (32 * 2.8) / 2 + Math.sin(this.angle) * this.slashDistance;
 
-    
                         //Pass the center coordinates for knockback calculation and Apply damage and trigger damage state
                         entity.takeDamage(this.attackDamage, this.knockback, centerX, centerY);
-                        entity.state = 3; // Set to damaged state
-                        entity.damageTimer = 0.4;
-                        entity.damaged = true;
-
                         
-                        // Check for death
-                        if (entity.health <= 0) {
-                            entity.dead = true;
+                    }
+                }
+                if ((entity instanceof HellSpawn) 
+                    && !entity.dead) {
+                    // Only apply damage if we haven't hit this zombie yet
+                    if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
+                        // Add the zombie to our hit set
+                        this.hitEntities.add(entity);
+                        
+                        //Calculate the knockback TRUE CENTER of the slash circle for knockback source
+                        const centerX = this.person.x + (32 * 2.8) / 2 + Math.cos(this.angle) * this.slashDistance;
+                        const centerY = this.person.y + (32 * 2.8) / 2 + Math.sin(this.angle) * this.slashDistance;
+
+                        //Pass the center coordinates for knockback calculation and Apply damage and trigger damage state
+                        if (entity.isCharging || entity.isPreparingCharge) {
+                            //no knockback if the entity is charging
+                            entity.takeDamage(this.attackDamage, 0, centerX, centerY);
+                        } else {
+                            entity.takeDamage(this.attackDamage, this.knockback, centerX, centerY);
                         }
+                        
+                    }
+                }
+
+
+                //friendly just means that we the player hit it and not an enemy
+                if ((entity instanceof Barrel || entity instanceof Crate || entity instanceof Pot) && this.friendly) { 
+                    if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
+                        this.hitEntities.add(entity);
+                        entity.takeDamage(this.attackDamage);
+                    }
+                }
+                
+                //maybe a mob can have a big slash attack as well?
+                if ((entity instanceof Adventurer && !this.friendly)) {
+                    if (this.BC.collidesWithBox(entity.BB) && this.hitEntities.has(entity)) {
+                        
                     }
                 }
             }

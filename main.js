@@ -22,6 +22,21 @@ ASSET_MANAGER.queueDownload("./Sprites/Zombie/Zombie.png");
 ASSET_MANAGER.queueDownload("./Sprites/Zombie/Zombie-Flipped.png");
 
 ASSET_MANAGER.queueDownload("./Sprites/Cyclops/Cyclops.png")
+ASSET_MANAGER.queueDownload("./Sprites/Ghost/Ghost.png")
+ASSET_MANAGER.queueDownload("./Sprites/Ghost/Ghost-Flipped.png")
+ASSET_MANAGER.queueDownload("./Sprites/Ghoul/Blue_Ghoul-Flipped.png")
+ASSET_MANAGER.queueDownload("./Sprites/Ghoul/Blue_Ghoul.png")
+ASSET_MANAGER.queueDownload("./Sprites/HellSpawn/Hellspawn-Flipped.png")
+ASSET_MANAGER.queueDownload("./Sprites/HellSpawn/Hellspawn.png")
+
+
+
+
+
+ASSET_MANAGER.queueDownload("./Sprites/Projectiles/arrow.png")
+ASSET_MANAGER.queueDownload("./Sprites/Projectiles/Arrows_pack.png")
+
+
 
 
 

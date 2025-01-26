@@ -9,8 +9,7 @@ class Adventurer { //every entity should have update and draw!
         this.x = this.x - offSet; 
         this.y = this.y - offSet;
         
-
-        this.speed = 220;
+        this.speed = 220; //how fast the player moves
 
 
         this.state = 0; //0 = idle, 1 = walking, 2 = run, 3 = jumping, 4 = attack1, 5 = attack2, 6 = attack3, 7 = roll, 8 = ladder, 9 = bow, 10 = damaged
@@ -62,6 +61,19 @@ class Adventurer { //every entity should have update and draw!
         this.attackDamage = 5; 
 
 
+        //PROJECTILE PROPERTIES
+        this.shooting = false;
+        this.shootingDuration = 0.3; //for animation
+        this.shootingTimer = 0;
+        this.canShoot = true;
+        this.shootCooldown = 1;
+        this.shootCooldownTimer = 0;
+        this.bowKnockback = 0;
+        this.bowDamage = 4;
+        this.arrowSpeed = 500;
+        this.piercing = false; //piercing could be for shooting through enemies. Collateral. Could be an upgrade
+
+
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
 
 
@@ -91,7 +103,7 @@ class Adventurer { //every entity should have update and draw!
         }
 
         //idle right
-         this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 0, 32, 32, 12.90, 0.2, false, true);
+         this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 0, 32, 32, 12.9, 0.2, false, true);
 
 
         //idle left 
@@ -142,10 +154,10 @@ class Adventurer { //every entity should have update and draw!
         this.animations[6][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 384, 32, 32, 10, 0.08, false, false);
 
         //roll right/up
-        this.animations[7][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 0, 384, 32, 32, 5, 0.075, false, false);
+        this.animations[7][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), -2, 384, 32, 32, 5, 0.075, false, false);
 
         //roll left/down
-        this.animations[7][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/RollLeft.png"), 0, -6, 30.6, 32, 5, 0.075, true, false); //maybe take a look at this
+        this.animations[7][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2Flipped.png"), 256, 384, 32, 32, 5, 0.075, true, false); //maybe take a look at this
 
         //climbing up ladder
         this.animations[8][2] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 0, 256, 32, 32, 3.9, 0.15, false, false);
@@ -154,10 +166,10 @@ class Adventurer { //every entity should have update and draw!
         this.animations[8][3] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 0, 256, 32, 32, 3.9, 0.15, true, false);
 
         //bow right
-        this.animations[9][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 0, 288, 32, 32, 7.9, 0.08, false, false);
+        this.animations[9][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 160, 288, 32, 32, 3, 0.1, false, false);
 
         //bow left
-        this.animations[9][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/BowLeft.png"), 3, -8, 32, 32, 7.9, 0.12, true, false);
+        this.animations[9][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/BowLeft.png"), 0, -8, 32, 32, 3, 0.1, true, false);
 
 
         //damaged to the right/up
@@ -181,7 +193,7 @@ class Adventurer { //every entity should have update and draw!
 
     updateFacing(velocityDirection) {
         //this is to make sure our attack animation doesnt get countered or canceled by the movement animation right away when we start attacking.
-        if (!this.attacking) {
+        if (!this.attacking && !this.shooting) {
             if (velocityDirection.x > 0) this.facing = 0, this.state = 1; //If we're moving in the positive x direction, we're going to the right. Change animation to walk right
             if (velocityDirection.x < 0) this.facing = 1, this.state = 1; 
             if (velocityDirection.y < 0) this.facing = 2, this.state = 1;
@@ -295,11 +307,31 @@ class Adventurer { //every entity should have update and draw!
             }
         }
 
+        //Track bow cooldown
+        if (!this.canShoot) {
+            this.shootCooldownTimer -= this.game.clockTick;
+            if (this.shootCooldownTimer <= 0) { //once cooldown ends
+                this.canShoot = true; //we can now shoot again
+            }
+        }
 
-        if (this.game.leftClick && !this.attacking && this.canAttack && !this.rolling) {
+        if (this.game.keys["1"]) {
+            this.currentWeapon = 0;
+        } else if (this.game.keys["2"]) {
+            this.currentWeapon = 1;
+        }
+
+
+        if (this.game.leftClick && !this.attacking && this.canAttack && !this.rolling && this.currentWeapon == 0) {
             console.log("we clicked left click!");
             this.attack();
             this.game.leftClick = false; //set back to false because it was going to be true the whole time
+        }
+
+        if (this.game.leftClick && !this.shooting && this.canShoot && !this.rolling && this.currentWeapon == 1) {
+            this.bowShoot();
+            this.game.leftClick = false;
+        
         }
 
         if (this.attacking) { //when we're in our attacking animation, we wanna time it.
@@ -307,6 +339,18 @@ class Adventurer { //every entity should have update and draw!
             //End attack when timer expires
             if (this.attackTimer <= 0) {
                 this.attacking = false;
+                this.state = 0;  // Return to idle state
+                
+                // Reset idle animation
+                this.animations[0][this.facing].elapsedTime = 0;
+            }
+        }
+
+        if (this.shooting) { //when we're in our bow shooting animation, we wanna time it.
+            this.shootingTimer -= this.game.clockTick;
+            //End shooting when timer expires
+            if (this.shootingTimer <= 0) {
+                this.shooting = false;
                 this.state = 0;  // Return to idle state
                 
                 // Reset idle animation
@@ -329,6 +373,32 @@ class Adventurer { //every entity should have update and draw!
 
 
         //checking for collision
+        //Collision detection with objects
+        this.game.entities.forEach(entity => {
+            if ((entity instanceof Barrel || entity instanceof Crate || entity instanceof Pot) 
+                && this.BB.collide(entity.BB)) {
+                // Resolve collision by adjusting adventurer's position
+                const overlap = this.BB.overlap(entity.BB);
+                if (overlap.x > 0 && overlap.y > 0) {
+                    if (overlap.x < overlap.y) {
+                        //Horizontal collision
+                        if (this.BB.left < entity.BB.left) {
+                            this.x -= overlap.x; //Push back to the left
+                        } else {
+                            this.x += overlap.x; //Push forward to the right
+                        }
+                    } else {
+                        //Vertical collision
+                        if (this.BB.top < entity.BB.top) {
+                            this.y -= overlap.y; //Push back upward
+                        } else {
+                            this.y += overlap.y; //Push forward downward
+                        }
+                    }
+                    this.updateBB(); //Update bounding box after position adjustment
+                }
+            }
+        });
 
         this.elapsedTime += this.game.clockTick;
     };
@@ -410,8 +480,8 @@ class Adventurer { //every entity should have update and draw!
         this.attackTimer = this.attackDuration;
         
         //Get mouse position relative to character center
-        const characterCenterX = this.x + (32 * 2.8) / 2; 
-        const characterCenterY = this.y + (32 * 2.8) / 2;
+        const characterCenterX = this.x + (32 * this.scale) / 2; 
+        const characterCenterY = this.y + (32 * this.scale) / 2;
         
         //Get mouse position in world coordinates
         const mouseX = this.game.mouse.x + this.game.camera.x;
@@ -459,7 +529,7 @@ class Adventurer { //every entity should have update and draw!
         const slashY = this.y + Math.sin(angle) * this.slashDistance;
 
         if (this.swordUpgrade == 0) {
-            this.game.addEntity(new AttackSlash(this.game, slashX, slashY, "./Sprites/Slash/red-slash.png", this.slashScale, angle, slashDirection, this.attackDamage, this.knockback, this));
+            this.game.addEntity(new AttackSlash(this.game, slashX, slashY, "./Sprites/Slash/red-slash.png", this.slashScale, angle, slashDirection, this.attackDamage, this.knockback, this, true));
 
         }
 
@@ -471,6 +541,49 @@ class Adventurer { //every entity should have update and draw!
         this.animations[5][1].elapsedTime = 0; //Attack 2 left
         this.animations[6][0].elapsedTime = 0; //Attack 3 right
         this.animations[6][1].elapsedTime = 0; //Attack 3 left
+    }
+
+    bowShoot() {
+        // Prevent shooting too frequently
+        this.shooting = true; 
+        this.canShoot = false;
+        this.shootCooldownTimer = this.shootCooldown;
+        this.shootingTimer = this.shootingDuration;
+
+
+        // Get mouse position in world coordinates
+        const mouseX = this.game.mouse.x + this.game.camera.x;
+        const mouseY = this.game.mouse.y + this.game.camera.y;
+        
+        // Calculate character center
+        const characterCenterX = this.x + (32 * this.scale) / 2;
+        const characterCenterY = this.y + (32 * this.scale) / 2;
+        
+        // Calculate angle to mouse
+        const dx = mouseX - characterCenterX;
+        const dy = mouseY - characterCenterY;
+        const angle = Math.atan2(dy, dx);
+
+         //Convert angle to degrees for easier checks
+         const degrees = angle * (180 / Math.PI);
+
+        if (degrees >= -90 && degrees < 90) { //right side of charcter
+            this.facing = 0; 
+        } else {
+            this.facing = 1; //left side of character
+        }
+        
+
+        // Add arrow to game entities
+        this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, this.bowDamage, this.arrowSpeed, 
+            "./Sprites/Projectiles/Arrows_pack.png", this.bowKnockback, true, 2, this.piercing,
+            2, 0, -6, 32, 32, 1, 0.2, false, false));
+
+        // Set bow state and cooldown
+        this.state = 9; // Bow state
+
+        this.animations[9][0].elapsedTime = 0; //Bow right
+        this.animations[9][1].elapsedTime = 0; //Bow left
     }
 
 
@@ -501,53 +614,6 @@ class Adventurer { //every entity should have update and draw!
     }
 
     draw(ctx) {        
-        //we get the tick from the game engine! Hence why we passed gameEngine in the constructor parameters
-    //    const characterCenterX = this.x + (32 * 2.8) / 2 - 25;
-    //    const characterCenterY = this.y + (32 * 2.8) / 2 - 25;
-    //    const radius = 50;
-    //    const upAttackRadius = 30;
-       
-    //    // Draw main attack zones circle
-    //    ctx.beginPath();
-    //    ctx.arc(characterCenterX, characterCenterY, radius, 0, 2 * Math.PI);
-    //    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-    //    ctx.stroke();
-       
-    //    // Draw up attack zone
-    //    ctx.beginPath();
-    //    ctx.arc(characterCenterX, characterCenterY, upAttackRadius, -Math.PI, 0);
-    //    ctx.strokeStyle = 'rgba(0, 255, 0, 0.5)';
-    //    ctx.stroke();
-       
-    //    // Draw attack zone dividers
-    //    ctx.beginPath();
-    //    // Upper zone (-135° to -45°)
-    //    ctx.moveTo(characterCenterX - radius * Math.cos(45 * Math.PI / 180), 
-    //              characterCenterY - radius * Math.sin(45 * Math.PI / 180));
-    //    ctx.lineTo(characterCenterX + radius * Math.cos(45 * Math.PI / 180), 
-    //              characterCenterY - radius * Math.sin(45 * Math.PI / 180));
-       
-    //    // Lower zone (45° to 135°)
-    //    ctx.moveTo(characterCenterX - radius * Math.cos(45 * Math.PI / 180), 
-    //              characterCenterY + radius * Math.sin(45 * Math.PI / 180));
-    //    ctx.lineTo(characterCenterX + radius * Math.cos(45 * Math.PI / 180), 
-    //              characterCenterY + radius * Math.sin(45 * Math.PI / 180));
-       
-    //    // Text for attack types
-    //    ctx.font = "12px Arial";
-    //    ctx.fillStyle = "white";
-    //    ctx.fillText("Up Attack", characterCenterX - 20, characterCenterY - upAttackRadius - 5);
-    //    ctx.fillText("Attack 2", characterCenterX - 60, characterCenterY - radius + 15);
-    //    ctx.fillText("Attack 2", characterCenterX + 30, characterCenterY - radius + 15);
-    //    ctx.fillText("Attack 1", characterCenterX + radius + 5, characterCenterY);
-    //    ctx.fillText("Attack 1", characterCenterX - radius - 45, characterCenterY);
-    //    ctx.fillText("Attack 3", characterCenterX, characterCenterY + radius + 15);
-       
-    //    ctx.strokeStyle = 'rgba(255, 0, 0, 0.5)';
-    //    ctx.stroke();
-       
-
-       
         if (this.dead) {
             if (this.deathAnimationTimer > 0) {
                 this.deadAnim.drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
@@ -556,7 +622,6 @@ class Adventurer { //every entity should have update and draw!
             ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 33) - this.game.camera.x, (this.y + 77) - this.game.camera.y, 32, 16); //draw a shadow underneath our character
             this.animations[10][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale); 
         } else {
-            //might need to change the - 25. Try to figure out another way to center the character without hardcoding 
             ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 33) - this.game.camera.x, (this.y + 77) - this.game.camera.y, 32, 16); //draw a shadow underneath our character
             this.animations[this.state][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale); //we're putting her at pixel 25 x 25 on canvas
             //2.8
