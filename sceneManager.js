@@ -13,9 +13,9 @@ class SceneManager {
 
     loadTestLevel() {
         var adventurer = false;
-        if(!adventurer) this.game.addEntity(this.adventurer);
+        if(!adventurer) this.game.addEntity(this.adventurer);        
         // this.game.addEntity(new Adventurer(this.game, 0, 0));
-        //this.game.addEntity(new BlueGhoul(this.game, 400, 400));
+        this.game.addEntity(new BlueGhoul(this.game, 400, 400));
         this.game.addEntity(new HellSpawn(this.game, 400, 400));
         this.game.addEntity(new HellSpawn(this.game, 800, 400));
 

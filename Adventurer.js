@@ -9,7 +9,7 @@ class Adventurer { //every entity should have update and draw!
         this.x = this.x - offSet; 
         this.y = this.y - offSet;
         
-        this.speed = 220; //how fast the player moves
+        this.speed = 330; //how fast the player moves
 
 
         this.state = 0; //0 = idle, 1 = walking, 2 = run, 3 = jumping, 4 = attack1, 5 = attack2, 6 = attack3, 7 = roll, 8 = ladder, 9 = bow, 10 = damaged
@@ -70,7 +70,7 @@ class Adventurer { //every entity should have update and draw!
         this.shootCooldownTimer = 0;
         this.bowKnockback = 0;
         this.bowDamage = 4;
-        this.arrowSpeed = 500;
+        this.arrowSpeed = 800;
         this.piercing = false; //piercing could be for shooting through enemies. Collateral. Could be an upgrade
 
 
@@ -275,23 +275,21 @@ class Adventurer { //every entity should have update and draw!
 
         //If we're not rolling, we can move properly
         if (!this.rolling) {
-            var speed = 500;
-
             if (this.game.keys["w"] && !this.game.keys["s"]) {
-                this.velocity.y = -speed;
+                this.velocity.y = -this.speed;
                 this.lastMove = 2;
             } else if (this.game.keys["s"] && !this.game.keys["w"]) {
-                this.velocity.y = speed;
+                this.velocity.y = this.speed;
                 this.lastMove = 3;
             } else {
                 this.velocity.y = 0;
             }
             
             if (this.game.keys["a"] && !this.game.keys["d"]) {
-                this.velocity.x = -speed;
+                this.velocity.x = -this.speed;
                 this.lastMove = 1;
             } else if (this.game.keys["d"] && !this.game.keys["a"]) {
-                this.velocity.x = speed;
+                this.velocity.x = this.speed;
                 this.lastMove = 0;
             } else {
                 this.velocity.x = 0;
