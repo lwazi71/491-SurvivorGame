@@ -32,7 +32,7 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
             // Add a Set to track which entities have been hit by this slash
             this.hitEntities = new Set();
 
-            this.slashDistance = 27;
+            this.slashDistance = this.person.scale * 10; //how far the slash should be away from the player
             
             this.updateBC();
 

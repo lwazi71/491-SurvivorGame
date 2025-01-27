@@ -24,11 +24,11 @@ class Projectile {
      */
     constructor(game, x, y, angle, damage, speed, spritePath, knockback,
         friendly, scale, piercing, lifetime, 
-        animX, animY, animSizeX, animSizeY, frameCount, animDuration, reverse, loop) {
+        animX, animY, animSizeX, animSizeY, frameCount, animDuration, reverse, loop, BBx, BBy, BBHeight, BBWidth) {
 
         Object.assign(this, {game, x, y, angle, damage, speed, spritePath, knockback,
             friendly, scale, piercing, lifetime, animX, animY, animSizeX, animSizeY, 
-            frameCount, animDuration, reverse, loop});
+            frameCount, animDuration, reverse, loop, BBx, BBy, BBHeight, BBWidth});
         
 
         this.spritesheet = ASSET_MANAGER.getAsset(this.spritePath);
@@ -66,16 +66,18 @@ class Projectile {
     updateBB() {
         // Create bounding box for collision. This only applies for arrows for now
         this.BB = new BoundingBox(
-            this.x - 15, 
-            this.y - 15, 
-            32 * this.scale - 35, 
-            32 * this.scale - 35
+            this.x + this.BBx, 
+            this.y + this.BBy, 
+            this.BBHeight, 
+            this.BBWidth
         );
+        console.log(this.x - 15);
+        console.log(this.BB.x);
     }
 
     update() {
         // Reduce lifetime
-        console.log(this.timer);
+        //console.log(this.timer);
         this.timer -= this.game.clockTick;
         if (this.timer <= 0) {
             this.removeFromWorld = true;

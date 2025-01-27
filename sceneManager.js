@@ -15,9 +15,9 @@ class SceneManager {
         var adventurer = false;
         if(!adventurer) this.game.addEntity(this.adventurer);        
         // this.game.addEntity(new Adventurer(this.game, 0, 0));
-        this.game.addEntity(new BlueGhoul(this.game, 400, 400));
-        this.game.addEntity(new HellSpawn(this.game, 400, 400));
-        this.game.addEntity(new HellSpawn(this.game, 800, 400));
+        // this.game.addEntity(new BlueGhoul(this.game, 400, 400));
+        // this.game.addEntity(new HellSpawn(this.game, 400, 400));
+        // this.game.addEntity(new HellSpawn(this.game, 800, 400));
 
 
 
@@ -35,11 +35,11 @@ class SceneManager {
 
 
        //this.game.addEntity(new Ghost(this.game, 400, 400));
-        this.game.addEntity(new Ghost(this.game, 400, 400));
+        // this.game.addEntity(new Ghost(this.game, 400, 400));
 
 
-        this.game.addEntity(new Zombie(this.game, 400, 400));
-        this.game.addEntity(new Zombie(this.game, 200, 400));
+        // this.game.addEntity(new Zombie(this.game, 400, 400));
+        // this.game.addEntity(new Zombie(this.game, 200, 400));
         // this.game.addEntity(new Zombie(this.game, 300, 450));
         // this.game.addEntity(new Zombie(this.game, 130, 400));
         // this.game.addEntity(new Zombie(this.game, 323, 400));

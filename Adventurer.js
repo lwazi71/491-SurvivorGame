@@ -576,7 +576,9 @@ class Adventurer { //every entity should have update and draw!
         // Add arrow to game entities
         this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, this.bowDamage, this.arrowSpeed, 
             "./Sprites/Projectiles/Arrows_pack.png", this.bowKnockback, true, 2, this.piercing,
-            2, 0, -6, 32, 32, 1, 0.2, false, false));
+            2, 0, -6, 32, 32, 1, 0.2, false, false, - 15, -15, this.bitSize * 2 - 35, this.bitSize * 2 - 35));
+             //bounding box will always start at this.x for the projectile. The -15 is just something that we could maybe offset it by. If no offset,  then we could just put 0
+
 
         // Set bow state and cooldown
         this.state = 9; // Bow state
