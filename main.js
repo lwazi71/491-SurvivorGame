@@ -2,7 +2,8 @@ const gameEngine = new GameEngine();
 
 const ASSET_MANAGER = new AssetManager();
 
-ASSET_MANAGER.queueDownload("./Cyclops.png")
+ASSET_MANAGER.queueDownload("./Cyclops.png");
+ASSET_MANAGER.queueDownload("./rock.png")
 
 ASSET_MANAGER.downloadAll(() => {
 	const canvas = document.getElementById("gameWorld");
