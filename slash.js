@@ -53,8 +53,8 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
             const offsetDistance = this.slashDistance + this.radius; //Add radius to move circle further out. -4 to make circle kind of smaller
             
             // Calculate the center position based on the angle and offset
-            const centerX = this.person.x + (32 * 2.8) / 2 + Math.cos(this.angle) * offsetDistance + 5;
-            const centerY = this.person.y + (32 * 2.8) / 2 + Math.sin(this.angle) * offsetDistance + 10;
+            const centerX = this.person.x + (this.person.bitSize * this.person.scale) / 2 + Math.cos(this.angle) * offsetDistance + 5;
+            const centerY = this.person.y + (this.person.bitSize * this.person.scale) / 2 + Math.sin(this.angle) * offsetDistance + 10;
             
             // Create bounding circle at the adjusted position
             this.BC = new BoundingCircle(centerX, centerY, this.radius);    
@@ -64,8 +64,8 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
         updatePosition() {
 
             // Center of the adventurer
-            const characterCenterX = this.person.x + (32 * 2.8) / 2; //2.8 because it's the scale increase size of our player. 
-            const characterCenterY = this.person.y + (32 * 2.8) / 2;
+            const characterCenterX = this.person.x + (this.person.bitSize * this.person.scale) / 2; //scale is 2.8 because it's the scale increase size of our player. 
+            const characterCenterY = this.person.y + (this.person.bitSize * this.person.scale) / 2;
 
             //Update position using the angle and radius.
             //This is mainly for our animation
@@ -112,8 +112,8 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
                         this.hitEntities.add(entity);
                         
                         //Calculate the knockback TRUE CENTER of the slash circle for knockback source
-                        const centerX = this.person.x + (32 * 2.8) / 2 + Math.cos(this.angle) * this.slashDistance;
-                        const centerY = this.person.y + (32 * 2.8) / 2 + Math.sin(this.angle) * this.slashDistance;
+                        const centerX = this.person.x + (this.person.bitSize * this.person.scale) / 2 + Math.cos(this.angle) * this.slashDistance;
+                        const centerY = this.person.y + (this.person.bitSize * this.person.scale) / 2 + Math.sin(this.angle) * this.slashDistance;
 
                         //Pass the center coordinates for knockback calculation and Apply damage and trigger damage state
                         entity.takeDamage(this.attackDamage, this.knockback, centerX, centerY);
@@ -128,8 +128,8 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
                         this.hitEntities.add(entity);
                         
                         //Calculate the knockback TRUE CENTER of the slash circle for knockback source
-                        const centerX = this.person.x + (32 * 2.8) / 2 + Math.cos(this.angle) * this.slashDistance;
-                        const centerY = this.person.y + (32 * 2.8) / 2 + Math.sin(this.angle) * this.slashDistance;
+                        const centerX = this.person.x + (this.person.bitSize * this.person.scale) / 2 + Math.cos(this.angle) * this.slashDistance;
+                        const centerY = this.person.y + (this.person.bitSize * this.person.scale) / 2 + Math.sin(this.angle) * this.slashDistance;
 
                         //Pass the center coordinates for knockback calculation and Apply damage and trigger damage state
                         if (entity.isCharging || entity.isPreparingCharge) {

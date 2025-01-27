@@ -3,9 +3,10 @@ class Adventurer { //every entity should have update and draw!
         Object.assign(this, {game, x, y});
         this.game.adventurer = this;
         this.scale = 2.8;
+        this.bitSize = 32; //32 x 32
         
 
-        const offSet = (32 * this.scale)/2; //because of the size (2.8) of our sprite animation, we wanna go up to the scale.
+        const offSet = (this.bitSize * this.scale)/2; //because of the size (2.8) of our sprite animation, we wanna go up to the scale.
         this.x = this.x - offSet; 
         this.y = this.y - offSet;
         
