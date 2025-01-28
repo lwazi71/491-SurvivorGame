@@ -70,6 +70,7 @@ class Pot {
     takeDamage (attackDamage) {
         this.hp -= attackDamage;
         if(this.hp <= 0) {
+            this.spawnItem();
             this.state = 2;
             this.dead = true;
         } else {
@@ -91,6 +92,18 @@ class Pot {
        ctx.strokeStyle = 'Red';
 
         ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+    }
+
+    spawnItem() {
+        switch(this.drop.toLowerCase()) {
+            case "onecoin":
+                this.game.addEntity(new Onecoin(this.game, this.BB.x+5, this.BB.y, 3));
+                break;
+            case "threecoin":
+                this.game.addEntity(new Threecoin(this.game, this.BB.x+5, this.BB.y, 3));
+                break;
+            default:
+        }
     }
 
 }

@@ -220,6 +220,7 @@ class Adventurer { //every entity should have update and draw!
 
     update() {
         // if (this.dead) return;
+        console.log(this.invincible);
         if (this.dead) {
             // Handle death animation
             this.deathAnimationTimer -= this.game.clockTick;
@@ -238,6 +239,7 @@ class Adventurer { //every entity should have update and draw!
         if (this.isPlayingDamageAnimation) {
             this.damageAnimationTimer -= this.game.clockTick;
             if (this.damageAnimationTimer <= 0) {
+                this.invincible = false;
                 this.isPlayingDamageAnimation = false; //should turn off when damage animation is over
                 this.state = 0; // Return to idle state
             }
@@ -446,30 +448,28 @@ class Adventurer { //every entity should have update and draw!
             this.facing = 1; // Use left-facing animation
         } else {
             //Handle single direction rolls
-            switch (this.facing) {
-                case 0: //right
+           // switch (this.facing) {
+                if (rollingRight) { //right
                     this.velocity.x += this.rollSpeed;
                     this.velocity.y = 0;
                     this.facing = 0;
-                    break;
-                case 1: //left
+                } else if (rollingLeft) { //left
                     this.velocity.x -= this.rollSpeed;
                     this.velocity.y = 0;
                     this.facing = 1;
-                    break;
-                case 2: //up
+                } else if (rollingUp) { //up
                     this.velocity.y -= this.rollSpeed;
                     this.velocity.x = 0;
                     this.facing = 0;
-                    break;
-                case 3: //down
+                } else { //down
                     this.velocity.y += this.rollSpeed;
                     this.velocity.x = 0;
                     this.facing = 1;
-                    break;
-            }
+                }
         }
+            
     }
+    
 
 
     attack() {
@@ -528,8 +528,13 @@ class Adventurer { //every entity should have update and draw!
         const slashY = this.y + Math.sin(angle) * this.slashDistance;
 
         if (this.swordUpgrade == 0) {
-            this.game.addEntity(new AttackSlash(this.game, slashX, slashY, "./Sprites/Slash/red-slash.png", this.slashScale, angle, slashDirection, this.attackDamage, this.knockback, this, true));
-
+            this.game.addEntity(new AttackSlash(this.game, slashX, slashY, "./Sprites/Slash/red-slash.png", 
+                "./Sprites/Slash/red-slash-flipped.png", this.slashScale, angle, slashDirection, 
+                this.attackDamage, this.knockback, this, true));
+        } else if (this.swordUpgrade == 1) {
+            this.game.addEntity(new AttackSlash(this.game, slashX, slashY, "./Sprites/Slash/blue-slash.png", 
+                "./Sprites/Slash/blue-slash-flipped.png", this.slashScale, angle, 
+                slashDirection, this.attackDamage, this.knockback, this, true));
         }
 
         //Reset all possible attack animations
@@ -602,6 +607,7 @@ class Adventurer { //every entity should have update and draw!
                // ASSET_MANAGER.pauseBackgroundMusic();
             } else {
                 this.state = 10;
+                this.invincible = true;
                 this.isPlayingDamageAnimation = true;
                 this.damageAnimationTimer = this.damageAnimationDuration;
                 if (this.facing === 0 || this.facing === 2) {

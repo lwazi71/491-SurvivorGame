@@ -17,6 +17,10 @@ ASSET_MANAGER.queueDownload("./Sprites/Objects/DestructibleObjects.png");
 ASSET_MANAGER.queueDownload("./Sprites/Objects/shadow.png");
 ASSET_MANAGER.queueDownload("./Sprites/Slash/red-slash.png");
 ASSET_MANAGER.queueDownload("./Sprites/Slash/red-slash-flipped.png");
+ASSET_MANAGER.queueDownload("./Sprites/Slash/blue-slash.png");
+ASSET_MANAGER.queueDownload("./Sprites/Slash/blue-slash-flipped.png");
+
+
 
 ASSET_MANAGER.queueDownload("./Sprites/Zombie/Zombie.png");
 ASSET_MANAGER.queueDownload("./Sprites/Zombie/Zombie-Flipped.png");
@@ -28,6 +32,12 @@ ASSET_MANAGER.queueDownload("./Sprites/Ghoul/Blue_Ghoul-Flipped.png")
 ASSET_MANAGER.queueDownload("./Sprites/Ghoul/Blue_Ghoul.png")
 ASSET_MANAGER.queueDownload("./Sprites/HellSpawn/Hellspawn-Flipped.png")
 ASSET_MANAGER.queueDownload("./Sprites/HellSpawn/Hellspawn.png")
+ASSET_MANAGER.queueDownload("./Sprites/FreakyGhoul/FreakyGhoul.png")
+ASSET_MANAGER.queueDownload("./Sprites/FreakyGhoul/FreakyGhoul-Flipped.png")
+ASSET_MANAGER.queueDownload("./Sprites/Objects/collectables.png");
+
+
+
 
 
 

@@ -71,8 +71,7 @@ class Projectile {
             this.BBHeight, 
             this.BBWidth
         );
-        console.log(this.x - 15);
-        console.log(this.BB.x);
+     
     }
 
     update() {
@@ -98,8 +97,8 @@ class Projectile {
             
             // Different collision logic based on shooter.
             if (this.friendly) { //this means the projectile is coming from us, the player
-                // Player arrow hitting enemies 
-                if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul) 
+                // Player arrow hitting enemies (for contact enemies)
+                if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul || entity instanceof FreakyGhoul) 
                     && !entity.dead && 
                     this.BB.collide(entity.BB) && !this.hitEntities.has(entity)) {
                      

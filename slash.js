@@ -11,9 +11,9 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
          * @param {*} angle the angle of the slash depending on where our mouse is
          * @param {*} slashType what our slash should look like
          */
-        constructor(game, x, y, attackSpritePath, slashScale, angle, slashDirection, attackDamage, knockback, person, friendly) { //game will be the game engine!
+        constructor(game, x, y, attackSpritePath, attackSpritePathFlipped, slashScale, angle, slashDirection, attackDamage, knockback, person, friendly) { //game will be the game engine!
             //slashDirection: 0 = right to left, 1 = left to right, 2 = second slash right to left, 3 = second slash left to right
-            Object.assign(this, {game, x, y, attackSpritePath, slashScale, angle, slashDirection, attackDamage, knockback, person, friendly}); 
+            Object.assign(this, {game, x, y, attackSpritePath, attackSpritePathFlipped, slashScale, angle, slashDirection, attackDamage, knockback, person, friendly}); 
             
 
             this.spriteSheet = ASSET_MANAGER.getAsset(this.attackSpritePath);
@@ -78,16 +78,16 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
             //[this.swordSwing][this.color/upgrade]
 
             //left to right slash 
-            this.animations[0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Slash/red-slash.png"), 0, 0, 128, 128, 5, 0.1, false, false);
+            this.animations[0] = new Animator(ASSET_MANAGER.getAsset(this.attackSpritePath), 0, 0, 128, 128, 5, 0.1, false, false);
 
             
-            this.animations[1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Slash/red-slash.png"), 0, 128, 128, 128, 4, 0.1, false, false);
+            this.animations[1] = new Animator(ASSET_MANAGER.getAsset(this.attackSpritePath), 0, 128, 128, 128, 4, 0.1, false, false);
 
 
             //reverse. Change sprite sheet to the flipped one (slash 1)
-            this.animations[2] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Slash/red-slash-flipped.png"), 0, 0, 128, 128, 5, 0.1, true, false);
+            this.animations[2] = new Animator(ASSET_MANAGER.getAsset(this.attackSpritePathFlipped), 0, 0, 128, 128, 5, 0.1, true, false);
 
-            this.animations[3] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Slash/red-slash-flipped.png"), 0, 128, 128, 128, 4, 0.1, false, false);
+            this.animations[3] = new Animator(ASSET_MANAGER.getAsset(this.attackSpritePathFlipped), 0, 128, 128, 128, 4, 0.1, false, false);
 
 
         }
@@ -104,7 +104,8 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
             const entities = this.game.entities;
             for (let i = 0; i < entities.length; i++) {
                 let entity = entities[i];
-                if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul) 
+                //contact mobs
+                if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul || entity instanceof FreakyGhoul) 
                     && !entity.dead) {
                     // Only apply damage if we haven't hit this zombie yet
                     if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
@@ -120,6 +121,8 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
                         
                     }
                 }
+
+                //charging mobs
                 if ((entity instanceof HellSpawn) 
                     && !entity.dead) {
                     // Only apply damage if we haven't hit this zombie yet

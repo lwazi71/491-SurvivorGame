@@ -24,6 +24,11 @@ class BlueGhoul {
         this.pushbackVector = { x: 0, y: 0 };
         this.pushbackDecay = 0.9; // Determines how quickly the pushback force decays
 
+
+
+        this.dropchance = 0.4; //40% chance of dropping something when dying
+
+
         
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
 
@@ -240,6 +245,10 @@ class BlueGhoul {
         }
     
         if (this.health <= 0) {
+            let drop = Math.random();
+            if(drop < this.dropchance) {
+                this.game.addEntity(new Threecoin(this.game, (this.x + 28), (this.y + 55)));
+            }
             this.dead = true;
             this.state = 3;
         } else {
