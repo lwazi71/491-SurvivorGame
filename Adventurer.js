@@ -239,7 +239,7 @@ class Adventurer { //every entity should have update and draw!
         if (this.isPlayingDamageAnimation) {
             this.damageAnimationTimer -= this.game.clockTick;
             if (this.damageAnimationTimer <= 0) {
-                this.invincible = false;
+                this.invincible = false; //at the end of the player getting damaged animation we'll turn i-frames off
                 this.isPlayingDamageAnimation = false; //should turn off when damage animation is over
                 this.state = 0; // Return to idle state
             }
