@@ -2,12 +2,13 @@ class Cyclops {
     constructor(game, x, y) {
         Object.assign(this, {game, x, y});
         this.game = game;
-        this.spritesheet = ASSET_MANAGER.getAsset("./Cyclops.png");
+        this.spritesheet = ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png");
 
         this.x = x;
         this.y = y;
         this.speed = 1;
         this.attacking = false;
+      
         this.projectile = false;
         this.melee = false;
         this.damage = false;

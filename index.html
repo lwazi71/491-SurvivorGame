@@ -9,13 +9,38 @@
     <script type="text/javascript" src="./timer.js"></script>
     <script type="text/javascript" src="./gameengine.js"></script>
     <script type="text/javascript" src="./util.js"></script>
-    <script type="text/javascript" src="./animator.js"></script>
+    <script type="text/javascript" src="./Boundingbox.js"></script> <!-- Here first because Adventurer needs bounding box -->
+    <script type="text/javascript" src="./BoundingCircle.js"></script> <!-- Here first because Slash needs Bounding Circle -->
+    <script type="text/javascript" src="./animator.js"></script> <!-- Here first because Adventurer needs animator -->
+    
+    <script type="text/javascript" src="./Zombie.js"></script> 
+    <script type="text/javascript" src="./cyclops.js"></script> 
+    <script type="text/javascript" src="./Ghost.js"></script> 
+    <script type="text/javascript" src="./BlueGhoul.js"></script> 
+    <script type="text/javascript" src="./HellSpawn.js"></script> 
+    <script type="text/javascript" src="./FreakyGhoul.js"></script> 
+    <script type="text/javascript" src="./coins.js"></script> 
+
+
+
+    <script type="text/javascript" src="./DestructableObjectEntities/Barrel.js"></script> 
+    <script type="text/javascript" src="./DestructableObjectEntities/Crate.js"></script> 
+    <script type="text/javascript" src="./DestructableObjectEntities/Pot.js"></script> 
+    <script type="text/javascript" src="./Projectile.js"></script> 
+
+    <script type="text/javascript" src="./WaveManager.js"></script> 
+
+    <script type="text/javascript" src="./slash.js"></script> 
+    <script type="text/javascript" src="./Adventurer.js"></script> 
+    <script type="text/javascript" src="./sceneManager.js"></script> <!-- Scene manager last because it'll need all the objects above -->
     <script type="text/javascript" src="./rock.js"></script>
-    <script type="text/javascript" src="./cyclops.js"></script>
-    <script type="text/javascript" src="./boundingbox.js"></script>
     <script type="text/javascript" src="./main.js"></script>
 </head>
 <body>
-    <canvas id="gameWorld" width="1024" height="768" style="background: white; border: 1px solid black" tabindex="0" autofocus></canvas>
+    <canvas id="gameWorld" width="1024" height="768" style="background: grey; border: 1px solid black" tabindex="0" autofocus></canvas>
+    <div>
+        <br />
+        <input type="checkbox" id="debug"> Debug 
+    </div>
 </body>
 </html>
