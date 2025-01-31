@@ -53,16 +53,12 @@ ASSET_MANAGER.queueDownload("./Sprites/Projectiles/Arrows_pack.png")
 
 
 
-
-
-
-
+ASSET_MANAGER.queueDownload("./rock.png")
 
 ASSET_MANAGER.downloadAll(() => {
 	const canvas = document.getElementById("gameWorld");
 	const ctx = canvas.getContext("2d");
 	ctx.imageSmoothingEnabled = false;
-
 
 	
 	PARAMS.CANVAS_WIDTH = canvas.width;
