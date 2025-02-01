@@ -130,20 +130,22 @@ class Zombie {
         const player = this.game.adventurer; // Reference to the player character
 
         //Where on the player or near the player the zombie will be going towards
-        const dx = (player.BB.x + 6) - (this.BB.x + 20);
+        //
+        const dx = (player.BB.x + 6) - (this.BB.x + 20); 
         const dy = player.BB.y - this.BB.y;
     
-        // Calculate the distance to the player
+        //Calculate the distance to the player.
         const distance = Math.sqrt(dx * dx + dy * dy);
-    
+        
+        //if the zombie isnt next to the player, then we should 
         if (distance > 0) {
-            // Normalize the direction vector
+            // Normalize the direction vector. Which way we're going towards. left, right, bottom right etc.
             const directionX = dx / distance;
             const directionY = dy / distance;
             
     
-            // Move the zombie toward the playersd
-            const movement = this.speed * this.game.clockTick; // Adjust speed for frame rate
+            //Move the zombie toward the player
+            const movement = this.speed * this.game.clockTick; //Adjust speed for frame rate
     
             this.x += directionX * movement;
             this.y += directionY * movement;
@@ -186,19 +188,8 @@ class Zombie {
                         this.attackCooldownTimer = this.attackCooldown; // Reset the cooldown timer
                         console.log("Zombie attacked the player!");
                     }
-            
                     //Set zombie to attacking state
                     this.state = 2; //Attacking state
-                } else {
-                    // Reset to walking or idle state
-                    const dx = player.x - this.x;
-                    const dy = player.y - this.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    if (distance > 5) {
-                        this.state = 1; //Walking
-                    } else {
-                        this.state = 0; //Idle
-                    }
                 }
             }
         }

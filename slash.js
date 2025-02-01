@@ -104,8 +104,8 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
             const entities = this.game.entities;
             for (let i = 0; i < entities.length; i++) {
                 let entity = entities[i];
-                //contact mobs
-                if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul || entity instanceof FreakyGhoul) 
+                //melee/range mobs
+                if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul || entity instanceof FreakyGhoul || entity instanceof BanditNecromancer || entity instanceof Necromancer) 
                     && !entity.dead) {
                     // Only apply damage if we haven't hit this zombie yet
                     if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
@@ -125,7 +125,6 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
                 //charging mobs
                 if ((entity instanceof HellSpawn) 
                     && !entity.dead) {
-                    // Only apply damage if we haven't hit this zombie yet
                     if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
                         // Add the zombie to our hit set
                         this.hitEntities.add(entity);
@@ -151,6 +150,22 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
                     if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
                         this.hitEntities.add(entity);
                         entity.takeDamage(this.attackDamage);
+                    }
+                }
+        
+                //COMBO with sword and bow and arrow!
+                if (entity instanceof Projectile && this.friendly && entity.friendly) { 
+                    if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
+                        this.hitEntities.add(entity);
+                        entity.speed *= 2;
+                        entity.damage *= 2.5;
+                    }
+                }
+
+                //if the player hits a projectile that's not friendly. Maybe change this when it comes to bosses. 
+                if (entity instanceof Projectile && this.friendly && !entity.friendly && entity.parry) { 
+                    if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
+                        entity.removeFromWorld = true;
                     }
                 }
                 

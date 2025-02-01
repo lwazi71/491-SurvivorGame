@@ -166,7 +166,7 @@ class FreakyGhoul {
         const entities = this.game.entities;
         for (let i = 0; i < entities.length; i++) {
             let entity = entities[i];
-            if (entity instanceof Zombie && entity !== this) {
+            if (entity instanceof FreakyGhoul && entity !== this) {
                 const dx = entity.x - this.x;
                 const dy = entity.y - this.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);

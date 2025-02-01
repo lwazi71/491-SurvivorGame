@@ -24,17 +24,17 @@ class Projectile {
      */
     constructor(game, x, y, angle, damage, speed, spritePath, knockback,
         friendly, scale, piercing, lifetime, 
-        animX, animY, animSizeX, animSizeY, frameCount, animDuration, reverse, loop, BBx, BBy, BBHeight, BBWidth) {
+        animX, animY, animSizeX, animSizeY, frameCount, animDuration, reverse, loop, BBx, BBy, BBHeight, BBWidth, pixelX, pixelY) {
 
         Object.assign(this, {game, x, y, angle, damage, speed, spritePath, knockback,
             friendly, scale, piercing, lifetime, animX, animY, animSizeX, animSizeY, 
-            frameCount, animDuration, reverse, loop, BBx, BBy, BBHeight, BBWidth});
+            frameCount, animDuration, reverse, loop, BBx, BBy, BBHeight, BBWidth, pixelX, pixelY});
         
 
         this.spritesheet = ASSET_MANAGER.getAsset(this.spritePath);
         this.removeFromWorld = false;
 
-        // Velocity components
+        //Velocity components
         this.velocity = {
             x: Math.cos(this.angle) * this.speed,
             y: Math.sin(this.angle) * this.speed
@@ -76,12 +76,17 @@ class Projectile {
 
     update() {
         // Reduce lifetime
-        //console.log(this.timer);
         this.timer -= this.game.clockTick;
         if (this.timer <= 0) {
             this.removeFromWorld = true;
             return;
         }
+
+        //added velocity because speed can change when its mid air due to combo with slash
+        this.velocity = {
+            x: Math.cos(this.angle) * this.speed,
+            y: Math.sin(this.angle) * this.speed
+        };
 
         // Move projectile
         this.x += this.velocity.x * this.game.clockTick;
@@ -97,8 +102,8 @@ class Projectile {
             
             // Different collision logic based on shooter.
             if (this.friendly) { //this means the projectile is coming from us, the player
-                // Player arrow hitting enemies (for contact enemies)
-                if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul || entity instanceof FreakyGhoul) 
+                //Player arrow hitting enemies (for melee and range enemies)
+                if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul || entity instanceof FreakyGhoul || entity instanceof BanditNecromancer || entity instanceof Necromancer) 
                     && !entity.dead && 
                     this.BB.collide(entity.BB) && !this.hitEntities.has(entity)) {
                      
@@ -192,15 +197,15 @@ class Projectile {
         this.animations.drawFrame(
             this.game.clockTick, 
             ctx, 
-            -((32 * this.scale) / 2), 
-            -((32 * this.scale) / 2), 
+            -((this.pixelX * this.scale) / 2), 
+            -((this.pixelY * this.scale) / 2), 
             this.scale
         );
 
         ctx.restore();
 
-        ctx.strokeStyle = 'Green';
-        ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        // ctx.strokeStyle = 'Green';
+        // ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
     }
 
 

@@ -87,7 +87,7 @@ class WaveManager {
         // Increase zombies each wave: Wave 1 = 5 zombies, Wave 2 = 7 zombies, etc.
         this.monstersInWave = Math.floor(5 + (this.currentWave - 1) * 2);
 
-       // var enemypool = ["zombie", "hellspawn", "ghost", "blueghoul", "freakyghoul"];
+       // var enemy_contact = ["zombie", "hellspawn", "ghost", "blueghoul", "freakyghoul"];
         var enemypool = ["zombie", "hellspawn"];
         
         // Spawn zombies with slight delay between each

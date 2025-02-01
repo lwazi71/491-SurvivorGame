@@ -13,7 +13,7 @@ class Adventurer { //every entity should have update and draw!
         this.speed = 330; //how fast the player moves
 
 
-        this.state = 0; //0 = idle, 1 = walking, 2 = run, 3 = jumping, 4 = attack1, 5 = attack2, 6 = attack3, 7 = roll, 8 = ladder, 9 = bow, 10 = damaged
+        this.state = 0; //0 = idle, 1 = walking, 2 = run, 3 = jumping, 4 = attack1, 5 = attack2, 6 = attack3, 7 = roll, 8 = ladder, 9 = bow, 10 = damaged, 11 = magic
         this.facing = 0; //0 = right, 1 = left, 2 = up, 3 = down
         this.dead = false;
         this.deathAnimationTimer = 8 * 0.12;
@@ -52,7 +52,7 @@ class Adventurer { //every entity should have update and draw!
         this.attackDuration = 0.56;  // Duration of attack animation
         this.attackTimer = 0;
         this.canAttack = true;
-        this.attackCooldown = 0.1;   // Time between attacks
+        this.attackCooldown = 0.8;   //Time between attacks. Most it could go down is 0.56 because of the animation attackDuration 
         this.attackCooldownTimer = 0;
         this.slashType = 0; //0 = default right slash animation, 1 = up animation
         this.slashDistance = 27; //Distance from character center to slash
@@ -60,6 +60,7 @@ class Adventurer { //every entity should have update and draw!
         this.swordUpgrade = 0; //maybe use for upgrading sword later? If we upgrade a sword, we could change colors?
         this.knockback = 2000; // Base force of knockback
         this.attackDamage = 5; 
+        this.parry = false;
 
 
         //PROJECTILE PROPERTIES
@@ -67,14 +68,24 @@ class Adventurer { //every entity should have update and draw!
         this.shootingDuration = 0.3; //for animation
         this.shootingTimer = 0;
         this.canShoot = true;
-        this.shootCooldown = 1;
+        this.shootCooldown = 0.8;
         this.shootCooldownTimer = 0;
         this.bowKnockback = 0;
         this.bowDamage = 4;
-        this.arrowSpeed = 800;
+        this.arrowSpeed = 800; 
         this.piercing = false; //piercing could be for shooting through enemies. Collateral. Could be an upgrade
 
+        //MAGIC AOE PROPERTIES
+        this.magicking = false;
+        this.magicDuration = 6 * 0.1; //for animation
+        this.canMagic = true;
+        this.magicCooldown = 10; //long cool down
+        this.magicCooldownTimer = 0;
+        this.magicKnockback = 2000;
+        this.magicDamage = 100;
+        this.magicScale = 6;
 
+        this.coins = 0;
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
 
 
@@ -96,7 +107,7 @@ class Adventurer { //every entity should have update and draw!
 
     //helper functions
     loadAnimation() {
-        for (var i = 0; i < 11; i++) {
+        for (var i = 0; i < 12; i++) {
             this.animations.push([]);
             for (var j = 0; j < 4; j++) {
                 this.animations[i].push([]);
@@ -143,16 +154,16 @@ class Adventurer { //every entity should have update and draw!
         this.animations[4][2] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AttackUp.png"), -3, 2, 32, 32, 10, 0.056, false, false);
 
         //attack2 right
-        this.animations[5][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 2, 96, 32, 32, 10, 0.08, false, false);
+        this.animations[5][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 2, 96, 32, 32, 10, 0.056, false, false);
 
         //attack2 left
-        this.animations[5][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 352, 32, 32, 10, 0.08, false, false);
+        this.animations[5][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 352, 32, 32, 10, 0.056, false, false);
 
         //attack3 right/down
-        this.animations[6][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 3.1, 128, 32, 32, 10, 0.08, false, false);
+        this.animations[6][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 3.1, 128, 32, 32, 10, 0.056, false, false);
 
         //attack 3 left/down
-        this.animations[6][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 384, 32, 32, 10, 0.08, false, false);
+        this.animations[6][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 384, 32, 32, 10, 0.056, false, false);
 
         //roll right/up
         this.animations[7][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), -2, 384, 32, 32, 5, 0.075, false, false);
@@ -179,11 +190,16 @@ class Adventurer { //every entity should have update and draw!
         //damaged to the left/down
         this.animations[10][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 32, 449, 32, 32, 3, 0.12, false, false);
 
-        //damaged to when hit looking up
+        //damaged to when hit looking up (honestly didnt need up and down)
         this.animations[10][2] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 32, 192, 32, 32, 3, 0.12, false, false);
 
         //damaged when hit looking down
         this.animations[10][3] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 32, 192, 32, 32, 3, 0.12, false, false);
+
+        //magic animation, right
+        this.animations[11][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 0, 320, 32, 32, 6, 0.1, true, false);
+
+        this.animations[11][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2Flipped.png"), 224, 320, 32, 32, 6, 0.1, false, false);
 
 
 
@@ -194,7 +210,7 @@ class Adventurer { //every entity should have update and draw!
 
     updateFacing(velocityDirection) {
         //this is to make sure our attack animation doesnt get countered or canceled by the movement animation right away when we start attacking.
-        if (!this.attacking && !this.shooting) {
+        if (!this.attacking && !this.shooting && !this.magicking) {
             if (velocityDirection.x > 0) this.facing = 0, this.state = 1; //If we're moving in the positive x direction, we're going to the right. Change animation to walk right
             if (velocityDirection.x < 0) this.facing = 1, this.state = 1; 
             if (velocityDirection.y < 0) this.facing = 2, this.state = 1;
@@ -220,7 +236,7 @@ class Adventurer { //every entity should have update and draw!
 
     update() {
         // if (this.dead) return;
-        console.log(this.invincible);
+        // console.log(this.game.leftClick);
         if (this.dead) {
             // Handle death animation
             this.deathAnimationTimer -= this.game.clockTick;
@@ -316,6 +332,15 @@ class Adventurer { //every entity should have update and draw!
             }
         }
 
+        //Track magic AOE cooldown
+        if (!this.canMagic) {
+            this.magicCooldownTimer -= this.game.clockTick;
+            if (this.magicCooldownTimer <= 0) { //once cooldown ends
+                this.canMagic = true; //we can now do magic again!
+            }
+            this.game.rightClicks = false;
+        }
+
         if (this.game.keys["1"]) {
             this.currentWeapon = 0;
         } else if (this.game.keys["2"]) {
@@ -323,16 +348,48 @@ class Adventurer { //every entity should have update and draw!
         }
 
 
-        if (this.game.leftClick && !this.attacking && this.canAttack && !this.rolling && this.currentWeapon == 0) {
-            console.log("we clicked left click!");
-            this.attack();
-            this.game.leftClick = false; //set back to false because it was going to be true the whole time
+        // if (this.game.leftClick && !this.attacking && this.canAttack && !this.rolling && this.currentWeapon == 0) {
+        //     console.log("we clicked left click!");
+        //     this.attack();
+        //     this.game.leftClick = false; //set back to false because it was going to be true the whole time
+        // } else if (this.currentWeapon == 0) {
+        //     // Clear left clicks if we can't sword attack
+        //     this.game.leftClick = false;
+        // }
+
+        // if (this.game.leftClick && !this.shooting && this.canShoot && !this.rolling && !this.attacking && this.currentWeapon == 1) {
+        //     console.log("we clicked left click!");
+        //     this.bowShoot();
+        //     this.game.leftClick = false;
+        // } else if (this.currentWeapon == 1) {
+        //     // Clear left clicks if we can't bow attack
+        //     this.game.leftClick = false;
+        // }
+
+        // Handle sword attacks - only affected by sword cooldown
+        if (this.currentWeapon == 0 && this.game.leftClick) {
+            if (!this.attacking && this.canAttack && !this.rolling) {
+                console.log("we clicked left click!");
+                this.attack();
+            }
+            this.game.leftClick = false;
+        }
+        
+        // Handle bow attacks - only affected by bow cooldown
+        if (this.currentWeapon == 1 && this.game.leftClick) {
+            if (!this.shooting && this.canShoot && !this.rolling) { //&& !this.attacking) { 
+                this.bowShoot();
+            }
+            this.game.leftClick = false;
         }
 
-        if (this.game.leftClick && !this.shooting && this.canShoot && !this.rolling && this.currentWeapon == 1) {
-            this.bowShoot();
-            this.game.leftClick = false;
-        
+        if (this.game.rightClicks && this.canMagic && !this.rolling) { //&& !this.shooting && !this.attacking if we dont want player to use magic during attack animation
+            console.log("we clicked right click!")
+            this.invincible = true;
+            this.magicAOE();
+            this.game.rightClicks = false;
+        } else {
+            this.game.rightClicks = false;
         }
 
         if (this.attacking) { //when we're in our attacking animation, we wanna time it.
@@ -354,6 +411,18 @@ class Adventurer { //every entity should have update and draw!
                 this.shooting = false;
                 this.state = 0;  // Return to idle state
                 
+                // Reset idle animation
+                this.animations[0][this.facing].elapsedTime = 0;
+            }
+        }
+
+        if (this.magicking) { //when we're in our bow shooting animation, we wanna time it.
+            this.magicTimer -= this.game.clockTick;
+            //End shooting when timer expires
+            if (this.magicTimer <= 0) {
+                this.magicking = false;
+                this.state = 0;  // Return to idle state
+                this.invincible = false;
                 // Reset idle animation
                 this.animations[0][this.facing].elapsedTime = 0;
             }
@@ -399,7 +468,26 @@ class Adventurer { //every entity should have update and draw!
                     this.updateBB(); //Update bounding box after position adjustment
                 }
             }
+            
+            if ((entity instanceof Onecoin) && this.BB.collide(entity.BB)) {
+                //Math.floor(Math.random() * (max - min + 1)) + min;
+                const coinAmnt = Math.floor(Math.random() * 2) + 1; //1 - 2 when picking up a coin that looks like just 1
+                this.coins += coinAmnt;
+                entity.removeFromWorld = true;
+            } else if ((entity instanceof Threecoin) && this.BB.collide(entity.BB)) {
+                const coinAmnt = Math.floor(Math.random() * (5 - 3 + 1)) + 3; //3 - 5 when picking up a coin that looks like 3 coins
+                this.coins += coinAmnt;
+                entity.removeFromWorld = true;
+            }
         });
+
+        if (this.attackCooldown < this.attackDuration) {
+            this.attackDuration = this.attackCooldown;
+        }
+
+        if (this.shootCooldown < this.shootingDuration) {
+            this.shootingDuration = this.shootCooldown;
+        }
 
         this.elapsedTime += this.game.clockTick;
     };
@@ -479,8 +567,8 @@ class Adventurer { //every entity should have update and draw!
         this.attackTimer = this.attackDuration;
         
         //Get mouse position relative to character center
-        const characterCenterX = this.x + (32 * this.scale) / 2; 
-        const characterCenterY = this.y + (32 * this.scale) / 2;
+        const characterCenterX = this.x + (this.bitSize * this.scale) / 2; 
+        const characterCenterY = this.y + (this.bitSize * this.scale) / 2;
         
         //Get mouse position in world coordinates
         const mouseX = this.game.mouse.x + this.game.camera.x;
@@ -560,8 +648,8 @@ class Adventurer { //every entity should have update and draw!
         const mouseY = this.game.mouse.y + this.game.camera.y;
         
         // Calculate character center
-        const characterCenterX = this.x + (32 * this.scale) / 2;
-        const characterCenterY = this.y + (32 * this.scale) / 2;
+        const characterCenterX = this.x + (this.bitSize * this.scale) / 2;
+        const characterCenterY = this.y + (this.bitSize * this.scale) / 2;
         
         // Calculate angle to mouse
         const dx = mouseX - characterCenterX;
@@ -581,7 +669,7 @@ class Adventurer { //every entity should have update and draw!
         // Add arrow to game entities
         this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, this.bowDamage, this.arrowSpeed, 
             "./Sprites/Projectiles/Arrows_pack.png", this.bowKnockback, true, 2, this.piercing,
-            2, 0, -6, 32, 32, 1, 0.2, false, false, - 15, -15, this.bitSize * 2 - 35, this.bitSize * 2 - 35));
+            2, 0, -6, 32, 32, 1, 0.2, false, false, - 15, -15, this.bitSize * 2 - 35, this.bitSize * 2 - 35, this.bitSize, this.bitSize));
              //bounding box will always start at this.x for the projectile. The -15 is just something that we could maybe offset it by. If no offset,  then we could just put 0
 
 
@@ -590,6 +678,50 @@ class Adventurer { //every entity should have update and draw!
 
         this.animations[9][0].elapsedTime = 0; //Bow right
         this.animations[9][1].elapsedTime = 0; //Bow left
+    }
+
+    magicAOE() { //kinda like an ult?
+        this.magicking = true; 
+        this.canMagic = false;
+        this.magicCooldownTimer = this.magicCooldown;
+        this.magicTimer = this.magicDuration;
+
+        // Get mouse position in world coordinates
+        const mouseX = this.game.mouse.x + this.game.camera.x;
+        const mouseY = this.game.mouse.y + this.game.camera.y;
+
+        // Calculate character center
+        const characterCenterX = this.x + (this.bitSize * this.scale) / 2;
+        const characterCenterY = this.y + (this.bitSize * this.scale) / 2;
+
+        // Calculate angle to mouse (this will just be used for animation in knowing if we should be looking right or left)
+        const dx = mouseX - characterCenterX;
+        const dy = mouseY - characterCenterY;
+        const angle = Math.atan2(dy, dx);
+        
+        //Convert angle to degrees for easier checks
+        const degrees = angle * (180 / Math.PI);
+        
+        if (degrees >= -90 && degrees < 90) { //right side of charcter
+            this.facing = 0; 
+        } else {
+            this.facing = 1; //left side of character
+        }
+
+        this.game.addEntity(new CircleAOE(this.game, characterCenterX, characterCenterY , "./Sprites/Magic/magic.png", 
+            null, this.magicScale, this.magicDamage, this.magicKnockback, this, true, 
+            0, 320, 64, 64, 9, 0.08, false, true))
+
+            // this.game.addEntity(new CircleAOE(this.game, mouseX, mouseY , "./Sprites/Magic/magic.png", 
+            //     null, this.magicScale, this.magicDamage, this.magicKnockback, null, true, 
+            //     0, 320, 64, 64, 9, 0.08, false, false))
+        
+        //change animation state to 11
+        this.state = 11;
+
+        this.animations[11][0].elapsedTime = 0; //Magic right animation reset
+        this.animations[11][1].elapsedTime = 0; //Magic left animation reset
+                
     }
 
 
@@ -635,6 +767,10 @@ class Adventurer { //every entity should have update and draw!
         }
         
             //will show the bound box of our player
+
+            // ctx.strokeStyle = 'Green';
+            // ctx.strokeRect((this.x + (this.bitSize * this.scale)/2) - this.game.camera.x, (this.y + (this.bitSize * this.scale)/2) - this.game.camera.y, 20, 20);
+
              ctx.strokeStyle = 'Red';
              ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
      
