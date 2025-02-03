@@ -7,6 +7,7 @@ class SceneManager {
         this.y = 0;
 
         this.waveManager = new WaveManager(game);
+        this.HUD = new HUD(this.game, this.adventurer);
 
         this.loadTestLevel();
     };
@@ -102,8 +103,7 @@ class SceneManager {
         ctx.fillText(`Player Coins: ${this.adventurer.coins}`, 10, 150);
         ctx.fillText(`Player Bombs: ${this.adventurer.bombCurrentAmnt}`, 10, 180);
         ctx.fillText(`Player Bombs Cooldown: ${Math.ceil(this.adventurer.bombCooldownRetrieveTimer * 100) / 100}`, 10, 210);
-
-
+        this.HUD.draw(ctx);
 
     }
 

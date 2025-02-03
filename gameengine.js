@@ -11,6 +11,8 @@ class GameEngine {
 
         // Information on the input
         this.click = null;
+        this.leftclick = null;
+        this.rightclick = null;
         this.mouse = null;
         this.wheel = null;
         this.keys = {};

@@ -25,6 +25,7 @@ class Adventurer { //every entity should have update and draw!
         this.velocity = {x: 0, y: 0};
         this.lastMove = 0;
         this.health = 100; //default max health of the player
+        this.maxhealth = 100;
 
         //player getting damaged
         this.damageAnimationTimer = 0;
@@ -32,7 +33,7 @@ class Adventurer { //every entity should have update and draw!
         this.isPlayingDamageAnimation = false;
         
 
-        this.currentWeapon = 0; //sword = 0, bow = 1
+        this.currentWeapon = 1; //sword = 0, bow = 1
         this.slashType = null;
 
         this.timeToIdle = 3; //havent implemented but if player stands still for 3 seconds, we could do the idle animation each time
@@ -801,6 +802,10 @@ class Adventurer { //every entity should have update and draw!
         }
   
     }
+    drawMinimap(ctx, mmX, mmY) {
+        ctx.fillStyle = "White";
+        ctx.fillRect(mmX + this.x / this.bitSize, mmY + this.y / this.bitSize, 3, 3);
+    };
 
     draw(ctx) {        
         if (this.dead) {

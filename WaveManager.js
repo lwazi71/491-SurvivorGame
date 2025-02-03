@@ -144,13 +144,13 @@ class WaveManager {
 
     draw(ctx) {
         // Draw wave information
-        ctx.font = '20px Arial';
-        ctx.fillStyle = 'white';
-        ctx.fillText(`Wave: ${this.currentWave}`, 10, 30);
-        ctx.fillText(`Monsters Remaining: ${this.zombiesAlive}`, 10, 60);
+    //     ctx.font = '20px Arial';
+    //     ctx.fillStyle = 'white';
+    //     ctx.fillText(`Wave: ${this.currentWave}`, 10, 30);
+    //     ctx.fillText(`Monsters Remaining: ${this.zombiesAlive}`, 10, 60);
         
-        if (!this.waveInProgress) {
-            ctx.fillText(`Next wave in: ${Math.ceil(this.waveTimer)}`, 10, 90);
-        }
+    //     if (!this.waveInProgress) {
+    //         ctx.fillText(`Next wave in: ${Math.ceil(this.waveTimer)}`, 10, 90);
+    //     }
     }
 }

@@ -95,6 +95,7 @@ class Barrel {
 
 
     spawnItem() {
+        this.game.addEntity(new ExperienceOrb(this.game, this.BB.x - 5, this.BB.y + 20, 3));
         switch(this.drop.toLowerCase()) {
             case "onecoin":
                 this.game.addEntity(new Onecoin(this.game, this.BB.x - 5, this.BB.y + 20, 3));

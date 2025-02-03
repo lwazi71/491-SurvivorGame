@@ -37,12 +37,11 @@ class Animator {
         
     };
 
-
     currentFrame() {
         return Math.floor(this.elapsedTime / this.frameDuration);
     };
 
     isDone() {
-        return (this.elapsedTime >= this.totalTime); //if the time of our frame is done
+        return (this.elapsedTime >= this.totalTime);
     };
-}
+};

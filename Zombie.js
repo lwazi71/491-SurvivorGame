@@ -230,6 +230,8 @@ class Zombie {
             let drop = Math.random();
             if(drop < this.dropchance) {
                 this.game.addEntity(new Onecoin(this.game, (this.x + 28), (this.y + 55)));
+                this.game.addEntity(new ExperienceOrb(this.game, (this.x + 28), (this.y + 55)));
+                console.log("confirm");
             }
             this.dead = true;
             this.state = 3;
@@ -245,6 +247,10 @@ class Zombie {
         }
     }
 
+    drawMinimap(ctx, mmX, mmY) {
+        ctx.fillStyle = "Red";
+        ctx.fillRect(mmX + this.x / 32, mmY + this.y / 32, 3, 3);
+    };
 
     draw(ctx) {
         if (this.dead) {
