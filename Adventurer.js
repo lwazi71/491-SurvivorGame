@@ -33,7 +33,7 @@ class Adventurer { //every entity should have update and draw!
         this.isPlayingDamageAnimation = false;
         
 
-        this.currentWeapon = 1; //sword = 0, bow = 1
+        this.currentWeapon = 0; //sword = 0, bow = 1
         this.slashType = null;
 
         this.timeToIdle = 3; //havent implemented but if player stands still for 3 seconds, we could do the idle animation each time
@@ -102,6 +102,9 @@ class Adventurer { //every entity should have update and draw!
         this.bombCooldownRetrieveTimer = 0; //the timer that will time that retrieve cooldown above.
 
         this.coins = 0;
+        this.level = 1;
+        this.experience = 0;
+        this.experienceToNextLvl = 100;
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
 
 
@@ -530,6 +533,11 @@ class Adventurer { //every entity should have update and draw!
                 this.coins += coinAmnt;
                 entity.removeFromWorld = true;
             }
+            if ((entity instanceof ExperienceOrb) && this.BB.collide(entity.BB)) {
+                this.experience += 100; // Change value to acceptable amount
+                this.levelUp();
+                entity.removeFromWorld = true;
+            }
         });
 
         if (this.attackCooldown < this.attackDuration) {
@@ -802,6 +810,15 @@ class Adventurer { //every entity should have update and draw!
         }
   
     }
+    levelUp() {
+        if (this.experience >= this.experienceToNextLvl) {
+            this.level++;
+            this.experience -= this.experienceToNextLvl;
+            this.experienceToNextLvl = Math.floor(this.experienceToNextLvl * 1.2);
+            //Put level up mechanic here
+        }
+    }
+    //If we want to do a minimap, need to add this for all entities being added
     drawMinimap(ctx, mmX, mmY) {
         ctx.fillStyle = "White";
         ctx.fillRect(mmX + this.x / this.bitSize, mmY + this.y / this.bitSize, 3, 3);

@@ -63,10 +63,12 @@ class HUD {
         if (weaponType == 1) {         //Can change depending on weapon
             weaponCD = (this.adventurer.shootCooldown - this.adventurer.shootCooldownTimer) / this.adventurer.shootCooldown
         }
-        let ultCD = 0.5;
+
+        let ultCD = (this.adventurer.magicCooldown - this.adventurer.magicCooldownTimer) / this.adventurer.magicCooldown;
+
         let healthRatio = this.adventurer.health / this.adventurer.maxhealth;
         let stamina = (this.adventurer.rollCooldown - this.adventurer.rollCooldownTimer) / this.adventurer.rollCooldown;
-        let experience = 0.5 //add experince system
+        let experience = this.adventurer.experience / this.adventurer.experienceToNextLvl;
 
         if (healthRatio < 0) healthRatio = 0;         //Sometimes, math doesn't math and breaks the thing
         if (stamina > 1) stamina = 1;
@@ -110,9 +112,13 @@ class HUD {
         ctx.fillStyle = rgba(0, 0, 0, 0.5);
         ctx.fill();
 
+        if (stamina == 1) {
+            ctx.fillStyle = rgb(250, 180, 60);
+        } else {
+            ctx.fillStyle = rgb(250, 60, 60);
+        }
         ctx.beginPath();
         ctx.roundRect(circleX + circleRadius + 10, circleY + 3, this.healthBarLength * stamina * 0.75, this.healthBarHeight / 2, [5]);
-        ctx.fillStyle = rgb(250, 180, 60);
         ctx.fill();
 
         ctx.beginPath();
@@ -133,9 +139,13 @@ class HUD {
             32 * this.scale, 32 * this.scale
         );
 
+        if (weaponCD == 1) {
+            ctx.fillStyle = rgb(250, 180, 60);
+        } else {
+            ctx.fillStyle = rgb(250, 60, 60);
+        }
         ctx.beginPath();
         ctx.roundRect(this.weaponIconX, this.weaponIconY + 32 * this.scale, 32 * this.scale * weaponCD, 10, [5]);
-        ctx.fillStyle = rgb(250, 180, 60);
         ctx.fill();
 
         ctx.beginPath();
@@ -155,10 +165,12 @@ class HUD {
         ctx.lineWidth = 1;
         ctx.strokeStyle = 'Black';
         ctx.fillStyle = 'white';
-        // ctx.fillText(`${this.adventurer.coins}`, circleX + circleRadius + 14, circleY + 10);
-        // ctx.strokeText(`${this.adventurer.coins}`, circleX + circleRadius + 14, circleY + 10);
-        ctx.fillText("10", circleX + circleRadius + 48, circleY + 32);
-        ctx.strokeText("10 ", circleX + circleRadius + 50, circleY + 32);
+
+        ctx.textAlign = "left"; 
+        ctx.fillText(`${this.adventurer.coins}`, circleX + circleRadius + 36, circleY + 32);
+        ctx.strokeText(`${this.adventurer.coins}`, circleX + circleRadius + 36, circleY + 32);
+        // ctx.fillText("10", circleX + circleRadius + 48, circleY + 32);
+        // ctx.strokeText("10 ", circleX + circleRadius + 50, circleY + 32);
 
         //Experience Bar
         ctx.beginPath();
@@ -189,11 +201,11 @@ class HUD {
         // ctx.strokeText(`Lvl 1 : 50 / 100`, (PARAMS.CANVAS_WIDTH / 2), this.experienceBarY + 12.5);
 
         ctx.font = '24px Lilita One';
-        ctx.fillText(`Level 1`, (PARAMS.CANVAS_WIDTH / 2), this.experienceBarY - 12.5);
-        ctx.strokeText(`Level 1`, (PARAMS.CANVAS_WIDTH / 2), this.experienceBarY - 12.5);
+        ctx.fillText(`Level ${this.adventurer.level}`, (PARAMS.CANVAS_WIDTH / 2), this.experienceBarY - 12.5);
+        ctx.strokeText(`Level ${this.adventurer.level}`, (PARAMS.CANVAS_WIDTH / 2), this.experienceBarY - 12.5);
         ctx.font = '20px Lilita One';
-        ctx.fillText(`50 / 100`, (PARAMS.CANVAS_WIDTH / 2), this.experienceBarY + 12.5);
-        ctx.strokeText(`50 / 100`, (PARAMS.CANVAS_WIDTH / 2), this.experienceBarY + 12.5);
+        ctx.fillText(`Exp : ${this.adventurer.experience} / ${this.adventurer.experienceToNextLvl}`, (PARAMS.CANVAS_WIDTH / 2), this.experienceBarY + 12.5);
+        ctx.strokeText(`Exp : ${this.adventurer.experience} / ${this.adventurer.experienceToNextLvl}`, (PARAMS.CANVAS_WIDTH / 2), this.experienceBarY + 12.5);
         
 
         //Ult magic thing
@@ -202,11 +214,16 @@ class HUD {
         ctx.fillStyle = rgba(0,0,0, 0.5);
         ctx.fill();
 
-        //Ult image here
+            //Ult image here
 
         ctx.beginPath();
+        if (ultCD == 1) {
+            ctx.fillStyle = rgb(250, 180, 60);
+        } else {
+            ctx.fillStyle = rgb(250, 60, 60);
+        }
         ctx.roundRect(this.ultIconX, this.weaponIconY + 32 * this.scale, 32 * this.scale * ultCD, 10, [5]); // 32 offset from image
-        ctx.fillStyle = rgb(250, 180, 60);
+        
         ctx.fill();
 
         ctx.beginPath();
@@ -228,7 +245,7 @@ class HUD {
 
         // this.minimap.draw(ctx);
         ctx.textAlign = "left"; 
-        ctx.textBaseline = "alphabetic"; 
+        ctx.textBaseline = "alphabetic";  
         
     };
 };

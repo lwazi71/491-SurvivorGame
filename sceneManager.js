@@ -99,8 +99,8 @@ class SceneManager {
       //  this.waveManager.draw(ctx); //to tell us how many zombies are on screen and waves
         ctx.font = '20px Arial';
         ctx.fillStyle = 'white';
-        ctx.fillText(`Player Health: ${this.adventurer.health}`, 10, 120);
-        ctx.fillText(`Player Coins: ${this.adventurer.coins}`, 10, 150);
+        // ctx.fillText(`Player Health: ${this.adventurer.health}`, 10, 120);
+        // ctx.fillText(`Player Coins: ${this.adventurer.coins}`, 10, 150);
         ctx.fillText(`Player Bombs: ${this.adventurer.bombCurrentAmnt}`, 10, 180);
         ctx.fillText(`Player Bombs Cooldown: ${Math.ceil(this.adventurer.bombCooldownRetrieveTimer * 100) / 100}`, 10, 210);
         this.HUD.draw(ctx);
