@@ -1,17 +1,17 @@
-class FreakyGhoul {
+class Ghost {
     constructor (game, x, y) {
         Object.assign(this, {game, x, y});
 
-        this.state = 0; //0 = idle, 1 = walking, 2 = attack, 3 = damaged
+        this.state = 0; //0 = moving, 1 = attack, 2 = damaged
         this.facing = 0; //0 = right, 1 = left
         this.attackPower = 5;
-        this.scale = 2.8;
-        this.speed = 180;
+        this.scale = 2.6;
+        this.speed = 280;
 
         this.health = 20;
         this.attackPower = 10;
         this.attackCooldown = 1.0; // Cooldown in seconds between attacks
-        this.attackCooldownTimer = 0; // Tracks remaining cooldown time
+        this.attackCooldownTimer = 0; //Tracks remaining cooldown time
 
         this.damageAnimationTimer = 0;
         this.damageAnimationDuration = 0.2; // Duration of damage animation
@@ -19,11 +19,10 @@ class FreakyGhoul {
 
 
         this.dead = false;
-        this.deathAnimationTimer = 5 * 0.15;
+        this.deathAnimationTimer = 7 * 0.15;
 
         this.pushbackVector = { x: 0, y: 0 };
         this.pushbackDecay = 0.9; // Determines how quickly the pushback force decays
-
 
         this.dropchance = 0.4; //40% chance of dropping something when dying
 
@@ -41,7 +40,7 @@ class FreakyGhoul {
 
 
     updateBB() {
-        this.BB = new BoundingBox(this.x + 23, this.y +20, 32 + 15, 32 + 33);
+        this.BB = new BoundingBox((this.x + 20), (this.y + 17), 32 + 22, 32 + 35);
     }
 
     loadAnimation() {
@@ -51,50 +50,44 @@ class FreakyGhoul {
                 this.animations[i].push([]);
             }
         }
-        //Had to make some adjustments with where to start on spritesheet to make it look correct.
+
 
         //LOOKNG RIGHT
-        //idle, looking to the rights
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul.png"), 0, 0, 32, 32, 4, 0.2, false, false);
-
         //Walking, looking right
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul.png"), 0, 32, 32, 32, 7.9, 0.09, false, false);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost.png"), 0, 0, 32, 32, 3.9, 0.1, false, false);
 
         //Attack, to the right
-        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul.png"), 0, 64, 32, 32, 5, 0.08, false, false);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost.png"), 0, 32, 32, 32, 3.9, 0.2, false, false);
 
         //Damaged, to the right
-        //wanna start at where the blue ghoul turns red or else there'll be a delay
-        this.animations[3][0] =  new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul.png"), 32, 96, 32, 32, 3, 0.2, false, false); 
+        //wanna start at where the ghost turns white or else there'll be a delay
+        this.animations[2][0] =  new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost.png"), 0, 64, 32, 32, 3.9, 0.2, false, false); 
 
         
 
         //LOOKING LEFT
         //idle, looking to the left
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul-Flipped.png"), 125, 0, 32, 32, 3.9, 0.2, true, false);
-
-        //Walking, looking left
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul-Flipped.png"), 2, 32, 32, 32, 7.9, 0.09, true, false);
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost-Flipped.png"), 96, 0, 32, 32, 3.9, 0.2, true, false);
 
         //Attack, to the left
-        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul-Flipped.png"), 64, 64, 32, 32, 5, 0.08, true, false);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost-Flipped.png"), 96, 32, 32, 32, 4, 0.2, true, false);
 
         //Damaged, to the left
-        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul-Flipped.png"), 128, 96, 32, 32, 3, 0.2, true, false);
+        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost-Flipped.png"), 96, 64, 32, 32, 4, 0.2, true, false);
 
 
-        this.deadAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul.png"), 32, 128, 32, 32, 5, 0.15, false, false);
+        this.deadAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost.png"), 0, 96, 32, 32, 7, 0.15, false, false);
     }
 
 
 
     update() {
-        //Handle damage animation time so it isnt infinite. This is when the player hits the ghoul
+        //Handle damage animation time so it isnt infinite. This is when the player hits the zombie
         if (this.isPlayingDamageAnimation) {
             this.damageAnimationTimer -= this.game.clockTick;
             if (this.damageAnimationTimer <= 0) {
                 this.isPlayingDamageAnimation = false; //should turn off when damage animation is over
-                this.state = 0; // Return to idle state
+                this.state = 0; // Return to idle walking state
             }
         }
 
@@ -104,9 +97,9 @@ class FreakyGhoul {
     
             if (this.deathAnimationTimer > 0) {
                 // Keep playing the death animation
-                return; //return so the ghoul would stop moving when it's dead.
+                return; //return so the ghost would stop moving when it's dead.
             } else {
-                // Remove ghoul from world after the animation finishes
+                // Remove ghost from world after the animation finishes
                 this.removeFromWorld = true;
                 return;
             }
@@ -124,17 +117,16 @@ class FreakyGhoul {
 
         }
 
-        //Reduce attack cooldown timer
-        //this is used for every ghoul attack. Makes sure a ghoul hits player once every second instead of every tick.
-        if (this.attackCooldownTimer > 0) { 
+        // Reduce attack cooldown timer
+        if (this.attackCooldownTimer > 0) { //this is used for every ghost attack. Makes sure a ghost hits player once every second instead of every tick.
             this.attackCooldownTimer -= this.game.clockTick;
         }
 
         const player = this.game.adventurer; // Reference to the player character
 
         // Calculate the direction vector to the player
-        const dx = player.x - (this.x);
-        const dy = player.y - (this.y);
+        const dx = player.x - this.x;
+        const dy = player.y - this.y;
     
         // Calculate the distance to the player
         const distance = Math.sqrt(dx * dx + dy * dy);
@@ -145,28 +137,28 @@ class FreakyGhoul {
             const directionY = dy / distance;
             
     
-            //Move the Ghoul toward the player
+            // Move the ghost toward the playersd
             const movement = this.speed * this.game.clockTick; //Adjust speed for frame rate
     
             this.x += directionX * movement;
             this.y += directionY * movement;
 
-            // Update state (walking or idle)
-            if (distance > 2) {
-                this.state = 1; // Walking
+             // Update state (walking or idle)
+             if (distance > 5) {
+                this.state = 0; // Walking
                 this.facing = dx < 0 ? 1 : 0; // 1 = left, 0 = right
             } 
-
         }
+
 
         this.previousState = this.state;
     
         // // Check for collision with any attack slashes
-        const separationDistance = 600; // Minimum distance between zombie
+        const separationDistance = 600; // Minimum distance between ghost or zombies
         const entities = this.game.entities;
         for (let i = 0; i < entities.length; i++) {
             let entity = entities[i];
-            if (entity instanceof FreakyGhoul && entity !== this) {
+            if (entity instanceof Zombie || entity instanceof Ghost && entity !== this) {
                 const dx = entity.x - this.x;
                 const dy = entity.y - this.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
@@ -187,36 +179,33 @@ class FreakyGhoul {
                     if (this.attackCooldownTimer <= 0) {
                         // Attack the player and reset cooldown timer
                         entity.takeDamage(this.attackPower);
-                        this.attackCooldownTimer = this.attackCooldown;
-                        console.log("Ghoul attacked the player!");
+                        this.attackCooldownTimer = this.attackCooldown; // Reset the cooldown timer
+                        console.log("Ghost attacked the player!");
                     }
             
-                    // Set ghoul to attacking state
-                    this.state = 2; // Attacking state
-                    this.attackTimer = 1.0;
+                    
+                    this.state = 1; // Attacking state
                 } else {
                     // Reset to walking or idle state
                     const dx = player.x - this.x;
                     const dy = player.y - this.y;
                     const distance = Math.sqrt(dx * dx + dy * dy);
                     if (distance > 5) {
-                        this.state = 1; //Walking
+                        this.state = 0; // Walking
                     } else {
-                        this.state = 0; //Idle
+                        this.state = 0; // Idle
                     }
                 }
             }
         }
 
         // Play attack animation and reduce timer
-        if (this.state === 2) {
+        if (this.state === 1) {
             this.attackTimer -= this.game.clockTick;
             if (this.attackTimer <= 0) {
                 this.attackTimer = 1.0; // Reset attack timer
             }
         }
-        
-        
 
 
         this.updateBB();
@@ -229,8 +218,8 @@ class FreakyGhoul {
         this.health -= damage;
         
         // Apply knockback
-        const dx = this.x - sourceX + 22;
-        const dy = this.y - sourceY + 22;
+        const dx = this.x - sourceX;
+        const dy = this.y - sourceY;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
 
@@ -238,22 +227,26 @@ class FreakyGhoul {
             this.pushbackVector.x = (dx / distance) * knockbackForce;
             this.pushbackVector.y = (dy / distance) * knockbackForce;
         } else {
-            // Default knockback direction (e.g., upward) in case the blue ghoul and source overlap
+            // Default knockback direction (e.g., upward) in case the ghost and source overlap
             this.pushbackVector.x = 0;
             this.pushbackVector.y = -knockbackForce;
         }
     
         if (this.health <= 0) {
+            let drop = Math.random();
+            if(drop < this.dropchance) {
+                this.game.addEntity(new Onecoin(this.game, (this.x + 28), (this.y + 55)));
+            }
             this.dead = true;
-            this.state = 3;
+            this.state = 2;
         } else {
-            this.state = 3;
+            this.state = 2;
             this.isPlayingDamageAnimation = true;
             this.damageAnimationTimer = this.damageAnimationDuration;
             if (this.facing === 0) {
-                this.animations[3][0].elapsedTime = 0;
+                this.animations[2][0].elapsedTime = 0;
             } else {
-                this.animations[3][1].elapsedTime = 0;
+                this.animations[2][1].elapsedTime = 0;
             }
         }
     }
@@ -263,27 +256,16 @@ class FreakyGhoul {
         if (this.dead) {
             // Only draw shadow if death animation is still playing
            if (this.deathAnimationTimer > 0) {
-                ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 28) - this.game.camera.x, (this.y + 77) - this.game.camera.y, 40, 16); //draw a shadow underneath our character
+                ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 17) - this.game.camera.x, (this.y + 77) - this.game.camera.y, 40, 16);
                 this.deadAnimation.drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
            }
         } else if (this.isPlayingDamageAnimation) {
             ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 28) - this.game.camera.x, (this.y + 77) - this.game.camera.y, 40, 16); //draw a shadow underneath our character
-            this.animations[3][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
+            this.animations[2][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
         } else {
             ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 28) - this.game.camera.x, (this.y + 77) - this.game.camera.y, 40, 16); //draw a shadow underneath our character
             this.animations[this.state][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale); 
         }
-
-        //used to indicate the path the ghoul is going towards. (line 132 and 133);
-        // ctx.strokeStyle = 'Green';
-
-        // ctx.strokeRect(this.x + 44 - this.game.camera.x, this.y + 30 - this.game.camera.y, 20, 20);
-
-        // const player = this.game.adventurer;
-        // ctx.strokeRect(player.x - this.game.camera.x, player.y - this.game.camera.y, 20, 20);
-
-
-
 
 
         
