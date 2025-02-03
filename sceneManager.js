@@ -7,6 +7,7 @@ class SceneManager {
         this.y = 0;
 
         this.waveManager = new WaveManager(game);
+        this.HUD = new HUD(this.game, this.adventurer);
 
         this.loadTestLevel();
     };
@@ -86,6 +87,7 @@ class SceneManager {
 
     draw(ctx) {
         this.waveManager.draw(ctx); //to tell us how many zombies are on screen and waves
+        this.HUD.draw(ctx);
 
     }
 

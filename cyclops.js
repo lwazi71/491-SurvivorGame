@@ -47,28 +47,28 @@ class Cyclops {
         }
 
         // facing right = 0
-        this.animations[0][0] = new Animator(this.spritesheet, 0, 1, 64, 64, 15, 0.2, 0, false, true); //Idle
-        this.animations[0][1] = new Animator(this.spritesheet, 0, 65, 64, 64, 12, 0.2, 0, false, true); //Walk
-        this.animations[0][2] = new Animator(this.spritesheet, 0, 129, 64, 64, 7, 0.2, 0, false, true); //Stomp
-        this.animations[0][3] = new Animator(this.spritesheet, 0, 193, 64, 64, 13, 0.2, 0, false, true); //Rock throw
-        this.animations[0][4] = new Animator(this.spritesheet, 0, 257, 64, 64, 3, 0.2, 0, false, true); //Take Damage
-        this.animations[0][5] = new Animator(this.spritesheet, 0, 321, 64, 64, 5, 0.2, 0, false, true); //Take heavy damage
-        this.animations[0][6] = new Animator(this.spritesheet, 0, 449, 64, 64, 4, 0.2, 0, false, true); // Eye protect
-        this.animations[0][7] = new Animator(this.spritesheet, 0, 513, 64, 64, 6, 0.2, 0, false, true); // Eye beam
+        this.animations[0][0] = new Animator(this.spritesheet, 0, 1, 64, 64, 15, 0.2, false, true); //Idle
+        this.animations[0][1] = new Animator(this.spritesheet, 0, 65, 64, 64, 12, 0.2, false, true); //Walk
+        this.animations[0][2] = new Animator(this.spritesheet, 0, 129, 64, 64, 7, 0.2, false, true); //Stomp
+        this.animations[0][3] = new Animator(this.spritesheet, 0, 193, 64, 64, 13, 0.2, false, true); //Rock throw
+        this.animations[0][4] = new Animator(this.spritesheet, 0, 257, 64, 64, 3, 0.2, false, true); //Take Damage
+        this.animations[0][5] = new Animator(this.spritesheet, 0, 321, 64, 64, 5, 0.2, false, true); //Take heavy damage
+        this.animations[0][6] = new Animator(this.spritesheet, 0, 449, 64, 64, 4, 0.2, false, true); // Eye protect
+        this.animations[0][7] = new Animator(this.spritesheet, 0, 513, 64, 64, 6, 0.2, false, true); // Eye beam
 
-        this.deathAnim[0] = new Animator(this.spritesheet, 0,385, 40, 48, 9, 0.2, 24, false, false); // Death
+        this.deathAnim[0] = new Animator(this.spritesheet, 0,385, 64, 64, 9, 0.2, false, false); // Death
 
         //facing left = 1
-        this.animations[1][0] = new Animator(this.spritesheet, 0,641, 64, 64, 15, 0.2, 0, false, true); //Idle
-        this.animations[1][1] = new Animator(this.spritesheet, 0,705, 64, 64, 12, 0.2, 0, false, true); //Walk
-        this.animations[1][2] = new Animator(this.spritesheet, 0,769, 64, 64, 7, 0.2, 0, false, true); //Stomp
-        this.animations[1][3] = new Animator(this.spritesheet, 0,833, 64, 64, 13, 0.2, 0, false, true); //Rock throw
-        this.animations[1][4] = new Animator(this.spritesheet, 0,897, 64, 64, 3, 0.2, 0, false, true); //Take Damage
-        this.animations[1][5] = new Animator(this.spritesheet, 0,961, 64, 64, 5, 0.2, 0, false, true); //Take heavy damage
-        this.animations[1][6] = new Animator(this.spritesheet, 0,1089, 64, 64, 4, 0.2, 0, false, true); 
-        this.animations[1][7] = new Animator(this.spritesheet, 0,1153, 64, 64, 5, 0.2, 0, false, true); 
+        this.animations[1][0] = new Animator(this.spritesheet, 0,641, 64, 64, 15, 0.2, false, true); //Idle
+        this.animations[1][1] = new Animator(this.spritesheet, 0,705, 64, 64, 12, 0.2, false, true); //Walk
+        this.animations[1][2] = new Animator(this.spritesheet, 0,769, 64, 64, 7, 0.2, false, true); //Stomp
+        this.animations[1][3] = new Animator(this.spritesheet, 0,833, 64, 64, 13, 0.2, false, true); //Rock throw
+        this.animations[1][4] = new Animator(this.spritesheet, 0,897, 64, 64, 3, 0.2, false, true); //Take Damage
+        this.animations[1][5] = new Animator(this.spritesheet, 0,961, 64, 64, 5, 0.2, false, true); //Take heavy damage
+        this.animations[1][6] = new Animator(this.spritesheet, 0,1089, 64, 64, 4, 0.2, false, true); 
+        this.animations[1][7] = new Animator(this.spritesheet, 0,1153, 64, 64, 5, 0.2, false, true); 
 
-        this.deathAnim[1] = new Animator(this.spritesheet, 11,1025, 64, 64, 9, 0.2, 0, false, false); // Death
+        this.deathAnim[1] = new Animator(this.spritesheet, 11,1025, 64, 64, 9, 0.2, false, false); // Death
 
     };
     updateBB() {

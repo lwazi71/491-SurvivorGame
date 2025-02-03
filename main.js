@@ -36,10 +36,10 @@ ASSET_MANAGER.queueDownload("./Sprites/FreakyGhoul/FreakyGhoul.png")
 ASSET_MANAGER.queueDownload("./Sprites/FreakyGhoul/FreakyGhoul-Flipped.png")
 ASSET_MANAGER.queueDownload("./Sprites/Objects/collectables.png");
 
-
-
-
-
+ASSET_MANAGER.queueDownload("./Sprites/Objects/ExperienceOrb.png");
+ASSET_MANAGER.queueDownload("./Sprites/HudIcons/weapons.png");
+ASSET_MANAGER.queueDownload("./Sprites/HudIcons/AdventurerSpriteHud.png");
+ASSET_MANAGER.queueDownload("./Sprites/HudIcons/AdventurerSpriteHud2.png");
 
 
 
@@ -53,7 +53,7 @@ ASSET_MANAGER.queueDownload("./Sprites/Projectiles/Arrows_pack.png")
 
 
 
-ASSET_MANAGER.queueDownload("./rock.png")
+// ASSET_MANAGER.queueDownload("./rock.png")
 
 ASSET_MANAGER.downloadAll(() => {
 	const canvas = document.getElementById("gameWorld");

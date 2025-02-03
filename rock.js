@@ -1,7 +1,7 @@
 class Rock {
     constructor(game, x, y, facing, target) {
         Object.assign(this, {game, x, y, facing, target})
-        this.spritesheet = ASSET_MANAGER.getAsset("./rock.png");
+        this.spritesheet = ASSET_MANAGER.getAsset("./Sprites/Projectiles/rock.png");
 
         let dist = getDistance(this, this.target);
         this.speed = 1000;
