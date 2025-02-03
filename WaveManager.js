@@ -12,7 +12,11 @@ class WaveManager {
         this.spawnBuffer = 100; //Extra distance from screen edge for spawning
     }
 
-    getValidSpawnPosition() { //will spawn the mob outside the camera.
+    /**
+     * //will spawn the mob outside the camera.
+     * @returns the x and y coordinate of where the zombie will spawn (should be outside the player camera)
+     */
+    getValidSpawnPosition() { 
         //Get camera position and viewport dimensions
         const camera = this.game.camera;
         const viewportWidth = PARAMS.CANVAS_WIDTH;
@@ -87,7 +91,7 @@ class WaveManager {
         // Increase zombies each wave: Wave 1 = 5 zombies, Wave 2 = 7 zombies, etc.
         this.monstersInWave = Math.floor(5 + (this.currentWave - 1) * 2);
 
-       // var enemypool = ["zombie", "hellspawn", "ghost", "blueghoul", "freakyghoul"];
+       // var enemy_contact = ["zombie", "hellspawn", "ghost", "blueghoul", "freakyghoul"];
         var enemypool = ["zombie", "hellspawn"];
         
         // Spawn zombies with slight delay between each

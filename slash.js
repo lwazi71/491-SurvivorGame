@@ -104,12 +104,12 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
             const entities = this.game.entities;
             for (let i = 0; i < entities.length; i++) {
                 let entity = entities[i];
-                //contact mobs
-                if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul || entity instanceof FreakyGhoul) 
+                //melee/range mobs
+                if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul || entity instanceof FreakyGhoul || entity instanceof BanditNecromancer || entity instanceof Necromancer) 
                     && !entity.dead) {
                     // Only apply damage if we haven't hit this zombie yet
                     if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
-                        // Add the zombie to our hit set
+                        // Add the entity to our hit set
                         this.hitEntities.add(entity);
                         
                         //Calculate the knockback TRUE CENTER of the slash circle for knockback source
@@ -125,7 +125,6 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
                 //charging mobs
                 if ((entity instanceof HellSpawn) 
                     && !entity.dead) {
-                    // Only apply damage if we haven't hit this zombie yet
                     if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
                         // Add the zombie to our hit set
                         this.hitEntities.add(entity);
@@ -153,11 +152,43 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
                         entity.takeDamage(this.attackDamage);
                     }
                 }
+        
+                //COMBO with sword and bow and arrow!
+                if (entity instanceof Projectile && this.friendly && entity.friendly) { 
+                    if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
+                        this.hitEntities.add(entity);
+                        entity.speed *= 2;
+                        entity.damage *= 2.5;
+                    }
+                }
+
+                //if the player hits a projectile that's not friendly. Maybe change this when it comes to bosses. 
+                if (entity instanceof Projectile && this.friendly && !entity.friendly && entity.parry) { 
+                    if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
+                        entity.removeFromWorld = true;
+                    }
+                }
+
+                if (entity instanceof Bomb && this.friendly) {
+                    //if we hit the bomb and another entity, the bomb wont have any knockback
+                    if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity) && this.hitEntities.size == 0) { 
+                        // Add the bomb to our hit set
+                        this.hitEntities.add(entity);
+                        
+                        //Calculate the knockback TRUE CENTER of the slash circle for knockback source
+                        console.log("testing knockback for bomb):")
+                        const centerX = this.person.x + (this.person.bitSize * this.person.scale) / 2 + Math.cos(this.angle) * this.slashDistance;
+                        const centerY = this.person.y + (this.person.bitSize * this.person.scale) / 2 + Math.sin(this.angle) * this.slashDistance;
+
+                        //Pass the center coordinates for knockback calculation and Apply damage and trigger damage state
+                        entity.takeKnockback(4000, centerX, centerY);
+                    }
+                }
                 
                 //maybe a mob can have a big slash attack as well?
                 if ((entity instanceof Adventurer && !this.friendly)) {
                     if (this.BC.collidesWithBox(entity.BB) && this.hitEntities.has(entity)) {
-                        
+
                     }
                 }
             }

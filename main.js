@@ -19,6 +19,8 @@ ASSET_MANAGER.queueDownload("./Sprites/Slash/red-slash.png");
 ASSET_MANAGER.queueDownload("./Sprites/Slash/red-slash-flipped.png");
 ASSET_MANAGER.queueDownload("./Sprites/Slash/blue-slash.png");
 ASSET_MANAGER.queueDownload("./Sprites/Slash/blue-slash-flipped.png");
+ASSET_MANAGER.queueDownload("./Sprites/Magic/magic.png");
+
 
 
 
@@ -34,6 +36,17 @@ ASSET_MANAGER.queueDownload("./Sprites/HellSpawn/Hellspawn-Flipped.png")
 ASSET_MANAGER.queueDownload("./Sprites/HellSpawn/Hellspawn.png")
 ASSET_MANAGER.queueDownload("./Sprites/FreakyGhoul/FreakyGhoul.png")
 ASSET_MANAGER.queueDownload("./Sprites/FreakyGhoul/FreakyGhoul-Flipped.png")
+ASSET_MANAGER.queueDownload("./Sprites/Necromancer/BanditNecromancer-Flipped.png")
+ASSET_MANAGER.queueDownload("./Sprites/Necromancer/BanditNecromancer.png")
+ASSET_MANAGER.queueDownload("./Sprites/Necromancer/Necromancer.png")
+ASSET_MANAGER.queueDownload("./Sprites/Necromancer/Necromancer-Flipped.png")
+ASSET_MANAGER.queueDownload("./Sprites/Magic/PurpleProjectile.png")
+ASSET_MANAGER.queueDownload("./Sprites/Magic/BlackProjectile.png");
+ASSET_MANAGER.queueDownload("./Sprites/Explosion/explosion.png")
+
+
+
+
 ASSET_MANAGER.queueDownload("./Sprites/Objects/collectables.png");
 
 ASSET_MANAGER.queueDownload("./Sprites/Objects/ExperienceOrb.png");

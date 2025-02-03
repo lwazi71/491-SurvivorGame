@@ -75,7 +75,7 @@ class GameEngine {
             }
             e.preventDefault(); // Prevent Context Menu
             this.rightclick = getXandY(e);
-            this.rightclick = true;
+            this.rightClicks = true;
         });
 
         // this.ctx.canvas.addEventListener("keydown", e => {
