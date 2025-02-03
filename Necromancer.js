@@ -19,7 +19,7 @@ class Necromancer {
         this.projectileCount = 10;  //Number of projectiles to shoot in the circle
         this.castTimer = 0; //Timer for the cast animation
         this.damage = 20;
-        this.collisionDamage = 5;
+        this.collisionDamage = 2;
         
         this.health = 25; //Necromancer health 
         this.dead = false;
@@ -223,6 +223,7 @@ class Necromancer {
         this.health -= damage;
         
         // Apply knockback
+        //find the center of our character for the knockback.
         const dx = (this.x + (this.bitSizeX * this.scale)/2 + 25) - sourceX;
         const dy = (this.y + (this.bitSizeY * this.scale)/2 + 10) - sourceY;
         const distance = Math.sqrt(dx * dx + dy * dy);

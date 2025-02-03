@@ -40,9 +40,7 @@ class SceneManager {
 
         this.game.addEntity(new BanditNecromancer(this.game, 42, 400));
         this.game.addEntity(new Necromancer(this.game, 42, 400));
-
-
-        this.game.addEntity(new Threecoin(this.game, 42, 400));
+        
 
         this.game.addEntity(this.generateObject("Barrel", 100, 100));
         this.game.addEntity(this.generateObject("Crate", 300, 100));
@@ -58,7 +56,7 @@ class SceneManager {
         this.game.addEntity(new Sign(this.game, 20, 20, 
             "KeyBoard Controls:      - Move using WASD              - Attack using left click " +                
             "                    - Use Ultimate AOE using right click                 - Switch weapons using 1 and 2 (Sword is 1 and Bow is 2)" + 
-            "                - To roll press shift (Will give invincibility frames"));
+            "                - To roll press shift (Will give invincibility frames          - Press e to place bomb down"));
         
       
 
@@ -91,17 +89,20 @@ class SceneManager {
         this.x = this.adventurer.x - midPointX + (this.adventurer.bitSize * this.adventurer.scale)/2 + 20; //Hard code to add 20 because character was not yet in the middle of the canvas screen. (Was more bottom right)
         this.y = this.adventurer.y - midPointY + (this.adventurer.bitSize * this.adventurer.scale)/2 + 20; //Same here
 
-        //this.waveManager.update();
+    //    this.waveManager.update();
 
     }
 
 
     draw(ctx) {
-       // this.waveManager.draw(ctx); //to tell us how many zombies are on screen and waves
+      //  this.waveManager.draw(ctx); //to tell us how many zombies are on screen and waves
         ctx.font = '20px Arial';
         ctx.fillStyle = 'white';
         ctx.fillText(`Player Health: ${this.adventurer.health}`, 10, 120);
         ctx.fillText(`Player Coins: ${this.adventurer.coins}`, 10, 150);
+        ctx.fillText(`Player Bombs: ${this.adventurer.bombCurrentAmnt}`, 10, 180);
+        ctx.fillText(`Player Bombs Cooldown: ${Math.ceil(this.adventurer.bombCooldownRetrieveTimer * 100) / 100}`, 10, 210);
+
 
 
     }

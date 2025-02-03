@@ -52,7 +52,7 @@ class Adventurer { //every entity should have update and draw!
         this.attackDuration = 0.56;  // Duration of attack animation
         this.attackTimer = 0;
         this.canAttack = true;
-        this.attackCooldown = 0.8;   //Time between attacks. Most it could go down is 0.56 because of the animation attackDuration 
+        this.attackCooldown = 0.4;   //Time between attacks. Most it could go down is 0.56 because of the animation attackDuration 
         this.attackCooldownTimer = 0;
         this.slashType = 0; //0 = default right slash animation, 1 = up animation
         this.slashDistance = 27; //Distance from character center to slash
@@ -79,11 +79,26 @@ class Adventurer { //every entity should have update and draw!
         this.magicking = false;
         this.magicDuration = 6 * 0.1; //for animation
         this.canMagic = true;
-        this.magicCooldown = 10; //long cool down
+        this.magicCooldown = 45; //long cool down
         this.magicCooldownTimer = 0;
         this.magicKnockback = 2000;
         this.magicDamage = 100;
         this.magicScale = 6;
+
+
+
+        //BOMB PROPERTIES
+        this.bombDamage = 10;
+        this.bombExpolsionScale = 10;
+        this.bombTimer = 4;
+        this.bombKnockback = 2000;
+        this.canBomb = true;
+        this.bombCooldown = 0.5; //how often we could our bomb down.
+        this.bombCooldownTimer = 0;
+        this.bombMaxAmount = 5;
+        this.bombCurrentAmnt = 5;
+        this.bombCooldownRetrieve = 5; //will be the cooldown for when will get another bomb back in their inventory.
+        this.bombCooldownRetrieveTimer = 0; //the timer that will time that retrieve cooldown above.
 
         this.coins = 0;
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
@@ -316,6 +331,7 @@ class Adventurer { //every entity should have update and draw!
             this.updateFacing(this.velocity);
         }
 
+        //COOLDOWN TRACKING SECTION --------------------------------
         //this is used as the cool down for each attack
         if (!this.canAttack) {
             this.attackCooldownTimer -= this.game.clockTick;
@@ -340,6 +356,26 @@ class Adventurer { //every entity should have update and draw!
             }
             this.game.rightClicks = false;
         }
+
+       //Track bomb cooldown
+        if (!this.canBomb) {
+            this.bombCooldownTimer -= this.game.clockTick;
+            if (this.bombCooldownTimer <= 0) { //once cooldown ends
+                this.canBomb = true; //we can now put bomb down again
+            }
+        }
+
+        //Track bomb amount cooldown
+        if (this.bombCurrentAmnt < this.bombMaxAmount) {
+            this.bombCooldownRetrieveTimer -= this.game.clockTick; 
+            if (this.bombCooldownRetrieveTimer <= 0) {
+                console.log("should be added once");
+                this.bombCooldownRetrieveTimer = this.bombCooldownRetrieve;
+
+                this.bombCurrentAmnt++;
+            }
+        }
+        //-------------------------------------------------------------
 
         if (this.game.keys["1"]) {
             this.currentWeapon = 0;
@@ -392,6 +428,20 @@ class Adventurer { //every entity should have update and draw!
             this.game.rightClicks = false;
         }
 
+
+        if (this.game.keys["e"] && this.canBomb && !this.rolling && this.bombCurrentAmnt > 0) {
+            this.bombCurrentAmnt--;
+            const characterCenterX = this.x + (this.bitSize * this.scale) / 2; 
+            const characterCenterY = this.y + (this.bitSize * this.scale) / 2;
+            this.bombCooldownTimer = this.bombCooldown;
+            if (this.bombCooldownRetrieveTimer <= 0) {
+                this.bombCooldownRetrieveTimer = this.bombCooldownRetrieve;
+            }
+            this.canBomb = false;
+            this.game.addEntity(new Bomb(this.game, characterCenterX - 50, characterCenterY -32, this.bombTimer, this.bombDamage, this.bombExpolsionScale));
+        }
+
+        //ANIMATION TIMING -------------------------------------------------------------------
         if (this.attacking) { //when we're in our attacking animation, we wanna time it.
             this.attackTimer -= this.game.clockTick;
             //End attack when timer expires
@@ -427,7 +477,7 @@ class Adventurer { //every entity should have update and draw!
                 this.animations[0][this.facing].elapsedTime = 0;
             }
         }
-
+        //-----------------------------------------------------------------------------------------------
 
         //for ladders maybe do, if the bounding boxes are touching or near each other and the user clicks on e?
 
@@ -549,7 +599,7 @@ class Adventurer { //every entity should have update and draw!
                     this.velocity.y -= this.rollSpeed;
                     this.velocity.x = 0;
                     this.facing = 0;
-                } else { //down
+                } else { //down. Also default value when player isnt moving and presses roll button
                     this.velocity.y += this.rollSpeed;
                     this.velocity.x = 0;
                     this.facing = 1;

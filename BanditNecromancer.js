@@ -16,7 +16,7 @@ class BanditNecromancer {
         this.castDuration = 8 * 0.1; //How long the cast animation plays
         this.castTimer = 0; //Timer for the cast animation
         this.damage = 20;
-        this.collisionDamage = 5;
+        this.collisionDamage = 2;
         
         this.health = 20; //Necromancer health 
         this.dead = false;

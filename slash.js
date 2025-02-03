@@ -109,7 +109,7 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
                     && !entity.dead) {
                     // Only apply damage if we haven't hit this zombie yet
                     if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
-                        // Add the zombie to our hit set
+                        // Add the entity to our hit set
                         this.hitEntities.add(entity);
                         
                         //Calculate the knockback TRUE CENTER of the slash circle for knockback source
@@ -168,11 +168,27 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
                         entity.removeFromWorld = true;
                     }
                 }
+
+                if (entity instanceof Bomb && this.friendly) {
+                    //if we hit the bomb and another entity, the bomb wont have any knockback
+                    if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity) && this.hitEntities.size == 0) { 
+                        // Add the bomb to our hit set
+                        this.hitEntities.add(entity);
+                        
+                        //Calculate the knockback TRUE CENTER of the slash circle for knockback source
+                        console.log("testing knockback for bomb):")
+                        const centerX = this.person.x + (this.person.bitSize * this.person.scale) / 2 + Math.cos(this.angle) * this.slashDistance;
+                        const centerY = this.person.y + (this.person.bitSize * this.person.scale) / 2 + Math.sin(this.angle) * this.slashDistance;
+
+                        //Pass the center coordinates for knockback calculation and Apply damage and trigger damage state
+                        entity.takeKnockback(4000, centerX, centerY);
+                    }
+                }
                 
                 //maybe a mob can have a big slash attack as well?
                 if ((entity instanceof Adventurer && !this.friendly)) {
                     if (this.BC.collidesWithBox(entity.BB) && this.hitEntities.has(entity)) {
-                        
+
                     }
                 }
             }

@@ -12,7 +12,11 @@ class WaveManager {
         this.spawnBuffer = 100; //Extra distance from screen edge for spawning
     }
 
-    getValidSpawnPosition() { //will spawn the mob outside the camera.
+    /**
+     * //will spawn the mob outside the camera.
+     * @returns the x and y coordinate of where the zombie will spawn (should be outside the player camera)
+     */
+    getValidSpawnPosition() { 
         //Get camera position and viewport dimensions
         const camera = this.game.camera;
         const viewportWidth = PARAMS.CANVAS_WIDTH;
