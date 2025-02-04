@@ -9,6 +9,9 @@ class SceneManager {
         this.waveManager = new WaveManager(game);
         this.HUD = new HUD(this.game, this.adventurer);
 
+        this.shakeIntensity = 0;
+        this.shakeDecay = 0.9; 
+
         this.loadTestLevel();
     };
 
@@ -19,28 +22,30 @@ class SceneManager {
         if(!adventurer) this.game.addEntity(this.adventurer);        
         // this.game.addEntity(new Adventurer(this.game, 0, 0));
 
-        this.game.addEntity(new BlueGhoul(this.game, 400, 400));
-        this.game.addEntity(new HellSpawn(this.game, 400, 400));
-        this.game.addEntity(new HellSpawn(this.game, 800, 400));
+        // this.game.addEntity(new BlueGhoul(this.game, 400, 400));
+        // this.game.addEntity(new HellSpawn(this.game, 400, 400));
+        // this.game.addEntity(new HellSpawn(this.game, 800, 400));
 
-        this.game.addEntity(new FreakyGhoul(this.game, 800, 800));
-        this.game.addEntity(new FreakyGhoul(this.game, 300, 800));
-
-
-        this.game.addEntity(new Ghost(this.game, 400, 400));
-        this.game.addEntity(new Ghost(this.game, 400, 400));
+        // this.game.addEntity(new FreakyGhoul(this.game, 800, 800));
+        // this.game.addEntity(new FreakyGhoul(this.game, 300, 800));
 
 
-        this.game.addEntity(new Zombie(this.game, 400, 400));
-        this.game.addEntity(new Zombie(this.game, 200, 400));
-        this.game.addEntity(new Zombie(this.game, 300, 450));
-        this.game.addEntity(new Zombie(this.game, 130, 400));
-        this.game.addEntity(new Zombie(this.game, 323, 400));
-        this.game.addEntity(new Zombie(this.game, 513, 400));
-        this.game.addEntity(new Zombie(this.game, 42, 400));
+        // this.game.addEntity(new Ghost(this.game, 400, 400));
+        // this.game.addEntity(new Ghost(this.game, 400, 400));
+
+
+        // this.game.addEntity(new Zombie(this.game, 400, 400));
+        // this.game.addEntity(new Zombie(this.game, 200, 400));
+        // this.game.addEntity(new Zombie(this.game, 300, 450));
+        // this.game.addEntity(new Zombie(this.game, 130, 400));
+        // this.game.addEntity(new Zombie(this.game, 323, 400));
+        // this.game.addEntity(new Zombie(this.game, 513, 400));
+        // this.game.addEntity(new Zombie(this.game, 42, 400));
 
         this.game.addEntity(new BanditNecromancer(this.game, 42, 400));
         this.game.addEntity(new Necromancer(this.game, 42, 400));
+
+        this.game.addEntity(new RatMage(this.game, 200, 400));
         
 
         this.game.addEntity(this.generateObject("Barrel", 100, 100));
@@ -90,10 +95,23 @@ class SceneManager {
         this.x = this.adventurer.x - midPointX + (this.adventurer.bitSize * this.adventurer.scale)/2 + 20; //Hard code to add 20 because character was not yet in the middle of the canvas screen. (Was more bottom right)
         this.y = this.adventurer.y - midPointY + (this.adventurer.bitSize * this.adventurer.scale)/2 + 20; //Same here
 
+        
+        if (this.shakeIntensity > 0) {
+            this.x += (Math.random() - 0.5) * this.shakeIntensity;
+            this.y += (Math.random() - 0.5) * this.shakeIntensity;
+            this.shakeIntensity *= this.shakeDecay; 
+        }
+
     //    this.waveManager.update();
 
     }
 
+    /**
+     * Method used to initialize shakeIntensity to shake the camera.
+     */
+    cameraShake(intensity) {
+        this.shakeIntensity = intensity;
+    }
 
     draw(ctx) {
       //  this.waveManager.draw(ctx); //to tell us how many zombies are on screen and waves

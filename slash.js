@@ -105,7 +105,8 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
             for (let i = 0; i < entities.length; i++) {
                 let entity = entities[i];
                 //melee/range mobs
-                if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul || entity instanceof FreakyGhoul || entity instanceof BanditNecromancer || entity instanceof Necromancer) 
+                if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul || entity instanceof FreakyGhoul 
+                    || entity instanceof BanditNecromancer || entity instanceof Necromancer || entity instanceof RatMage) 
                     && !entity.dead) {
                     // Only apply damage if we haven't hit this zombie yet
                     if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {

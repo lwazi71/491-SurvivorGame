@@ -40,6 +40,8 @@ ASSET_MANAGER.queueDownload("./Sprites/Necromancer/BanditNecromancer-Flipped.png
 ASSET_MANAGER.queueDownload("./Sprites/Necromancer/BanditNecromancer.png")
 ASSET_MANAGER.queueDownload("./Sprites/Necromancer/Necromancer.png")
 ASSET_MANAGER.queueDownload("./Sprites/Necromancer/Necromancer-Flipped.png")
+ASSET_MANAGER.queueDownload("./Sprites/Mages/RatMage.png")
+ASSET_MANAGER.queueDownload("./Sprites/Mages/RatMage-Flipped.png")
 ASSET_MANAGER.queueDownload("./Sprites/Magic/PurpleProjectile.png")
 ASSET_MANAGER.queueDownload("./Sprites/Magic/BlackProjectile.png");
 ASSET_MANAGER.queueDownload("./Sprites/Explosion/explosion.png")

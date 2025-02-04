@@ -103,7 +103,8 @@ class Projectile {
             // Different collision logic based on shooter.
             if (this.friendly) { //this means the projectile is coming from us, the player
                 //Player arrow hitting enemies (for melee and range enemies)
-                if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul || entity instanceof FreakyGhoul || entity instanceof BanditNecromancer || entity instanceof Necromancer) 
+                if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul || entity instanceof FreakyGhoul 
+                    || entity instanceof BanditNecromancer || entity instanceof Necromancer || entity instanceof RatMage) 
                     && !entity.dead && 
                     this.BB.collide(entity.BB) && !this.hitEntities.has(entity)) {
                      
