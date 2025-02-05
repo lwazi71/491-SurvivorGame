@@ -22,30 +22,33 @@ class SceneManager {
         if(!adventurer) this.game.addEntity(this.adventurer);        
         // this.game.addEntity(new Adventurer(this.game, 0, 0));
 
-        // this.game.addEntity(new BlueGhoul(this.game, 400, 400));
-        // this.game.addEntity(new HellSpawn(this.game, 400, 400));
-        // this.game.addEntity(new HellSpawn(this.game, 800, 400));
+        this.game.addEntity(new BlueGhoul(this.game, 400, 400));
+        this.game.addEntity(new HellSpawn(this.game, 400, 400));
+        this.game.addEntity(new HellSpawn(this.game, 800, 400));
 
-        // this.game.addEntity(new FreakyGhoul(this.game, 800, 800));
-        // this.game.addEntity(new FreakyGhoul(this.game, 300, 800));
-
-
-        // this.game.addEntity(new Ghost(this.game, 400, 400));
-        // this.game.addEntity(new Ghost(this.game, 400, 400));
+        this.game.addEntity(new FreakyGhoul(this.game, 800, 800));
+        this.game.addEntity(new FreakyGhoul(this.game, 300, 800));
 
 
-        // this.game.addEntity(new Zombie(this.game, 400, 400));
-        // this.game.addEntity(new Zombie(this.game, 200, 400));
-        // this.game.addEntity(new Zombie(this.game, 300, 450));
-        // this.game.addEntity(new Zombie(this.game, 130, 400));
-        // this.game.addEntity(new Zombie(this.game, 323, 400));
-        // this.game.addEntity(new Zombie(this.game, 513, 400));
-        // this.game.addEntity(new Zombie(this.game, 42, 400));
+        this.game.addEntity(new Ghost(this.game, 400, 400));
+        this.game.addEntity(new Ghost(this.game, 400, 400));
+
+
+        this.game.addEntity(new Zombie(this.game, 400, 400));
+        this.game.addEntity(new Zombie(this.game, 200, 400));
+        this.game.addEntity(new Zombie(this.game, 300, 450));
+        this.game.addEntity(new Zombie(this.game, 130, 400));
+        this.game.addEntity(new Zombie(this.game, 323, 400));
+        this.game.addEntity(new Zombie(this.game, 513, 400));
+        this.game.addEntity(new Zombie(this.game, 42, 400));
 
         this.game.addEntity(new BanditNecromancer(this.game, 42, 400));
         this.game.addEntity(new Necromancer(this.game, 42, 400));
+        this.game.addEntity(new Imp(this.game, 42, 400));
 
         this.game.addEntity(new RatMage(this.game, 200, 400));
+        this.game.addEntity(new FoxMage(this.game, 200, 400));
+
         
 
         this.game.addEntity(this.generateObject("Barrel", 100, 100));
@@ -102,7 +105,7 @@ class SceneManager {
             this.shakeIntensity *= this.shakeDecay; 
         }
 
-    //    this.waveManager.update();
+       // this.waveManager.update();
 
     }
 
@@ -114,7 +117,7 @@ class SceneManager {
     }
 
     draw(ctx) {
-      //  this.waveManager.draw(ctx); //to tell us how many zombies are on screen and waves
+     //   this.waveManager.draw(ctx); //to tell us how many zombies are on screen and waves
         ctx.font = '20px Arial';
         ctx.fillStyle = 'white';
         // ctx.fillText(`Player Health: ${this.adventurer.health}`, 10, 120);

@@ -104,7 +104,7 @@ class Projectile {
             if (this.friendly) { //this means the projectile is coming from us, the player
                 //Player arrow hitting enemies (for melee and range enemies)
                 if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul || entity instanceof FreakyGhoul 
-                    || entity instanceof BanditNecromancer || entity instanceof Necromancer || entity instanceof RatMage) 
+                    || entity instanceof BanditNecromancer || entity instanceof Necromancer || entity instanceof RatMage || entity instanceof FoxMage || entity instanceof Imp) 
                     && !entity.dead && 
                     this.BB.collide(entity.BB) && !this.hitEntities.has(entity)) {
                      
@@ -134,13 +134,9 @@ class Projectile {
                         const knockbackX = -Math.cos(this.angle) * this.knockback;
                         const knockbackY = -Math.sin(this.angle) * this.knockback;
                     
-                        entity.takeDamage(this.damage, this.knockback, 
-                            this.x + knockbackX, 
-                            this.y + knockbackY
-                        );
 
                         //Pass the center coordinates for knockback calculation and Apply damage and trigger damage state
-                        if (entity.isCharging || entity.isPreparingCharge) {
+                        if (entity.isPreparingCharge || entity.isCharging) {
                             //no knockback if the entity is charging
                             entity.takeDamage(this.damage, 0);
                         } else {

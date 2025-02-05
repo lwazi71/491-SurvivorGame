@@ -4,9 +4,11 @@ class HellSpawn {
 
         this.state = 0; //0 = idle/walking, 1 = charge, 2 = damage
         this.facing = 0; //0 = right, 1 = left
-        this.scale = 2.8;
+        this.scale = 2.8 ;
         this.speed = 100;
         this.chargeSpeed = 1500;
+        this.bitSizeX = 64;
+        this.bitSizeY = 64;
 
         this.health = 20;
         this.attackPower = 10;
@@ -125,8 +127,8 @@ class HellSpawn {
         const player = this.game.adventurer;
 
         // Calculate distance to player
-        const dx = player.x - this.x;
-        const dy = player.y - this.y;
+        const dx = (player.x + (player.bitSize * player.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2 - 32); 
+        const dy = (player.y + (player.bitSize * player.scale)/2) - (this.y + (this.bitSizeY * this.scale)/2 - 32);
         const distance = Math.sqrt(dx * dx + dy * dy);
     
         // Charge timer and mechanism
@@ -250,6 +252,7 @@ class HellSpawn {
 
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
         this.health -= damage;
+        console.log(this.health);
 
         //damage to it when its preparing to charge will stop it from preparing to charge.
         if (this.isPreparingCharge) {
@@ -260,8 +263,8 @@ class HellSpawn {
 
         
         // Apply knockback
-        const dx = this.x - sourceX;
-        const dy = this.y - sourceY;
+        const dx = (this.x + (this.bitSizeX * this.scale)/2 - 32) - sourceX;
+        const dy = (this.y + (this.bitSizeY * this.scale)/2 - 32) - sourceY;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
 
@@ -341,6 +344,9 @@ class HellSpawn {
                 ctx.stroke();
                 ctx.restore();
         }
+        
+        ctx.strokeStyle = 'Green';
+        ctx.strokeRect((this.x + (this.bitSizeX * this.scale)/2 - 32) - this.game.camera.x, (this.y + (this.bitSizeY * this.scale)/2 - 32) - this.game.camera.y, 20, 20);
 
         ctx.strokeStyle = 'Yellow';
         ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);

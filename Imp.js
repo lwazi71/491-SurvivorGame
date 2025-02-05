@@ -1,4 +1,4 @@
-class BanditNecromancer {
+class Imp {
     constructor (game, x, y) {
         Object.assign(this, {game, x, y});
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
@@ -9,20 +9,20 @@ class BanditNecromancer {
         this.state = 0; //0 = idle, 1 = running, 2 = Casting, 3 = damage
         this.facing = 0; //0 = right, 1 = left
         this.scale = 2.8;
-        this.speed = 150;
+        this.speed = 280;
     
-        this.range = 400; //Shooting range (range until our necromancer starts shooting at player)
+        this.range = 400; //Shooting range (range until our Imp starts shooting at player)
         this.shootCooldown = 3; //Shoot every 3 seconds
         this.shootTimer = 0; //should be 0
-        this.castSpeed = 800;
-        this.castDuration = 8 * 0.1; //How long the cast animation plays
+        this.castSpeed = 700;
+        this.castDuration = 6 * 0.1; //How long the cast animation plays
         this.castTimer = 0; //Timer for the cast animation
         this.damage = 20;
         this.collisionDamage = 2;
         
-        this.health = 20; //Necromancer health 
+        this.health = 12; //Imp Health
         this.dead = false;
-        this.deathAnimationTimer = 7 * 0.2; //8 frames * 0.2 duration. Should be frameCount * frameDuration for death animation
+        this.deathAnimationTimer = 6 * 0.2; 
     
         this.pushbackVector = { x: 0, y: 0 };
         this.pushbackDecay = 0.9;
@@ -33,6 +33,10 @@ class BanditNecromancer {
         this.damageAnimationTimer = 0;
         this.damageAnimationDuration = 0.2; // Duration of damage animation
         this.isPlayingDamageAnimation = false;
+        this.shouldShootAfterCast = false; // New flag to track if we should shoot after casting
+
+
+        this.projectileCount = 10;
 
         this.dropchance = 0.4;
 
@@ -53,37 +57,37 @@ class BanditNecromancer {
         }
         //RIGHT
         //idle
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/BanditNecromancer.png"), 0, 0, 32, 32, 8, 0.2, false, false);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 0, 32, 32, 7, 0.2, false, false);
 
         //walking
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/BanditNecromancer.png"), 0, 32, 32, 32, 8, 0.1, false, false);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 32, 32, 32, 7.9, 0.1, false, false);
 
         //casting
-        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/BanditNecromancer.png"), 0, 96, 32, 32, 8, 0.1, false, false);
+        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 64, 32, 32, 5.9, 0.1, false, false);
 
         //damaged
-        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/BanditNecromancer.png"), 32, 128, 32, 32, 3, 0.2, false, false);
+        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 32, 96, 32, 32, 3, 0.2, false, false);
 
         //LEFT
         //idle
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/BanditNecromancer-Flipped.png"), 0, 0, 32, 32, 8, 0.2, true, false);
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 192, 32, 32, 8, 0.2, false, false);
 
         //running
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/BanditNecromancer-Flipped.png"), 0, 32, 32, 32, 8, 0.1, true, false);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 224, 32, 32, 7.9, 0.1, false, false);
 
         //casting
-        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/BanditNecromancer-Flipped.png"), 0, 96, 32, 32, 8, 0.1, true, false);
+        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 256, 32, 32, 5.9, 0.1, false, false);
 
         //damaged
-        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/BanditNecromancer-Flipped.png"), 128, 128, 32, 32, 3, 0.2, true, false);
+        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 32, 288, 32, 32, 3, 0.2, false, false);
     
         //death animation
-        this.death = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/BanditNecromancer.png"), 32, 160, 32, 32, 7, 0.2, false, false);
+        this.death = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 32, 128, 32, 32, 6, 0.2, false, false);
     }
 
 
     updateBB() {
-        this.BB = new BoundingBox(this.x + 22, this.y + 18, 32 + 15, 32 + 35);
+        this.BB = new BoundingBox(this.x + 28, this.y + 50, 32 , 32 + 10);
     }
 
 
@@ -96,7 +100,7 @@ class BanditNecromancer {
             }
             return;
         }
-        //Handle damage animation time so it isnt infinite. This is when the player hits the necromancer
+        //Handle damage animation time so it isnt infinite. This is when the player hits the Imp
         if (this.isPlayingDamageAnimation) {
             this.damageAnimationTimer -= this.game.clockTick;
             if (this.damageAnimationTimer <= 0) {
@@ -138,37 +142,28 @@ class BanditNecromancer {
         // Handle cast animation timer
         if (this.castTimer > 0) {
             this.castTimer -= this.game.clockTick;
-            this.state = 2; // Keep in casting state while timer is active\
+            this.state = 2; // Keep in casting state while timer is active
+
+            // Check if we're at the end of the casting animation
+            if (this.castTimer <= 0.3 && this.shouldShootAfterCast) {
+                this.shootProjectiles(); 
+                this.shouldShootAfterCast = false; // Reset the flag
+            }
+
             this.updateBB();
-            return; //when the necromancer starts casting, it'll stop moving
+            return;
         } else {
             this.animations[2][0].elapsedTime = 0;
             this.animations[2][1].elapsedTime = 0;
-
             this.state = 1; // Return to running state when cast is done
         }
-    
-        //Check if we're in range and can shoot. The shootTimer is the shootcooldown. 
+
         if (distance <= this.range && this.shootTimer <= 0) {
-            // Calculate angle to player
-            const angle = Math.atan2(dy, dx);
-            
-            //Start casting animation
-            this.castTimer = this.castDuration; //ANIMATION
-            
-
-            //center of the character sprite and where the projectile will come out of
-            const characterCenterX = this.x + (this.bitSize * this.scale) / 2;
-            const characterCenterY = this.y + (this.bitSize * this.scale) / 2;
-
-            //create the projectile
-            this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, this.damage, this.castSpeed, 
-                "./Sprites/Magic/PurpleProjectile.png", 0, false, 3, false, 2,
-                0, 0, 16, 16, 30, 0.1, false, false, -16, -23, 32, 32, 16, 16));
-
-            
-            this.shootTimer = this.shootCooldown; //Reset to 3 seconds. This is for logic cooldown
-        } 
+            //Start casting animation and set flag to shoot after
+            this.castTimer = this.castDuration;
+            this.shouldShootAfterCast = true; // Set flag to shoot when animation ends
+            this.shootTimer = this.shootCooldown; // Reset cooldown
+        }
     
         // Always move towards player
         const moveSpeed = this.speed * this.game.clockTick;
@@ -178,12 +173,12 @@ class BanditNecromancer {
         this.x += directionX * moveSpeed;
         this.y += directionY * moveSpeed;
 
-          //COLLISIONS:
-          const separationDistance = 100; // Minimum distance between mobs
-          const entities = this.game.entities;
-          for (let i = 0; i < entities.length; i++) {
+        //COLLISIONS:
+        const separationDistance = 100; // Minimum distance between mobs
+        const entities = this.game.entities;
+        for (let i = 0; i < entities.length; i++) {
             let entity = entities[i];
-            if ((entity instanceof Zombie || entity instanceof BanditNecromancer) && entity !== this) {
+            if ((entity instanceof Imp) && entity !== this) {
                 const dx = entity.x - this.x;
                 const dy = entity.y - this.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
@@ -201,17 +196,40 @@ class BanditNecromancer {
   
             if (entity instanceof Adventurer) {
                 if (this.BB.collide(entity.BB) && !entity.invincible) {
-                    if (this.attackCooldownTimer <= 0) { //used so the necromancer wouldn't damage us every tick
+                    if (this.attackCooldownTimer <= 0) { //used so the Imp wouldn't damage us every tick
                         // Attack the player and reset cooldown timer
                         entity.takeDamage(this.collisionDamage);
                         this.attackCooldownTimer = this.attackCooldown; // Reset the cooldown timer
-                        console.log("Necromancer attacked the player!");
+                        console.log("Imp attacked the player!");
                     }
                 }
             }
         }
     
         this.updateBB();
+    }
+
+
+    shootProjectiles() {
+        const player = this.game.adventurer;
+        const dx = (player.x + (player.bitSize * player.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2);
+        const dy = (player.y + (player.bitSize * player.scale)/2) - (this.y + (this.bitSizeY * this.scale)/2);
+
+        const angle = Math.atan2(dy, dx);
+            
+        //Start casting animation
+        this.castTimer = this.castDuration; //ANIMATION
+        
+
+        //center of the character sprite and where the projectile will come out of
+        const characterCenterX = this.x + (this.bitSize * this.scale) / 2;
+        const characterCenterY = this.y + (this.bitSize * this.scale) / 2;
+
+        //create the projectile
+        this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, this.damage, this.castSpeed, 
+            "./Sprites/Magic/FireProjectile.png", 0, false, 3, false, 2,
+            0, 0, 16, 16, 30, 0.1, false, false, -16, -23, 32, 32, 16, 16));
+
     }
 
 
@@ -280,7 +298,7 @@ class BanditNecromancer {
                 (this.y + 78) - this.game.camera.y, 
                 40, 16);
             
-            // Draw necromancer
+            // Draw Imp
             this.animations[this.state][this.facing].drawFrame(
                 this.game.clockTick, 
                 ctx, 
