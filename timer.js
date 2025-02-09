@@ -5,9 +5,12 @@ class Timer {
         this.gameTime = 0;
         this.maxStep = 0.05;
         this.lastTimestamp = 0;
+        this.isPaused = false;
     };
 
     tick() {
+        if (this.isPaused) return 0;
+        
         const current = Date.now();
         const delta = (current - this.lastTimestamp) / 1000;
         this.lastTimestamp = current;

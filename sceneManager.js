@@ -8,6 +8,7 @@ class SceneManager {
 
         this.waveManager = new WaveManager(game);
         this.HUD = new HUD(this.game, this.adventurer);
+        this.upgrade = new UpgradeSystem(this.game);
 
         this.loadTestLevel();
     };
@@ -19,16 +20,16 @@ class SceneManager {
         if(!adventurer) this.game.addEntity(this.adventurer);        
         // this.game.addEntity(new Adventurer(this.game, 0, 0));
 
-        this.game.addEntity(new BlueGhoul(this.game, 400, 400));
-        this.game.addEntity(new HellSpawn(this.game, 400, 400));
-        this.game.addEntity(new HellSpawn(this.game, 800, 400));
+        // this.game.addEntity(new BlueGhoul(this.game, 400, 400));
+        // this.game.addEntity(new HellSpawn(this.game, 400, 400));
+        // this.game.addEntity(new HellSpawn(this.game, 800, 400));
 
-        this.game.addEntity(new FreakyGhoul(this.game, 800, 800));
-        this.game.addEntity(new FreakyGhoul(this.game, 300, 800));
+        // this.game.addEntity(new FreakyGhoul(this.game, 800, 800));
+        // this.game.addEntity(new FreakyGhoul(this.game, 300, 800));
 
 
-        this.game.addEntity(new Ghost(this.game, 400, 400));
-        this.game.addEntity(new Ghost(this.game, 400, 400));
+        // this.game.addEntity(new Ghost(this.game, 400, 400));
+        // this.game.addEntity(new Ghost(this.game, 400, 400));
 
 
         this.game.addEntity(new Zombie(this.game, 400, 400));
@@ -38,9 +39,24 @@ class SceneManager {
         this.game.addEntity(new Zombie(this.game, 323, 400));
         this.game.addEntity(new Zombie(this.game, 513, 400));
         this.game.addEntity(new Zombie(this.game, 42, 400));
-
-        this.game.addEntity(new BanditNecromancer(this.game, 42, 400));
-        this.game.addEntity(new Necromancer(this.game, 42, 400));
+        this.game.addEntity(new ExperienceOrb(this.game, 100, 400));
+        this.game.addEntity(new ExperienceOrb(this.game, 100, 400));
+        this.game.addEntity(new ExperienceOrb(this.game, 100, 400));
+        this.game.addEntity(new ExperienceOrb(this.game, 100, 400));
+        this.game.addEntity(new ExperienceOrb(this.game, 100, 400));
+        // this.game.addEntity(new ExperienceOrb(this.game, 200, 400));
+        // this.game.addEntity(new ExperienceOrb(this.game, 300, 400));
+        // this.game.addEntity(new ExperienceOrb(this.game, 400, 400));
+        // this.game.addEntity(new ExperienceOrb(this.game, 500, 400));
+        // this.game.addEntity(new ExperienceOrb(this.game, 600, 400));
+        // this.game.addEntity(new ExperienceOrb(this.game, 700, 400));
+        // this.game.addEntity(new ExperienceOrb(this.game, 800, 400));
+        // this.game.addEntity(new ExperienceOrb(this.game, 900, 400));
+        // this.game.addEntity(new ExperienceOrb(this.game, 1000, 400));
+        // this.game.addEntity(new ExperienceOrb(this.game, 1100, 400));
+        // this.game.addEntity(new ExperienceOrb(this.game, 1200, 400));
+        // this.game.addEntity(new BanditNecromancer(this.game, 42, 400));
+        // this.game.addEntity(new Necromancer(this.game, 42, 400));
         
 
         this.game.addEntity(this.generateObject("Barrel", 100, 100));
@@ -101,8 +117,9 @@ class SceneManager {
         ctx.fillStyle = 'white';
         // ctx.fillText(`Player Health: ${this.adventurer.health}`, 10, 120);
         // ctx.fillText(`Player Coins: ${this.adventurer.coins}`, 10, 150);
-        ctx.fillText(`Player Bombs: ${this.adventurer.bombCurrentAmnt}`, 10, 180);
-        ctx.fillText(`Player Bombs Cooldown: ${Math.ceil(this.adventurer.bombCooldownRetrieveTimer * 100) / 100}`, 10, 210);
+        // ctx.fillText(`Player Bombs: ${this.adventurer.bombCurrentAmnt}`, 10, 180);
+        // ctx.fillText(`Player Bombs Cooldown: ${Math.ceil(this.adventurer.bombCooldownRetrieveTimer * 100) / 100}`, 10, 210);
+        this.HUD.update();
         this.HUD.draw(ctx);
 
     }

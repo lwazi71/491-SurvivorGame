@@ -9,6 +9,7 @@ class Zombie {
         this.speed = 200;
 
         this.health = 20;
+        this.maxHealth = 20;
         this.attackPower = 10;
         this.attackCooldown = 1.0; // Cooldown in seconds between attacks
         this.attackCooldownTimer = 0; // Tracks remaining cooldown time
@@ -18,6 +19,7 @@ class Zombie {
         this.isPlayingDamageAnimation = false;
         this.attackTimer = 1;
 
+        this.healthbar = new HealthBar(this, this.game);
 
         this.dead = false;
         this.deathAnimationTimer = 7 * 0.15;
@@ -275,8 +277,7 @@ class Zombie {
         // const player = this.game.adventurer;
         // ctx.strokeRect(player.BB.x + 6 - this.game.camera.x, player.BB.y- this.game.camera.y, 20, 20);
 
-
-        
+        this.healthbar.draw(ctx);
         ctx.strokeStyle = 'Yellow';
         ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
 
