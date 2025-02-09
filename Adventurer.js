@@ -73,7 +73,8 @@ class Adventurer { //every entity should have update and draw!
         this.shootCooldownTimer = 0;
         this.bowKnockback = 0;
         this.bowDamage = 4;
-        this.arrowSpeed = 800; 
+        this.arrowSpeed = 800;
+        this.bowUpgrade = 0; 
         this.piercing = false; //piercing could be for shooting through enemies. Collateral. Could be an upgrade
 
         //MAGIC AOE PROPERTIES
@@ -85,12 +86,14 @@ class Adventurer { //every entity should have update and draw!
         this.magicKnockback = 2000;
         this.magicDamage = 100;
         this.magicScale = 6;
+        this.enableMagic = false;
 
 
 
         //BOMB PROPERTIES
+        this.enableBomb = false;
         this.bombDamage = 10;
-        this.bombExpolsionScale = 10;
+        this.bombExplosionScale = 10;
         this.bombTimer = 4;
         this.bombKnockback = 2000;
         this.canBomb = true;
@@ -103,8 +106,9 @@ class Adventurer { //every entity should have update and draw!
 
         this.coins = 0;
         this.level = 1;
-        this.experience = 0;
+        this.experience = 50;
         this.experienceToNextLvl = 100;
+        this.upgrade = null;
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
 
 
@@ -365,7 +369,6 @@ class Adventurer { //every entity should have update and draw!
             if (this.magicCooldownTimer <= 0) { //once cooldown ends
                 this.canMagic = true; //we can now do magic again!
             }
-            this.game.rightClicks = false;
         }
 
        //Track bomb cooldown
@@ -390,8 +393,10 @@ class Adventurer { //every entity should have update and draw!
 
         if (this.game.keys["1"]) {
             this.currentWeapon = 0;
+            this.speed = 330;
         } else if (this.game.keys["2"]) {
             this.currentWeapon = 1;
+            this.speed = 330 * 1.1;
         }
 
 
@@ -430,17 +435,26 @@ class Adventurer { //every entity should have update and draw!
             this.game.leftClick = false;
         }
 
-        if (this.game.rightClicks && this.canMagic && !this.rolling) { //&& !this.shooting && !this.attacking if we dont want player to use magic during attack animation
+        if (this.game.rightClicks && this.canMagic && !this.rolling && this.enableMagic && this.currentWeapon == 0) { //&& !this.shooting && !this.attacking if we dont want player to use magic during attack animation
             console.log("we clicked right click!")
             this.invincible = true;
             this.magicAOE();
             this.game.rightClicks = false;
+        // } else if (this.game.rightClicks && this.canBomb && !this.rolling && this.bombCurrentAmnt > 0 && this.enableBomb && this.currentWeapon == 1) {
+        //     this.bombCurrentAmnt--;
+        //     const characterCenterX = this.x + (this.bitSize * this.scale) / 2; 
+        //     const characterCenterY = this.y + (this.bitSize * this.scale) / 2;
+        //     this.bombCooldownTimer = this.bombCooldown;
+        //     if (this.bombCooldownRetrieveTimer <= 0) {
+        //         this.bombCooldownRetrieveTimer = this.bombCooldownRetrieve;
+        //     }
+        //     this.canBomb = false;
+        //     this.game.addEntity(new Bomb(this.game, characterCenterX - 50, characterCenterY -32, this.bombTimer, this.bombDamage, this.bombExplosionScale));
+        //     this.game.rightClicks = false;
         } else {
             this.game.rightClicks = false;
         }
-
-
-        if (this.game.keys["e"] && this.canBomb && !this.rolling && this.bombCurrentAmnt > 0) {
+        if (this.game.keys["e"] && this.canBomb && !this.rolling && this.bombCurrentAmnt > 0 && this.enableBomb) {
             this.bombCurrentAmnt--;
             const characterCenterX = this.x + (this.bitSize * this.scale) / 2; 
             const characterCenterY = this.y + (this.bitSize * this.scale) / 2;
@@ -449,7 +463,7 @@ class Adventurer { //every entity should have update and draw!
                 this.bombCooldownRetrieveTimer = this.bombCooldownRetrieve;
             }
             this.canBomb = false;
-            this.game.addEntity(new Bomb(this.game, characterCenterX - 50, characterCenterY -32, this.bombTimer, this.bombDamage, this.bombExpolsionScale));
+            this.game.addEntity(new Bomb(this.game, characterCenterX - 50, characterCenterY -32, this.bombTimer, this.bombDamage, this.bombExplosionScale));
         }
 
         //ANIMATION TIMING -------------------------------------------------------------------
@@ -538,11 +552,6 @@ class Adventurer { //every entity should have update and draw!
             } else if ((entity instanceof Threecoin) && this.BB.collide(entity.BB)) {
                 const coinAmnt = Math.floor(Math.random() * (5 - 3 + 1)) + 3; //3 - 5 when picking up a coin that looks like 3 coins
                 this.coins += coinAmnt;
-                entity.removeFromWorld = true;
-            }
-            if ((entity instanceof ExperienceOrb) && this.BB.collide(entity.BB)) {
-                this.experience += 100; // Change value to acceptable amount
-                this.levelUp();
                 entity.removeFromWorld = true;
             }
         });
@@ -819,10 +828,18 @@ class Adventurer { //every entity should have update and draw!
     }
     levelUp() {
         if (this.experience >= this.experienceToNextLvl) {
+            // this.health = this.maxhealth;
             this.level++;
+            this.game.upgrade.points++;
             this.experience -= this.experienceToNextLvl;
-            this.experienceToNextLvl = Math.floor(this.experienceToNextLvl * 1.2);
-            //Put level up mechanic here
+            // this.experienceToNextLvl = Math.floor(this.experienceToNextLvl * 1.1);
+            this.levelUpMenu();
+        }
+    }
+    levelUpMenu() {
+        if (!this.game.upgrade.noUpgrade) {
+            this.game.upgrade.getThreeUpgrades();
+            this.game.toggleUpgradePause();
         }
     }
     //If we want to do a minimap, need to add this for all entities being added
@@ -850,7 +867,6 @@ class Adventurer { //every entity should have update and draw!
             this.animations[this.state][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale); //we're putting her at pixel 25 x 25 on canvas
             //2.8
         }
-        
             //will show the bound box of our player
 
             // ctx.strokeStyle = 'Green';
