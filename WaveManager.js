@@ -12,7 +12,6 @@ class WaveManager {
         this.spawnBuffer = 100; //Extra distance from screen edge for spawning
     }
 
-    // testing git push broken issue
 
     /**
      * //will spawn the mob outside the camera.
