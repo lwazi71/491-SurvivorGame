@@ -87,7 +87,12 @@ class FoxMage {
 
 
     updateBB() {
-        this.BB = new BoundingBox(this.x + 25, this.y + 35, 32 + 10, 32 + 18);
+        const width = this.bitSizeX * this.scale * 0.5;  // Adjust scaling factor if needed
+        const height = this.bitSizeY * this.scale * 0.5; // Adjust scaling factor if needed
+        const offsetX = (this.bitSizeX * this.scale - width) / 2; // Center adjustment
+        const offsetY = (this.bitSizeY * this.scale - height) / 2 + 18; // Adjust Y position if needed
+    
+        this.BB = new BoundingBox(this.x + offsetX, this.y + offsetY, width, height);    
     }
 
 
@@ -275,12 +280,16 @@ class FoxMage {
 
 
     draw(ctx) {
+        const shadowWidth = 40 * (this.scale / 2.8); 
+        const shadowHeight = 16 * (this.scale / 2.8);
+
+        const shadowX = (this.x + (23 * (this.scale / 2.8))) - this.game.camera.x;
+        const shadowY = (this.y + (78 * (this.scale / 2.8))) - this.game.camera.y;
+
+        ctx.drawImage(this.shadow, 0, 0, 64, 32, shadowX, shadowY, shadowWidth, shadowHeight);
+
         if (this.dead) {
             if (this.deathAnimationTimer > 0) {
-                ctx.drawImage(this.shadow, 0, 0, 64, 32, 
-                    (this.x + 17) - this.game.camera.x, 
-                    (this.y + 77) - this.game.camera.y, 
-                    40, 16);
                 this.death.drawFrame(
                     this.game.clockTick, 
                     ctx, 
@@ -290,15 +299,8 @@ class FoxMage {
                 );
             }
         } else if (this.isPlayingDamageAnimation) {
-            ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 23) - this.game.camera.x, (this.y + 78) - this.game.camera.y, 40, 16);            
             this.animations[3][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
         } else {
-            // Draw shadow
-            ctx.drawImage(this.shadow, 0, 0, 64, 32, 
-                (this.x + 23) - this.game.camera.x, 
-                (this.y + 78) - this.game.camera.y, 
-                40, 16);
-            
             // Draw necromancer
             this.animations[this.state][this.facing].drawFrame(
                 this.game.clockTick, 

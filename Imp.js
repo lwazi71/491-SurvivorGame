@@ -87,8 +87,12 @@ class Imp {
 
 
     updateBB() {
-        this.BB = new BoundingBox(this.x + 28, this.y + 50, 32 , 32 + 10);
-    }
+        const width = this.bitSizeX * this.scale * 0.4;  // Adjust scaling factor if needed
+        const height = this.bitSizeY * this.scale * 0.4; // Adjust scaling factor if needed
+        const offsetX = (this.bitSizeX * this.scale - width) / 2; // Center adjustment
+        const offsetY = (this.bitSizeY * this.scale - height) / 2 + 28; // Adjust Y position if needed
+    
+        this.BB = new BoundingBox(this.x + offsetX, this.y + offsetY, width, height);    }
 
 
 

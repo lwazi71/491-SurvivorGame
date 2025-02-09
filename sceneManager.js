@@ -48,6 +48,7 @@ class SceneManager {
 
         this.game.addEntity(new RatMage(this.game, 200, 400));
         this.game.addEntity(new FoxMage(this.game, 200, 400));
+        this.game.addEntity(new Crow(this.game, 200, 400));
 
         
 
@@ -125,7 +126,6 @@ class SceneManager {
         ctx.fillText(`Player Bombs: ${this.adventurer.bombCurrentAmnt}`, 10, 180);
         ctx.fillText(`Player Bombs Cooldown: ${Math.ceil(this.adventurer.bombCooldownRetrieveTimer * 100) / 100}`, 10, 210);
         this.HUD.draw(ctx);
-
     }
 
 }

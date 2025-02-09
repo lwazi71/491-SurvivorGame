@@ -117,11 +117,18 @@ class Adventurer { //every entity should have update and draw!
     };
 
     updateBB() {
-        this.lastBB = this.BB; //we gotta know where we were before changing the scene
-        if (this.state != 4 || this.state != 5 || this.state != 6) {
-            this.BB = new BoundingBox(this.x + 33, this.y + 24, 32 , 32 + 27);
-        } 
+        // this.lastBB = this.BB; //we gotta know where we were before changing the scene
+        // if (this.state != 4 || this.state != 5 || this.state != 6) {
+        //     this.BB = new BoundingBox(this.x + 33, this.y + 24, 32 , 32 + 27);
+        // } 
        // this.BB = new BoundingBox(this.x, this.y, 32, 32);
+
+       const width = this.bitSize * this.scale * 0.3;  // Adjust scaling factor if needed
+       const height = this.bitSize * this.scale * 0.6; // Adjust scaling factor if needed
+       const offsetX = (this.bitSize * this.scale - width) / 2 + 4; // Center adjustment
+       const offsetY = (this.bitSize * this.scale - height) / 2 + 10; // Adjust Y position if needed
+   
+       this.BB = new BoundingBox(this.x + offsetX, this.y + offsetY, width, height);
     }
 
     //helper functions
@@ -825,15 +832,21 @@ class Adventurer { //every entity should have update and draw!
     };
 
     draw(ctx) {        
+        const shadowWidth = 32 * (this.scale / 2.8); 
+        const shadowHeight = 16 * (this.scale / 2.8);
+
+        const shadowX = (this.x + (33 * (this.scale / 2.8))) - this.game.camera.x;
+        const shadowY = (this.y + (77 * (this.scale / 2.8))) - this.game.camera.y;
+
+        ctx.drawImage(this.shadow, 0, 0, 64, 32, shadowX, shadowY, shadowWidth, shadowHeight);
+
         if (this.dead) {
             if (this.deathAnimationTimer > 0) {
                 this.deadAnim.drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
             }
         } else if (this.isPlayingDamageAnimation) {
-            ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 33) - this.game.camera.x, (this.y + 77) - this.game.camera.y, 32, 16); //draw a shadow underneath our character
             this.animations[10][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale); 
         } else {
-            ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 33) - this.game.camera.x, (this.y + 77) - this.game.camera.y, 32, 16); //draw a shadow underneath our character
             this.animations[this.state][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale); //we're putting her at pixel 25 x 25 on canvas
             //2.8
         }

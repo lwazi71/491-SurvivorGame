@@ -44,7 +44,12 @@ class BlueGhoul {
 
 
     updateBB() {
-        this.BB = new BoundingBox((this.x + 64), (this.y + 17), 64 + 32, 64 + 35);
+        const width = this.bitSizeX * this.scale * 0.5;  // Adjust scaling factor if needed
+        const height = this.bitSizeY * this.scale * 0.5; // Adjust scaling factor if needed
+        const offsetX = (this.bitSizeX * this.scale - width) / 2 + 20; // Center adjustment
+        const offsetY = (this.bitSizeY * this.scale - height) / 2 - 20; // Adjust Y position if needed
+    
+        this.BB = new BoundingBox(this.x + offsetX, this.y + offsetY, width, height);
     }
 
     loadAnimation() {
@@ -267,17 +272,23 @@ class BlueGhoul {
 
 
     draw(ctx) {
+        const shadowWidth = 70 * (this.scale / 2.8); // 2.8 is default scale
+        const shadowHeight = 16 * (this.scale / 2.8);
+
+        // Adjust shadow position to stay centered under the zombie
+        const shadowX = (this.x + (75 * (this.scale / 2.8))) - this.game.camera.x;
+        const shadowY = (this.y + (105 * (this.scale / 2.8))) - this.game.camera.y;
+
+        ctx.drawImage(this.shadow, 0, 0, 64, 32, shadowX, shadowY, shadowWidth, shadowHeight);
+
         if (this.dead) {
             // Only draw shadow if death animation is still playing
            if (this.deathAnimationTimer > 0) {
-                ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 75) - this.game.camera.x, (this.y + 105) - this.game.camera.y, 70, 16); //draw a shadow underneath our character
                 this.deadAnimation.drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
            }
         } else if (this.isPlayingDamageAnimation) {
-            ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 75) - this.game.camera.x, (this.y + 105) - this.game.camera.y, 70, 16); //draw a shadow underneath our character
             this.animations[3][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
         } else {
-            ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 75) - this.game.camera.x, (this.y + 105) - this.game.camera.y, 70, 16); //draw a shadow underneath our character
             this.animations[this.state][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale); 
         }
 
@@ -293,8 +304,8 @@ class BlueGhoul {
 
 
         
-        // ctx.strokeStyle = 'Yellow';
-        // ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        ctx.strokeStyle = 'Yellow';
+        ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
 
     }
     
