@@ -29,6 +29,11 @@ class Ghost {
 
         
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
+<<<<<<< HEAD
+=======
+        this.bitSizeX = 32;
+        this.bitSizeY = 32;
+>>>>>>> AlanBranch
 
 
         this.animations = []; //will be used to store animations
@@ -125,8 +130,13 @@ class Ghost {
         const player = this.game.adventurer; // Reference to the player character
 
         // Calculate the direction vector to the player
+<<<<<<< HEAD
         const dx = player.x - this.x;
         const dy = player.y - this.y;
+=======
+        const dx = (player.x + (player.bitSize * player.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2); 
+        const dy = (player.y + (player.bitSize * player.scale)/2) - (this.y + (this.bitSizeY * this.scale)/2);
+>>>>>>> AlanBranch
     
         // Calculate the distance to the player
         const distance = Math.sqrt(dx * dx + dy * dy);
@@ -218,8 +228,13 @@ class Ghost {
         this.health -= damage;
         
         // Apply knockback
+<<<<<<< HEAD
         const dx = this.x - sourceX;
         const dy = this.y - sourceY;
+=======
+        const dx = (this.x + (this.bitSizeX * this.scale)/2) - sourceX;
+        const dy = (this.y + (this.bitSizeY * this.scale)/2) - sourceY;
+>>>>>>> AlanBranch
         const distance = Math.sqrt(dx * dx + dy * dy);
 
 

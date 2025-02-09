@@ -1,12 +1,7 @@
-class BlueGhoul {
+class FreakyGhoul {
     constructor (game, x, y) {
         Object.assign(this, {game, x, y});
 
-<<<<<<< HEAD
-=======
-        this.bitSizeX = 64;
-        this.bitSizeY = 64;
->>>>>>> AlanBranch
         this.state = 0; //0 = idle, 1 = walking, 2 = attack, 3 = damaged
         this.facing = 0; //0 = right, 1 = left
         this.attackPower = 5;
@@ -30,12 +25,13 @@ class BlueGhoul {
         this.pushbackDecay = 0.9; // Determines how quickly the pushback force decays
 
 
-
         this.dropchance = 0.4; //40% chance of dropping something when dying
 
 
         
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
+        this.bitSizeX = 32;
+        this.bitSizeY = 32;
 
 
         this.animations = []; //will be used to store animations
@@ -47,7 +43,7 @@ class BlueGhoul {
 
 
     updateBB() {
-        this.BB = new BoundingBox((this.x + 64), (this.y + 17), 64 + 32, 64 + 35);
+        this.BB = new BoundingBox(this.x + 23, this.y +20, 32 + 15, 32 + 33);
     }
 
     loadAnimation() {
@@ -61,35 +57,35 @@ class BlueGhoul {
 
         //LOOKNG RIGHT
         //idle, looking to the rights
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghoul/Blue_Ghoul.png"), -6, 22, 64, 64, 7.9, 0.2, false, false);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul.png"), 0, 0, 32, 32, 4, 0.2, false, false);
 
         //Walking, looking right
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghoul/Blue_Ghoul.png"), -6, 86, 64, 64, 7.9, 0.09, false, false);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul.png"), 0, 32, 32, 32, 7.9, 0.09, false, false);
 
         //Attack, to the right
-        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghoul/Blue_Ghoul.png"), -1, 150, 64, 64, 5, 0.08, false, false);
+        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul.png"), 0, 64, 32, 32, 5, 0.08, false, false);
 
         //Damaged, to the right
         //wanna start at where the blue ghoul turns red or else there'll be a delay
-        this.animations[3][0] =  new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghoul/Blue_Ghoul.png"), 64, 214, 64, 64, 3, 0.2, false, false); 
+        this.animations[3][0] =  new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul.png"), 32, 96, 32, 32, 3, 0.2, false, false); 
 
         
 
         //LOOKING LEFT
         //idle, looking to the left
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghoul/Blue_Ghoul-Flipped.png"), 0, 22, 64, 64, 7.9, 0.2, true, false);
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul-Flipped.png"), 125, 0, 32, 32, 3.9, 0.2, true, false);
 
         //Walking, looking left
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghoul/Blue_Ghoul-Flipped.png"), 0, 86, 64, 64, 7.9, 0.09, true, false);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul-Flipped.png"), 2, 32, 32, 32, 7.9, 0.09, true, false);
 
         //Attack, to the left
-        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghoul/Blue_Ghoul-Flipped.png"), 186, 150, 64, 64, 5, 0.08, true, false);
+        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul-Flipped.png"), 64, 64, 32, 32, 5, 0.08, true, false);
 
         //Damaged, to the left
-        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghoul/Blue_Ghoul-Flipped.png"), 256, 214, 64, 64, 3, 0.2, true, false);
+        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul-Flipped.png"), 128, 96, 32, 32, 3, 0.2, true, false);
 
 
-        this.deadAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghoul/Blue_Ghoul.png"), 64, 278, 64, 64, 5, 0.15, false, false);
+        this.deadAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul.png"), 32, 128, 32, 32, 5, 0.15, false, false);
     }
 
 
@@ -139,13 +135,8 @@ class BlueGhoul {
         const player = this.game.adventurer; // Reference to the player character
 
         // Calculate the direction vector to the player
-<<<<<<< HEAD
-        const dx = player.x - (this.x + 44);
-        const dy = player.y - (this.y + 30);
-=======
         const dx = (player.x + (player.bitSize * player.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2); 
         const dy = (player.y + (player.bitSize * player.scale)/2) - (this.y + (this.bitSizeY * this.scale)/2);
->>>>>>> AlanBranch
     
         // Calculate the distance to the player
         const distance = Math.sqrt(dx * dx + dy * dy);
@@ -177,11 +168,7 @@ class BlueGhoul {
         const entities = this.game.entities;
         for (let i = 0; i < entities.length; i++) {
             let entity = entities[i];
-<<<<<<< HEAD
-            if (entity instanceof Zombie && entity !== this) {
-=======
-            if (entity instanceof BlueGhoul && entity !== this) {
->>>>>>> AlanBranch
+            if (entity instanceof FreakyGhoul && entity !== this) {
                 const dx = entity.x - this.x;
                 const dy = entity.y - this.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
@@ -244,13 +231,8 @@ class BlueGhoul {
         this.health -= damage;
         
         // Apply knockback
-<<<<<<< HEAD
-        const dx = this.x - sourceX + 22;
-        const dy = this.y - sourceY + 22;
-=======
         const dx = (this.x + (this.bitSizeX * this.scale)/2) - sourceX;
         const dy = (this.y + (this.bitSizeY * this.scale)/2) - sourceY;
->>>>>>> AlanBranch
         const distance = Math.sqrt(dx * dx + dy * dy);
 
 
@@ -264,10 +246,6 @@ class BlueGhoul {
         }
     
         if (this.health <= 0) {
-            let drop = Math.random();
-            if(drop < this.dropchance) {
-                this.game.addEntity(new Threecoin(this.game, (this.x + 28), (this.y + 55)));
-            }
             this.dead = true;
             this.state = 3;
         } else {
@@ -287,26 +265,21 @@ class BlueGhoul {
         if (this.dead) {
             // Only draw shadow if death animation is still playing
            if (this.deathAnimationTimer > 0) {
-                ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 75) - this.game.camera.x, (this.y + 105) - this.game.camera.y, 70, 16); //draw a shadow underneath our character
+                ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 28) - this.game.camera.x, (this.y + 77) - this.game.camera.y, 40, 16); //draw a shadow underneath our character
                 this.deadAnimation.drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
            }
         } else if (this.isPlayingDamageAnimation) {
-            ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 75) - this.game.camera.x, (this.y + 105) - this.game.camera.y, 70, 16); //draw a shadow underneath our character
+            ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 28) - this.game.camera.x, (this.y + 77) - this.game.camera.y, 40, 16); //draw a shadow underneath our character
             this.animations[3][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
         } else {
-            ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 75) - this.game.camera.x, (this.y + 105) - this.game.camera.y, 70, 16); //draw a shadow underneath our character
+            ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 28) - this.game.camera.x, (this.y + 77) - this.game.camera.y, 40, 16); //draw a shadow underneath our character
             this.animations[this.state][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale); 
         }
 
         //used to indicate the path the ghoul is going towards. (line 132 and 133);
-<<<<<<< HEAD
         // ctx.strokeStyle = 'Green';
 
         // ctx.strokeRect(this.x + 44 - this.game.camera.x, this.y + 30 - this.game.camera.y, 20, 20);
-=======
-          ctx.strokeStyle = 'Green';
-        ctx.strokeRect((this.x + (this.bitSizeX * this.scale)/2) - this.game.camera.x, (this.y + (this.bitSizeY * this.scale)/2) - this.game.camera.y, 20, 20);
->>>>>>> AlanBranch
 
         // const player = this.game.adventurer;
         // ctx.strokeRect(player.x - this.game.camera.x, player.y - this.game.camera.y, 20, 20);
@@ -316,8 +289,8 @@ class BlueGhoul {
 
 
         
-        // ctx.strokeStyle = 'Yellow';
-        // ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        ctx.strokeStyle = 'Yellow';
+        ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
 
     }
     

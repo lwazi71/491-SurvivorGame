@@ -79,13 +79,23 @@ class CircleAOE { //this class will be for the sword slash entity. This will dam
             let entity = entities[i];
             //mobs/enemies
             if (this.friendly) {
+<<<<<<< HEAD
                 if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul || entity instanceof FreakyGhoul || entity instanceof HellSpawn || entity instanceof BanditNecromancer || entity instanceof Necromancer) 
+=======
+                if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul || entity instanceof FreakyGhoul || entity instanceof HellSpawn 
+                        || entity instanceof BanditNecromancer || entity instanceof Necromancer || entity instanceof RatMage || entity instanceof FoxMage || entity instanceof Imp) 
+>>>>>>> AlanBranch
                     && !entity.dead) {
                     // Only apply damage if we haven't hit this mob yet
                     if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
                         // Add the zombie to our hit set
                         this.hitEntities.add(entity);
+<<<<<<< HEAD
                         
+=======
+                        this.game.camera.cameraShake(40);
+
+>>>>>>> AlanBranch
                         //Calculate the knockback TRUE CENTER of the slash circle for knockback source
     
                         //Pass the center coordinates for knockback calculation and Apply damage and trigger damage state
@@ -100,6 +110,16 @@ class CircleAOE { //this class will be for the sword slash entity. This will dam
                         entity.takeDamage(this.attackDamage);
                     }
                 }
+<<<<<<< HEAD
+=======
+            } else {
+                if ((entity instanceof Adventurer)) {
+                    if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
+                        this.hitEntities.add(entity);
+                        entity.takeDamage(this.attackDamage);
+                    }
+                }
+>>>>>>> AlanBranch
             }
         }
     }
