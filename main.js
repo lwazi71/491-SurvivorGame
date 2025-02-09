@@ -40,8 +40,28 @@ ASSET_MANAGER.queueDownload("./Sprites/Necromancer/BanditNecromancer-Flipped.png
 ASSET_MANAGER.queueDownload("./Sprites/Necromancer/BanditNecromancer.png")
 ASSET_MANAGER.queueDownload("./Sprites/Necromancer/Necromancer.png")
 ASSET_MANAGER.queueDownload("./Sprites/Necromancer/Necromancer-Flipped.png")
+ASSET_MANAGER.queueDownload("./Sprites/Mages/RatMage.png")
+ASSET_MANAGER.queueDownload("./Sprites/Mages/RatMage-Flipped.png")
+ASSET_MANAGER.queueDownload("./Sprites/Mages/FoxMage.png")
+ASSET_MANAGER.queueDownload("./Sprites/Mages/FoxMage-Flipped.png")
+ASSET_MANAGER.queueDownload("./Sprites/Mages/Imp.png")
+ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_attack.png")
+ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_walk.png");
+ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_attack.png");
+ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_damage.png");
+ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_idle-flipped.png");
+ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_walk-flipped.png");
+ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_attack-flipped.png");
+ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_damage-flipped.png");
+ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_death2.png");
+
+
+
+
 ASSET_MANAGER.queueDownload("./Sprites/Magic/PurpleProjectile.png")
 ASSET_MANAGER.queueDownload("./Sprites/Magic/BlackProjectile.png");
+ASSET_MANAGER.queueDownload("./Sprites/Magic/GreenProjectile.png");
+ASSET_MANAGER.queueDownload("./Sprites/Magic/FireProjectile.png");
 ASSET_MANAGER.queueDownload("./Sprites/Explosion/explosion.png")
 
 

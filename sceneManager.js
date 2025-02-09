@@ -10,6 +10,9 @@ class SceneManager {
         this.HUD = new HUD(this.game, this.adventurer);
         this.upgrade = new UpgradeSystem(this.game);
 
+        this.shakeIntensity = 0;
+        this.shakeDecay = 0.9; 
+
         this.loadTestLevel();
     };
 
@@ -39,6 +42,13 @@ class SceneManager {
         this.game.addEntity(new Zombie(this.game, 323, 400));
         this.game.addEntity(new Zombie(this.game, 513, 400));
         this.game.addEntity(new Zombie(this.game, 42, 400));
+        this.game.addEntity(new BanditNecromancer(this.game, 42, 400));
+        this.game.addEntity(new Necromancer(this.game, 42, 400));
+        this.game.addEntity(new Imp(this.game, 42, 400));
+
+        this.game.addEntity(new RatMage(this.game, 200, 400));
+        this.game.addEntity(new FoxMage(this.game, 200, 400));
+        this.game.addEntity(new Crow(this.game, 200, 400));
         this.game.addEntity(new ExperienceOrb(this.game, 100, 400));
         this.game.addEntity(new ExperienceOrb(this.game, 100, 400));
         this.game.addEntity(new ExperienceOrb(this.game, 100, 400));
@@ -106,13 +116,26 @@ class SceneManager {
         this.x = this.adventurer.x - midPointX + (this.adventurer.bitSize * this.adventurer.scale)/2 + 20; //Hard code to add 20 because character was not yet in the middle of the canvas screen. (Was more bottom right)
         this.y = this.adventurer.y - midPointY + (this.adventurer.bitSize * this.adventurer.scale)/2 + 20; //Same here
 
-    //    this.waveManager.update();
+        
+        if (this.shakeIntensity > 0) {
+            this.x += (Math.random() - 0.5) * this.shakeIntensity;
+            this.y += (Math.random() - 0.5) * this.shakeIntensity;
+            this.shakeIntensity *= this.shakeDecay; 
+        }
+
+       // this.waveManager.update();
 
     }
 
+    /**
+     * Method used to initialize shakeIntensity to shake the camera.
+     */
+    cameraShake(intensity) {
+        this.shakeIntensity = intensity;
+    }
 
     draw(ctx) {
-      //  this.waveManager.draw(ctx); //to tell us how many zombies are on screen and waves
+     //   this.waveManager.draw(ctx); //to tell us how many zombies are on screen and waves
         ctx.font = '20px Arial';
         ctx.fillStyle = 'white';
         // ctx.fillText(`Player Health: ${this.adventurer.health}`, 10, 120);
@@ -121,7 +144,6 @@ class SceneManager {
         // ctx.fillText(`Player Bombs Cooldown: ${Math.ceil(this.adventurer.bombCooldownRetrieveTimer * 100) / 100}`, 10, 210);
         this.HUD.update();
         this.HUD.draw(ctx);
-
     }
 
 }

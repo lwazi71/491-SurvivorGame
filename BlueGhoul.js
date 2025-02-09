@@ -2,6 +2,8 @@ class BlueGhoul {
     constructor (game, x, y) {
         Object.assign(this, {game, x, y});
 
+        this.bitSizeX = 64;
+        this.bitSizeY = 64;
         this.state = 0; //0 = idle, 1 = walking, 2 = attack, 3 = damaged
         this.facing = 0; //0 = right, 1 = left
         this.attackPower = 5;
@@ -42,7 +44,12 @@ class BlueGhoul {
 
 
     updateBB() {
-        this.BB = new BoundingBox((this.x + 64), (this.y + 17), 64 + 32, 64 + 35);
+        const width = this.bitSizeX * this.scale * 0.5;  // Adjust scaling factor if needed
+        const height = this.bitSizeY * this.scale * 0.5; // Adjust scaling factor if needed
+        const offsetX = (this.bitSizeX * this.scale - width) / 2 + 20; // Center adjustment
+        const offsetY = (this.bitSizeY * this.scale - height) / 2 - 20; // Adjust Y position if needed
+    
+        this.BB = new BoundingBox(this.x + offsetX, this.y + offsetY, width, height);
     }
 
     loadAnimation() {
@@ -134,8 +141,8 @@ class BlueGhoul {
         const player = this.game.adventurer; // Reference to the player character
 
         // Calculate the direction vector to the player
-        const dx = player.x - (this.x + 44);
-        const dy = player.y - (this.y + 30);
+        const dx = (player.x + (player.bitSize * player.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2); 
+        const dy = (player.y + (player.bitSize * player.scale)/2) - (this.y + (this.bitSizeY * this.scale)/2);
     
         // Calculate the distance to the player
         const distance = Math.sqrt(dx * dx + dy * dy);
@@ -167,7 +174,7 @@ class BlueGhoul {
         const entities = this.game.entities;
         for (let i = 0; i < entities.length; i++) {
             let entity = entities[i];
-            if (entity instanceof Zombie && entity !== this) {
+            if (entity instanceof BlueGhoul && entity !== this) {
                 const dx = entity.x - this.x;
                 const dy = entity.y - this.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
@@ -230,8 +237,8 @@ class BlueGhoul {
         this.health -= damage;
         
         // Apply knockback
-        const dx = this.x - sourceX + 22;
-        const dy = this.y - sourceY + 22;
+        const dx = (this.x + (this.bitSizeX * this.scale)/2) - sourceX;
+        const dy = (this.y + (this.bitSizeY * this.scale)/2) - sourceY;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
 
@@ -265,24 +272,29 @@ class BlueGhoul {
 
 
     draw(ctx) {
+        const shadowWidth = 70 * (this.scale / 2.8); // 2.8 is default scale
+        const shadowHeight = 16 * (this.scale / 2.8);
+
+        // Adjust shadow position to stay centered under the zombie
+        const shadowX = (this.x + (75 * (this.scale / 2.8))) - this.game.camera.x;
+        const shadowY = (this.y + (105 * (this.scale / 2.8))) - this.game.camera.y;
+
+        ctx.drawImage(this.shadow, 0, 0, 64, 32, shadowX, shadowY, shadowWidth, shadowHeight);
+
         if (this.dead) {
             // Only draw shadow if death animation is still playing
            if (this.deathAnimationTimer > 0) {
-                ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 75) - this.game.camera.x, (this.y + 105) - this.game.camera.y, 70, 16); //draw a shadow underneath our character
                 this.deadAnimation.drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
            }
         } else if (this.isPlayingDamageAnimation) {
-            ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 75) - this.game.camera.x, (this.y + 105) - this.game.camera.y, 70, 16); //draw a shadow underneath our character
             this.animations[3][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
         } else {
-            ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 75) - this.game.camera.x, (this.y + 105) - this.game.camera.y, 70, 16); //draw a shadow underneath our character
             this.animations[this.state][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale); 
         }
 
         //used to indicate the path the ghoul is going towards. (line 132 and 133);
-        // ctx.strokeStyle = 'Green';
-
-        // ctx.strokeRect(this.x + 44 - this.game.camera.x, this.y + 30 - this.game.camera.y, 20, 20);
+          ctx.strokeStyle = 'Green';
+        ctx.strokeRect((this.x + (this.bitSizeX * this.scale)/2) - this.game.camera.x, (this.y + (this.bitSizeY * this.scale)/2) - this.game.camera.y, 20, 20);
 
         // const player = this.game.adventurer;
         // ctx.strokeRect(player.x - this.game.camera.x, player.y - this.game.camera.y, 20, 20);
@@ -292,8 +304,8 @@ class BlueGhoul {
 
 
         
-        // ctx.strokeStyle = 'Yellow';
-        // ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        ctx.strokeStyle = 'Yellow';
+        ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
 
     }
     

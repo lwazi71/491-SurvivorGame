@@ -1,4 +1,4 @@
-class Zombie {
+class Crow {
     constructor (game, x, y) {
         Object.assign(this, {game, x, y});
 
@@ -6,34 +6,32 @@ class Zombie {
         this.facing = 0; //0 = right, 1 = left
         this.attackPower = 5;
         this.scale = 2.6;
-        this.speed = 200;
+        this.speed = 240;
 
-        this.health = 20;
-        this.maxHealth = 20;
-        this.attackPower = 10;
+        this.health = 24;
+        this.attackPower = 13;
         this.attackCooldown = 1.0; // Cooldown in seconds between attacks
         this.attackCooldownTimer = 0; // Tracks remaining cooldown time
 
         this.damageAnimationTimer = 0;
-        this.damageAnimationDuration = 0.2; // Duration of damage animation
+        this.damageAnimationDuration = 3 * 0.2; // Duration of damage animation
         this.isPlayingDamageAnimation = false;
         this.attackTimer = 1;
 
-        this.healthbar = new HealthBar(this, this.game);
 
         this.dead = false;
-        this.deathAnimationTimer = 7 * 0.15;
+        this.deathAnimationTimer = 5 * 0.15;
 
         this.pushbackVector = { x: 0, y: 0 };
         this.pushbackDecay = 0.9; // Determines how quickly the pushback force decays
 
         
-        this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
+        this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  
 
         this.dropchance = 0.4; //40% chance of dropping something when dying
 
-        this.bitSizeX = 32;
-        this.bitSizeY = 32;
+        this.bitSizeX = 64;
+        this.bitSizeY = 64;
 
 
         this.animations = []; //will be used to store animations
@@ -45,10 +43,10 @@ class Zombie {
 
 
     updateBB() {
-        const width = this.bitSizeX * this.scale * 0.5;  // Adjust scaling factor if needed
-        const height = this.bitSizeY * this.scale * 0.8; // Adjust scaling factor if needed
-        const offsetX = (this.bitSizeX * this.scale - width) / 2 - 4; // Center adjustment
-        const offsetY = (this.bitSizeY * this.scale - height) / 2 + 6; // Adjust Y position if needed
+        const width = this.bitSizeX * this.scale * 0.2;  // Adjust scaling factor if needed
+        const height = this.bitSizeY * this.scale * 0.5; // Adjust scaling factor if needed
+        const offsetX = (this.bitSizeX * this.scale - width) / 2; // Center adjustment
+        const offsetY = (this.bitSizeY * this.scale - height) / 2 ; // Adjust Y position if needed
     
         this.BB = new BoundingBox(this.x + offsetX, this.y + offsetY, width, height);
     }
@@ -64,40 +62,39 @@ class Zombie {
 
         //LOOKNG RIGHT
         //idle, looking to the right
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Zombie/Zombie.png"), 0, 0, 32, 32, 7.9, 0.2, false, false);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Crow/crow_idle.png"), 0, 0, 64, 64, 3.9, 0.2, false, false);
 
         //Walking, looking right
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Zombie/Zombie.png"), 0, 64, 32, 32, 7.9, 0.09, false, false);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Crow/crow_walk.png"), 0, 0, 64, 64, 3.9, 0.09, false, false);
 
         //Attack, to the right
-        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Zombie/Zombie.png"), 0, 32, 32, 32, 7, 0.08, false, false);
+        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Crow/crow_attack.png"), 0, 0, 64, 64, 4.9, 0.08, false, false);
 
         //Damaged, to the right
-        this.animations[3][0] =  new Animator(ASSET_MANAGER.getAsset("./Sprites/Zombie/Zombie.png"), 32, 160, 32, 32, 2, 0.2, false, false); //wanna start at where the zombie turns white or else there'll be a delay
+        this.animations[3][0] =  new Animator(ASSET_MANAGER.getAsset("./Sprites/Crow/crow_damage.png"), 0, 0, 64, 64, 3, 0.2, false, false); 
 
         
 
         //LOOKING LEFT
         //idle, looking to the left
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Zombie/Zombie-Flipped.png"), 162, 0, 32, 32, 7.9, 0.2, true, false);
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Crow/crow_idle-flipped.png"), 5, 0, 64, 64, 3.9, 0.2, true, false);
 
         //Walking, looking left
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Zombie/Zombie-Flipped.png"), 166, 64, 32, 31.9, 7.9, 0.09, true, false);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Crow/crow_walk-flipped.png"), 5, 0, 64, 64, 3.9, 0.09, true, false);
 
         //Attack, to the left
-        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Zombie/Zombie-Flipped.png"), 193, 32, 32, 32, 7, 0.08, true, false);
+        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Crow/crow_attack-flipped.png"), 5, 0, 64, 64, 4.9, 0.08, true, false);
 
         //Damaged, to the left
-        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Zombie/Zombie-Flipped.png"), 350, 160, 32, 32, 1, 0.2, true, false);
+        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Crow/crow_damage-flipped.png"), 5, 0, 64, 64, 3, 0.2, true, false);
 
 
-        this.deadAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Zombie/Zombie.png"), 32, 160, 32, 32, 7, 0.15, false, false);
+        this.deadAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Crow/crow_death2.png"), 0, 0, 64, 64, 5, 0.15, false, false);
     }
 
 
 
     update() {
-        //Handle damage animation time so it isnt infinite. This is when the player hits the zombie
         if (this.isPlayingDamageAnimation) {
             this.damageAnimationTimer -= this.game.clockTick;
             if (this.damageAnimationTimer <= 0) {
@@ -112,9 +109,9 @@ class Zombie {
     
             if (this.deathAnimationTimer > 0) {
                 // Keep playing the death animation
-                return; //return so the zombie would stop moving when it's dead.
+                return; //return so the enemy would stop moving when it's dead.
             } else {
-                // Remove zombie from world after the animation finishes
+                // Remove enemy from world after the animation finishes
                 this.removeFromWorld = true;
                 return;
             }
@@ -133,13 +130,13 @@ class Zombie {
         }
 
         // Reduce attack cooldown timer
-        if (this.attackCooldownTimer > 0) { //this is used for every zombie attack. Makes sure a zombie hits player once every second instead of every tick.
+        if (this.attackCooldownTimer > 0) { //this is used for every enemy attack. Makes sure a enemy hits player once every second instead of every tick.
             this.attackCooldownTimer -= this.game.clockTick;
         }
 
         const player = this.game.adventurer; // Reference to the player character
 
-        //Where on the player or near the player the zombie will be going towards
+        //Where on the player or near the player the enemy will be going towards
         //
         const dx = (player.x + (player.bitSize * player.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2); 
         const dy = (player.y + (player.bitSize * player.scale)/2) - (this.y + (this.bitSizeY * this.scale)/2);
@@ -147,14 +144,14 @@ class Zombie {
         //Calculate the distance to the player.
         const distance = Math.sqrt(dx * dx + dy * dy);
         
-        //if the zombie isnt next to the player, then we should 
+        //if the enemy isnt next to the player, then we should 
         if (distance > 0) {
             // Normalize the direction vector. Which way we're going towards. left, right, bottom right etc.
             const directionX = dx / distance;
             const directionY = dy / distance;
             
     
-            //Move the zombie toward the player
+            //Move the enemy toward the player
             const movement = this.speed * this.game.clockTick; //Adjust speed for frame rate
     
             this.x += directionX * movement;
@@ -169,12 +166,12 @@ class Zombie {
 
         this.previousState = this.state;
     
-        // // Check for collision with any attack slashes
-        const separationDistance = 100; // Minimum distance between zombies
+        //Check for collision with any attack slashes
+        const separationDistance = 100; 
         const entities = this.game.entities;
         for (let i = 0; i < entities.length; i++) {
             let entity = entities[i];
-            if (entity instanceof Zombie && entity !== this) {
+            if (entity instanceof Crow && entity !== this) {
                 const dx = entity.x - this.x;
                 const dy = entity.y - this.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
@@ -196,9 +193,8 @@ class Zombie {
                         // Attack the player and reset cooldown timer
                         entity.takeDamage(this.attackPower);
                         this.attackCooldownTimer = this.attackCooldown; // Reset the cooldown timer
-                        console.log("Zombie attacked the player!");
+                        console.log("Crow attacked the player!");
                     }
-                    //Set zombie to attacking state
                     this.state = 2; //Attacking state
                 }
             }
@@ -231,7 +227,6 @@ class Zombie {
             this.pushbackVector.x = (dx / distance) * knockbackForce;
             this.pushbackVector.y = (dy / distance) * knockbackForce;
         } else {
-            // Default knockback direction (e.g., upward) in case the zombie and source overlap
             this.pushbackVector.x = 0;
             this.pushbackVector.y = -knockbackForce;
         }
@@ -263,12 +258,12 @@ class Zombie {
     };
 
     draw(ctx) {
-        // Calculate shadow dimensions based on zombie scale
-        const shadowWidth = 40 * (this.scale / 2.6); // 2.6 is default scale
+        // Calculate shadow dimensions based on enemy scale
+        const shadowWidth = 40 * (this.scale / 2.6); 
         const shadowHeight = 16 * (this.scale / 2.6);
 
-        const shadowX = (this.x + (18 * (this.scale / 2.6))) - this.game.camera.x;
-        const shadowY = (this.y + (77 * (this.scale / 2.6))) - this.game.camera.y;
+        const shadowX = (this.x + (64 * (this.scale / 2.6))) - this.game.camera.x;
+        const shadowY = (this.y + (120 * (this.scale / 2.6))) - this.game.camera.y;
 
         ctx.drawImage(this.shadow, 0, 0, 64, 32, shadowX, shadowY, shadowWidth, shadowHeight);
 
@@ -282,15 +277,7 @@ class Zombie {
         } else {
             this.animations[this.state][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale); 
         }
-        //used to indicate the path/direction the ghoul is going towards. (line 131 and 132);
-        // ctx.strokeStyle = 'Green';
-
-        // ctx.strokeRect(this.BB.x + 15- this.game.camera.x, this.BB.y- this.game.camera.y, 20, 20);
-
-        // const player = this.game.adventurer;
-        // ctx.strokeRect(player.BB.x + 6 - this.game.camera.x, player.BB.y- this.game.camera.y, 20, 20);
-
-        this.healthbar.draw(ctx);
+        
         ctx.strokeStyle = 'Yellow';
         ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
 

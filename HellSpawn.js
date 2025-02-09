@@ -7,6 +7,8 @@ class HellSpawn {
         this.scale = 2.8;
         this.speed = 100;
         this.chargeSpeed = 1500;
+        this.bitSizeX = 64;
+        this.bitSizeY = 64;
 
         this.health = 20;
         this.attackPower = 10;
@@ -49,7 +51,12 @@ class HellSpawn {
 
 
     updateBB() {
-        this.BB = new BoundingBox((this.x + 64), (this.y + 17), 64 + 32, 64 + 35);
+        const width = this.bitSizeX * this.scale * 0.5;  // Adjust scaling factor if needed
+        const height = this.bitSizeY * this.scale * 0.5; // Adjust scaling factor if needed
+        const offsetX = (this.bitSizeX * this.scale - width) / 2 + 10; // Center adjustment
+        const offsetY = (this.bitSizeY * this.scale - height) / 2 + 10; // Adjust Y position if needed
+    
+        this.BB = new BoundingBox(this.x + offsetX, this.y + offsetY, width, height);
     }
 
     loadAnimation() {
@@ -87,9 +94,6 @@ class HellSpawn {
         this.deadAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn.png"), 64, 192, 64, 64, 6.9, 0.15, false, false);
     }
 
-    updateBB() {
-        this.BB = new BoundingBox((this.x), (this.y), 64 + 32, 64 + 35);
-    }
 
 
     update () {
@@ -125,8 +129,8 @@ class HellSpawn {
         const player = this.game.adventurer;
 
         // Calculate distance to player
-        const dx = player.x - this.x;
-        const dy = player.y - this.y;
+        const dx = (player.x + (player.bitSize * player.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2); 
+        const dy = (player.y + (player.bitSize * player.scale)/2) - (this.y + (this.bitSizeY * this.scale)/2);
         const distance = Math.sqrt(dx * dx + dy * dy);
     
         // Charge timer and mechanism
@@ -159,14 +163,14 @@ class HellSpawn {
                 //Calculate charge direction and target point
                 const chargeDistance = 300; //Adjust this value to control how far HellSpawn goes past the player
                 this.chargeDirection = {
-                    x: (player.x - this.x) / distance,
-                    y: (player.y - this.y) / distance
+                    x: (this.game.adventurer.x + (this.game.adventurer.bitSize * this.game.adventurer.scale)/2- (this.x + (this.bitSizeX * this.scale)/2)) / distance,
+                    y: (this.game.adventurer.y + (this.game.adventurer.bitSize * this.game.adventurer.scale)/2 - (this.y + (this.bitSizeY * this.scale)/2)) / distance
                 };
 
                 // Extend the charge target beyond the player's position
                 this.chargeTarget = {
-                    x: player.x + this.chargeDirection.x * chargeDistance,
-                    y: player.y + this.chargeDirection.y * chargeDistance
+                    x: this.game.adventurer.x + (this.game.adventurer.bitSize * this.game.adventurer.scale)/2 + this.chargeDirection.x * chargeDistance,
+                    y: this.game.adventurer.y + (this.game.adventurer.bitSize * this.game.adventurer.scale)/2 + this.chargeDirection.y * chargeDistance
                 };
             }
         }
@@ -179,15 +183,17 @@ class HellSpawn {
     
             // End charge if reached or passed target
             const currentDistanceToTarget = Math.sqrt(
-                (this.x - this.chargeTarget.x) ** 2 + 
-                (this.y - this.chargeTarget.y) ** 2
+                Math.pow((this.x + (this.bitSizeX * this.scale)/2) - this.chargeTarget.x, 2) + 
+                Math.pow((this.y + (this.bitSizeY * this.scale)/2) - this.chargeTarget.y, 2)
             );
     
             if (currentDistanceToTarget <= 10) {
                 this.isCharging = false;
                 this.state = 0;
             }
-        } else if (!this.isPreparingCharge) {
+        }
+        
+        else if (!this.isPreparingCharge) {
             //Normal movement when not charging or preparing
             const movement = this.speed * this.game.clockTick;
             this.x += (dx / distance) * movement;
@@ -250,6 +256,7 @@ class HellSpawn {
 
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
         this.health -= damage;
+        console.log(this.health);
 
         //damage to it when its preparing to charge will stop it from preparing to charge.
         if (this.isPreparingCharge) {
@@ -260,8 +267,8 @@ class HellSpawn {
 
         
         // Apply knockback
-        const dx = this.x - sourceX;
-        const dy = this.y - sourceY;
+        const dx = (this.x + (this.bitSizeX * this.scale)/2) - sourceX;
+        const dy = (this.y + (this.bitSizeY * this.scale)/2) - sourceY;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
 
@@ -295,18 +302,27 @@ class HellSpawn {
 
 
     draw(ctx) {
+       // Calculate shadow dimensions based on zombie scale
+       const shadowWidth = 70 * (this.scale / 2.8); // 2.6 is your default scale
+       const shadowHeight = 16 * (this.scale / 2.8);
+
+       // Adjust shadow position to stay centered under the zombie
+       const shadowX = (this.x + (64 * (this.scale / 2.8))) - this.game.camera.x;
+       const shadowY = (this.y + (150 * (this.scale / 2.8))) - this.game.camera.y;
+
+       ctx.drawImage(this.shadow, 0, 0, 64, 32, shadowX, shadowY, shadowWidth, shadowHeight);
+
+
+
         if (this.dead) {
             // Only draw shadow if death animation is still playing
            if (this.deathAnimationTimer > 0) {
-                ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 20) - this.game.camera.x, (this.y + 100) - this.game.camera.y, 70, 16); //draw a shadow underneath our character
-                this.deadAnimation.drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x - 50, this.y - this.game.camera.y - 50, this.scale);
+                this.deadAnimation.drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
            }
         } else if (this.isPlayingDamageAnimation) {
-            ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 20) - this.game.camera.x, (this.y + 100) - this.game.camera.y, 70, 16); //draw a shadow underneath our character
-            this.animations[2][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x - 50, this.y - this.game.camera.y - 50, this.scale);
+            this.animations[2][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
         } else {
-            ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 20) - this.game.camera.x, (this.y + 100) - this.game.camera.y, 70, 16); //draw a shadow underneath our character
-            this.animations[this.state][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x - 50, this.y - this.game.camera.y - 50, this.scale); 
+            this.animations[this.state][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale); 
         }
 
         //Add charge path indicator
@@ -317,33 +333,39 @@ class HellSpawn {
                 ctx.strokeStyle = this.isPreparingCharge ? 'rgba(255, 255, 0, 0.2)' : 'rgba(255, 0, 0, 0.2)';
                 ctx.lineWidth = 80; 
                 
-                //Start drawing from current HellSpawn position
+                //Start drawing from current HellSpawn position (middle of the image)
                 ctx.moveTo(
-                    this.x - this.game.camera.x + 50, 
-                    this.y - this.game.camera.y + 50
+                    (this.x + (this.bitSizeX * this.scale)/2) - this.game.camera.x, 
+                    (this.y + (this.bitSizeY * this.scale)/2) - this.game.camera.y
                 );
                 
                 //During charge preparation, line follows player. 
+
                 const targetX = this.isPreparingCharge 
-                    ? this.game.adventurer.x 
+                    ? this.game.adventurer.x + (this.game.adventurer.bitSize * this.game.adventurer.scale)/2
                     : this.chargeTarget.x;
                 const targetY = this.isPreparingCharge //if its not preparing charge, we're charging, which has chargetarget.y value
-                    ? this.game.adventurer.y
+                    ? this.game.adventurer.y + (this.game.adventurer.bitSize * this.game.adventurer.scale)/2
                     : this.chargeTarget.y;
                 
                 
                 //Draw line to target
                 ctx.lineTo(
-                    targetX - this.game.camera.x + 50, 
-                    targetY - this.game.camera.y + 50
+                    targetX - this.game.camera.x, 
+                    targetY - this.game.camera.y
                 );
                 
                 ctx.stroke();
                 ctx.restore();
         }
+        
+        ctx.strokeStyle = 'Green';
+        ctx.strokeRect((this.x + (this.bitSizeX * this.scale)/2) - this.game.camera.x, (this.y + (this.bitSizeY * this.scale)/2) - this.game.camera.y, 20, 20);
 
         ctx.strokeStyle = 'Yellow';
         ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+
+
     }
     
 

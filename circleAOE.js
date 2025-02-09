@@ -79,13 +79,16 @@ class CircleAOE { //this class will be for the sword slash entity. This will dam
             let entity = entities[i];
             //mobs/enemies
             if (this.friendly) {
-                if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul || entity instanceof FreakyGhoul || entity instanceof HellSpawn || entity instanceof BanditNecromancer || entity instanceof Necromancer) 
+                if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul || entity instanceof FreakyGhoul || entity instanceof HellSpawn 
+                        || entity instanceof BanditNecromancer || entity instanceof Necromancer || entity instanceof RatMage || entity instanceof FoxMage || entity instanceof Imp
+                        || entity instanceof Crow) 
                     && !entity.dead) {
                     // Only apply damage if we haven't hit this mob yet
                     if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
                         // Add the zombie to our hit set
                         this.hitEntities.add(entity);
-                        
+                        this.game.camera.cameraShake(40);
+
                         //Calculate the knockback TRUE CENTER of the slash circle for knockback source
     
                         //Pass the center coordinates for knockback calculation and Apply damage and trigger damage state
@@ -95,6 +98,13 @@ class CircleAOE { //this class will be for the sword slash entity. This will dam
                 }
     
                 if ((entity instanceof Barrel || entity instanceof Crate || entity instanceof Pot)) { 
+                    if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
+                        this.hitEntities.add(entity);
+                        entity.takeDamage(this.attackDamage);
+                    }
+                }
+            } else {
+                if ((entity instanceof Adventurer)) {
                     if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
                         this.hitEntities.add(entity);
                         entity.takeDamage(this.attackDamage);

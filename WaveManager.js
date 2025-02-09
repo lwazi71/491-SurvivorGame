@@ -124,6 +124,31 @@ class WaveManager {
         this.game.addEntity(zombie);
     }
 
+    spawnMiniBossZombie() {
+        const spawnPos = this.getValidSpawnPosition(); //make sure the zombie spawns out of the camera
+        
+        const zombie = new Zombie(
+            this.game, 
+            spawnPos.x, 
+            spawnPos.y
+        );
+        
+        // Scale zombie stats based on wave number
+        zombie.health *= 2;
+        zombie.attackPower *= 2;
+        zombie.speed *= 1.3;
+        zombie.scale *= 1.5;
+
+        this.game.addEntity(zombie);
+    }
+
+    // spawnMiniBoss(enemy) { //we'll pass in a enemy object in here. Should be passed in with the random coordinates already.
+    //     // const spawnPos = this.getValidSpawnPosition(); //make sure the zombie spawns out of the camera
+        
+    //     enemy.health *= 2;
+    //     enemy.attackPower *= 2;
+    // }
+
     
     spawnHellspawn() {
         const spawnPos = this.getValidSpawnPosition(); //make sure the zombie spawns out of the camera
@@ -146,8 +171,8 @@ class WaveManager {
         // Draw wave information
     //     ctx.font = '20px Arial';
     //     ctx.fillStyle = 'white';
-    //     ctx.fillText(`Wave: ${this.currentWave}`, 10, 30);
-    //     ctx.fillText(`Monsters Remaining: ${this.zombiesAlive}`, 10, 60);
+        ctx.fillText(`Wave: ${this.currentWave}`, 10, 240);
+        ctx.fillText(`Monsters Remaining: ${this.zombiesAlive}`, 10, 270);
         
     //     if (!this.waveInProgress) {
     //         ctx.fillText(`Next wave in: ${Math.ceil(this.waveTimer)}`, 10, 90);
