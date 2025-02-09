@@ -17,11 +17,7 @@ class ExperienceOrb {
         this.BB = new BoundingBox(this.x, this.y, 32, 32);
     };
     update() {
-<<<<<<< HEAD
-        this.target = {x: this.game.adventurer.x, y: this.game.adventurer.y};
-=======
         this.target = {x: this.game.adventurer.x, y: this.game.adventurer.y}; //(this.x + (this.bitSize * this.scale)/2)
->>>>>>> AlanBranch
         if (this.target != null && this.location != null) {
             if (this.target != this.location && getDistance(this.location, this.target) < this.radius) {
                 let deltaX = this.target.x - this.location.x;

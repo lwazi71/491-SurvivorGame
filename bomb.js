@@ -63,10 +63,7 @@ class Bomb {
         const centerY = this.y + (this.bitSize * this.scale) / 2;
 
         //48 x 48 explosion
-<<<<<<< HEAD
-=======
         this.game.camera.cameraShake(100);
->>>>>>> AlanBranch
         this.game.addEntity(new CircleAOE
             (this.game, centerX, centerY, "./Sprites/Explosion/explosion.png", null, this.explosionscale, this.damage, 0, this, true, 0, 0, 48, 48, 8, 0.1, false, false));
 

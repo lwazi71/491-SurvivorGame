@@ -4,11 +4,8 @@ class BanditNecromancer {
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
 
         this.bitSize = 32;
-<<<<<<< HEAD
-=======
         this.bitSizeX = 32;
         this.bitSizeY = 32;
->>>>>>> AlanBranch
         this.state = 0; //0 = idle, 1 = running, 2 = Casting, 3 = damage
         this.facing = 0; //0 = right, 1 = left
         this.scale = 2.8;
@@ -124,13 +121,8 @@ class BanditNecromancer {
         const player = this.game.adventurer;
         
         // Calculate distance to player
-<<<<<<< HEAD
-        const dx = player.x - this.x;
-        const dy = player.y - this.y;
-=======
         const dx = (player.x + (player.bitSize * player.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2); 
         const dy = (player.y + (player.bitSize * player.scale)/2) - (this.y + (this.bitSizeY * this.scale)/2);
->>>>>>> AlanBranch
         const distance = Math.sqrt(dx * dx + dy * dy);
     
         // Update facing direction
@@ -229,13 +221,8 @@ class BanditNecromancer {
         this.health -= damage;
         
         // Apply knockback
-<<<<<<< HEAD
-        const dx = this.x - sourceX;
-        const dy = this.y - sourceY;
-=======
         const dx = (this.x + (this.bitSizeX * this.scale)/2) - sourceX;
         const dy = (this.y + (this.bitSizeY * this.scale)/2) - sourceY;
->>>>>>> AlanBranch
         const distance = Math.sqrt(dx * dx + dy * dy);
 
 

@@ -30,12 +30,9 @@ class Zombie {
 
         this.dropchance = 0.4; //40% chance of dropping something when dying
 
-<<<<<<< HEAD
-=======
         this.bitSizeX = 32;
         this.bitSizeY = 32;
 
->>>>>>> AlanBranch
 
         this.animations = []; //will be used to store animations
 
@@ -137,13 +134,8 @@ class Zombie {
 
         //Where on the player or near the player the zombie will be going towards
         //
-<<<<<<< HEAD
-        const dx = (player.BB.x + 6) - (this.BB.x + 20); 
-        const dy = player.BB.y - this.BB.y;
-=======
         const dx = (player.x + (player.bitSize * player.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2); 
         const dy = (player.y + (player.bitSize * player.scale)/2) - (this.y + (this.bitSizeY * this.scale)/2);
->>>>>>> AlanBranch
     
         //Calculate the distance to the player.
         const distance = Math.sqrt(dx * dx + dy * dy);
@@ -223,13 +215,8 @@ class Zombie {
         this.health -= damage;
         
         // Apply knockback
-<<<<<<< HEAD
-        const dx = this.x - sourceX;
-        const dy = this.y - sourceY;
-=======
         const dx = (this.x + (this.bitSizeX * this.scale)/2) - sourceX;
         const dy = (this.y + (this.bitSizeY * this.scale)/2) - sourceY;
->>>>>>> AlanBranch
         const distance = Math.sqrt(dx * dx + dy * dy);
 
 

@@ -2,11 +2,8 @@ class BlueGhoul {
     constructor (game, x, y) {
         Object.assign(this, {game, x, y});
 
-<<<<<<< HEAD
-=======
         this.bitSizeX = 64;
         this.bitSizeY = 64;
->>>>>>> AlanBranch
         this.state = 0; //0 = idle, 1 = walking, 2 = attack, 3 = damaged
         this.facing = 0; //0 = right, 1 = left
         this.attackPower = 5;
@@ -139,13 +136,8 @@ class BlueGhoul {
         const player = this.game.adventurer; // Reference to the player character
 
         // Calculate the direction vector to the player
-<<<<<<< HEAD
-        const dx = player.x - (this.x + 44);
-        const dy = player.y - (this.y + 30);
-=======
         const dx = (player.x + (player.bitSize * player.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2); 
         const dy = (player.y + (player.bitSize * player.scale)/2) - (this.y + (this.bitSizeY * this.scale)/2);
->>>>>>> AlanBranch
     
         // Calculate the distance to the player
         const distance = Math.sqrt(dx * dx + dy * dy);
@@ -177,11 +169,7 @@ class BlueGhoul {
         const entities = this.game.entities;
         for (let i = 0; i < entities.length; i++) {
             let entity = entities[i];
-<<<<<<< HEAD
-            if (entity instanceof Zombie && entity !== this) {
-=======
             if (entity instanceof BlueGhoul && entity !== this) {
->>>>>>> AlanBranch
                 const dx = entity.x - this.x;
                 const dy = entity.y - this.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
@@ -244,13 +232,8 @@ class BlueGhoul {
         this.health -= damage;
         
         // Apply knockback
-<<<<<<< HEAD
-        const dx = this.x - sourceX + 22;
-        const dy = this.y - sourceY + 22;
-=======
         const dx = (this.x + (this.bitSizeX * this.scale)/2) - sourceX;
         const dy = (this.y + (this.bitSizeY * this.scale)/2) - sourceY;
->>>>>>> AlanBranch
         const distance = Math.sqrt(dx * dx + dy * dy);
 
 
@@ -299,14 +282,8 @@ class BlueGhoul {
         }
 
         //used to indicate the path the ghoul is going towards. (line 132 and 133);
-<<<<<<< HEAD
-        // ctx.strokeStyle = 'Green';
-
-        // ctx.strokeRect(this.x + 44 - this.game.camera.x, this.y + 30 - this.game.camera.y, 20, 20);
-=======
           ctx.strokeStyle = 'Green';
         ctx.strokeRect((this.x + (this.bitSizeX * this.scale)/2) - this.game.camera.x, (this.y + (this.bitSizeY * this.scale)/2) - this.game.camera.y, 20, 20);
->>>>>>> AlanBranch
 
         // const player = this.game.adventurer;
         // ctx.strokeRect(player.x - this.game.camera.x, player.y - this.game.camera.y, 20, 20);

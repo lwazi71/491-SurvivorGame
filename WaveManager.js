@@ -12,10 +12,6 @@ class WaveManager {
         this.spawnBuffer = 100; //Extra distance from screen edge for spawning
     }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> AlanBranch
     /**
      * //will spawn the mob outside the camera.
      * @returns the x and y coordinate of where the zombie will spawn (should be outside the player camera)
@@ -150,13 +146,8 @@ class WaveManager {
         // Draw wave information
     //     ctx.font = '20px Arial';
     //     ctx.fillStyle = 'white';
-<<<<<<< HEAD
-    //     ctx.fillText(`Wave: ${this.currentWave}`, 10, 30);
-    //     ctx.fillText(`Monsters Remaining: ${this.zombiesAlive}`, 10, 60);
-=======
         ctx.fillText(`Wave: ${this.currentWave}`, 10, 240);
         ctx.fillText(`Monsters Remaining: ${this.zombiesAlive}`, 10, 270);
->>>>>>> AlanBranch
         
     //     if (!this.waveInProgress) {
     //         ctx.fillText(`Next wave in: ${Math.ceil(this.waveTimer)}`, 10, 90);
