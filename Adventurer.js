@@ -53,7 +53,7 @@ class Adventurer { //every entity should have update and draw!
         this.attackDuration = 0.56;  // Duration of attack animation
         this.attackTimer = 0;
         this.canAttack = true;
-        this.attackCooldown = 0.4;   //Time between attacks. Most it could go down is 0.56 because of the animation attackDuration 
+        this.attackCooldown = 0.6;   //Time between attacks.
         this.attackCooldownTimer = 0;
         this.slashType = 0; //0 = default right slash animation, 1 = up animation
         this.slashDistance = 27; //Distance from character center to slash
@@ -107,6 +107,10 @@ class Adventurer { //every entity should have update and draw!
         this.experienceToNextLvl = 100;
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
 
+        this.pushbackVector = { x: 0, y: 0 };
+        this.pushbackDecay = 0.9; // Determines how quickly the pushback force decays
+
+        this.entityOrder = 98;
 
         this.elapsedTime = 0;
         this.updateBB(); //put the boundary on player right away
@@ -141,7 +145,7 @@ class Adventurer { //every entity should have update and draw!
         }
 
         //idle right
-         this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 0, 32, 32, 12.9, 0.2, false, true);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 0, 32, 32, 12.9, 0.2, false, true);
 
 
         //idle left 
@@ -153,16 +157,16 @@ class Adventurer { //every entity should have update and draw!
         this.animations[0][3] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/WalkingDown.png"), 93, 0, 32, 32, 0.9, 0.12, false, false);
 
         //walking right 
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 32, 32, 32, 7.9, 0.12, false, false);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 32, 32, 32, 7.9, 0.08, false, false);
 
         //walking left 
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 288, 32, 32, 7.9, 0.12, false, true); 
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 288, 32, 32, 7.9, 0.08, false, true); 
 
         //walking up 
-        this.animations[1][2] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/WalkingUp.png"), 0, -1.5, 32, 32, 7.9, 0.12, false, false);
+        this.animations[1][2] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/WalkingUp.png"), 0, -1.5, 32, 32, 7.9, 0.08, false, false);
 
         //walking down
-        this.animations[1][3] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/WalkingDown.png"), -3, -2, 32, 32, 7.9, 0.12, false, false);
+        this.animations[1][3] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/WalkingDown.png"), -3, -2, 32, 32, 7.9, 0.08, false, false);
 
         //jump right/up
         this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 160, 32, 32, 5.9, 0.08, false, false);
@@ -340,6 +344,18 @@ class Adventurer { //every entity should have update and draw!
                 this.velocity.x = 0;
             }
             this.updateFacing(this.velocity);
+        }
+
+        if (!this.dead) {
+            // Apply knockback effect
+
+            this.x += this.pushbackVector.x * this.game.clockTick;
+            this.y += this.pushbackVector.y * this.game.clockTick;
+
+            // Decay the pushback vector
+            this.pushbackVector.x *= this.pushbackDecay;
+            this.pushbackVector.y *= this.pushbackDecay;
+
         }
 
         //COOLDOWN TRACKING SECTION --------------------------------
@@ -815,8 +831,46 @@ class Adventurer { //every entity should have update and draw!
                 }
             }
         }
-  
     }
+
+    //method used for bosses/mini bosses. Added this because felt lazy to implement/edit the takeDamage method 
+    takeDamageKnockback(amount, knockbackForce, sourceX, sourceY){
+        if (!this.invincible) {
+            // Apply knockback
+            const dx = (this.x + (this.bitSize * this.scale)/2) - sourceX;
+            const dy = (this.y + (this.bitSize * this.scale)/2) - sourceY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+
+            if (distance > 0) {
+                this.pushbackVector.x = (dx / distance) * knockbackForce;
+                this.pushbackVector.y = (dy / distance) * knockbackForce;
+            } else {
+                // Default knockback direction (e.g., upward) in case the zombie and source overlap
+                this.pushbackVector.x = 0;
+                this.pushbackVector.y = -knockbackForce;
+            }
+
+            console.log(this.health);
+            this.health -= amount;
+            if (this.health <= 0) {
+                this.dead = true;
+                console.log("Player is dead!");
+               // ASSET_MANAGER.pauseBackgroundMusic();
+            } else {
+                this.state = 10;
+                this.invincible = true;
+                this.isPlayingDamageAnimation = true;
+                this.damageAnimationTimer = this.damageAnimationDuration;
+                if (this.facing === 0 || this.facing === 2) {
+                    this.animations[10][0].elapsedTime = 0;
+                } else {
+                    this.animations[10][1].elapsedTime = 0;
+                }
+            }
+        }
+    }
+    
     levelUp() {
         if (this.experience >= this.experienceToNextLvl) {
             this.level++;

@@ -33,6 +33,8 @@ class Zombie {
         this.bitSizeX = 32;
         this.bitSizeY = 32;
 
+        this.entityOrder = 10;
+
 
         this.animations = []; //will be used to store animations
 

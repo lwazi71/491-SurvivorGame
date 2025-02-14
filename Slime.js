@@ -1,14 +1,13 @@
-class HellSpawn {
+class Slime {
     constructor (game, x, y) {
         Object.assign(this, {game, x, y});
 
         this.state = 0; //0 = idle/walking, 1 = charge, 2 = damage
-        this.facing = 0; //0 = right, 1 = left
-        this.scale = 2.8;
+        this.scale = 5;
         this.speed = 100;
         this.chargeSpeed = 1500;
-        this.bitSizeX = 64;
-        this.bitSizeY = 64;
+        this.bitSizeX = 26;
+        this.bitSizeY = 18;
 
         this.health = 20;
         this.attackPower = 10;
@@ -17,10 +16,12 @@ class HellSpawn {
 
         this.canKnockback = true;
         this.isCharging = false;
-        this.chargingDamage = 50;
+        this.chargingDamage = 25;
         this.chargePrepTime = 3;
         this.isPreparingCharge = false
         this.chargeCooldown = 3; //Charge every 3 seconds
+
+        this.chargeRange = 500;
 
 
 
@@ -30,17 +31,18 @@ class HellSpawn {
 
 
         this.dead = false;
-        this.deathAnimationTimer = 5 * 0.15;
+        this.deathAnimationTimer = 4 * 0.15;
 
         this.pushbackVector = { x: 0, y: 0 };
         this.pushbackDecay = 0.9; // Determines how quickly the pushback force decays
 
         this.dropchance = 0.4; //40% chance of dropping something when dying
 
-        this.entityOrder = 30;
 
         
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
+
+        this.entityOrder = 30;
 
 
         this.animations = []; //will be used to store animations
@@ -52,47 +54,32 @@ class HellSpawn {
 
 
     updateBB() {
-        const width = this.bitSizeX * this.scale * 0.5;  // Adjust scaling factor if needed
-        const height = this.bitSizeY * this.scale * 0.5; // Adjust scaling factor if needed
-        const offsetX = (this.bitSizeX * this.scale - width) / 2 + 10; // Center adjustment
-        const offsetY = (this.bitSizeY * this.scale - height) / 2 + 10; // Adjust Y position if needed
+        const width = this.bitSizeX * this.scale * 0.45;  // Adjust scaling factor if needed
+        const height = this.bitSizeY * this.scale * 0.4; // Adjust scaling factor if needed
+        const offsetX = (this.bitSizeX * this.scale - width) / 2 + 15; // Center adjustment
+        const offsetY = (this.bitSizeY * this.scale - height) / 2 + 15; // Adjust Y position if needed
     
         this.BB = new BoundingBox(this.x + offsetX, this.y + offsetY, width, height);
     }
 
     loadAnimation() {
-        for (var i = 0; i < 4; i++) {
+        for (var i = 0; i < 3; i++) {
             this.animations.push([]);
-            for (var j = 0; j < 2; j++) {
-                this.animations[i].push([]);
-            }
         }
         //Had to make some adjustments with where to start on spritesheet to make it look correct.
 
         //LOOKNG RIGHT
         //idle/walking, looking to the right
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn.png"), 0, 0, 64, 64, 5.9, 0.2, false, false);
+        this.animations[0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Slime/slime.png"), 0, 0, 26, 17, 2, 0.5, false, false);
 
         //Charge, to the right
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn.png"), 0, 64, 64, 64, 5.3, 0.05, false, false);
+        this.animations[1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Slime/slime.png"), 0, 0, 26, 17, 1.9, 0.07, false, false);
 
         //Damaged, to the right
-        this.animations[2][0] =  new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn.png"), 64, 128, 64, 64, 3, 0.2, false, false); //wanna start at where the zombie turns white or else there'll be a delay
-
-        
-
-        //LOOKING LEFT
-        //Walking/Idle, looking left
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn-Flipped.png"), 128, 0, 64, 64, 5.9, 0.09, true, false);
-
-        //Charge, to the left
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn-Flipped.png"), 135, 64, 64, 64, 5.8, 0.05, true, false);
-
-        //Damaged, to the left
-        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn-Flipped.png"), 256, 128, 64, 64, 3, 0.2, true, false);
+        this.animations[2] =  new Animator(ASSET_MANAGER.getAsset("./Sprites/Slime/slime.png"), 0, 17, 26, 17, 1, 0.2, false, false); 
 
         //death animation
-        this.deadAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn.png"), 64, 192, 64, 64, 6.9, 0.15, false, false);
+        this.deadAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Slime/slime.png"), 0, 33, 26, 17, 4, 0.15, false, false);
     }
 
 
@@ -130,8 +117,8 @@ class HellSpawn {
         const player = this.game.adventurer;
 
         // Calculate distance to player
-        const dx = (player.x + (player.bitSize * player.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2); 
-        const dy = (player.y + (player.bitSize * player.scale)/2) - (this.y + (this.bitSizeY * this.scale)/2);
+        const dx = (player.x + (player.bitSize * player.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2 + 4); 
+        const dy = (player.y + (player.bitSize * player.scale)/2) - (this.y + (this.bitSizeY * this.scale)/2 + 2);
         const distance = Math.sqrt(dx * dx + dy * dy);
     
         // Charge timer and mechanism
@@ -139,10 +126,9 @@ class HellSpawn {
 
         if (distance > 2 && !this.isPreparingCharge && !this.isCharging) {
             this.state = 0; //Walking/idle.
-            this.facing = dx < 0 ? 1 : 0; // 1 = left, 0 = right
         } 
     
-        if (this.chargeTimer >= this.chargeCooldown && !this.isCharging) {
+        if (this.chargeTimer >= this.chargeCooldown && !this.isCharging && distance <= this.chargeRange) { //maybe we can set range here?
             // Enter charge preparation state
             if (!this.isPreparingCharge) {
                 this.isPreparingCharge = true;
@@ -154,7 +140,7 @@ class HellSpawn {
         if (this.isPreparingCharge) {
           // Countdown preparation time
             this.chargePrepTimer -= this.game.clockTick;
-            this.facing = dx < 0 ? 1 : 0; // 1 = left, 0 = right
+            
             if (this.chargePrepTimer <= 0) {
                 // Initiate actual charge
                 this.isPreparingCharge = false;
@@ -162,7 +148,7 @@ class HellSpawn {
                 this.chargeTimer = 0;
 
                 //Calculate charge direction and target point
-                const chargeDistance = 300; //Adjust this value to control how far HellSpawn goes past the player
+                const chargeDistance = 300; //Adjust this value to control how far enemy goes past the player
                 this.chargeDirection = {
                     x: (this.game.adventurer.x + (this.game.adventurer.bitSize * this.game.adventurer.scale)/2- (this.x + (this.bitSizeX * this.scale)/2)) / distance,
                     y: (this.game.adventurer.y + (this.game.adventurer.bitSize * this.game.adventurer.scale)/2 - (this.y + (this.bitSizeY * this.scale)/2)) / distance
@@ -204,7 +190,7 @@ class HellSpawn {
 
         //collision
         const entities = this.game.entities;
-        const separationDistance = 600; // Minimum distance between hellspawns
+        const separationDistance = 600; // Minimum distance between enemy
 
         for (let i = 0; i < entities.length; i++) {
             let entity = entities[i];
@@ -221,7 +207,7 @@ class HellSpawn {
                 }
             }
             //make sure its not charging. If we dont do this, one of them will keep on charging forever
-            if (entity instanceof HellSpawn && !this.isCharging && entity !== this) {
+            if (entity instanceof Slime && !this.isCharging && entity !== this) {
                 const dx = entity.x - this.x;
                 const dy = entity.y - this.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
@@ -239,8 +225,8 @@ class HellSpawn {
         }
  
            // Reduce attack cooldown timer
-           //this is used for every HellSpawn attack. Makes 
-           //sure a HellSpawn hits player once every second instead of every tick.
+           //this is used for every attack. Makes 
+           //sure the enemy hits player once every second instead of every tick.
            if (this.attackCooldownTimer > 0) { 
                 this.attackCooldownTimer -= this.game.clockTick;
             }
@@ -268,8 +254,8 @@ class HellSpawn {
 
         
         // Apply knockback
-        const dx = (this.x + (this.bitSizeX * this.scale)/2) - sourceX;
-        const dy = (this.y + (this.bitSizeY * this.scale)/2) - sourceY;
+        const dx = (this.x + (this.bitSizeX * this.scale)/2 + 4) - sourceX;
+        const dy = (this.y + (this.bitSizeY * this.scale)/2 + 2) - sourceY;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
 
@@ -293,23 +279,19 @@ class HellSpawn {
             this.state = 2;
             this.isPlayingDamageAnimation = true;
             this.damageAnimationTimer = this.damageAnimationDuration;
-            if (this.facing === 0) {
-                this.animations[2][0].elapsedTime = 0;
-            } else {
-                this.animations[2][1].elapsedTime = 0;
-            }
+            this.animations[2].elapsedTime = 0;
+            this.animations[2].elapsedTime = 0;
         }
     }
 
 
     draw(ctx) {
-       // Calculate shadow dimensions based on zombie scale
-       const shadowWidth = 70 * (this.scale / 2.8); // 2.6 is your default scale
-       const shadowHeight = 16 * (this.scale / 2.8);
+       const shadowWidth = 84 * (this.scale / 5);
+       const shadowHeight = 16 * (this.scale / 5);
 
        // Adjust shadow position to stay centered under the zombie
-       const shadowX = (this.x + (64 * (this.scale / 2.8))) - this.game.camera.x;
-       const shadowY = (this.y + (150 * (this.scale / 2.8))) - this.game.camera.y;
+       const shadowX = (this.x + (38 * (this.scale / 5))) - this.game.camera.x;
+       const shadowY = (this.y + (75 * (this.scale / 5))) - this.game.camera.y;
 
        ctx.drawImage(this.shadow, 0, 0, 64, 32, shadowX, shadowY, shadowWidth, shadowHeight);
 
@@ -321,9 +303,9 @@ class HellSpawn {
                 this.deadAnimation.drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
            }
         } else if (this.isPlayingDamageAnimation) {
-            this.animations[2][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
+            this.animations[2].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
         } else {
-            this.animations[this.state][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale); 
+            this.animations[this.state].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale); 
         }
 
         //Add charge path indicator
@@ -334,9 +316,9 @@ class HellSpawn {
                 ctx.strokeStyle = this.isPreparingCharge ? 'rgba(255, 255, 0, 0.2)' : 'rgba(255, 0, 0, 0.2)';
                 ctx.lineWidth = 80; 
                 
-                //Start drawing from current HellSpawn position (middle of the image)
+                //Start drawing from current enemy position (middle of the image)
                 ctx.moveTo(
-                    (this.x + (this.bitSizeX * this.scale)/2) - this.game.camera.x, 
+                    (this.x + (this.bitSizeX * this.scale)/2 + 14) - this.game.camera.x, 
                     (this.y + (this.bitSizeY * this.scale)/2) - this.game.camera.y
                 );
                 
@@ -360,11 +342,11 @@ class HellSpawn {
                 ctx.restore();
         }
         
-        ctx.strokeStyle = 'Green';
-        ctx.strokeRect((this.x + (this.bitSizeX * this.scale)/2) - this.game.camera.x, (this.y + (this.bitSizeY * this.scale)/2) - this.game.camera.y, 20, 20);
+        // ctx.strokeStyle = 'Green';
+        // ctx.strokeRect((this.x + (this.bitSizeX * this.scale)/2) + 4 - this.game.camera.x, (this.y + (this.bitSizeY * this.scale)/2) + 2 - this.game.camera.y, 20, 20);
 
-        ctx.strokeStyle = 'Yellow';
-        ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        // ctx.strokeStyle = 'Yellow';
+        // ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
 
 
     }

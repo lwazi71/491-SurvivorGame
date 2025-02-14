@@ -1,25 +1,25 @@
-class RatMage {
+class Wizard {
     constructor(game, x, y) {
         Object.assign(this, {game, x, y});
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");
 
-        this.bitSizeX = 32;
-        this.bitSizeY = 32;
-        this.bitSize = 32;
+        this.bitSizeX = 128;
+        this.bitSizeY = 128;
+        this.bitSize = 128;
 
         this.state = 0; //0 = idle, 1 = running, 2 = Casting, 3 = damage
         this.facing = 0; //0 = right, 1 = left
-        this.scale = 2.8;
+        this.scale = 2;
         this.speed = 70;
     
-        this.range = 400; //Shooting range (range until our mage doing AOE attack on player)
+        this.range = 400; //Shooting range (range until our enemy doing AOE attack on player)
         this.shootCooldown = 6; //Shoot every 8 seconds
         this.shootTimer = 0; 
         this.castSpeed = 400;
-        this.castDuration = 5.9 * 0.1; 
+        this.castDuration = 6.9 * 0.1; 
         this.castTimer = 0;
         this.damage = 33;
-        this.collisionDamage = 2;
+        this.collisionDamage = 14;
         
         this.health = 25;
         this.dead = false;
@@ -33,7 +33,7 @@ class RatMage {
         this.aoeTargetY = (this.game.adventurer.y + (this.game.adventurer.bitSize * this.game.adventurer.scale)/2);
         this.aoeAttackDelay = 0; // Delay before actual AOE attack
         this.aoeAttackDelayDuration = 1;
-        this.aoeScale = 100; 
+        this.aoeScale = 170; 
         this.circleAOE = 5; //radius
 
         this.isPreparingAOE = false; 
@@ -46,13 +46,13 @@ class RatMage {
         this.attackCooldownTimer = 0;
 
         this.damageAnimationTimer = 0;
-        this.damageAnimationDuration = 2.9 * 0.2;
+        this.damageAnimationDuration = 1 * 0.2;
         this.isPlayingDamageAnimation = false;
+
+        this.dropchance = 0.4;
 
         this.entityOrder = 25;
 
-
-        this.dropchance = 0.4;
 
         this.animations = [];
 
@@ -69,39 +69,39 @@ class RatMage {
         }
         //RIGHT
         //idle
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage.png"), 0, 0, 32, 32, 7.9, 0.2, false, false);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Wizard/Idle.png"), 0, 0, 128, 128, 7.9, 0.2, false, false);
 
         //walking
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage.png"), 0, 32, 32, 32, 7.9, 0.1, false, false);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Wizard/Walk.png"), 0, 0, 128, 128, 6.9, 0.1, false, false);
 
         //casting
-        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage.png"), 0, 96, 32, 32, 5.9, 0.1, false, false);
+        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Wizard/Cast.png"), -8, 0, 128, 128, 6.9, 0.1, false, false);
 
         //damaged
-        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage.png"), 32, 128, 32, 32, 2.9, 0.2, false, false);
+        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Wizard/Hurt.png"), 0, 0, 128, 128, 1, 0.2, false, false);
 
         //LEFT
         //idle
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage-Flipped.png"), 4, 0, 32, 32, 7.9, 0.2, true, false);
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Wizard/Idle-flipped.png"), 0, 0, 128, 128, 7.9, 0.2, true, false);
 
         //running
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage-Flipped.png"), 4, 32, 32, 32, 7.9, 0.1, true, false);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Wizard/Walk-flipped.png"), 20, 0, 128, 128, 6.9, 0.1, true, false);
 
         //casting 
-        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage-Flipped.png"), 68, 96, 32, 32, 5.9, 0.1, true, false);
+        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Wizard/Cast-flipped.png"), 21, 0, 128, 128, 6.9, 0.1, true, false);
 
         //damaged
-        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage-Flipped.png"), 132, 128, 32, 32, 2.9, 0.2, true, false);
+        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Wizard/Hurt-flipped.png"), 384, 0, 128, 128, 1, 0.2, true, false);
     
         //death animation
-        this.death = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage.png"), 0, 160, 32, 32, 4, 0.1, false, false);
+        this.death = new Animator(ASSET_MANAGER.getAsset("./Sprites/Wizard/Dead.png"), 0, 0, 128, 128, 4, 0.1, false, false);
     }
 
     updateBB() {
-        const width = this.bitSizeX * this.scale * 0.5;  // Adjust scaling factor if needed
+        const width = this.bitSizeX * this.scale * 0.2;  // Adjust scaling factor if needed
         const height = this.bitSizeY * this.scale * 0.5; // Adjust scaling factor if needed
         const offsetX = (this.bitSizeX * this.scale - width) / 2; // Center adjustment
-        const offsetY = (this.bitSizeY * this.scale - height) / 2 + 20; // Adjust Y position if needed
+        const offsetY = (this.bitSizeY * this.scale - height) / 2 + 60; // Adjust Y position if needed
     
         this.BB = new BoundingBox(this.x + offsetX, this.y + offsetY, width, height);
     }
@@ -134,8 +134,8 @@ class RatMage {
 
          // Get player's position
          const player = this.game.adventurer;
-         const dx = (player.x + (player.bitSize * player.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2); 
-         const dy = (player.y + (player.bitSize * player.scale)/2) - (this.y + (this.bitSizeY * this.scale)/2);
+         const dx = (player.x + (player.bitSize * player.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2 - 10); 
+         const dy = (player.y + (player.bitSize * player.scale)/2) - (this.y + (this.bitSizeY * this.scale)/2 + 50);
          const distance = Math.sqrt(dx * dx + dy * dy);
  
          // Determine facing direction
@@ -190,8 +190,8 @@ class RatMage {
             this.aoeAttackDelay -= this.game.clockTick;
             if (this.aoeAttackDelay <= 0) {
                 this.game.addEntity(new CircleAOE(this.game, this.aoeTargetX, this.aoeTargetY , "./Sprites/Magic/magic.png", 
-                    null, 5, this.damage, 0, null, false, 
-                    0, 256, 64, 64, 9, 0.07, false, true))
+                    null, 8, this.damage, 0, null, false, 
+                    0, 384, 64, 64, 9, 0.07, false, true))
                 this.isPreparingAOE = false;
                 this.isAboutToAOE = false;
             }
@@ -206,7 +206,7 @@ class RatMage {
         const entities = this.game.entities;
         for (let i = 0; i < entities.length; i++) {
             let entity = entities[i];
-            if ((entity instanceof RatMage) && entity !== this) {
+            if ((entity instanceof Wizard) && entity !== this) {
                 const dx = entity.x - this.x;
                 const dy = entity.y - this.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
@@ -224,11 +224,11 @@ class RatMage {
     
             if (entity instanceof Adventurer) {
                 if (this.BB.collide(entity.BB) && !entity.invincible) {
-                    if (this.attackCooldownTimer <= 0) { //used so the necromancer wouldn't damage us every tick
+                    if (this.attackCooldownTimer <= 0) { //used so the enemy wouldn't damage us every tick
                         // Attack the player and reset cooldown timer
                         entity.takeDamage(this.collisionDamage);
                         this.attackCooldownTimer = this.attackCooldown; // Reset the cooldown timer
-                        console.log("Rat Mage attacked the player!");
+                        console.log("Wizard attacked the player!");
                     }
                 }
             }
@@ -242,8 +242,8 @@ class RatMage {
         this.health -= damage;
         
         // Apply knockback
-        const dx = (this.x + (this.bitSizeX * this.scale)/2) - sourceX;
-        const dy = (this.y + (this.bitSizeY * this.scale)/2) - sourceY;
+        const dx = (this.x + (this.bitSizeX * this.scale)/2 - 10) - sourceX;
+        const dy = (this.y + (this.bitSizeY * this.scale)/2 + 50) - sourceY;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
         if (distance > 0) {
@@ -276,11 +276,11 @@ class RatMage {
 
     draw(ctx) {
 
-        const shadowWidth = 32 * (this.scale / 2.8); 
+        const shadowWidth = 77 * (this.scale / 2); 
         const shadowHeight = 16 * (this.scale / 2.8);
 
-        const shadowX = (this.x + (27 * (this.scale / 2.8))) - this.game.camera.x;
-        const shadowY = (this.y + (77 * (this.scale / 2.8))) - this.game.camera.y;
+        const shadowX = (this.x + (84 * (this.scale / 2))) - this.game.camera.x;
+        const shadowY = (this.y + (253 * (this.scale / 2))) - this.game.camera.y;
 
         ctx.drawImage(this.shadow, 0, 0, 64, 32, shadowX, shadowY, shadowWidth, shadowHeight);
 
@@ -297,7 +297,7 @@ class RatMage {
         } else if (this.isPlayingDamageAnimation) {
             this.animations[3][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
         } else {        
-            // Draw mage
+            // Draw wizard
             this.animations[this.state][this.facing].drawFrame(
                 this.game.clockTick, 
                 ctx, 
@@ -336,7 +336,7 @@ class RatMage {
         ctx.stroke();
         ctx.restore();
         //debug
-        // ctx.strokeStyle = 'Green';
-        // ctx.strokeRect((this.x + (this.bitSizeX * this.scale)/2) - this.game.camera.x, (this.y + (this.bitSizeY * this.scale)/2) - this.game.camera.y, 20, 20);
+        ctx.strokeStyle = 'Green';
+        ctx.strokeRect((this.x + (this.bitSizeX * this.scale)/2 - 20) - this.game.camera.x, (this.y + (this.bitSizeY * this.scale)/2 + 50) - this.game.camera.y, 20, 20);
     }
 }

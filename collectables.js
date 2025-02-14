@@ -129,3 +129,10 @@ class CoinPile {
     }
 
 }
+
+
+class HealthPotion {
+    constructor(game, x, y, value) {
+        
+    }
+}

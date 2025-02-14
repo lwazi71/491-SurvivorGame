@@ -30,6 +30,7 @@ class BlueGhoul {
 
         this.dropchance = 0.4; //40% chance of dropping something when dying
 
+        this.entityOrder = 10;
 
         
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 

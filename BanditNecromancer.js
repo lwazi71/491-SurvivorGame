@@ -36,6 +36,9 @@ class BanditNecromancer {
 
         this.dropchance = 0.4;
 
+        this.entityOrder = 20;
+
+
         this.animations = [];
 
         this.updateBB();
@@ -161,7 +164,6 @@ class BanditNecromancer {
             //Start casting animation
             this.castTimer = this.castDuration; //ANIMATION
             
-
             //center of the character sprite and where the projectile will come out of
             const characterCenterX = this.x + (this.bitSize * this.scale) / 2;
             const characterCenterY = this.y + (this.bitSize * this.scale) / 2;

@@ -23,8 +23,8 @@ class CircleAOE { //this class will be for the sword slash entity. This will dam
         // Animation timing
         this.attackDuration = this.frameCount * frameDuration; // Duration in seconds
         this.attackTimer = this.attackDuration;
-
-
+    
+        this.entityOrder = 99;
     
         this.spriteWidth = this.animationSizeX;
         this.spriteHeight = this.animationSizeY;
@@ -81,7 +81,8 @@ class CircleAOE { //this class will be for the sword slash entity. This will dam
             if (this.friendly) {
                 if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul || entity instanceof FreakyGhoul || entity instanceof HellSpawn 
                         || entity instanceof BanditNecromancer || entity instanceof Necromancer || entity instanceof RatMage || entity instanceof FoxMage || entity instanceof Imp
-                        || entity instanceof Crow) 
+                        || entity instanceof Crow || entity instanceof Minotaur || entity instanceof GoblinMech || entity instanceof Cyclops || entity instanceof Slime 
+                        || entity instanceof Boar || entity instanceof Wizard || entity instanceof Goblin) 
                     && !entity.dead) {
                     // Only apply damage if we haven't hit this mob yet
                     if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {

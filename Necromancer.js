@@ -37,6 +37,9 @@ class Necromancer {
 
         this.dropchance = 0.4;
 
+        this.entityOrder = 20;
+
+
         this.animations = [];
 
         this.updateBB();

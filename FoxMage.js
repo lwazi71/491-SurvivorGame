@@ -36,6 +36,9 @@ class FoxMage {
         this.shouldShootAfterCast = false; // New flag to track if we should shoot after casting
 
 
+        this.entityOrder = 20;
+
+
         this.projectileCount = 10;
 
         this.dropchance = 0.4;

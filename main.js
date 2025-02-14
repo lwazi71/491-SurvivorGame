@@ -26,8 +26,8 @@ ASSET_MANAGER.queueDownload("./Sprites/Magic/magic.png");
 
 ASSET_MANAGER.queueDownload("./Sprites/Zombie/Zombie.png");
 ASSET_MANAGER.queueDownload("./Sprites/Zombie/Zombie-Flipped.png");
-
 ASSET_MANAGER.queueDownload("./Sprites/Cyclops/Cyclops.png")
+ASSET_MANAGER.queueDownload("./Sprites/Projectiles/rock.png")
 ASSET_MANAGER.queueDownload("./Sprites/Ghost/Ghost.png")
 ASSET_MANAGER.queueDownload("./Sprites/Ghost/Ghost-Flipped.png")
 ASSET_MANAGER.queueDownload("./Sprites/Ghoul/Blue_Ghoul-Flipped.png")
@@ -54,6 +54,34 @@ ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_walk-flipped.png");
 ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_attack-flipped.png");
 ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_damage-flipped.png");
 ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_death2.png");
+ASSET_MANAGER.queueDownload("./Sprites/Minotaur/Minotaur.png");
+ASSET_MANAGER.queueDownload("./Sprites/Goblin/GoblinMech.png");
+ASSET_MANAGER.queueDownload("./Sprites/Goblin/GoblinMech-flipped.png");
+ASSET_MANAGER.queueDownload("./Sprites/Slime/slime.png");
+ASSET_MANAGER.queueDownload("./Sprites/Boar/boar.png");
+ASSET_MANAGER.queueDownload("./Sprites/Boar/boar-flipped.png");
+
+ASSET_MANAGER.queueDownload("./Sprites/Wizard/Idle.png");
+ASSET_MANAGER.queueDownload("./Sprites/Wizard/Walk.png");
+ASSET_MANAGER.queueDownload("./Sprites/Wizard/Cast.png");
+ASSET_MANAGER.queueDownload("./Sprites/Wizard/Hurt.png");
+ASSET_MANAGER.queueDownload("./Sprites/Wizard/Idle-flipped.png");
+ASSET_MANAGER.queueDownload("./Sprites/Wizard/Walk-flipped.png");
+ASSET_MANAGER.queueDownload("./Sprites/Wizard/Cast-flipped.png");
+ASSET_MANAGER.queueDownload("./Sprites/Wizard/Hurt-flipped.png");
+ASSET_MANAGER.queueDownload("./Sprites/Wizard/Dead.png");
+
+ASSET_MANAGER.queueDownload("./Sprites/Goblin/Idle.png");
+ASSET_MANAGER.queueDownload("./Sprites/Goblin/Run.png");
+ASSET_MANAGER.queueDownload("./Sprites/Goblin/Attack.png");
+ASSET_MANAGER.queueDownload("./Sprites/Goblin/Hurt.png");
+ASSET_MANAGER.queueDownload("./Sprites/Goblin/Idle-flipped.png");
+ASSET_MANAGER.queueDownload("./Sprites/Goblin/Run-flipped.png");
+ASSET_MANAGER.queueDownload("./Sprites/Goblin/Attack-flipped.png");
+ASSET_MANAGER.queueDownload("./Sprites/Goblin/Hurt-flipped.png");
+ASSET_MANAGER.queueDownload("./Sprites/Goblin/Death.png");
+
+
 
 
 

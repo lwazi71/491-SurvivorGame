@@ -35,6 +35,7 @@ class Imp {
         this.isPlayingDamageAnimation = false;
         this.shouldShootAfterCast = false; // New flag to track if we should shoot after casting
 
+        this.entityOrder = 10;
 
         this.projectileCount = 10;
 

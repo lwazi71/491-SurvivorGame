@@ -25,6 +25,9 @@ class Crow {
         this.pushbackVector = { x: 0, y: 0 };
         this.pushbackDecay = 0.9; // Determines how quickly the pushback force decays
 
+
+        this.entityOrder = 10;
+
         
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  
 
