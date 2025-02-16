@@ -47,6 +47,12 @@ class Slime {
 
         this.animations = []; //will be used to store animations
 
+        this.isSlowed = false;
+        this.slowDuration = 0;
+        this.slowTimer = 0;
+        this.baseSpeed = this.speed;
+
+
         this.updateBB();
         this.loadAnimation();
     }
@@ -101,6 +107,16 @@ class Slime {
                 this.removeFromWorld = true;
             }
             return;
+        }
+
+        if (this.isSlowed) {
+            this.slowTimer += this.game.clockTick;
+            if (this.slowTimer >= this.slowDuration) {
+                // Reset speed when slow duration expires
+                this.speed = this.baseSpeed;
+                this.isSlowed = false;
+                this.slowTimer = 0;
+            }
         }
 
         // Apply pushback from previous damage. No knockback when charging.
@@ -222,6 +238,11 @@ class Slime {
                     this.y -= repelY;
                 }
             }
+            if (entity instanceof Lightning && entity.lightningOption === 1 && !this.isSlowed) {
+                if (entity.circle.BC.collidesWithBox(this.BB)) {
+                    this.applySlowEffect(this.game.adventurer.slowCooldown); 
+                }
+            }
         }
  
            // Reduce attack cooldown timer
@@ -282,6 +303,13 @@ class Slime {
             this.animations[2].elapsedTime = 0;
             this.animations[2].elapsedTime = 0;
         }
+    }
+
+    applySlowEffect(duration) {
+        this.isSlowed = true;
+        this.slowDuration = duration;
+        this.slowTimer = 0;
+        this.speed /= 2; // Reduce speed by half
     }
 
 

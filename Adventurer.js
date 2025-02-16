@@ -89,7 +89,7 @@ class Adventurer { //every entity should have update and draw!
 
 
         //BOMB PROPERTIES
-        this.bombDamage = 10;
+        this.bombDamage = 25;
         this.bombExpolsionScale = 10;
         this.bombTimer = 4;
         this.bombKnockback = 2000;
@@ -100,6 +100,31 @@ class Adventurer { //every entity should have update and draw!
         this.bombCurrentAmnt = 5;
         this.bombCooldownRetrieve = 5; //will be the cooldown for when will get another bomb back in their inventory.
         this.bombCooldownRetrieveTimer = 0; //the timer that will time that retrieve cooldown above.
+
+
+        //LIGHTNING PROPERTIES:
+        this.lightningMagic = false;
+        this.lightingDamage = 10;
+        this.lightningScale = 5;
+        this.lightningKnockback = 1000;
+        this.canLightning = true;
+        this.lightningCooldown = 2; //how much time between each lightning strike we can do
+        this.lightningCooldownTimer = 0;
+
+        //DARK-BOLT PROPERTIES:
+        this.canBolt = true; 
+        this.boltMagic = false; //if we currently are doing dark bolt magic
+        this.boltDamage = 7;
+        this.boltCooldown = 0.4; //how much time between each bolt strike we can do
+        this.boltCooldownTimer = 0;
+        this.boltMaxAmount = 6;
+        this.boltCurrentAmount = 6;
+        this.boltCooldownRetrieve = 10; //will be the cooldown for when will get another bolt back in their inventory.
+        this.boltCooldownRetrieveTimer = 0; //the timer that will time that retrieve cooldown above.
+        this.boltScale = 3;
+        this.slowCooldown = 7;
+
+        this.lightningOption = 0; //0 = normal lightning, 1 = Dark-Bolt lightning
 
         this.coins = 0;
         this.level = 1;
@@ -137,7 +162,7 @@ class Adventurer { //every entity should have update and draw!
 
     //helper functions
     loadAnimation() {
-        for (var i = 0; i < 12; i++) {
+        for (var i = 0; i < 13; i++) {
             this.animations.push([]);
             for (var j = 0; j < 4; j++) {
                 this.animations[i].push([]);
@@ -231,7 +256,10 @@ class Adventurer { //every entity should have update and draw!
 
         this.animations[11][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2Flipped.png"), 224, 320, 32, 32, 6, 0.1, false, false);
 
+        //magic animations, but hands up. Will be used for lightning
+        this.animations[12][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 0, 320, 32, 32, 6, 0.1, false, false);
 
+        this.animations[12][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2Flipped.png"), 224, 320, 32, 32, 6, 0.1, true, false);
 
         //death animation
         this.deadAnim = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 0, 448, 32, 32, 8, 0.12, false, false); 
@@ -240,7 +268,7 @@ class Adventurer { //every entity should have update and draw!
 
     updateFacing(velocityDirection) {
         //this is to make sure our attack animation doesnt get countered or canceled by the movement animation right away when we start attacking.
-        if (!this.attacking && !this.shooting && !this.magicking) {
+        if (!this.attacking && !this.shooting && !this.magicking && !this.lightningMagic && !this.boltMagic) {
             if (velocityDirection.x > 0) this.facing = 0, this.state = 1; //If we're moving in the positive x direction, we're going to the right. Change animation to walk right
             if (velocityDirection.x < 0) this.facing = 1, this.state = 1; 
             if (velocityDirection.y < 0) this.facing = 2, this.state = 1;
@@ -381,7 +409,6 @@ class Adventurer { //every entity should have update and draw!
             if (this.magicCooldownTimer <= 0) { //once cooldown ends
                 this.canMagic = true; //we can now do magic again!
             }
-            this.game.rightClicks = false;
         }
 
        //Track bomb cooldown
@@ -402,6 +429,30 @@ class Adventurer { //every entity should have update and draw!
                 this.bombCurrentAmnt++;
             }
         }
+
+        if (!this.canLightning) {
+            this.lightningCooldownTimer -= this.game.clockTick;
+            if (this.lightningCooldownTimer <= 0) {
+                this.canLightning = true;
+            }
+            this.game.rightClicks = false;
+        }
+
+        if (!this.canBolt) {
+            this.boltCooldownTimer -= this.game.clockTick;
+            if (this.boltCooldownTimer <= 0) { //once cooldown ends
+                this.canBolt = true; //we can now put bomb down again
+            }
+        }
+
+        if (this.boltCurrentAmount < this.boltMaxAmount) {
+            this.boltCooldownRetrieveTimer -= this.game.clockTick; 
+            if (this.boltCooldownRetrieveTimer <= 0) {
+                console.log("should be added once");
+                this.boltCooldownRetrieveTimer = this.boltCooldownRetrieve;
+                this.boltCurrentAmount++;
+            }
+        }
         //-------------------------------------------------------------
 
         if (this.game.keys["1"]) {
@@ -410,24 +461,6 @@ class Adventurer { //every entity should have update and draw!
             this.currentWeapon = 1;
         }
 
-
-        // if (this.game.leftClick && !this.attacking && this.canAttack && !this.rolling && this.currentWeapon == 0) {
-        //     console.log("we clicked left click!");
-        //     this.attack();
-        //     this.game.leftClick = false; //set back to false because it was going to be true the whole time
-        // } else if (this.currentWeapon == 0) {
-        //     // Clear left clicks if we can't sword attack
-        //     this.game.leftClick = false;
-        // }
-
-        // if (this.game.leftClick && !this.shooting && this.canShoot && !this.rolling && !this.attacking && this.currentWeapon == 1) {
-        //     console.log("we clicked left click!");
-        //     this.bowShoot();
-        //     this.game.leftClick = false;
-        // } else if (this.currentWeapon == 1) {
-        //     // Clear left clicks if we can't bow attack
-        //     this.game.leftClick = false;
-        // }
 
         // Handle sword attacks - only affected by sword cooldown
         if (this.currentWeapon == 0 && this.game.leftClick) {
@@ -446,14 +479,11 @@ class Adventurer { //every entity should have update and draw!
             this.game.leftClick = false;
         }
 
-        if (this.game.rightClicks && this.canMagic && !this.rolling) { //&& !this.shooting && !this.attacking if we dont want player to use magic during attack animation
+        if (this.game.keys["x"] && this.canMagic && !this.rolling) { //&& !this.shooting && !this.attacking if we dont want player to use magic during attack animation
             console.log("we clicked right click!")
             this.invincible = true;
             this.magicAOE();
-            this.game.rightClicks = false;
-        } else {
-            this.game.rightClicks = false;
-        }
+        } 
 
 
         if (this.game.keys["e"] && this.canBomb && !this.rolling && this.bombCurrentAmnt > 0) {
@@ -466,6 +496,24 @@ class Adventurer { //every entity should have update and draw!
             }
             this.canBomb = false;
             this.game.addEntity(new Bomb(this.game, characterCenterX - 50, characterCenterY -32, this.bombTimer, this.bombDamage, this.bombExpolsionScale));
+        }
+
+        if (this.game.rightClicks && this.canLightning && !this.rolling && !this.shooting && !this.attacking) {
+            this.lightningCooldownTimer = this.lightningCooldown;
+            this.lightningOption = 0;
+            this.lightning();
+            this.game.rightClicks = false;
+        } else {
+            this.game.rightClicks = false;
+        }
+        
+        if (this.game.keys["f"] && this.canBolt && !this.rolling && this.boltCurrentAmount > 0) {
+            this.boltCurrentAmount--;
+            this.lightningOption = 1;
+            if (this.boltCooldownRetrieveTimer <= 0) {
+                this.boltCooldownRetrieveTimer = this.boltCooldownRetrieve;
+            }
+            this.darkBolt();            
         }
 
         //ANIMATION TIMING -------------------------------------------------------------------
@@ -493,14 +541,32 @@ class Adventurer { //every entity should have update and draw!
             }
         }
 
-        if (this.magicking) { //when we're in our bow shooting animation, we wanna time it.
+        if (this.magicking) { //when we're in our magic animation, we wanna time it.
             this.magicTimer -= this.game.clockTick;
-            //End shooting when timer expires
             if (this.magicTimer <= 0) {
                 this.magicking = false;
                 this.state = 0;  // Return to idle state
                 this.invincible = false;
                 // Reset idle animation
+                this.animations[0][this.facing].elapsedTime = 0;
+            }
+        }
+
+        if (this.lightningMagic) { //when we're in our magic animation, we wanna time it.
+            this.lightningTimer -= this.game.clockTick;
+            if (this.lightningTimer <= 0) {
+                this.lightningMagic = false;
+                this.state = 0;  // Return to idle state
+                // Reset idle animation
+                this.animations[0][this.facing].elapsedTime = 0;
+            }
+        }
+
+        if (this.boltMagic) { //same as our lightning animation
+            this.boltTimer -= this.game.clockTick;
+            if (this.boltTimer <= 0) {
+                this.boltMagic = false;
+                this.state = 0;
                 this.animations[0][this.facing].elapsedTime = 0;
             }
         }
@@ -768,36 +834,21 @@ class Adventurer { //every entity should have update and draw!
         this.magicCooldownTimer = this.magicCooldown;
         this.magicTimer = this.magicDuration;
 
-        // Get mouse position in world coordinates
-        const mouseX = this.game.mouse.x + this.game.camera.x;
-        const mouseY = this.game.mouse.y + this.game.camera.y;
 
         // Calculate character center
         const characterCenterX = this.x + (this.bitSize * this.scale) / 2;
         const characterCenterY = this.y + (this.bitSize * this.scale) / 2;
 
-        // Calculate angle to mouse (this will just be used for animation in knowing if we should be looking right or left)
-        const dx = mouseX - characterCenterX;
-        const dy = mouseY - characterCenterY;
-        const angle = Math.atan2(dy, dx);
-        
-        //Convert angle to degrees for easier checks
-        const degrees = angle * (180 / Math.PI);
-        
-        if (degrees >= -90 && degrees < 90) { //right side of charcter
+        if (this.facing == 2) { //when character is looking up
             this.facing = 0; 
-        } else {
-            this.facing = 1; //left side of character
+        } else if (this.facing == 3) {//when character is looking down
+            this.facing = 1; 
         }
 
         this.game.addEntity(new CircleAOE(this.game, characterCenterX, characterCenterY , "./Sprites/Magic/magic.png", 
             null, this.magicScale, this.magicDamage, this.magicKnockback, this, true, 
             0, 320, 64, 64, 9, 0.08, false, true))
 
-            // this.game.addEntity(new CircleAOE(this.game, mouseX, mouseY , "./Sprites/Magic/magic.png", 
-            //     null, this.magicScale, this.magicDamage, this.magicKnockback, null, true, 
-            //     0, 320, 64, 64, 9, 0.08, false, false))
-        
         //change animation state to 11
         this.state = 11;
 
@@ -806,8 +857,100 @@ class Adventurer { //every entity should have update and draw!
                 
     }
 
+    lightning() {
+        this.lightningMagic = true;
+        this.canLightning = false;
+        this.lightningCooldownTimer = this.lightningCooldown;
+        this.lightningTimer = this.magicDuration;
 
+        
+        // Get character center
+        const characterCenterX = this.x + (this.bitSize * this.scale) / 2;
+        const characterCenterY = this.y + (this.bitSize * this.scale) / 2;
+        
+        // Set animation state
+        this.state = 12;
+        this.animations[12][this.facing].elapsedTime = 0;
 
+        if (this.game.mouse != null) {
+            const mouseX = this.game.mouse.x + this.game.camera.x;
+            const mouseY = this.game.mouse.y + this.game.camera.y;
+
+            const dx = mouseX - characterCenterX;
+            const dy = mouseY - characterCenterY;
+            const angle = Math.atan2(dy, dx);
+                
+            //Convert angle to degrees for easier checks
+            const degrees = angle * (180 / Math.PI);
+                
+            if (degrees >= -90 && degrees < 90) { //right side of charcter
+                this.facing = 0; 
+            } else {
+                this.facing = 1; //left side of character
+            }
+
+            this.game.addEntity(new Lightning(
+                this.game,
+                mouseX,
+                mouseY,
+                this.lightingDamage,
+                this.lightningKnockback,
+                this,
+                this.lightningScale,
+                mouseX,
+                mouseY,
+                this.lightningOption
+            )); 
+        }
+        
+
+        //Reset animation
+        this.animations[12][0].elapsedTime = 0;
+        this.animations[12][1].elapsedTime = 0;
+    }
+
+    darkBolt() {
+        this.boltMagic = true;
+        this.canBolt = false;
+        this.boltCooldownTimer = this.boltCooldown;
+        this.boltTimer = this.magicDuration;
+
+        const characterCenterX = this.x + (this.bitSize * this.scale) / 2;
+        const characterCenterY = this.y + (this.bitSize * this.scale) / 2;
+
+        this.state = 12;
+        this.animations[12][this.facing].elapsedTime = 0;
+
+        const radius = 400;    // Maximum distance from player
+        const angle = Math.random() * Math.PI * 2; // Random angle
+        const distance = Math.random() * radius;   // Random distance
+        
+        const strikeX = characterCenterX + Math.cos(angle) * distance;
+        const strikeY = characterCenterY + Math.sin(angle) * distance;
+
+        if (this.facing == 2) { //when character is looking up
+            this.facing = 0; 
+        } else if (this.facing == 3) {//when character is looking down
+            this.facing = 1; 
+        }
+
+        this.game.addEntity(new Lightning(
+            this.game,
+            strikeX,
+            strikeY,
+            this.boltDamage,
+            this.lightningKnockback,
+            this,
+            this.boltScale,
+            null,
+            null,
+            this.lightningOption
+        )); 
+
+        // Reset animation
+        this.animations[12][0].elapsedTime = 0;
+        this.animations[12][1].elapsedTime = 0;
+    }
 
 
 

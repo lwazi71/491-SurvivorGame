@@ -13,10 +13,10 @@ class BoundingCircle {
     
     //Check collision with another circle
     collidesWithCircle(otherCircle) {
-        const dx = this.x - other.x;
-        const dy = this.y - other.y;
+        const dx = this.x - otherCircle.x;
+        const dy = this.y - otherCircle.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
-        return distance < (this.radius + other.radius);
+        return distance < (this.radius + otherCircle.radius);
     }
     
     //Check collision with a bounding box

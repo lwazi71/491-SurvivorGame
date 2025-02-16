@@ -51,6 +51,11 @@ class Wizard {
 
         this.dropchance = 0.4;
 
+        this.isSlowed = false;
+        this.slowDuration = 0;
+        this.slowTimer = 0;
+        this.baseSpeed = this.speed;
+
         this.entityOrder = 25;
 
 
@@ -122,6 +127,16 @@ class Wizard {
                 this.state = 0; // Return to idle state
             }
          }
+
+        if (this.isSlowed) {
+            this.slowTimer += this.game.clockTick;
+            if (this.slowTimer >= this.slowDuration) {
+                // Reset speed when slow duration expires
+                this.speed = this.baseSpeed;
+                this.isSlowed = false;
+                this.slowTimer = 0;
+            }
+        }
 
         // Apply knockback effect
         this.x += this.pushbackVector.x * this.game.clockTick;
@@ -232,6 +247,11 @@ class Wizard {
                     }
                 }
             }
+            if (entity instanceof Lightning && entity.lightningOption === 1 && !this.isSlowed) {
+                if (entity.circle.BC.collidesWithBox(this.BB)) {
+                    this.applySlowEffect(this.game.adventurer.slowCooldown); 
+                }
+            }
         }
 
          this.updateBB();
@@ -272,6 +292,14 @@ class Wizard {
                 this.animations[3][1].elapsedTime = 0;
             }
         }
+    }
+
+
+    applySlowEffect(duration) {
+        this.isSlowed = true;
+        this.slowDuration = duration;
+        this.slowTimer = 0;
+        this.speed /= 2; // Reduce speed by half
     }
 
     draw(ctx) {

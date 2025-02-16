@@ -91,6 +91,9 @@ ASSET_MANAGER.queueDownload("./Sprites/Magic/BlackProjectile.png");
 ASSET_MANAGER.queueDownload("./Sprites/Magic/GreenProjectile.png");
 ASSET_MANAGER.queueDownload("./Sprites/Magic/FireProjectile.png");
 ASSET_MANAGER.queueDownload("./Sprites/Explosion/explosion.png")
+ASSET_MANAGER.queueDownload("./Sprites/Explosion/explosion2.png")
+ASSET_MANAGER.queueDownload("./Sprites/Magic/Lightning.png");
+ASSET_MANAGER.queueDownload("./Sprites/Magic/Dark-Bolt.png");
 
 
 

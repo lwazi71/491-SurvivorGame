@@ -32,8 +32,7 @@ class CircleAOE { //this class will be for the sword slash entity. This will dam
         this.radius = (this.spriteWidth * this.scale)/3;
 
         // Add a Set to track which entities have been hit by this slash
-        this.hitEntities = new Set();
-        
+        this.hitEntities = new Set();        
         this.updateBC();
 
         // Load animations
@@ -55,7 +54,9 @@ class CircleAOE { //this class will be for the sword slash entity. This will dam
        // console.log((this.spriteWidth * this.scale)/2);
         this.attackTimer -= this.game.clockTick;
 
-        if (this.person) {
+        if (this.person instanceof Lightning) { //if we're dealing with lightning dont center it. Do nothing
+
+        } else if (this.person) {
             //Get the character's center position. We have to update the character center when they're moving
             const characterCenterX = this.person.x + (this.person.bitSize * this.person.scale) / 2;
             const characterCenterY = this.person.y + (this.person.bitSize * this.person.scale) / 2;
@@ -65,7 +66,7 @@ class CircleAOE { //this class will be for the sword slash entity. This will dam
             this.y = characterCenterY;
             
             this.updateBC();
-        }
+        } 
 
 
         //Slash duration. Once it's done, we'll remove this entity from the world as the player is done attacking.
@@ -104,6 +105,19 @@ class CircleAOE { //this class will be for the sword slash entity. This will dam
                         entity.takeDamage(this.attackDamage);
                     }
                 }
+
+                if ((this.person instanceof Lightning && this.person.lightningOption == 0) && (entity instanceof Lightning && entity.lightningOption == 1)) {
+                    if (this.BC.collidesWithCircle(entity.circle.BC) && !this.hitEntities.has(entity)) {
+                        this.hitEntities.add(entity);
+                       // entity.removeFromWorld = true;
+                        entity.circle.removeFromWorld = true;
+                        this.removeFromWorld = true; //remove the lightning circle so it doesnt do double damage
+                        const scale = this.person.scale * entity.scale / 2;
+                        this.game.addEntity(new CircleAOE
+                            (this.game, entity.circle.x, entity.circle.y, "./Sprites/Explosion/explosion2.png", 
+                                null, scale, (this.person.damage * entity.damage) / 2, 0, null, true, 0, 0, 48, 48, 8, 0.1, false, false));
+                    }
+                }
             } else {
                 if ((entity instanceof Adventurer)) {
                     if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
@@ -121,13 +135,15 @@ class CircleAOE { //this class will be for the sword slash entity. This will dam
         const drawY = this.y - (this.spriteHeight * this.scale) / 2 - this.game.camera.y;
 
         // Draw the animation centered on the position
-        this.animations[0].drawFrame(
-            this.game.clockTick, 
-            ctx, 
-            drawX,
-            drawY,
-            this.scale
-        );
+        if (this.attackSpritePath != null) {
+            this.animations[0].drawFrame(
+                this.game.clockTick, 
+                ctx, 
+                drawX,
+                drawY,
+                this.scale
+            );
+        }
 
         if (this.BC) {
             this.BC.draw(ctx, this.game.camera);

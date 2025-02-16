@@ -40,7 +40,11 @@ class Boar {
 
         this.entityOrder = 30;
 
-        
+        this.isSlowed = false;
+        this.slowDuration = 0;
+        this.slowTimer = 0;
+        this.baseSpeed = this.speed;
+
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
 
 
@@ -248,6 +252,12 @@ class Boar {
                     this.y -= repelY;
                 }
             }
+
+            if (entity instanceof Lightning && entity.lightningOption === 1 && !this.isSlowed) {
+                if (entity.circle.BC.collidesWithBox(this.BB)) {
+                    this.applySlowEffect(this.game.adventurer.slowCooldown); 
+                }
+            }
         }
  
            // Reduce attack cooldown timer
@@ -311,6 +321,13 @@ class Boar {
                 this.animations[3][1].elapsedTime = 0;
             }
         }
+    }
+
+    applySlowEffect(duration) {
+        this.isSlowed = true;
+        this.slowDuration = duration;
+        this.slowTimer = 0;
+        this.speed /= 2; // Reduce speed by half
     }
 
 

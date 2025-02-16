@@ -41,6 +41,11 @@ class Imp {
 
         this.dropchance = 0.4;
 
+        this.isSlowed = false;
+        this.slowDuration = 0;
+        this.slowTimer = 0;
+        this.baseSpeed = this.speed;
+
         this.animations = [];
 
         this.updateBB();
@@ -113,6 +118,16 @@ class Imp {
                 this.state = 0; // Return to idle state
             }
          }
+
+        if (this.isSlowed) {
+            this.slowTimer += this.game.clockTick;
+            if (this.slowTimer >= this.slowDuration) {
+                // Reset speed when slow duration expires
+                this.speed = this.baseSpeed;
+                this.isSlowed = false;
+                this.slowTimer = 0;
+            }
+        }
 
         // Reduce attack cooldown timer
         if (this.attackCooldownTimer > 0) { //this is used for every mob attack. Makes sure a mob hits player once every second instead of every tick.
@@ -209,6 +224,12 @@ class Imp {
                     }
                 }
             }
+
+            if (entity instanceof Lightning && entity.lightningOption === 1 && !this.isSlowed) {
+                if (entity.circle.BC.collidesWithBox(this.BB)) {
+                    this.applySlowEffect(this.game.adventurer.slowCooldown); 
+                }
+            }
         }
     
         this.updateBB();
@@ -275,6 +296,13 @@ class Imp {
                 this.animations[3][1].elapsedTime = 0;
             }
         }
+    }
+
+    applySlowEffect(duration) {
+        this.isSlowed = true;
+        this.slowDuration = duration;
+        this.slowTimer = 0;
+        this.speed /= 2; // Reduce speed by half
     }
 
 

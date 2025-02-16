@@ -2,9 +2,12 @@ class SceneManager {
     constructor(game) {
         this.game = game;
         this.game.camera = this; //this class will be this.game.camera
-        this.adventurer = new Adventurer(this.game, 0, 0); //placing player character at 0, 0 in world map
         this.x = 0;
         this.y = 0;
+        this.game.camera.x = this.x;
+        this.game.camera.y = this.y;
+        
+        this.adventurer = new Adventurer(this.game, 0, 0); //placing player character at 0, 0 in world map
 
         this.waveManager = new WaveManager(game);
         this.HUD = new HUD(this.game, this.adventurer);
@@ -22,33 +25,33 @@ class SceneManager {
         if(!adventurer) this.game.addEntity(this.adventurer);        
         // this.game.addEntity(new Adventurer(this.game, 0, 0));
 
-        // this.game.addEntity(new BlueGhoul(this.game, 400, 400));
-        // this.game.addEntity(new HellSpawn(this.game, 400, 400));
-        // this.game.addEntity(new HellSpawn(this.game, 800, 400));
+        this.game.addEntity(new BlueGhoul(this.game, 400, 400));
+        this.game.addEntity(new HellSpawn(this.game, 400, 400));
+        this.game.addEntity(new HellSpawn(this.game, 800, 400));
 
-        // this.game.addEntity(new FreakyGhoul(this.game, 800, 800));
-        // this.game.addEntity(new FreakyGhoul(this.game, 300, 800));
+        this.game.addEntity(new FreakyGhoul(this.game, 800, 800));
+        this.game.addEntity(new FreakyGhoul(this.game, 300, 800));
 
 
-        // this.game.addEntity(new Ghost(this.game, 400, 400));
+        this.game.addEntity(new Ghost(this.game, 400, 400));
         this.game.addEntity(new Ghost(this.game, 400, 400));
 
 
-        // this.game.addEntity(new Zombie(this.game, 400, 400));
-        // this.game.addEntity(new Zombie(this.game, 200, 400));
-        // this.game.addEntity(new Zombie(this.game, 300, 450));
-        // this.game.addEntity(new Zombie(this.game, 130, 400));
-        // this.game.addEntity(new Zombie(this.game, 323, 400));
-        // this.game.addEntity(new Zombie(this.game, 513, 400));
-        // this.game.addEntity(new Zombie(this.game, 42, 400));
+        this.game.addEntity(new Zombie(this.game, 400, 400));
+        this.game.addEntity(new Zombie(this.game, 200, 400));
+        this.game.addEntity(new Zombie(this.game, 300, 450));
+        this.game.addEntity(new Zombie(this.game, 130, 400));
+        this.game.addEntity(new Zombie(this.game, 323, 400));
+        this.game.addEntity(new Zombie(this.game, 513, 400));
+        this.game.addEntity(new Zombie(this.game, 42, 400));
 
-        // this.game.addEntity(new BanditNecromancer(this.game, 42, 400));
-        // this.game.addEntity(new Necromancer(this.game, 42, 400));
-        // this.game.addEntity(new Imp(this.game, 42, 400));
+        this.game.addEntity(new BanditNecromancer(this.game, 42, 400));
+        this.game.addEntity(new Necromancer(this.game, 42, 400));
+        this.game.addEntity(new Imp(this.game, 42, 400));
 
-        // this.game.addEntity(new RatMage(this.game, 200, 400));
-        // this.game.addEntity(new FoxMage(this.game, 200, 400));
-        // this.game.addEntity(new Crow(this.game, 200, 400));
+        this.game.addEntity(new RatMage(this.game, 200, 400));
+        this.game.addEntity(new FoxMage(this.game, 200, 400));
+        this.game.addEntity(new Crow(this.game, 200, 400));
         this.game.addEntity(new Slime(this.game, 200, 400));
         this.game.addEntity(new Boar(this.game, 200, 400));
         this.game.addEntity(new Wizard(this.game, 200, 200));
@@ -71,8 +74,17 @@ class SceneManager {
         //find a better way to do this.
         this.game.addEntity(new Sign(this.game, 20, 20, 
             "KeyBoard Controls:      - Move using WASD              - Attack using left click " +                
-            "                    - Use Ultimate AOE using right click                 - Switch weapons using 1 and 2 (Sword is 1 and Bow is 2)" + 
-            "                - To roll press shift (Will give invincibility frames          - Press e to place bomb down"));
+            "                    - Use Ultimate AOE using x                    - Switch weapons using 1 and 2 (Sword is 1 and Bow is 2)" + 
+            "                - To roll press shift (Will give invincibility frames          - Press e to place bomb down" +
+            "                    - Right click to strike down lightning"));
+
+        this.game.addEntity(new Sign(this.game, 220, 20, 
+            "KeyBoard Controls (cont):                  - Press f for Dark-bolt ability (will slow down enemies if hit and be in random places around character"));
+
+        this.game.addEntity(new Sign(this.game, 420, 20, 
+            "Cool Combos:                  - Slashing your arrow in mid air will double the arrow speed and damage                          " +
+                "- Putting a bomb down, you can slash it towards enemies                      " + 
+                "- Striking lightning down on dark-bolt will create an explosion that'll do ALOT of damage"));
         
       
 
@@ -131,6 +143,8 @@ class SceneManager {
         // ctx.fillText(`Player Coins: ${this.adventurer.coins}`, 10, 150);
         ctx.fillText(`Player Bombs: ${this.adventurer.bombCurrentAmnt}`, 10, 180);
         ctx.fillText(`Player Bombs Cooldown: ${Math.ceil(this.adventurer.bombCooldownRetrieveTimer * 100) / 100}`, 10, 210);
+        ctx.fillText(`Player Dark Bolts: ${this.adventurer.boltCurrentAmount}`, 10, 240);
+        ctx.fillText(`Player Bolts Cooldown: ${Math.ceil(this.adventurer.boltCooldownRetrieveTimer * 100) / 100}`, 10, 270);
         this.HUD.draw(ctx);
     }
 

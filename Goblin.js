@@ -35,6 +35,10 @@ class Goblin {
 
         this.entityOrder = 10;
 
+        this.isSlowed = false;
+        this.slowDuration = 0;
+        this.slowTimer = 0;
+        this.baseSpeed = this.speed;
 
         this.animations = []; //will be used to store animations
 
@@ -117,6 +121,16 @@ class Goblin {
                 // Remove enemy from world after the animation finishes
                 this.removeFromWorld = true;
                 return;
+            }
+        }
+
+        if (this.isSlowed) {
+            this.slowTimer += this.game.clockTick;
+            if (this.slowTimer >= this.slowDuration) {
+                // Reset speed when slow duration expires
+                this.speed *= 2;
+                this.isSlowed = false;
+                this.slowTimer = 0;
             }
         }
         
@@ -202,6 +216,12 @@ class Goblin {
                     this.state = 2; //Attacking state
                 }
             }
+
+            if (entity instanceof Lightning && entity.lightningOption === 1 && !this.isSlowed) {
+                if (entity.circle.BC.collidesWithBox(this.BB)) {
+                    this.applySlowEffect(this.game.adventurer.slowCooldown); 
+                }
+            }
         }
 
         // Play attack animation and reduce timer
@@ -255,6 +275,13 @@ class Goblin {
                 this.animations[3][1].elapsedTime = 0;
             }
         }
+    }
+
+    applySlowEffect(duration) {
+        this.isSlowed = true;
+        this.slowDuration = duration;
+        this.slowTimer = 0;
+        this.speed /= 2; // Reduce speed by half
     }
 
     drawMinimap(ctx, mmX, mmY) {
