@@ -155,6 +155,7 @@ class SceneManager {
         ctx.fillText(`Player Bombs Cooldown: ${Math.ceil(this.adventurer.bombCooldownRetrieveTimer * 100) / 100}`, 10, 210);
         ctx.fillText(`Player Dark Bolts: ${this.adventurer.boltCurrentAmount}`, 10, 240);
         ctx.fillText(`Player Bolts Cooldown: ${Math.ceil(this.adventurer.boltCooldownRetrieveTimer * 100) / 100}`, 10, 270);
+        this.HUD.update();
         this.HUD.draw(ctx);
     }
 
