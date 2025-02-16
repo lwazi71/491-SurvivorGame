@@ -18,6 +18,9 @@ class GameEngine {
         this.keys = {};
 
         this.leftClick = null;
+        this.pause = false;
+        this.upgradePause = false;
+        this.setDelay = 0;
 
         // Options and the Details
         this.options = options || {
@@ -171,6 +174,11 @@ class GameEngine {
     //    }, false);
     };
 
+    disableMouseInputs() {
+        this.leftClick = false;
+        this.rightClicks = false;
+    }
+
     addEntity(entity) {
         this.entities.push(entity);
     };
@@ -191,7 +199,9 @@ class GameEngine {
 
     update() {
         let entitiesCount = this.entities.length;
-
+        if (this.keys["b"]) {
+            this.toggleUpgradePause();
+        }
         for (let i = 0; i < entitiesCount; i++) {
             let entity = this.entities[i];
 
@@ -210,11 +220,54 @@ class GameEngine {
     };
 
     loop() {
-        this.clockTick = this.timer.tick();
-        this.update();
-        this.draw();
+        if (this.keys["escape"]) {
+            if (this.upgradePause) {
+                this.toggleUpgradePause();
+                this.setDelay = 1;
+                this.upgrade.makingChoice = false;
+            } else {
+                this.togglePause();
+                this.disableMouseInputs();
+                this.drawPause(this.ctx);
+            }
+            this.keys["escape"] = false;
+        }
+
+        if (!this.pause) {
+            this.clockTick = this.timer.tick();
+            if (!this.upgradePause && this.setDelay <= 0) { //Default loop
+                this.update();
+                this.draw();
+                this.timer.isPaused = false;
+            } else if (this.setDelay <= 0) {
+                this.upgrade.update();
+                this.upgrade.draw(this.ctx);
+                this.timer.isPaused = true;
+                this.disableMouseInputs();
+            } else {
+                if (this.setDelay > 0) this.setDelay -= 0.1;
+            }
+        }
     };
 
+    toggleUpgradePause() {
+        this.upgradePause = !this.upgradePause;
+    }
+
+    togglePause() {
+        this.pause = !this.pause;
+    }
+    drawPause(ctx) {
+        ctx.textAlign = "center"; 
+        ctx.textBaseline = "middle"; 
+        ctx.fillStyle = rgba(0,0,0, 0.5);
+        ctx.fillRect(0, 0, PARAMS.CANVAS_WIDTH, PARAMS.CANVAS_HEIGHT);
+        ctx.fillStyle = "White";
+        ctx.fillText("Paused",PARAMS.CANVAS_WIDTH / 2, PARAMS.CANVAS_HEIGHT / 2);
+
+        ctx.textAlign = "left"; 
+        ctx.textBaseline = "alphabetic";  
+    }
 };
 
 // KV Le was here :)

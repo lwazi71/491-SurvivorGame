@@ -11,6 +11,7 @@ class SceneManager {
 
         this.waveManager = new WaveManager(game);
         this.HUD = new HUD(this.game, this.adventurer);
+        this.upgrade = new UpgradeSystem(this.game);
 
         this.shakeIntensity = 0;
         this.shakeDecay = 0.9; 
@@ -28,11 +29,18 @@ class SceneManager {
         // this.game.addEntity(new BlueGhoul(this.game, 400, 400));
         // this.game.addEntity(new HellSpawn(this.game, 400, 400));
         // this.game.addEntity(new HellSpawn(this.game, 800, 400));
+        // this.game.addEntity(new BlueGhoul(this.game, 400, 400));
+        // this.game.addEntity(new HellSpawn(this.game, 400, 400));
+        // this.game.addEntity(new HellSpawn(this.game, 800, 400));
 
+        // this.game.addEntity(new FreakyGhoul(this.game, 800, 800));
+        // this.game.addEntity(new FreakyGhoul(this.game, 300, 800));
         // this.game.addEntity(new FreakyGhoul(this.game, 800, 800));
         // this.game.addEntity(new FreakyGhoul(this.game, 300, 800));
 
 
+        // this.game.addEntity(new Ghost(this.game, 400, 400));
+        // this.game.addEntity(new Ghost(this.game, 400, 400));
         // this.game.addEntity(new Ghost(this.game, 400, 400));
         // this.game.addEntity(new Ghost(this.game, 400, 400));
 
