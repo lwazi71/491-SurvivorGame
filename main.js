@@ -80,6 +80,8 @@ ASSET_MANAGER.queueDownload("./Sprites/Goblin/Run-flipped.png");
 ASSET_MANAGER.queueDownload("./Sprites/Goblin/Attack-flipped.png");
 ASSET_MANAGER.queueDownload("./Sprites/Goblin/Hurt-flipped.png");
 ASSET_MANAGER.queueDownload("./Sprites/Goblin/Death.png");
+ASSET_MANAGER.queueDownload("./Sprites/Boss/GoblinKing.png");
+ASSET_MANAGER.queueDownload("./Sprites/Boss/GoblinKing-flipped.png");
 
 
 
