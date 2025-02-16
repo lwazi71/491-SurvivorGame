@@ -96,7 +96,6 @@ ASSET_MANAGER.downloadAll(() => {
 	
 	PARAMS.CANVAS_WIDTH = canvas.width;
 	PARAMS.CANVAS_HEIGHT = canvas.height;
-
 	
 	// gameEngine.addEntity(new Adventurer(gameEngine)); 
 	// gameEngine.addEntity(new Barrel(gameEngine, 40, 40, false));

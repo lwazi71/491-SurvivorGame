@@ -106,7 +106,7 @@ class Adventurer { //every entity should have update and draw!
 
         this.coins = 0;
         this.level = 1;
-        this.experience = 50;
+        this.experience = 0;
         this.experienceToNextLvl = 100;
         this.upgrade = null;
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
@@ -563,7 +563,6 @@ class Adventurer { //every entity should have update and draw!
         if (this.shootCooldown < this.shootingDuration) {
             this.shootingDuration = this.shootCooldown;
         }
-
         this.elapsedTime += this.game.clockTick;
     };
 
@@ -809,6 +808,7 @@ class Adventurer { //every entity should have update and draw!
             console.log(this.health);
             this.health -= amount;
             if (this.health <= 0) {
+                this.health = 0;
                 this.dead = true;
                 console.log("Player is dead!");
                // ASSET_MANAGER.pauseBackgroundMusic();
@@ -832,14 +832,14 @@ class Adventurer { //every entity should have update and draw!
             this.level++;
             this.game.upgrade.points++;
             this.experience -= this.experienceToNextLvl;
-            // this.experienceToNextLvl = Math.floor(this.experienceToNextLvl * 1.1);
+            this.experienceToNextLvl = Math.floor(this.experienceToNextLvl * 1.1);
             this.levelUpMenu();
         }
     }
     levelUpMenu() {
         if (!this.game.upgrade.noUpgrade) {
             this.game.upgrade.getThreeUpgrades();
-            this.game.toggleUpgradePause();
+            // this.game.upgradePause = true;
         }
     }
     //If we want to do a minimap, need to add this for all entities being added
