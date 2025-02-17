@@ -1,6 +1,7 @@
 class HUD {
     constructor(game, adventurer) {
         Object.assign(this, {game, adventurer});
+        this.proportion = PARAMS.CANVAS_WIDTH / 1024; //Assuming it's always going to be 4:3
 
         // this.minimap = new Minimap(this.game, PARAMS.CANVAS_WIDTH - 210, 10);
         this.weaponIcon = ASSET_MANAGER.getAsset("./Sprites/HudIcons/weapons.png");
@@ -9,32 +10,31 @@ class HUD {
         this.magicIcon = ASSET_MANAGER.getAsset("./Sprites/Magic/magic.png");
         this.ultAnimation = new Animator(this.magicIcon, 0, 320, 64, 64, 9, 0.08, false, true);
         this.bombAnimation = new Animator(this.miscIcon, 0, 16, 16, 16, 4, 0.1, false, true);
-        this.scale = 2;
+        this.scale = 2 * this.proportion;
         // this.weaponIconX = PARAMS.CANVAS_WIDTH - 32 * this.scale - 10; 
         // this.weaponIconY = PARAMS.CANVAS_HEIGHT - 32 * this.scale - 20;
         this.weaponIconX = (PARAMS.CANVAS_WIDTH / 2) - 16 * this.scale; // 16 half of size 32 
-        // - (16 * this.scale * 2) - 20
-        this.weaponIconY = PARAMS.CANVAS_HEIGHT - 32 * this.scale - 20;
-        this.healthBarLength = 300;
-        this.healthBarHeight = 25;
+        this.weaponIconY = PARAMS.CANVAS_HEIGHT - 32 * this.scale - (20 * this.proportion);
+        this.healthBarLength = 300 * this.proportion;
+        this.healthBarHeight = 25 * this.proportion;
 
         this.secondaryIconX = (PARAMS.CANVAS_WIDTH / 2) - 16 * this.scale;
         this.BombIconX = (PARAMS.CANVAS_WIDTH / 2) - 16 * this.scale;
 
-        this.coinScale = 4;
+        this.coinScale = 4 * this.proportion;
+        this.menuScale = 4 * this.proportion;
 
-        this.heroIconScale = 7;
+        this.heroIconScale = 7 * this.proportion;
         this.heroIconLength = 16;
         this.heroIconHeight = 16;
         this.heroIconX = 10;
-        // this.heroIconY = PARAMS.CANVAS_HEIGHT - 16 * this.heroIconScale - 10;
         this.heroIconY = 10;
         this.heroanimation = new Animator(this.heroIcon, 0, 0, this.heroIconLength, this.heroIconHeight, 12.9, 0.2, false, true);
 
-        this.experienceBarLength = 200; //375 174
-        this.experienceBarHeight = 25;
+        this.experienceBarLength = 200 * this.proportion; //375 174
+        this.experienceBarHeight = 25 * this.proportion;
         this.experienceBarX = (PARAMS.CANVAS_WIDTH / 2) - (this.experienceBarLength / 2);
-        this.experienceBarY = PARAMS.CANVAS_HEIGHT - this.experienceBarHeight - 100;
+        this.experienceBarY = PARAMS.CANVAS_HEIGHT - this.experienceBarHeight - (100 * this.proportion);
 
         this.bitSize = 16;
         this.attackCount = 0;
@@ -65,6 +65,22 @@ class HUD {
         if (this.ultCD > 1) this.ultCD = 1;
         if (this.bombCD > 1) this.bombCD = 1;
         if (this.bombRetrieveCD > 1) this.bombCD = 1;
+        
+        let mouseX = 0;
+        let mouseY = 0;
+        if (this.game.click != null) {
+            mouseX = this.game.click.x;
+            mouseY = this.game.click.y;
+        }
+        if (mouseX > PARAMS.CANVAS_WIDTH - 16* this.menuScale * 1.5 - this.menuBuffer && mouseX < PARAMS.CANVAS_WIDTH - this.menuBuffer &&
+            mouseY > PARAMS.CANVAS_HEIGHT - 16 * this.menuScale * 1.5 - this.menuBuffer && PARAMS.CANVAS_HEIGHT - this.menuBuffer && !this.game.upgradePause
+        ) {
+            this.game.toggleUpgradePause();
+            this.game.click = {x: 0, y: 0};
+            this.game.leftClick = false;
+
+        }
+
     };
     draw(ctx) {
         // Alignment center
@@ -77,7 +93,7 @@ class HUD {
         this.displayPlayerInfo(ctx);
         this.displayExperienceBar(ctx);
         this.displayWeapons(ctx);    
-
+        this.displayMenu(ctx);
         // ctx.beginPath();
         // ctx.roundRect((PARAMS.CANVAS_WIDTH / 2) - 16 * this.scale - 145 - 10, this.weaponIconY - 10, 32 * this.scale + 20, 32 * this.scale + 30, [5]);
         // ctx.fillStyle = rgba(0,0,0, 0.5);
@@ -89,6 +105,10 @@ class HUD {
         
     };
     displayPlayerInfo(ctx) {
+        let offX = 10 * this.proportion;
+        let offY = 30 * this.proportion;
+        let textSize = 20 * this.proportion;
+        let spacing = 5;
         //Hero Icon
         let circleX = this.heroIconX + (this.heroIconLength * this.heroIconScale / 2);
         let circleY = this.heroIconY + (this.heroIconHeight * this.heroIconScale / 2);
@@ -102,34 +122,34 @@ class HUD {
         this.heroanimation.drawFrame(this.game.clockTick, ctx, this.heroIconX, this.heroIconY, this.heroIconScale);
 
         ctx.beginPath();
-        ctx.strokeStyle = 'Black'
+        ctx.strokeStyle = rgb(25, 25, 25);
         ctx.arc(circleX, circleY, circleRadius, 0, 2 * Math.PI);
-        ctx.lineWidth = 7;
+        ctx.lineWidth = 7 * this.proportion;
         ctx.stroke();
         ctx.lineWidth = 1; //Reset line width
 
         //Health Bar
         ctx.beginPath();
-        ctx.roundRect(circleX + circleRadius + 10, circleY - 30, this.healthBarLength, this.healthBarHeight, [5]);
+        ctx.roundRect(circleX + circleRadius + offX, circleY - offY, this.healthBarLength, this.healthBarHeight, [5]);
         ctx.fillStyle = rgba(0, 0, 0, 0.5);
         ctx.fill();
         
 
         ctx.beginPath();
-        ctx.roundRect(circleX + circleRadius + 10, circleY - 30, this.healthBarLength * this.healthRatio, this.healthBarHeight, [5]);
+        ctx.roundRect(circleX + circleRadius + offX, circleY - offY, this.healthBarLength * this.healthRatio, this.healthBarHeight, [5]);
         ctx.fillStyle = this.healthRatio < 0.2 ? rgb(150, 0, 0) : this.healthRatio < 0.5 ? rgb(190, 180, 0) : rgb(0, 110, 0);
         ctx.fill();
 
         ctx.beginPath();
-        ctx.roundRect(circleX + circleRadius + 10, circleY - 30, this.healthBarLength, this.healthBarHeight, [5]);
+        ctx.roundRect(circleX + circleRadius + offX, circleY - offY, this.healthBarLength, this.healthBarHeight, [5]);
         ctx.strokeStyle = 'Black';
         ctx.stroke();
 
         //Health Text
-        let healthX = circleX + circleRadius + 10 + this.healthBarLength / 2;
-        let healthY = circleY - 17.5;
+        let healthX = circleX + circleRadius + offX + this.healthBarLength / 2;
+        let healthY = circleY - (offY + 5) / 2;
 
-        ctx.font = '20px Lilita One';
+        ctx.font = textSize + 'px Lilita One';
 
         ctx.strokeStyle = 'Black';
         ctx.fillStyle = 'white';
@@ -142,7 +162,7 @@ class HUD {
 
         // Roll Cooldown
         ctx.beginPath();
-        ctx.roundRect(circleX + circleRadius + 10, circleY + 3, this.healthBarLength * 0.75, this.healthBarHeight / 2, [5]);
+        ctx.roundRect(circleX + circleRadius + offX, circleY - offY + this.healthBarHeight + spacing, this.healthBarLength * 0.75, this.healthBarHeight / 2, [5]);
         ctx.fillStyle = rgba(0, 0, 0, 0.5);
         ctx.fill();
 
@@ -152,11 +172,11 @@ class HUD {
             ctx.fillStyle = rgb(250, 60, 60);
         }
         ctx.beginPath();
-        ctx.roundRect(circleX + circleRadius + 10, circleY + 3, this.healthBarLength * this.stamina * 0.75, this.healthBarHeight / 2, [5]);
+        ctx.roundRect(circleX + circleRadius + offX, circleY - offY + this.healthBarHeight + spacing, this.healthBarLength * this.stamina * 0.75, this.healthBarHeight / 2, [5]);
         ctx.fill();
 
         ctx.beginPath();
-        ctx.roundRect(circleX + circleRadius + 10, circleY + 3, this.healthBarLength * 0.75, this.healthBarHeight / 2, [5]);
+        ctx.roundRect(circleX + circleRadius + offX, circleY - offY + this.healthBarHeight + spacing, this.healthBarLength * 0.75, this.healthBarHeight / 2, [5]);
         ctx.strokeStyle = 'Black';
         ctx.stroke();
 
@@ -164,24 +184,25 @@ class HUD {
         ctx.drawImage(this.miscIcon, 
             10, 140, 
             14, 14, 
-            circleX + circleRadius -4, circleY + 10, 
+            circleX + circleRadius -4, circleY - offY + this.healthBarHeight + spacing + this.healthBarHeight / 2 + spacing - 10, 
             14 * this.coinScale, 14 * this.coinScale
         );
 
-        ctx.font = '24px Lilita One';
+        ctx.font = textSize + 'px Lilita One';
         ctx.lineWidth = 1;
         ctx.strokeStyle = 'Black';
         ctx.fillStyle = 'white';
 
         ctx.textAlign = "left"; 
-        ctx.fillText(`${this.adventurer.coins}`, circleX + circleRadius + 36, circleY + 32);
-        ctx.strokeText(`${this.adventurer.coins}`, circleX + circleRadius + 36, circleY + 32);
+        ctx.fillText(`${this.adventurer.coins}`, circleX + circleRadius + (14 -5)* this.coinScale, circleY - offY + this.healthBarHeight + spacing + this.healthBarHeight / 2 + spacing - 10 + (14 -4) * this.coinScale / 2);
+        ctx.strokeText(`${this.adventurer.coins}`, circleX + circleRadius + (14 -5)* this.coinScale, circleY - offY + this.healthBarHeight + spacing + this.healthBarHeight / 2 + spacing - 10 + (14 -4) * this.coinScale / 2);
         // ctx.fillText("10", circleX + circleRadius + 48, circleY + 32);
         // ctx.strokeText("10 ", circleX + circleRadius + 50, circleY + 32);
 
 
     }
     displayExperienceBar(ctx) {
+        let fontSize = 20 * this.proportion;
         //Experience Bar
         ctx.beginPath();
         ctx.roundRect(this.experienceBarX, this.experienceBarY, this.experienceBarLength, this.experienceBarHeight, [5]);
@@ -200,7 +221,7 @@ class HUD {
 
 
         //Experience Text
-        ctx.font = '20px Lilita One';
+        ctx.font = fontSize + 'px Lilita One';
 
         ctx.strokeStyle = 'Black';
         ctx.fillStyle = 'white';
@@ -210,12 +231,12 @@ class HUD {
         // ctx.fillText(`Lvl 1 : 50 / 100`, (PARAMS.CANVAS_WIDTH / 2), this.experienceBarY + 12.5);
         // ctx.strokeText(`Lvl 1 : 50 / 100`, (PARAMS.CANVAS_WIDTH / 2), this.experienceBarY + 12.5);
 
-        ctx.font = '24px Lilita One';
-        ctx.fillText(`Level ${this.adventurer.level}`, (PARAMS.CANVAS_WIDTH / 2), this.experienceBarY - 12.5);
-        ctx.strokeText(`Level ${this.adventurer.level}`, (PARAMS.CANVAS_WIDTH / 2), this.experienceBarY - 12.5);
-        ctx.font = '20px Lilita One';
-        ctx.fillText(`Exp : ${this.adventurer.experience} / ${this.adventurer.experienceToNextLvl}`, (PARAMS.CANVAS_WIDTH / 2), this.experienceBarY + 12.5);
-        ctx.strokeText(`Exp : ${this.adventurer.experience} / ${this.adventurer.experienceToNextLvl}`, (PARAMS.CANVAS_WIDTH / 2), this.experienceBarY + 12.5);
+        ctx.font = fontSize + 4 * this.proportion +'px Lilita One';
+        ctx.fillText(`Level ${this.adventurer.level}`, (PARAMS.CANVAS_WIDTH / 2), this.experienceBarY - this.experienceBarHeight / 2);
+        ctx.strokeText(`Level ${this.adventurer.level}`, (PARAMS.CANVAS_WIDTH / 2), this.experienceBarY - this.experienceBarHeight / 2);
+        ctx.font = fontSize + 'px Lilita One';
+        ctx.fillText(`Exp : ${this.adventurer.experience} / ${this.adventurer.experienceToNextLvl}`, (PARAMS.CANVAS_WIDTH / 2), this.experienceBarY + this.experienceBarHeight / 2);
+        ctx.strokeText(`Exp : ${this.adventurer.experience} / ${this.adventurer.experienceToNextLvl}`, (PARAMS.CANVAS_WIDTH / 2), this.experienceBarY + this.experienceBarHeight / 2);
     }
     displayWeapons(ctx) {
         this.checkAttacks();
@@ -374,12 +395,12 @@ class HUD {
                 ctx.roundRect(this.BombIconX, this.weaponIconY + 32 * this.bombScale + 10 * this.bombScale, 32 * this.bombScale, 10, [5]);
                 ctx.strokeStyle = 'Black';
                 ctx.stroke();
-                if (this.adventurer.bombCurrentAmnt < 5 && this.adventurer.bombCurrentAmnt > 0) ctx.fillStyle = "White";
-                ctx.font = '20px Lilita One';
+                if (this.adventurer.bombCurrentAmnt < this.adventurer.bombMaxAmount && this.adventurer.bombCurrentAmnt > 0) ctx.fillStyle = "White";
+                ctx.font = 20 * this.proportion + 'px Lilita One';
                 ctx.fillText(`x${this.adventurer.bombCurrentAmnt}`, this.BombIconX + 25 * this.bombScale, this.weaponIconY + 32 * this.bombScale - 10 + 10 * this.bombScale);
                 ctx.strokeText(`x${this.adventurer.bombCurrentAmnt}`, this.BombIconX + 25 * this.bombScale, this.weaponIconY + 32 * this.bombScale - 10 + 10 * this.bombScale);
                 
-                ctx.font = '36px Lilita One';
+                ctx.font = 36 * this.proportion + 'px Lilita One';
                 ctx.fillStyle = "White";
                 ctx.fillText(`E`, (PARAMS.CANVAS_WIDTH / 5), this.weaponIconY + 32 * this.bombScale - 45 - 10 * this.bombScale);
                 ctx.strokeText(`E`, (PARAMS.CANVAS_WIDTH / 5), this.weaponIconY + 32 * this.bombScale - 45 - 10 * this.bombScale);
@@ -395,6 +416,58 @@ class HUD {
             this.attackCount++;
             this.bombAdded = true;
         }
+    }
+    displayMenu(ctx) {
+        this.menuScale = 4 * this.proportion;
+        this.menuBuffer = 10 * this.proportion;
+        let mouseX = 0;
+        let mouseY = 0;
+        ctx.font = 20 * this.proportion + 'px Lilita One';
+        if (this.game.mouse != null) {
+            mouseX = this.game.mouse.x;
+            mouseY = this.game.mouse.y;
+        }
+        if (mouseX > PARAMS.CANVAS_WIDTH - 16* this.menuScale * 1.5 - this.menuBuffer && mouseX < PARAMS.CANVAS_WIDTH - this.menuBuffer &&
+            mouseY > PARAMS.CANVAS_HEIGHT - 16 * this.menuScale * 1.5 - this.menuBuffer && PARAMS.CANVAS_HEIGHT - this.menuBuffer && !this.game.upgradePause
+        ) {
+            this.menuScale = 4.5 * this.proportion;
+            this.menuBuffer = 5 * this.proportion;
+            ctx.font = 24 * this.proportion + 'px Lilita One';
+        }
+        ctx.drawImage(this.miscIcon, 
+            112, 160, 
+            16, 16, 
+            PARAMS.CANVAS_WIDTH - 16* this.menuScale * 1.5 - this.menuBuffer, PARAMS.CANVAS_HEIGHT - 16 * this.menuScale * 1.5 - this.menuBuffer, 
+            16 * this.menuScale * 1.5, 16 * this.menuScale * 1.5
+        );
+        //Menu Indicator
+        if (this.game.upgrade.points > 0 && !this.game.upgrade.noUpgrades) {
+            ctx.beginPath();
+            ctx.arc(PARAMS.CANVAS_WIDTH - this.menuBuffer - 15, 
+                PARAMS.CANVAS_HEIGHT - 16 * this.menuScale - this.menuBuffer - 10, 11 * this.proportion, 0, 2 * Math.PI);
+            ctx.fillStyle = 'red';
+            ctx.fill();
+            ctx.fillStyle = "White";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText("!", PARAMS.CANVAS_WIDTH - this.menuBuffer - 15, 
+                PARAMS.CANVAS_HEIGHT - 16 * this.menuScale - this.menuBuffer - 10);
+            // ctx.strokeText("!", PARAMS.CANVAS_WIDTH - this.menuBuffer - 15, 
+            //     PARAMS.CANVAS_HEIGHT - 16 * this.menuScale - this.menuBuffer - 10);
+        }
+        //Menu text
+        ctx.fillStyle = "White";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("Upgrade",PARAMS.CANVAS_WIDTH - (16 * this.menuScale * 1.5) / 2 - this.menuBuffer + 5, 
+            PARAMS.CANVAS_HEIGHT - this.menuBuffer - 20 * this.proportion - 5);
+        ctx.strokeText("Upgrade",PARAMS.CANVAS_WIDTH - (16 * this.menuScale * 1.5) / 2 - this.menuBuffer + 5, 
+            PARAMS.CANVAS_HEIGHT - this.menuBuffer - 20 * this.proportion- 5);
+        ctx.fillText("Menu", PARAMS.CANVAS_WIDTH - (16 * this.menuScale * 1.5) / 2 - this.menuBuffer + 5, 
+            PARAMS.CANVAS_HEIGHT - this.menuBuffer - 5);
+        ctx.strokeText("Menu", PARAMS.CANVAS_WIDTH - (16 * this.menuScale * 1.5) / 2 - this.menuBuffer + 5, 
+            PARAMS.CANVAS_HEIGHT - this.menuBuffer - 5);
+        //Reset text?
     }
 };
 
