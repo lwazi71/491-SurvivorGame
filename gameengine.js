@@ -186,8 +186,11 @@ class GameEngine {
     draw() {
         // Clear the whole canvas with transparent color (rgba(0, 0, 0, 0))
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+       // console.log(this.entities);
+        this.entities.sort((a, b) => (b.entityOrder || 0) - (a.entityOrder || 0));
+        //console.log(this.entities);
 
-        // Draw latest things first
+        //Draw latest things first. GOING IN REVERSE ORDER!
         for (let i = this.entities.length - 1; i >= 0; i--) {
             this.entities[i].draw(this.ctx, this);
         }
