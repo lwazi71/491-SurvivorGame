@@ -430,8 +430,8 @@ class HUD {
         if (mouseX > PARAMS.CANVAS_WIDTH - 16* this.menuScale * 1.5 - this.menuBuffer && mouseX < PARAMS.CANVAS_WIDTH - this.menuBuffer &&
             mouseY > PARAMS.CANVAS_HEIGHT - 16 * this.menuScale * 1.5 - this.menuBuffer && PARAMS.CANVAS_HEIGHT - this.menuBuffer && !this.game.upgradePause
         ) {
-            this.menuScale = 4.5;
-            this.menuBuffer = 5;
+            this.menuScale = 4.5 * this.proportion;
+            this.menuBuffer = 5 * this.proportion;
             ctx.font = 24 * this.proportion + 'px Lilita One';
         }
         ctx.drawImage(this.miscIcon, 
@@ -444,7 +444,7 @@ class HUD {
         if (this.game.upgrade.points > 0 && !this.game.upgrade.noUpgrades) {
             ctx.beginPath();
             ctx.arc(PARAMS.CANVAS_WIDTH - this.menuBuffer - 15, 
-                PARAMS.CANVAS_HEIGHT - 16 * this.menuScale - this.menuBuffer - 10, 11, 0, 2 * Math.PI);
+                PARAMS.CANVAS_HEIGHT - 16 * this.menuScale - this.menuBuffer - 10, 11 * this.proportion, 0, 2 * Math.PI);
             ctx.fillStyle = 'red';
             ctx.fill();
             ctx.fillStyle = "White";
@@ -460,9 +460,9 @@ class HUD {
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText("Upgrade",PARAMS.CANVAS_WIDTH - (16 * this.menuScale * 1.5) / 2 - this.menuBuffer + 5, 
-            PARAMS.CANVAS_HEIGHT - this.menuBuffer - 20 - 5);
+            PARAMS.CANVAS_HEIGHT - this.menuBuffer - 20 * this.proportion - 5);
         ctx.strokeText("Upgrade",PARAMS.CANVAS_WIDTH - (16 * this.menuScale * 1.5) / 2 - this.menuBuffer + 5, 
-            PARAMS.CANVAS_HEIGHT - this.menuBuffer - 20 - 5);
+            PARAMS.CANVAS_HEIGHT - this.menuBuffer - 20 * this.proportion- 5);
         ctx.fillText("Menu", PARAMS.CANVAS_WIDTH - (16 * this.menuScale * 1.5) / 2 - this.menuBuffer + 5, 
             PARAMS.CANVAS_HEIGHT - this.menuBuffer - 5);
         ctx.strokeText("Menu", PARAMS.CANVAS_WIDTH - (16 * this.menuScale * 1.5) / 2 - this.menuBuffer + 5, 
