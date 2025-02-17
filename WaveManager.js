@@ -135,31 +135,67 @@ class WaveManager {
      * @param {*} ctx 
      */
     spawnEnemy(type, isMiniBoss = false) {
-        const spawnPos = this.getValidSpawnPosition(); //make sure the enemy spawns out of the camera
+        const spawnPos = this.getValidSpawnPosition();
         let enemy;
-
+    
         switch(type) {
             case "zombie":
-                enemy = new Zombie(this.game,spawnPos.x,spawnPos.y);
+                enemy = new Zombie(this.game, spawnPos.x, spawnPos.y);
                 break;
             case "hellspawn":
-                enemy = new HellSpawn(this.game,spawnPos.x,spawnPos.y);
+                enemy = new HellSpawn(this.game, spawnPos.x, spawnPos.y);
                 break;
             case "blueghoul":
-                enemy = new BlueGhoul(this.game,spawnPos.x,spawnPos.y);
+                enemy = new BlueGhoul(this.game, spawnPos.x, spawnPos.y);
                 break;
             case "freakyghoul":
-                enemy = new FreakyGhoul(this.game,spawnPos.x,spawnPos.y);
+                enemy = new FreakyGhoul(this.game, spawnPos.x, spawnPos.y);
                 break;
             case "DemonLord":
-                enemy = new DemonLord(this.game,spawnPos.x,spawnPos.y);
+                enemy = new DemonLord(this.game, spawnPos.x, spawnPos.y);
                 break;
             default:
                 console.log("Invalid enemy type");
                 return;
         }
-        this.scaleEnemy(enemy, isMiniBoss);
+    
+        // Apply special melee mini-boss scaling if applicable
+        if (isMiniBoss && this.isMeleeEnemy(enemy)) {
+            enemy = this.spawnMiniBossMelee(enemy);
+        } else {
+            this.scaleEnemy(enemy, isMiniBoss);
+        }
+    
         this.game.addEntity(enemy);
+    }
+    
+    /**
+     * Checks if an enemy is classified as a melee-type.
+     */
+    isMeleeEnemy(enemy) {
+        return enemy instanceof Zombie || 
+               enemy instanceof Crow || 
+               enemy instanceof BlueGhoul || 
+               enemy instanceof FreakyGhoul || 
+               enemy instanceof Ghost || 
+               enemy instanceof Goblin;
+    }
+    
+    /**
+     * Applies melee mini-boss scaling to the given enemy.
+     */
+    spawnMiniBossMelee(enemy) {
+        if (this.isMeleeEnemy(enemy)) {
+            enemy.scale *= 1.4;
+            enemy.health *= 2;
+            enemy.speed *= 1.4;
+            enemy.attackPower *= 1.2;
+            enemy.entityOrder = 40;
+        } else {
+            console.log("This isn't a melee enemy");
+            return enemy;
+        }
+        return enemy;
     }
     // spawnZombie() {
     //     const spawnPos = this.getValidSpawnPosition(); //make sure the zombie spawns out of the camera
