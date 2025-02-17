@@ -27,22 +27,18 @@ class SceneManager {
         // this.game.addEntity(new Adventurer(this.game, 0, 0));
 
         // this.game.addEntity(new BlueGhoul(this.game, 400, 400));
-        // this.game.addEntity(new HellSpawn(this.game, 400, 400));
-        // this.game.addEntity(new HellSpawn(this.game, 800, 400));
         // this.game.addEntity(new BlueGhoul(this.game, 400, 400));
         // this.game.addEntity(new HellSpawn(this.game, 400, 400));
         // this.game.addEntity(new HellSpawn(this.game, 800, 400));
 
         // this.game.addEntity(new FreakyGhoul(this.game, 800, 800));
         // this.game.addEntity(new FreakyGhoul(this.game, 300, 800));
-        // this.game.addEntity(new FreakyGhoul(this.game, 800, 800));
-        // this.game.addEntity(new FreakyGhoul(this.game, 300, 800));
 
 
+
         // this.game.addEntity(new Ghost(this.game, 400, 400));
         // this.game.addEntity(new Ghost(this.game, 400, 400));
-        // this.game.addEntity(new Ghost(this.game, 400, 400));
-        // this.game.addEntity(new Ghost(this.game, 400, 400));
+
 
 
         // this.game.addEntity(new Zombie(this.game, 400, 400));
@@ -71,15 +67,15 @@ class SceneManager {
         this.game.addEntity(new Boss1(this.game, 200, 400));
 
 
-        this.game.addEntity(this.generateObject("Barrel", 100, 100));
-        this.game.addEntity(this.generateObject("Crate", 300, 100));
-        this.game.addEntity(this.generateObject("Pot", 500, 100));
-        this.game.addEntity(this.generateObject("Barrel", 200, 100));
-        this.game.addEntity(this.generateObject("Crate", 100, 300));
-        this.game.addEntity(this.generateObject("Pot", 100, 500));
-        this.game.addEntity(this.generateObject("Crate", 300, 500));
-        this.game.addEntity(this.generateObject("Barrel", 500, 500));
-        this.game.addEntity(this.generateObject("Crate", 500, 300));
+        // this.game.addEntity(this.generateObject("Barrel", 100, 100));
+        // this.game.addEntity(this.generateObject("Crate", 300, 100));
+        // this.game.addEntity(this.generateObject("Pot", 500, 100));
+        // this.game.addEntity(this.generateObject("Barrel", 200, 100));
+        // this.game.addEntity(this.generateObject("Crate", 100, 300));
+        // this.game.addEntity(this.generateObject("Pot", 100, 500));
+        // this.game.addEntity(this.generateObject("Crate", 300, 500));
+        // this.game.addEntity(this.generateObject("Barrel", 500, 500));
+        // this.game.addEntity(this.generateObject("Crate", 500, 300));
 
         //find a better way to do this.
         this.game.addEntity(new Sign(this.game, 20, 20, 
@@ -151,10 +147,9 @@ class SceneManager {
         ctx.fillStyle = 'white';
         // ctx.fillText(`Player Health: ${this.adventurer.health}`, 10, 120);
         // ctx.fillText(`Player Coins: ${this.adventurer.coins}`, 10, 150);
-        ctx.fillText(`Player Bombs: ${this.adventurer.bombCurrentAmnt}`, 10, 180);
-        ctx.fillText(`Player Bombs Cooldown: ${Math.ceil(this.adventurer.bombCooldownRetrieveTimer * 100) / 100}`, 10, 210);
-        ctx.fillText(`Player Dark Bolts: ${this.adventurer.boltCurrentAmount}`, 10, 240);
-        ctx.fillText(`Player Bolts Cooldown: ${Math.ceil(this.adventurer.boltCooldownRetrieveTimer * 100) / 100}`, 10, 270);
+
+        ctx.fillText(`Player Dark Bolts: ${this.adventurer.boltCurrentAmount}`, 10, 180);
+        ctx.fillText(`Player Bolts Cooldown: ${Math.ceil(this.adventurer.boltCooldownRetrieveTimer * 100) / 100}`, 10, 210);
         this.HUD.update();
         this.HUD.draw(ctx);
     }

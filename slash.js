@@ -159,7 +159,7 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
                 }
         
                 //COMBO with sword and bow and arrow!
-                if (entity instanceof Projectile && this.friendly && entity.friendly) { 
+                if (entity instanceof Projectile && this.friendly && entity.friendly && this.game.adventurer.slashArrowCombo) { 
                     if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
                         this.hitEntities.add(entity);
                         entity.speed *= 2;
@@ -168,13 +168,14 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
                 }
 
                 //if the player hits a projectile that's not friendly. Maybe change this when it comes to bosses. 
-                if (entity instanceof Projectile && this.friendly && !entity.friendly && this.person.parry) { 
+                if (entity instanceof Projectile && this.friendly && !entity.friendly && this.game.adventurer.parry) { 
                     if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
                         entity.removeFromWorld = true;
                     }
                 }
 
-                if (entity instanceof Bomb && this.friendly) {
+                //COMBO with bomb where player can knock bomb back
+                if (entity instanceof Bomb && this.friendly && this.game.adventurer.slashBombCombo) {
                     //if we hit the bomb and another entity, the bomb wont have any knockback
                     if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity) && this.hitEntities.size == 0) { 
                         // Add the bomb to our hit set

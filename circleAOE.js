@@ -106,7 +106,8 @@ class CircleAOE { //this class will be for the sword slash entity. This will dam
                     }
                 }
 
-                if ((this.person instanceof Lightning && this.person.lightningOption == 0) && (entity instanceof Lightning && entity.lightningOption == 1)) {
+                //COMBO with lightning and dark-bolt abilities.
+                if ((this.person instanceof Lightning && this.person.lightningOption == 0) && (entity instanceof Lightning && entity.lightningOption == 1) && this.game.adventurer.lightningDarkBoltCombo) {
                     if (this.BC.collidesWithCircle(entity.circle.BC) && !this.hitEntities.has(entity)) {
                         this.hitEntities.add(entity);
                        // entity.removeFromWorld = true;

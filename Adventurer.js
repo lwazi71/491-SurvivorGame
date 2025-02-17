@@ -86,12 +86,12 @@ class Adventurer { //every entity should have update and draw!
         this.magicKnockback = 2000;
         this.magicDamage = 100;
         this.magicScale = 6;
-        this.enableMagic = false;
+        this.enableMagic = true;
 
 
 
         //BOMB PROPERTIES
-        this.enableBomb = false;
+        this.enableBomb = true;
         this.bombDamage = 25;
         this.bombExplosionScale = 10;
         this.bombTimer = 4;
@@ -128,6 +128,13 @@ class Adventurer { //every entity should have update and draw!
         this.slowCooldown = 7;
 
         this.lightningOption = 0; //0 = normal lightning, 1 = Dark-Bolt lightning
+
+
+        //UPGRADE COMBO CONTROL VARIABLE:
+        this.slashArrowCombo = false; //combo where player can hit arrow with their sword to make arrow go faster + do 2x more damage
+        this.slashBombCombo = false; //combo where player can hit the bomb with their sword towards enemies
+        this.lightningDarkBoltCombo = false; //combo where player can hit dark bolt with lightning to cause wider explosion + more damage
+
 
         this.coins = 0;
         this.level = 1;
@@ -484,13 +491,14 @@ class Adventurer { //every entity should have update and draw!
             this.game.leftClick = false;
         }
 
+        //Ultimate control
         if (this.game.keys["x"] && this.canMagic && !this.rolling && this.enableMagic && this.currentWeapon == 0) { //&& !this.shooting && !this.attacking if we dont want player to use magic during attack animation
             console.log("we clicked right click!")
             this.invincible = true;
             this.magicAOE();
         } 
 
-
+        //bomb controls
         if (this.game.keys["e"] && this.canBomb && !this.rolling && this.bombCurrentAmnt > 0 && this.enableBomb) {
             this.bombCurrentAmnt--;
             const characterCenterX = this.x + (this.bitSize * this.scale) / 2; 
@@ -502,7 +510,8 @@ class Adventurer { //every entity should have update and draw!
             this.canBomb = false;
             this.game.addEntity(new Bomb(this.game, characterCenterX - 50, characterCenterY -32, this.bombTimer, this.bombDamage, this.bombExplosionScale));
         }
-
+        
+        //lightning control
         if (this.game.rightClicks && this.canLightning && !this.rolling && !this.shooting && !this.attacking) {
             this.lightningCooldownTimer = this.lightningCooldown;
             this.lightningOption = 0;
@@ -512,24 +521,7 @@ class Adventurer { //every entity should have update and draw!
             this.game.rightClicks = false;
         }
         
-        if (this.game.keys["f"] && this.canBolt && !this.rolling && this.boltCurrentAmount > 0) {
-            this.boltCurrentAmount--;
-            this.lightningOption = 1;
-            if (this.boltCooldownRetrieveTimer <= 0) {
-                this.boltCooldownRetrieveTimer = this.boltCooldownRetrieve;
-            }
-            this.darkBolt();            
-        }
-
-        if (this.game.rightClicks && this.canLightning && !this.rolling && !this.shooting && !this.attacking) {
-            this.lightningCooldownTimer = this.lightningCooldown;
-            this.lightningOption = 0;
-            this.lightning();
-            this.game.rightClicks = false;
-        } else {
-            this.game.rightClicks = false;
-        }
-        
+        //dark-bolt control
         if (this.game.keys["f"] && this.canBolt && !this.rolling && this.boltCurrentAmount > 0) {
             this.boltCurrentAmount--;
             this.lightningOption = 1;
@@ -1033,20 +1025,20 @@ class Adventurer { //every entity should have update and draw!
     }
     
     levelUp() {
-        if (this.experience >= this.experienceToNextLvl) {
-            // this.health = this.maxhealth;
-            this.level++;
-            this.game.upgrade.points++;
-            this.experience -= this.experienceToNextLvl;
-            // this.experienceToNextLvl = Math.floor(this.experienceToNextLvl * 1.1);
-            this.levelUpMenu();
-        }
+        // if (this.experience >= this.experienceToNextLvl) {
+        //     // this.health = this.maxhealth;
+        //     this.level++;
+        //     this.game.upgrade.points++;
+        //     this.experience -= this.experienceToNextLvl;
+        //     // this.experienceToNextLvl = Math.floor(this.experienceToNextLvl * 1.1);
+        //     this.levelUpMenu();
+        // }
     }
     levelUpMenu() {
-        if (!this.game.upgrade.noUpgrade) {
-            this.game.upgrade.getThreeUpgrades();
-            this.game.toggleUpgradePause();
-        }
+        // if (!this.game.upgrade.noUpgrade) {
+        //     this.game.upgrade.getThreeUpgrades();
+        //     this.game.toggleUpgradePause();
+        // }
     }
     //If we want to do a minimap, need to add this for all entities being added
     drawMinimap(ctx, mmX, mmY) {
