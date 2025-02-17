@@ -75,7 +75,9 @@ class Adventurer { //every entity should have update and draw!
         this.bowDamage = 4;
         this.arrowSpeed = 800;
         this.bowUpgrade = 0; 
+
         this.piercing = false; //piercing could be for shooting through enemies. Collateral. Could be an upgrade
+        this.tripleShot = false; //shotgun like pattern when shooting bow. Look in bowShoot() method if you want to take a closer look or change anything
 
         //MAGIC AOE PROPERTIES
         this.magicking = false;
@@ -87,7 +89,6 @@ class Adventurer { //every entity should have update and draw!
         this.magicDamage = 100;
         this.magicScale = 6;
         this.enableMagic = true;
-
 
 
         //BOMB PROPERTIES
@@ -825,10 +826,26 @@ class Adventurer { //every entity should have update and draw!
         
 
         // Add arrow to game entities
-        this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, this.bowDamage, this.arrowSpeed, 
-            "./Sprites/Projectiles/Arrows_pack.png", this.bowKnockback, true, 2, this.piercing,
-            2, 0, -6, 32, 32, 1, 0.2, false, false, - 15, -15, this.bitSize * 2 - 35, this.bitSize * 2 - 35, this.bitSize, this.bitSize));
-             //bounding box will always start at this.x for the projectile. The -15 is just something that we could maybe offset it by. If no offset,  then we could just put 0
+        if (this.tripleShot) {
+            const baseAngle = Math.atan2(dy, dx);
+            const spreadAngle = 0.26;
+            const angles = [
+                baseAngle - spreadAngle,
+                baseAngle,
+                baseAngle + spreadAngle
+            ];
+
+            angles.forEach(angle => {
+                this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, this.bowDamage, this.arrowSpeed, 
+                    "./Sprites/Projectiles/Arrows_pack.png", this.bowKnockback, true, 2, this.piercing,
+                    2, 0, -6, 32, 32, 1, 0.2, false, false, - 15, -15, this.bitSize * 2 - 35, this.bitSize * 2 - 35, this.bitSize, this.bitSize)); 
+            });
+        } else {
+            this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, this.bowDamage, this.arrowSpeed, 
+                "./Sprites/Projectiles/Arrows_pack.png", this.bowKnockback, true, 2, this.piercing,
+                2, 0, -6, 32, 32, 1, 0.2, false, false, - 15, -15, this.bitSize * 2 - 35, this.bitSize * 2 - 35, this.bitSize, this.bitSize)); 
+        }
+        //bounding box will always start at this.x for the projectile. The -15 is just something that we could maybe offset it by. If no offset,  then we could just put 0
 
 
         // Set bow state and cooldown
