@@ -11,6 +11,7 @@ class ExperienceOrb {
         this.radius = 200;
         this.speed = 0.1;
         this.location = {x: this.x, y: this.y};
+        this.pickupDistance = 10;
         this.updateBB();
     }
     updateBB() {
@@ -30,14 +31,20 @@ class ExperienceOrb {
                 this.x = this.location.x;
                 this.y = this.location.y;
             }
+            if (getDistance(this.location, this.target) < this.pickupDistance && !this.game.adventurer.dead) {
+                this.game.adventurer.experience += 100; // Change value to acceptable amount
+                this.game.adventurer.levelUp();
+                this.removeFromWorld = true;
+            }
         }
         this.updateBB();
+
     }
 
     draw(ctx) {
         this.animations.drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
 
-        
+
         ctx.strokeStyle = 'Green';
         ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
     }

@@ -27,11 +27,17 @@ class FreakyGhoul {
 
         this.dropchance = 0.4; //40% chance of dropping something when dying
 
+        this.entityOrder = 10;
 
         
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
         this.bitSizeX = 32;
         this.bitSizeY = 32;
+
+        this.isSlowed = false;
+        this.slowDuration = 0;
+        this.slowTimer = 0;
+        this.baseSpeed = this.speed;
 
 
         this.animations = []; //will be used to store animations
@@ -43,7 +49,12 @@ class FreakyGhoul {
 
 
     updateBB() {
-        this.BB = new BoundingBox(this.x + 23, this.y +20, 32 + 15, 32 + 33);
+        const width = this.bitSizeX * this.scale * 0.5;  // Adjust scaling factor if needed
+        const height = this.bitSizeY * this.scale * 0.7; // Adjust scaling factor if needed
+        const offsetX = (this.bitSizeX * this.scale - width) / 2; // Center adjustment
+        const offsetY = (this.bitSizeY * this.scale - height) / 2 + 10; // Adjust Y position if needed
+    
+        this.BB = new BoundingBox(this.x + offsetX, this.y + offsetY, width, height);
     }
 
     loadAnimation() {
@@ -76,7 +87,7 @@ class FreakyGhoul {
         this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul-Flipped.png"), 125, 0, 32, 32, 3.9, 0.2, true, false);
 
         //Walking, looking left
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul-Flipped.png"), 2, 32, 32, 32, 7.9, 0.09, true, false);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul-Flipped.png"), 5, 32, 32, 32, 7.9, 0.09, true, false);
 
         //Attack, to the left
         this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul-Flipped.png"), 64, 64, 32, 32, 5, 0.08, true, false);
@@ -111,6 +122,16 @@ class FreakyGhoul {
                 // Remove ghoul from world after the animation finishes
                 this.removeFromWorld = true;
                 return;
+            }
+        }
+
+        if (this.isSlowed) {
+            this.slowTimer += this.game.clockTick;
+            if (this.slowTimer >= this.slowDuration) {
+                // Reset speed when slow duration expires
+                this.speed = this.baseSpeed;
+                this.isSlowed = false;
+                this.slowTimer = 0;
             }
         }
         
@@ -208,6 +229,12 @@ class FreakyGhoul {
                     }
                 }
             }
+
+            if (entity instanceof Lightning && entity.lightningOption === 1 && !this.isSlowed) {
+                if (entity.circle.BC.collidesWithBox(this.BB)) {
+                    this.applySlowEffect(this.game.adventurer.slowCooldown); 
+                }
+            }
         }
 
         // Play attack animation and reduce timer
@@ -260,25 +287,37 @@ class FreakyGhoul {
         }
     }
 
+    applySlowEffect(duration) {
+        this.isSlowed = true;
+        this.slowDuration = duration;
+        this.slowTimer = 0;
+        this.speed /= 2; // Reduce speed by half
+    }
+
 
     draw(ctx) {
+
+        const shadowWidth = 40 * (this.scale /2.8); 
+        const shadowHeight = 16 * (this.scale /2.8);
+
+        const shadowX = (this.x + (23 * (this.scale / 2.8))) - this.game.camera.x;
+        const shadowY = (this.y + (77 * (this.scale / 2.8))) - this.game.camera.y;
+
+        ctx.drawImage(this.shadow, 0, 0, 64, 32, shadowX, shadowY, shadowWidth, shadowHeight);
+
         if (this.dead) {
             // Only draw shadow if death animation is still playing
            if (this.deathAnimationTimer > 0) {
-                ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 28) - this.game.camera.x, (this.y + 77) - this.game.camera.y, 40, 16); //draw a shadow underneath our character
                 this.deadAnimation.drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
            }
         } else if (this.isPlayingDamageAnimation) {
-            ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 28) - this.game.camera.x, (this.y + 77) - this.game.camera.y, 40, 16); //draw a shadow underneath our character
             this.animations[3][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
         } else {
-            ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 28) - this.game.camera.x, (this.y + 77) - this.game.camera.y, 40, 16); //draw a shadow underneath our character
             this.animations[this.state][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale); 
         }
 
         //used to indicate the path the ghoul is going towards. (line 132 and 133);
         // ctx.strokeStyle = 'Green';
-
         // ctx.strokeRect(this.x + 44 - this.game.camera.x, this.y + 30 - this.game.camera.y, 20, 20);
 
         // const player = this.game.adventurer;
@@ -289,8 +328,8 @@ class FreakyGhoul {
 
 
         
-        ctx.strokeStyle = 'Yellow';
-        ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        // ctx.strokeStyle = 'Yellow';
+        // ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
 
     }
     

@@ -22,7 +22,7 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
       
 
             // Animation timing
-            this.slashDuration = 0.3; // Duration in seconds
+            this.slashDuration = 0.4; // Duration in seconds
             this.slashTimer = this.slashDuration;
 
                  // Updated sprite properties for 128x128
@@ -33,7 +33,10 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
             this.hitEntities = new Set();
 
             this.slashDistance = this.person.scale * 10; //how far the slash should be away from the player
+
+            this.entityOrder = 100;
             
+            this.updatePosition();
             this.updateBC();
 
             // Load animations
@@ -106,7 +109,8 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
                 let entity = entities[i];
                 //melee/range mobs
                 if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul || entity instanceof FreakyGhoul 
-                    || entity instanceof BanditNecromancer || entity instanceof Necromancer || entity instanceof RatMage || entity instanceof FoxMage || entity instanceof Imp) 
+                    || entity instanceof BanditNecromancer || entity instanceof Necromancer || entity instanceof RatMage || entity instanceof FoxMage || entity instanceof Imp 
+                    || entity instanceof Crow || entity instanceof Wizard || entity instanceof Goblin) 
                     && !entity.dead) {
                     // Only apply damage if we haven't hit this zombie yet
                     if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
@@ -124,7 +128,7 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
                 }
 
                 //charging mobs
-                if ((entity instanceof HellSpawn) 
+                if ((entity instanceof HellSpawn || entity instanceof Slime || entity instanceof Boar) 
                     && !entity.dead) {
                     if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
                         // Add the zombie to our hit set
@@ -164,7 +168,7 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
                 }
 
                 //if the player hits a projectile that's not friendly. Maybe change this when it comes to bosses. 
-                if (entity instanceof Projectile && this.friendly && !entity.friendly && entity.parry) { 
+                if (entity instanceof Projectile && this.friendly && !entity.friendly && this.person.parry) { 
                     if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
                         entity.removeFromWorld = true;
                     }
@@ -183,6 +187,23 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
 
                         //Pass the center coordinates for knockback calculation and Apply damage and trigger damage state
                         entity.takeKnockback(4000, centerX, centerY);
+                    }
+                }
+                
+                //bosses/mini bosses
+                if (entity instanceof Minotaur || entity instanceof GoblinMech || entity instanceof Cyclops && this.friendly) {
+                    //if we hit the bomb and another entity, the bomb wont have any knockback
+                    if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
+                        // Add the entity to our hit set
+                        this.hitEntities.add(entity);
+                        
+                        //Calculate the knockback TRUE CENTER of the slash circle for knockback source
+                        const centerX = this.person.x + (this.person.bitSize * this.person.scale) / 2 + Math.cos(this.angle) * this.slashDistance;
+                        const centerY = this.person.y + (this.person.bitSize * this.person.scale) / 2 + Math.sin(this.angle) * this.slashDistance;
+
+                        //We're gonna have 0 knockbacks for bosses/mini-bosses. Could potentially change
+                        entity.takeDamage(this.attackDamage, 0, centerX, centerY);
+                        
                     }
                 }
                 

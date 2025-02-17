@@ -124,6 +124,31 @@ class WaveManager {
         this.game.addEntity(zombie);
     }
 
+    spawnMiniBossZombie() {
+        const spawnPos = this.getValidSpawnPosition(); //make sure the zombie spawns out of the camera
+        
+        const zombie = new Zombie(
+            this.game, 
+            spawnPos.x, 
+            spawnPos.y
+        );
+        
+        // Scale zombie stats based on wave number
+        zombie.health *= 2;
+        zombie.attackPower *= 2;
+        zombie.speed *= 1.3;
+        zombie.scale *= 1.5;
+
+        this.game.addEntity(zombie);
+    }
+
+    // spawnMiniBoss(enemy) { //we'll pass in a enemy object in here. Should be passed in with the random coordinates already.
+    //     // const spawnPos = this.getValidSpawnPosition(); //make sure the zombie spawns out of the camera
+        
+    //     enemy.health *= 2;
+    //     enemy.attackPower *= 2;
+    // }
+
     
     spawnHellspawn() {
         const spawnPos = this.getValidSpawnPosition(); //make sure the zombie spawns out of the camera
@@ -141,6 +166,22 @@ class WaveManager {
         
         this.game.addEntity(hellspawn);
     }
+
+    spawnMiniBossMelee(enemy) { //should pass in enemy object with coordinates. EX: spawnMiniBossMelee(new Zombie(game, x, y))
+        if (enemy instanceof Zombie || enemy instanceof Crow || enemy instanceof BlueGhoul || enemy instanceof FreakyGhoul || enemy instanceof Zombie || enemy instanceof Ghost || enemy instanceof Goblin) {
+            enemy.scale *= 1.4;
+            enemy.health *= 2;
+            enemy.speed *= 1.4;
+            enemy.attackPower *= 1.2;
+            enemy.entityOrder = 40;
+        } else {
+            console.log("this isn't a melee enemy");
+            return;
+        }
+        return enemy;
+    }
+
+
 
     draw(ctx) {
         // Draw wave information

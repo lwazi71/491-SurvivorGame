@@ -32,6 +32,13 @@ class Ghost {
         this.bitSizeX = 32;
         this.bitSizeY = 32;
 
+        this.isSlowed = false;
+        this.slowDuration = 0;
+        this.slowTimer = 0;
+        this.baseSpeed = this.speed;
+
+
+        this.entityOrder = 10;
 
         this.animations = []; //will be used to store animations
 
@@ -42,7 +49,12 @@ class Ghost {
 
 
     updateBB() {
-        this.BB = new BoundingBox((this.x + 20), (this.y + 17), 32 + 22, 32 + 35);
+        const width = this.bitSizeX * this.scale * 0.6;  // Adjust scaling factor if needed
+        const height = this.bitSizeY * this.scale * 0.7; // Adjust scaling factor if needed
+        const offsetX = (this.bitSizeX * this.scale - width) / 2 + 2; // Center adjustment
+        const offsetY = (this.bitSizeY * this.scale - height) / 2; // Adjust Y position if needed
+    
+        this.BB = new BoundingBox(this.x + offsetX, this.y + offsetY, width, height);
     }
 
     loadAnimation() {
@@ -69,13 +81,13 @@ class Ghost {
 
         //LOOKING LEFT
         //idle, looking to the left
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost-Flipped.png"), 96, 0, 32, 32, 3.9, 0.2, true, false);
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost-Flipped.png"), 98, 0, 32, 32, 3.9, 0.2, true, false);
 
         //Attack, to the left
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost-Flipped.png"), 96, 32, 32, 32, 4, 0.2, true, false);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost-Flipped.png"), 98, 32, 32, 32, 4, 0.2, true, false);
 
         //Damaged, to the left
-        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost-Flipped.png"), 96, 64, 32, 32, 4, 0.2, true, false);
+        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost-Flipped.png"), 98, 64, 32, 32, 4, 0.2, true, false);
 
 
         this.deadAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost.png"), 0, 96, 32, 32, 7, 0.15, false, false);
@@ -106,6 +118,16 @@ class Ghost {
                 return;
             }
         }
+
+        if (this.isSlowed) {
+            this.slowTimer += this.game.clockTick;
+            if (this.slowTimer >= this.slowDuration) {
+                // Reset speed when slow duration expires
+                this.speed = this.baseSpeed;
+                this.isSlowed = false;
+                this.slowTimer = 0;
+            }
+        }
         
         if (!this.dead) {
             // Apply knockback effect
@@ -127,7 +149,7 @@ class Ghost {
         const player = this.game.adventurer; // Reference to the player character
 
         // Calculate the direction vector to the player
-        const dx = (player.x + (player.bitSize * player.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2); 
+        const dx = (player.x + (player.bitSize * player.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2 - 5); 
         const dy = (player.y + (player.bitSize * player.scale)/2) - (this.y + (this.bitSizeY * this.scale)/2);
     
         // Calculate the distance to the player
@@ -199,6 +221,12 @@ class Ghost {
                     }
                 }
             }
+
+            if (entity instanceof Lightning && entity.lightningOption === 1 && !this.isSlowed) {
+                if (entity.circle.BC.collidesWithBox(this.BB)) {
+                    this.applySlowEffect(this.game.adventurer.slowCooldown); 
+                }
+            }
         }
 
         // Play attack animation and reduce timer
@@ -220,7 +248,7 @@ class Ghost {
         this.health -= damage;
         
         // Apply knockback
-        const dx = (this.x + (this.bitSizeX * this.scale)/2) - sourceX;
+        const dx = (this.x + (this.bitSizeX * this.scale)/2 - 5) - sourceX;
         const dy = (this.y + (this.bitSizeY * this.scale)/2) - sourceY;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
@@ -253,23 +281,37 @@ class Ghost {
         }
     }
 
+    applySlowEffect(duration) {
+        this.isSlowed = true;
+        this.slowDuration = duration;
+        this.slowTimer = 0;
+        this.speed /= 2; // Reduce speed by half
+    }
+
 
     draw(ctx) {
+
+        // Calculate shadow dimensions based on zombie scale
+        const shadowWidth = 45 * (this.scale / 2.6); // 2.6 is default scale
+        const shadowHeight = 16 * (this.scale / 2.6);
+
+        const shadowX = (this.x + (20 * (this.scale / 2.6))) - this.game.camera.x;
+        const shadowY = (this.y + (77 * (this.scale / 2.6))) - this.game.camera.y;
+
+        ctx.drawImage(this.shadow, 0, 0, 64, 32, shadowX, shadowY, shadowWidth, shadowHeight);
         if (this.dead) {
             // Only draw shadow if death animation is still playing
            if (this.deathAnimationTimer > 0) {
-                ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 17) - this.game.camera.x, (this.y + 77) - this.game.camera.y, 40, 16);
                 this.deadAnimation.drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
            }
         } else if (this.isPlayingDamageAnimation) {
-            ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 28) - this.game.camera.x, (this.y + 77) - this.game.camera.y, 40, 16); //draw a shadow underneath our character
             this.animations[2][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
         } else {
-            ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 28) - this.game.camera.x, (this.y + 77) - this.game.camera.y, 40, 16); //draw a shadow underneath our character
             this.animations[this.state][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale); 
         }
 
-
+        ctx.strokeStyle = 'Green';
+        ctx.strokeRect((this.x + (this.bitSizeX * this.scale)/2 - 5) - this.game.camera.x, (this.y + (this.bitSizeY * this.scale)/2) - this.game.camera.y, 20, 20);
         
         ctx.strokeStyle = 'Yellow';
         ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);

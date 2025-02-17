@@ -35,10 +35,16 @@ class Imp {
         this.isPlayingDamageAnimation = false;
         this.shouldShootAfterCast = false; // New flag to track if we should shoot after casting
 
+        this.entityOrder = 10;
 
         this.projectileCount = 10;
 
         this.dropchance = 0.4;
+
+        this.isSlowed = false;
+        this.slowDuration = 0;
+        this.slowTimer = 0;
+        this.baseSpeed = this.speed;
 
         this.animations = [];
 
@@ -87,8 +93,12 @@ class Imp {
 
 
     updateBB() {
-        this.BB = new BoundingBox(this.x + 28, this.y + 50, 32 , 32 + 10);
-    }
+        const width = this.bitSizeX * this.scale * 0.4;  // Adjust scaling factor if needed
+        const height = this.bitSizeY * this.scale * 0.4; // Adjust scaling factor if needed
+        const offsetX = (this.bitSizeX * this.scale - width) / 2; // Center adjustment
+        const offsetY = (this.bitSizeY * this.scale - height) / 2 + 28; // Adjust Y position if needed
+    
+        this.BB = new BoundingBox(this.x + offsetX, this.y + offsetY, width, height);    }
 
 
 
@@ -108,6 +118,16 @@ class Imp {
                 this.state = 0; // Return to idle state
             }
          }
+
+        if (this.isSlowed) {
+            this.slowTimer += this.game.clockTick;
+            if (this.slowTimer >= this.slowDuration) {
+                // Reset speed when slow duration expires
+                this.speed = this.baseSpeed;
+                this.isSlowed = false;
+                this.slowTimer = 0;
+            }
+        }
 
         // Reduce attack cooldown timer
         if (this.attackCooldownTimer > 0) { //this is used for every mob attack. Makes sure a mob hits player once every second instead of every tick.
@@ -204,6 +224,12 @@ class Imp {
                     }
                 }
             }
+
+            if (entity instanceof Lightning && entity.lightningOption === 1 && !this.isSlowed) {
+                if (entity.circle.BC.collidesWithBox(this.BB)) {
+                    this.applySlowEffect(this.game.adventurer.slowCooldown); 
+                }
+            }
         }
     
         this.updateBB();
@@ -270,6 +296,13 @@ class Imp {
                 this.animations[3][1].elapsedTime = 0;
             }
         }
+    }
+
+    applySlowEffect(duration) {
+        this.isSlowed = true;
+        this.slowDuration = duration;
+        this.slowTimer = 0;
+        this.speed /= 2; // Reduce speed by half
     }
 
 

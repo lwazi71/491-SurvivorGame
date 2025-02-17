@@ -9,6 +9,7 @@ class Zombie {
         this.speed = 200;
 
         this.health = 20;
+        this.maxHealth = 20;
         this.attackPower = 10;
         this.attackCooldown = 1.0; // Cooldown in seconds between attacks
         this.attackCooldownTimer = 0; // Tracks remaining cooldown time
@@ -18,6 +19,7 @@ class Zombie {
         this.isPlayingDamageAnimation = false;
         this.attackTimer = 1;
 
+        this.healthbar = new HealthBar(this, this.game);
 
         this.dead = false;
         this.deathAnimationTimer = 7 * 0.15;
@@ -33,6 +35,14 @@ class Zombie {
         this.bitSizeX = 32;
         this.bitSizeY = 32;
 
+        this.isSlowed = false;
+        this.slowDuration = 0;
+        this.slowTimer = 0;
+        this.baseSpeed = this.speed;
+
+
+        this.entityOrder = 10;
+
 
         this.animations = []; //will be used to store animations
 
@@ -43,7 +53,12 @@ class Zombie {
 
 
     updateBB() {
-        this.BB = new BoundingBox((this.x + 13), (this.y + 17), 32 + 20, 32 + 35);
+        const width = this.bitSizeX * this.scale * 0.5;  // Adjust scaling factor if needed
+        const height = this.bitSizeY * this.scale * 0.8; // Adjust scaling factor if needed
+        const offsetX = (this.bitSizeX * this.scale - width) / 2 - 4; // Center adjustment
+        const offsetY = (this.bitSizeY * this.scale - height) / 2 + 6; // Adjust Y position if needed
+    
+        this.BB = new BoundingBox(this.x + offsetX, this.y + offsetY, width, height);
     }
 
     loadAnimation() {
@@ -110,6 +125,16 @@ class Zombie {
                 // Remove zombie from world after the animation finishes
                 this.removeFromWorld = true;
                 return;
+            }
+        }
+
+        if (this.isSlowed) {
+            this.slowTimer += this.game.clockTick;
+            if (this.slowTimer >= this.slowDuration) {
+                // Reset speed when slow duration expires
+                this.speed = this.baseSpeed;
+                this.isSlowed = false;
+                this.slowTimer = 0;
             }
         }
         
@@ -195,6 +220,12 @@ class Zombie {
                     this.state = 2; //Attacking state
                 }
             }
+
+            if (entity instanceof Lightning && entity.lightningOption === 1 && !this.isSlowed) {
+                if (entity.circle.BC.collidesWithBox(this.BB)) {
+                    this.applySlowEffect(this.game.adventurer.slowCooldown); 
+                }
+            }
         }
 
         // Play attack animation and reduce timer
@@ -250,26 +281,38 @@ class Zombie {
         }
     }
 
+    applySlowEffect(duration) {
+        this.isSlowed = true;
+        this.slowDuration = duration;
+        this.slowTimer = 0;
+        this.speed /= 2; // Reduce speed by half
+    }
+
     drawMinimap(ctx, mmX, mmY) {
         ctx.fillStyle = "Red";
         ctx.fillRect(mmX + this.x / 32, mmY + this.y / 32, 3, 3);
     };
 
     draw(ctx) {
+        // Calculate shadow dimensions based on zombie scale
+        const shadowWidth = 40 * (this.scale / 2.6); // 2.6 is default scale
+        const shadowHeight = 16 * (this.scale / 2.6);
+
+        const shadowX = (this.x + (18 * (this.scale / 2.6))) - this.game.camera.x;
+        const shadowY = (this.y + (77 * (this.scale / 2.6))) - this.game.camera.y;
+
+        ctx.drawImage(this.shadow, 0, 0, 64, 32, shadowX, shadowY, shadowWidth, shadowHeight);
+
         if (this.dead) {
             // Only draw shadow if death animation is still playing
            if (this.deathAnimationTimer > 0) {
-                ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 17) - this.game.camera.x, (this.y + 77) - this.game.camera.y, 40, 16);
                 this.deadAnimation.drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
            }
         } else if (this.isPlayingDamageAnimation) {
-            ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 28) - this.game.camera.x, (this.y + 77) - this.game.camera.y, 40, 16); //draw a shadow underneath our character
             this.animations[3][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
         } else {
-            ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 18) - this.game.camera.x, (this.y + 77) - this.game.camera.y, 40, 16); //draw a shadow underneath our character
             this.animations[this.state][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale); 
         }
-
         //used to indicate the path/direction the ghoul is going towards. (line 131 and 132);
         // ctx.strokeStyle = 'Green';
 
@@ -278,8 +321,7 @@ class Zombie {
         // const player = this.game.adventurer;
         // ctx.strokeRect(player.BB.x + 6 - this.game.camera.x, player.BB.y- this.game.camera.y, 20, 20);
 
-
-        
+        this.healthbar.draw(ctx);
         ctx.strokeStyle = 'Yellow';
         ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
 

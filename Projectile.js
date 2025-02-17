@@ -39,6 +39,8 @@ class Projectile {
             x: Math.cos(this.angle) * this.speed,
             y: Math.sin(this.angle) * this.speed
         };
+
+        this.entityOrder = 97;
     
 
          //Tracking hit entities to prevent multiple hits
@@ -104,7 +106,8 @@ class Projectile {
             if (this.friendly) { //this means the projectile is coming from us, the player
                 //Player arrow hitting enemies (for melee and range enemies)
                 if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul || entity instanceof FreakyGhoul 
-                    || entity instanceof BanditNecromancer || entity instanceof Necromancer || entity instanceof RatMage || entity instanceof FoxMage || entity instanceof Imp) 
+                    || entity instanceof BanditNecromancer || entity instanceof Necromancer || entity instanceof RatMage || entity instanceof FoxMage || entity instanceof Imp 
+                    || entity instanceof Crow || entity instanceof Wizard || entity instanceof Goblin) 
                     && !entity.dead && 
                     this.BB.collide(entity.BB) && !this.hitEntities.has(entity)) {
                      
@@ -123,7 +126,7 @@ class Projectile {
                     }
                 }
                 //for charging enemies
-                if ((entity instanceof HellSpawn) 
+                if ((entity instanceof HellSpawn || entity instanceof Slime || entity instanceof Boar) 
                     && !entity.dead) {
                     // Only apply damage if we haven't hit this zombie yet
                     if (this.BB.collide(entity.BB) && !this.hitEntities.has(entity)) {
@@ -149,7 +152,6 @@ class Projectile {
                         if (!this.piercing) {
                             this.removeFromWorld = true;
                         }
-                        
                     }
                 }
                 
@@ -159,6 +161,18 @@ class Projectile {
                     if (this.BB.collide(entity.BB) && !this.hitEntities.has(entity)) {
                         this.hitEntities.add(entity);
                         entity.takeDamage(this.damage);
+
+                        if (!this.piercing) {
+                            this.removeFromWorld = true;
+                        }
+                    }
+                }
+
+                //Mini-bosses / bosses
+                if ((entity instanceof Minotaur || entity instanceof GoblinMech || entity instanceof Cyclops)) { 
+                    if (this.BB.collide(entity.BB) && !this.hitEntities.has(entity)) {
+                        this.hitEntities.add(entity);
+                        entity.takeDamage(this.damage, 0);
 
                         if (!this.piercing) {
                             this.removeFromWorld = true;

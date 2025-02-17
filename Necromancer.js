@@ -35,7 +35,15 @@ class Necromancer {
         this.damageAnimationDuration = 0.2; // Duration of damage animation
         this.isPlayingDamageAnimation = false;
 
+        this.isSlowed = false;
+        this.slowDuration = 0;
+        this.slowTimer = 0;
+        this.baseSpeed = this.speed;
+
         this.dropchance = 0.4;
+
+        this.entityOrder = 20;
+
 
         this.animations = [];
 
@@ -84,7 +92,12 @@ class Necromancer {
 
 
     updateBB() {
-        this.BB = new BoundingBox(this.x + 140, this.y + 140, 32 , 32 + 60);
+        const width = this.bitSizeX * this.scale * 0.15;  // Adjust scaling factor if needed
+        const height = this.bitSizeY * this.scale * 0.25; // Adjust scaling factor if needed
+        const offsetX = (this.bitSizeX * this.scale - width) / 2 + 28; // Center adjustment
+        const offsetY = (this.bitSizeY * this.scale - height) / 2 + 28; // Adjust Y position if needed
+    
+        this.BB = new BoundingBox(this.x + offsetX, this.y + offsetY, width, height);
     }
 
 
@@ -105,6 +118,16 @@ class Necromancer {
                 this.state = 0; // Return to idle state
             }
          }
+
+        if (this.isSlowed) {
+            this.slowTimer += this.game.clockTick;
+            if (this.slowTimer >= this.slowDuration) {
+                // Reset speed when slow duration expires
+                this.speed = this.baseSpeed;
+                this.isSlowed = false;
+                this.slowTimer = 0;
+            }
+        }
 
         // Reduce attack cooldown timer
         if (this.attackCooldownTimer > 0) { //this is used for every mob attack. Makes sure a mob hits player once every second instead of every tick.
@@ -211,9 +234,22 @@ class Necromancer {
                     }
                 }
             }
+
+            if (entity instanceof Lightning && entity.lightningOption === 1 && !this.isSlowed) {
+                if (entity.circle.BC.collidesWithBox(this.BB)) {
+                    this.applySlowEffect(this.game.adventurer.slowCooldown); 
+                }
+            }
         }
     
          this.updateBB();
+    }
+
+    applySlowEffect(duration) {
+        this.isSlowed = true;
+        this.slowDuration = duration;
+        this.slowTimer = 0;
+        this.speed /= 2; // Reduce speed by half
     }
 
 
@@ -259,10 +295,16 @@ class Necromancer {
 
 
     draw(ctx) {
+        const shadowWidth = 58 * (this.scale / 2); 
+        const shadowHeight = 16 * (this.scale / 2);
+
+        const shadowX = (this.x + (128 * (this.scale / 2))) - this.game.camera.x;
+        const shadowY = (this.y + (230 * (this.scale / 2))) - this.game.camera.y;
+
+        ctx.drawImage(this.shadow, 0, 0, 64, 32, shadowX, shadowY, shadowWidth, shadowHeight);
+        
         if (this.dead) {
             if (this.deathAnimationTimer > 0) {
-                ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 128) - this.game.camera.x, (this.y + 230) - this.game.camera.y, 58, 16);
-
                 this.death.drawFrame(
                     this.game.clockTick, 
                     ctx, 
@@ -272,12 +314,8 @@ class Necromancer {
                 );
             }
         } else if (this.isPlayingDamageAnimation) {
-            ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 128) - this.game.camera.x, (this.y + 230) - this.game.camera.y, 58, 16);
             this.animations[3][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
-        } else {
-            // Draw shadow
-            ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 128) - this.game.camera.x, (this.y + 230) - this.game.camera.y, 58, 16);
-            
+        } else {            
             // Draw necromancer
             this.animations[this.state][this.facing].drawFrame(
                 this.game.clockTick, 
@@ -292,7 +330,7 @@ class Necromancer {
         //  ctx.strokeStyle = 'Green';
         // ctx.strokeRect((this.x + (this.bitSizeX * this.scale)/2 + 25) - this.game.camera.x, (this.y + (this.bitSizeY * this.scale)/2 + 10) - this.game.camera.y, 20, 20);
 
-        // ctx.strokeStyle = 'Yellow';
-        // ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        ctx.strokeStyle = 'Yellow';
+        ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
     }
 }
