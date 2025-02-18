@@ -6,7 +6,7 @@ class ExperienceOrb {
         // this.y = this.y + 32;
         this.spritesheet = ASSET_MANAGER.getAsset("./Sprites/Objects/ExperienceOrb.png");
         this.scale = 0.3;
-        this.animations = new Animator(this.spritesheet, 0, 0, 64, 64, 12.9, 0.5, false, true);
+        this.animations = new Animator(this.spritesheet, 0, 0, 64, 64, 12.9, 0.1, false, true);
 
         this.radius = 200;
         this.speed = 0.1;
@@ -15,10 +15,11 @@ class ExperienceOrb {
         this.updateBB();
     }
     updateBB() {
-        this.BB = new BoundingBox(this.x, this.y, 32, 32);
+        this.BB = new BoundingBox(this.x, this.y, 64* this.scale, 64* this.scale);
     };
     update() {
-        this.target = {x: this.game.adventurer.x, y: this.game.adventurer.y}; //(this.x + (this.bitSize * this.scale)/2)
+        this.target = {x: this.game.adventurer.x + (32 * 2.8) / 2, 
+                    y: this.game.adventurer.y + (32 * 2.8) / 2}; //(this.x + (this.bitSize * this.scale)/2)
         if (this.target != null && this.location != null) {
             if (this.target != this.location && getDistance(this.location, this.target) < this.radius) {
                 let deltaX = this.target.x - this.location.x;
@@ -30,6 +31,13 @@ class ExperienceOrb {
                 this.speed += 0.1;
                 this.x = this.location.x;
                 this.y = this.location.y;
+            } else {
+                this.speed = 0.1;
+            }
+            if (getDistance(this.location, this.target) < this.pickupDistance && !this.game.adventurer.dead) {
+                this.game.adventurer.experience += 100; // Change value to acceptable amount
+                this.game.adventurer.levelUp();
+                this.removeFromWorld = true;
             }
             if (getDistance(this.location, this.target) < this.pickupDistance && !this.game.adventurer.dead) {
                 this.game.adventurer.experience += 100; // Change value to acceptable amount
@@ -47,5 +55,11 @@ class ExperienceOrb {
 
         ctx.strokeStyle = 'Green';
         ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+
+        ctx.strokeStyle = 'Red';
+        ctx.beginPath();
+        ctx.arc(this.x - this.game.camera.x, this.y - this.game.camera.y, this.radius, 0, 2 * Math.PI);
+        ctx.closePath();
+        ctx.stroke();
     }
 };

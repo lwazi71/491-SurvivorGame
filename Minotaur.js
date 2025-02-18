@@ -35,6 +35,7 @@ class Minotaur {
         this.pushbackDecay = 0.9; // Determines how quickly the pushback force decays
 
         this.health = 70;
+        this.dead = false;
 
         this.entityOrder = 40;
 

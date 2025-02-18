@@ -189,7 +189,7 @@ class Necromancer {
     
                 this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, this.damage, this.castSpeed, 
                     "./Sprites/Magic/BlackProjectile.png", 0, false, 3, false, 2,
-                    0, 0, 16, 16, 30, 0.1, false, false, -16, -23, 32, 32, 16, 16));
+                    0, 0, 16, 16, 30, 0.1, false, false, -16, -23, 32, 32, 16, 16, this));
             }
             
             this.shootTimer = this.shootCooldown;

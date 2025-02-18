@@ -184,11 +184,11 @@ class Goblin {
         this.previousState = this.state;
     
         // // Check for collision with any attack slashes
-        const separationDistance = 100; // Minimum distance between enemy
+        const separationDistance = 200; // Minimum distance between enemy
         const entities = this.game.entities;
         for (let i = 0; i < entities.length; i++) {
             let entity = entities[i];
-            if (entity instanceof Goblin && entity !== this) {
+            if ((entity instanceof Goblin || entity instanceof Boss1 || entity instanceof GoblinMech) && entity !== this) {
                 const dx = entity.x - this.x;
                 const dy = entity.y - this.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);

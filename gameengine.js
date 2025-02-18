@@ -201,6 +201,7 @@ class GameEngine {
         let entitiesCount = this.entities.length;
         if (this.keys["b"]) {
             this.toggleUpgradePause();
+            this.click = {x: 0, y: 0};
         }
         for (let i = 0; i < entitiesCount; i++) {
             let entity = this.entities[i];
@@ -221,28 +222,35 @@ class GameEngine {
 
     loop() {
         if (this.keys["escape"]) {
-            if (this.upgradePause) {
+            if (this.upgradePause && !this.upgrade.enablePlayerStats) {
                 this.toggleUpgradePause();
                 this.setDelay = 1;
                 this.upgrade.makingChoice = false;
+                this.upgrade.enablePlayerStats = false;
+            } else if (this.upgradePause && this.upgrade.enablePlayerStats){
+                this.upgrade.enablePlayerStats = false;
             } else {
                 this.togglePause();
                 this.disableMouseInputs();
                 this.drawPause(this.ctx);
             }
+            this.resetDrawingValues();
             this.keys["escape"] = false;
         }
 
         if (!this.pause) {
             this.clockTick = this.timer.tick();
+            this.pauseTick = this.timer.pauseTick();
             if (!this.upgradePause && this.setDelay <= 0) { //Default loop
                 this.update();
                 this.draw();
                 this.timer.isPaused = false;
+                this.timer.enablePauseTick = false;
             } else if (this.setDelay <= 0) {
                 this.upgrade.update();
                 this.upgrade.draw(this.ctx);
                 this.timer.isPaused = true;
+                this.timer.enablePauseTick = true;
                 this.disableMouseInputs();
             } else {
                 if (this.setDelay > 0) this.setDelay -= 0.1;
@@ -267,6 +275,13 @@ class GameEngine {
 
         ctx.textAlign = "left"; 
         ctx.textBaseline = "alphabetic";  
+    }
+    resetDrawingValues(ctx) {
+        this.ctx.textAlign = "left";
+        this.ctx.textBaseline = "alphabetic";
+        this.ctx.lineWidth = 1;
+        this.ctx.fillStyle = "Black";
+        this.ctx.strokeStyle = "Black";
     }
 };
 

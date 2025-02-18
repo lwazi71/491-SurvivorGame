@@ -40,10 +40,6 @@ class Cyclops {
 
         this.entityOrder = 40;
 
-
-        //Add property to track throw animation time
-        this.throwAnimationElapsedTime = 0;
-
         this.projectileCount = 10;
 
         this.dropchance = 0.4;

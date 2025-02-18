@@ -26,7 +26,6 @@ class RatMage {
         this.deathAnimationTimer = 4 * 0.1;
 
         //AOE Warning Specific Properties
-        this.aoeWarningStage = 0; // 0 = not warning, 1 = warning following, 2 = stationary warning
         this.aoeWarningDuration = 4; //Total warning duration
         this.aoeWarningTimer = 0;
         this.aoeTargetX = (this.game.adventurer.x + (this.game.adventurer.bitSize * this.game.adventurer.scale)/2);
@@ -183,7 +182,6 @@ class RatMage {
                 this.shootTimer = this.shootCooldown; //Reset to 5 seconds. This is for logic cooldown
                 this.castTimer = this.castDuration;
             }
-
         }
 
          const movement = this.speed * this.game.clockTick;
