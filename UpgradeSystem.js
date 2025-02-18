@@ -196,7 +196,7 @@ class UpgradeSystem {
                 max: 1,
                 current: 0,
                 color: "Yellow",
-                
+            
             },
             {
                 game: this.game,

@@ -39,6 +39,11 @@ class ExperienceOrb {
                 this.game.adventurer.levelUp();
                 this.removeFromWorld = true;
             }
+            if (getDistance(this.location, this.target) < this.pickupDistance && !this.game.adventurer.dead) {
+                this.game.adventurer.experience += 100; // Change value to acceptable amount
+                this.game.adventurer.levelUp();
+                this.removeFromWorld = true;
+            }
         }
         this.updateBB();
 

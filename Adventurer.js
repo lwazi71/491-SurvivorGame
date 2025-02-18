@@ -75,7 +75,6 @@ class Adventurer { //every entity should have update and draw!
         this.bowDamage = 4;
         this.arrowSpeed = 800;
         this.bowUpgrade = 0; 
-
         this.piercing = false; //piercing could be for shooting through enemies. Collateral. Could be an upgrade
         this.tripleShot = false; //shotgun like pattern when shooting bow. Look in bowShoot() method if you want to take a closer look or change anything
 
@@ -88,11 +87,11 @@ class Adventurer { //every entity should have update and draw!
         this.magicKnockback = 2000;
         this.magicDamage = 100;
         this.magicScale = 6;
-        this.enableMagic = true;
+        this.enableMagic = true; //changed to true for now for debugging
 
 
         //BOMB PROPERTIES
-        this.enableBomb = true;
+        this.enableBomb = true; //changed to true for now for debugging
         this.bombDamage = 25;
         this.bombExplosionScale = 10;
         this.bombTimer = 4;
@@ -107,7 +106,7 @@ class Adventurer { //every entity should have update and draw!
 
 
         //LIGHTNING PROPERTIES:
-        this.lightningMagic = false;
+        this.lightningMagic = false; 
         this.lightingDamage = 10;
         this.lightningScale = 5;
         this.lightningKnockback = 1000;
@@ -130,16 +129,14 @@ class Adventurer { //every entity should have update and draw!
 
         this.lightningOption = 0; //0 = normal lightning, 1 = Dark-Bolt lightning
 
-
         //UPGRADE COMBO CONTROL VARIABLE:
         this.slashArrowCombo = false; //combo where player can hit arrow with their sword to make arrow go faster + do 2x more damage
         this.slashBombCombo = false; //combo where player can hit the bomb with their sword towards enemies
         this.lightningDarkBoltCombo = false; //combo where player can hit dark bolt with lightning to cause wider explosion + more damage
 
-
         this.coins = 0;
         this.level = 1;
-        this.experience = 0;
+        this.experience = 50;
         this.experienceToNextLvl = 100;
         this.upgrade = null;
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
@@ -498,7 +495,6 @@ class Adventurer { //every entity should have update and draw!
             this.invincible = true;
             this.magicAOE();
         } 
-
         //bomb controls
         if (this.game.keys["e"] && this.canBomb && !this.rolling && this.bombCurrentAmnt > 0 && this.enableBomb) {
             this.bombCurrentAmnt--;
@@ -557,32 +553,15 @@ class Adventurer { //every entity should have update and draw!
             }
         }
 
-        if (this.magicking) { //when we're in our magic animation, we wanna time it.
+        if (this.magicking || this.lightningMagic || this.boltMagic) { //when we're in our magic animation, we wanna time it. All these 3 have the same animation
             this.magicTimer -= this.game.clockTick;
             if (this.magicTimer <= 0) {
                 this.magicking = false;
+                this.lightningMagic = false;
+                this.boltMagic = false;
                 this.state = 0;  // Return to idle state
                 this.invincible = false;
                 // Reset idle animation
-                this.animations[0][this.facing].elapsedTime = 0;
-            }
-        }
-
-        if (this.lightningMagic) { //when we're in our magic animation, we wanna time it.
-            this.lightningTimer -= this.game.clockTick;
-            if (this.lightningTimer <= 0) {
-                this.lightningMagic = false;
-                this.state = 0;  // Return to idle state
-                // Reset idle animation
-                this.animations[0][this.facing].elapsedTime = 0;
-            }
-        }
-
-        if (this.boltMagic) { //same as our lightning animation
-            this.boltTimer -= this.game.clockTick;
-            if (this.boltTimer <= 0) {
-                this.boltMagic = false;
-                this.state = 0;
                 this.animations[0][this.facing].elapsedTime = 0;
             }
         }
@@ -837,12 +816,12 @@ class Adventurer { //every entity should have update and draw!
             angles.forEach(angle => {
                 this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, this.bowDamage, this.arrowSpeed, 
                     "./Sprites/Projectiles/Arrows_pack.png", this.bowKnockback, true, 2, this.piercing,
-                    2, 0, -6, 32, 32, 1, 0.2, false, false, - 15, -15, this.bitSize * 2 - 35, this.bitSize * 2 - 35, this.bitSize, this.bitSize)); 
+                    2, 0, -6, 32, 32, 1, 0.2, false, false, - 15, -15, this.bitSize * 2 - 35, this.bitSize * 2 - 35, this.bitSize, this.bitSize, this)); 
             });
         } else {
             this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, this.bowDamage, this.arrowSpeed, 
                 "./Sprites/Projectiles/Arrows_pack.png", this.bowKnockback, true, 2, this.piercing,
-                2, 0, -6, 32, 32, 1, 0.2, false, false, - 15, -15, this.bitSize * 2 - 35, this.bitSize * 2 - 35, this.bitSize, this.bitSize)); 
+                2, 0, -6, 32, 32, 1, 0.2, false, false, - 15, -15, this.bitSize * 2 - 35, this.bitSize * 2 - 35, this.bitSize, this.bitSize, this)); 
         }
         //bounding box will always start at this.x for the projectile. The -15 is just something that we could maybe offset it by. If no offset,  then we could just put 0
 
@@ -887,7 +866,7 @@ class Adventurer { //every entity should have update and draw!
         this.lightningMagic = true;
         this.canLightning = false;
         this.lightningCooldownTimer = this.lightningCooldown;
-        this.lightningTimer = this.magicDuration;
+        this.magicTimer = this.magicDuration;
 
         
         // Get character center
@@ -939,7 +918,7 @@ class Adventurer { //every entity should have update and draw!
         this.boltMagic = true;
         this.canBolt = false;
         this.boltCooldownTimer = this.boltCooldown;
-        this.boltTimer = this.magicDuration;
+        this.magicTimer = this.magicDuration;
 
         const characterCenterX = this.x + (this.bitSize * this.scale) / 2;
         const characterCenterY = this.y + (this.bitSize * this.scale) / 2;

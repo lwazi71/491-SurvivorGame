@@ -254,7 +254,7 @@ class Imp {
         //create the projectile
         this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, this.damage, this.castSpeed, 
             "./Sprites/Magic/FireProjectile.png", 0, false, 3, false, 2,
-            0, 0, 16, 16, 30, 0.1, false, false, -16, -23, 32, 32, 16, 16));
+            0, 0, 16, 16, 30, 0.1, false, false, -16, -23, 32, 32, 16, 16, this));
 
     }
 

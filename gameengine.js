@@ -241,7 +241,6 @@ class GameEngine {
         if (!this.pause) {
             this.clockTick = this.timer.tick();
             this.pauseTick = this.timer.pauseTick();
-
             if (!this.upgradePause && this.setDelay <= 0) { //Default loop
                 this.update();
                 this.draw();
