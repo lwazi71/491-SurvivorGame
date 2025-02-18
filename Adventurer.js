@@ -1028,12 +1028,14 @@ class Adventurer { //every entity should have update and draw!
             this.experience -= this.experienceToNextLvl;
             this.experienceToNextLvl = Math.floor(this.experienceToNextLvl * 1.1);
             this.levelUpMenu();
+        }
     }
     levelUpMenu() {
         if (!this.game.upgrade.noUpgrade) {
             this.game.upgrade.getThreeUpgrades();
             // this.game.upgradePause = true;
         }
+    }
     //If we want to do a minimap, need to add this for all entities being added
     drawMinimap(ctx, mmX, mmY) {
         ctx.fillStyle = "White";
