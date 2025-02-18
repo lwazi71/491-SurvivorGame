@@ -40,7 +40,6 @@ class Cyclops {
 
         this.entityOrder = 40;
 
-
         this.projectileCount = 10;
 
         this.dropchance = 0.4;

@@ -2,7 +2,6 @@ class HUD {
     constructor(game, adventurer) {
         Object.assign(this, {game, adventurer});
         this.proportion = PARAMS.CANVAS_WIDTH / 1024; //Assuming it's always going to be 4:3
-
         // this.minimap = new Minimap(this.game, PARAMS.CANVAS_WIDTH - 210, 10);
         this.weaponIcon = ASSET_MANAGER.getAsset("./Sprites/HudIcons/weapons.png");
         this.heroIcon = ASSET_MANAGER.getAsset("./Sprites/HudIcons/AdventurerSpriteHud2.png");
@@ -473,12 +472,14 @@ class HUD {
 
 class Minimap {
     constructor(game, x, y) {
+        this.entityOrder = 999;
         Object.assign(this, {game, x, y});
     };
     update() {
-
+        this.entityOrder = 999;
     };
     draw(ctx) {
+        this.entityOrder = 999;
         ctx.strokeStyle = "Black";
         ctx.strokeRect(this.x, this.y, 200, 200);
         // this.adventurer.drawMinimap(ctx, this.x, this.y);

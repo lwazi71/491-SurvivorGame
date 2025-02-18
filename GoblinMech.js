@@ -223,7 +223,6 @@ class GoblinMech {
                 this.attack1();
             }
         }
-
         const separationDistance = 200; 
         const entities = this.game.entities;
         for (let i = 0; i < entities.length; i++) {

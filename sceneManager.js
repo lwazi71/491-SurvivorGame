@@ -16,6 +16,9 @@ class SceneManager {
         this.shakeIntensity = 0;
         this.shakeDecay = 0.9; 
 
+        // Add the Game Map first so it's always underneath everything
+        this.game.addEntity(new GameMap(this.game));
+
         this.loadTestLevel();
     };
 
@@ -33,9 +36,6 @@ class SceneManager {
 
         // this.game.addEntity(new FreakyGhoul(this.game, 800, 800));
         // this.game.addEntity(new FreakyGhoul(this.game, 300, 800));
-
-
-
         // this.game.addEntity(new Ghost(this.game, 400, 400));
         // this.game.addEntity(new Ghost(this.game, 400, 400));
 
@@ -92,8 +92,7 @@ class SceneManager {
         
       
 
-    //     this.game.addEntity(new Cyclops(this.game, 300, 300));
-
+        //this.game.addEntity(new GameMap(this.game));
     }
 
     generateObject(object, x, y) {
@@ -144,7 +143,15 @@ class SceneManager {
     }
 
     draw(ctx) {
-     //   this.waveManager.draw(ctx); //to tell us how many zombies are on screen and waves
+        // Sort entities by entityOrder (lower values are drawn first)
+        //this.game.entities.sort((a, b) => a.entityOrder - b.entityOrder);
+    
+        // Draw all entities
+        // for (let entity of this.game.entities) {
+        //     entity.draw(ctx);
+        // }
+    
+        // Draw UI text
         ctx.font = '20px Arial';
         ctx.fillStyle = 'white';
         // ctx.fillText(`Player Health: ${this.adventurer.health}`, 10, 120);
@@ -155,5 +162,6 @@ class SceneManager {
         this.HUD.update();
         this.HUD.draw(ctx);
     }
+    
 
 }

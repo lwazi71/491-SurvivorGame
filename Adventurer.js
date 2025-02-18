@@ -75,7 +75,6 @@ class Adventurer { //every entity should have update and draw!
         this.bowDamage = 4;
         this.arrowSpeed = 800;
         this.bowUpgrade = 0; 
-
         this.piercing = false; //piercing could be for shooting through enemies. Collateral. Could be an upgrade
         this.tripleShot = false; //shotgun like pattern when shooting bow. Look in bowShoot() method if you want to take a closer look or change anything
 
@@ -130,16 +129,14 @@ class Adventurer { //every entity should have update and draw!
 
         this.lightningOption = 0; //0 = normal lightning, 1 = Dark-Bolt lightning
 
-
         //UPGRADE COMBO CONTROL VARIABLE:
         this.slashArrowCombo = false; //combo where player can hit arrow with their sword to make arrow go faster + do 2x more damage
         this.slashBombCombo = false; //combo where player can hit the bomb with their sword towards enemies
         this.lightningDarkBoltCombo = false; //combo where player can hit dark bolt with lightning to cause wider explosion + more damage
 
-
         this.coins = 0;
         this.level = 1;
-        this.experience = 0;
+        this.experience = 50;
         this.experienceToNextLvl = 100;
         this.upgrade = null;
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
@@ -498,7 +495,6 @@ class Adventurer { //every entity should have update and draw!
             this.invincible = true;
             this.magicAOE();
         } 
-
         //bomb controls
         if (this.game.keys["e"] && this.canBomb && !this.rolling && this.bombCurrentAmnt > 0 && this.enableBomb) {
             this.bombCurrentAmnt--;
@@ -569,7 +565,6 @@ class Adventurer { //every entity should have update and draw!
                 this.animations[0][this.facing].elapsedTime = 0;
             }
         }
-
         //-----------------------------------------------------------------------------------------------
 
         //for ladders maybe do, if the bounding boxes are touching or near each other and the user clicks on e?
