@@ -40,7 +40,6 @@ class SceneManager {
         // this.game.addEntity(new Ghost(this.game, 400, 400));
 
 
-
         // this.game.addEntity(new Zombie(this.game, 400, 400));
         // this.game.addEntity(new Zombie(this.game, 200, 400));
         // this.game.addEntity(new Zombie(this.game, 300, 450));
@@ -48,7 +47,6 @@ class SceneManager {
         // this.game.addEntity(new Zombie(this.game, 323, 400));
         // this.game.addEntity(new Zombie(this.game, 513, 400));
         // this.game.addEntity(new Zombie(this.game, 42, 400));
-
         // this.game.addEntity(new BanditNecromancer(this.game, 42, 400));
         // this.game.addEntity(new Necromancer(this.game, 42, 400));
         // this.game.addEntity(new Imp(this.game, 42, 400));
@@ -122,7 +120,10 @@ class SceneManager {
         //Update camera position to middle of the player
         this.x = this.adventurer.x - midPointX + (this.adventurer.bitSize * this.adventurer.scale)/2 + 20; //Hard code to add 20 because character was not yet in the middle of the canvas screen. (Was more bottom right)
         this.y = this.adventurer.y - midPointY + (this.adventurer.bitSize * this.adventurer.scale)/2 + 20; //Same here
-
+        if (this.game.keys["p"]) {
+            this.game.addEntity(new ExperienceOrb(this.game, this.game.adventurer.x, this.game.adventurer.y));
+            this.game.keys["p"] = false;
+        }
         
         if (this.shakeIntensity > 0) {
             this.x += (Math.random() - 0.5) * this.shakeIntensity;
