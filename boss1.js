@@ -35,7 +35,6 @@ class Boss1 { //goblin king
         this.damageAnimationDuration = 3 * 0.1; // Duration of damage animation
         this.isPlayingDamageAnimation = false;
 
-
         this.deathAnimationTimer = 10 * 0.1; //10 frames * 0.2 duration. Should be frameCount * frameDuration for death animation
 
 
@@ -646,6 +645,7 @@ class Boss1 { //goblin king
             const shadowY = (this.y + (310 * (this.scale / 5))) - this.game.camera.y;
             ctx.drawImage(this.shadow, 0, 0, 64, 32, shadowX, shadowY, shadowWidth, shadowHeight);
         }
+
         if (this.dead) {
             if (this.deathAnimationTimer > 0) {
                 this.death.drawFrame(
@@ -657,7 +657,6 @@ class Boss1 { //goblin king
                 );
             }
         } else if (this.isPlayingDamageAnimation) {
-            this.animations[7][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
             this.animations[9][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
         } else {
             this.animations[this.state][this.facing].drawFrame(
@@ -668,6 +667,7 @@ class Boss1 { //goblin king
                 this.scale
             );
         }    
+
         ctx.strokeStyle = 'Yellow';
         ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
 
