@@ -91,7 +91,7 @@ class Adventurer { //every entity should have update and draw!
 
 
         //BOMB PROPERTIES
-        this.enableBomb = false;
+        this.enableBomb = true;
         this.bombDamage = 25;
         this.bombExplosionScale = 10;
         this.bombTimer = 4;

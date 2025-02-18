@@ -16,6 +16,9 @@ class SceneManager {
         this.shakeIntensity = 0;
         this.shakeDecay = 0.9; 
 
+        // Add the Game Map first so it's always underneath everything
+        this.game.addEntity(new GameMap(this.game));
+
         this.loadTestLevel();
     };
 
@@ -45,13 +48,13 @@ class SceneManager {
         // this.game.addEntity(new Ghost(this.game, 400, 400));
 
 
-        // this.game.addEntity(new Zombie(this.game, 400, 400));
-        // this.game.addEntity(new Zombie(this.game, 200, 400));
-        // this.game.addEntity(new Zombie(this.game, 300, 450));
-        // this.game.addEntity(new Zombie(this.game, 130, 400));
-        // this.game.addEntity(new Zombie(this.game, 323, 400));
-        // this.game.addEntity(new Zombie(this.game, 513, 400));
-        // this.game.addEntity(new Zombie(this.game, 42, 400));
+        this.game.addEntity(new Zombie(this.game, 400, 400));
+        this.game.addEntity(new Zombie(this.game, 200, 400));
+        this.game.addEntity(new Zombie(this.game, 300, 450));
+        this.game.addEntity(new Zombie(this.game, 130, 400));
+        this.game.addEntity(new Zombie(this.game, 323, 400));
+        this.game.addEntity(new Zombie(this.game, 513, 400));
+        this.game.addEntity(new Zombie(this.game, 42, 400));
 
         // this.game.addEntity(new BanditNecromancer(this.game, 42, 400));
         // this.game.addEntity(new Necromancer(this.game, 42, 400));
@@ -98,8 +101,7 @@ class SceneManager {
         
       
 
-    //     this.game.addEntity(new Cyclops(this.game, 300, 300));
-
+        //this.game.addEntity(new GameMap(this.game));
     }
 
     generateObject(object, x, y) {
@@ -146,17 +148,25 @@ class SceneManager {
     }
 
     draw(ctx) {
-     //   this.waveManager.draw(ctx); //to tell us how many zombies are on screen and waves
+        // Sort entities by entityOrder (lower values are drawn first)
+        //this.game.entities.sort((a, b) => a.entityOrder - b.entityOrder);
+    
+        // Draw all entities
+        // for (let entity of this.game.entities) {
+        //     entity.draw(ctx);
+        // }
+    
+        // Draw UI text
         ctx.font = '20px Arial';
         ctx.fillStyle = 'white';
-        // ctx.fillText(`Player Health: ${this.adventurer.health}`, 10, 120);
-        // ctx.fillText(`Player Coins: ${this.adventurer.coins}`, 10, 150);
         ctx.fillText(`Player Bombs: ${this.adventurer.bombCurrentAmnt}`, 10, 180);
         ctx.fillText(`Player Bombs Cooldown: ${Math.ceil(this.adventurer.bombCooldownRetrieveTimer * 100) / 100}`, 10, 210);
         ctx.fillText(`Player Dark Bolts: ${this.adventurer.boltCurrentAmount}`, 10, 240);
         ctx.fillText(`Player Bolts Cooldown: ${Math.ceil(this.adventurer.boltCooldownRetrieveTimer * 100) / 100}`, 10, 270);
-        this.HUD.update();
+    
+        // Ensure HUD is always drawn last
         this.HUD.draw(ctx);
     }
+    
 
 }

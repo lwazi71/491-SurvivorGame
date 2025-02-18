@@ -111,7 +111,7 @@ ASSET_MANAGER.queueDownload("./Sprites/HudIcons/AdventurerSpriteHud2.png");
 
 ASSET_MANAGER.queueDownload("./Sprites/Projectiles/arrow.png")
 ASSET_MANAGER.queueDownload("./Sprites/Projectiles/Arrows_pack.png")
-
+ASSET_MANAGER.queueDownload("./Sprites/Map/testagain.png");
 
 
 

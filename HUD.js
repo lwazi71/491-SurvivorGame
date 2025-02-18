@@ -1,7 +1,7 @@
 class HUD {
     constructor(game, adventurer) {
         Object.assign(this, {game, adventurer});
-
+        this.entityOrder = 999;
         // this.minimap = new Minimap(this.game, PARAMS.CANVAS_WIDTH - 210, 10);
         this.weaponIcon = ASSET_MANAGER.getAsset("./Sprites/HudIcons/weapons.png");
         this.heroIcon = ASSET_MANAGER.getAsset("./Sprites/HudIcons/AdventurerSpriteHud2.png");
@@ -43,6 +43,7 @@ class HUD {
 
     };
     update() {
+        this.entityOrder = 999;
         this.meleeLevel = this.adventurer.swordUpgrade; //could be weapon level depending on design
         this.rangedLevel = 0;
         // let rangedLevel = 0;
@@ -67,6 +68,7 @@ class HUD {
         if (this.bombRetrieveCD > 1) this.bombCD = 1;
     };
     draw(ctx) {
+        this.entityOrder = 999;
         // Alignment center
         // ctx.beginPath();
         // ctx.moveTo(PARAMS.CANVAS_WIDTH / 5, 0);
@@ -89,6 +91,7 @@ class HUD {
         
     };
     displayPlayerInfo(ctx) {
+        this.entityOrder = 999;
         //Hero Icon
         let circleX = this.heroIconX + (this.heroIconLength * this.heroIconScale / 2);
         let circleY = this.heroIconY + (this.heroIconHeight * this.heroIconScale / 2);
@@ -182,6 +185,7 @@ class HUD {
 
     }
     displayExperienceBar(ctx) {
+        this.entityOrder = 999;
         //Experience Bar
         ctx.beginPath();
         ctx.roundRect(this.experienceBarX, this.experienceBarY, this.experienceBarLength, this.experienceBarHeight, [5]);
@@ -218,6 +222,7 @@ class HUD {
         ctx.strokeText(`Exp : ${this.adventurer.experience} / ${this.adventurer.experienceToNextLvl}`, (PARAMS.CANVAS_WIDTH / 2), this.experienceBarY + 12.5);
     }
     displayWeapons(ctx) {
+        this.entityOrder = 999;
         this.checkAttacks();
         // WeaponIcons
         if ((this.adventurer.enableMagic && this.weaponType == 0)) { //|| (this.adventurer.enableBomb && this.weaponType == 1)
@@ -400,12 +405,14 @@ class HUD {
 
 class Minimap {
     constructor(game, x, y) {
+        this.entityOrder = 999;
         Object.assign(this, {game, x, y});
     };
     update() {
-
+        this.entityOrder = 999;
     };
     draw(ctx) {
+        this.entityOrder = 999;
         ctx.strokeStyle = "Black";
         ctx.strokeRect(this.x, this.y, 200, 200);
         // this.adventurer.drawMinimap(ctx, this.x, this.y);
