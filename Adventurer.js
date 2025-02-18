@@ -490,7 +490,7 @@ class Adventurer { //every entity should have update and draw!
         }
 
         //Ultimate control
-        if (this.game.keys["x"] && this.canMagic && !this.rolling && this.enableMagic && this.currentWeapon == 0) { //&& !this.shooting && !this.attacking if we dont want player to use magic during attack animation
+        if (this.game.rightClicks && this.canMagic && !this.rolling && this.enableMagic && this.currentWeapon == 0) { //&& !this.shooting && !this.attacking if we dont want player to use magic during attack animation
             console.log("we clicked right click!")
             this.invincible = true;
             this.magicAOE();
@@ -509,7 +509,7 @@ class Adventurer { //every entity should have update and draw!
         }
         
         //lightning control
-        if (this.game.rightClicks && this.canLightning && !this.rolling && !this.shooting && !this.attacking) {
+        if (this.game.rightClicks && this.canLightning && !this.rolling && !this.shooting && !this.attacking && this.currentWeapon == 1) {
             this.lightningCooldownTimer = this.lightningCooldown;
             this.lightningOption = 0;
             this.lightning();
@@ -999,11 +999,11 @@ class Adventurer { //every entity should have update and draw!
                 this.pushbackVector.x = 0;
                 this.pushbackVector.y = -knockbackForce;
             }
-
             console.log(this.health);
             this.health -= amount;
             if (this.health <= 0) {
                 this.dead = true;
+                this.health = 0;
                 console.log("Player is dead!");
                // ASSET_MANAGER.pauseBackgroundMusic();
             } else {
