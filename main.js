@@ -82,6 +82,7 @@ ASSET_MANAGER.queueDownload("./Sprites/Goblin/Hurt-flipped.png");
 ASSET_MANAGER.queueDownload("./Sprites/Goblin/Death.png");
 ASSET_MANAGER.queueDownload("./Sprites/Boss/GoblinKing.png");
 ASSET_MANAGER.queueDownload("./Sprites/Boss/GoblinKing-flipped.png");
+ASSET_MANAGER.queueDownload("./Sprites/Boss/CoinBag.png");
 
 
 
@@ -94,6 +95,7 @@ ASSET_MANAGER.queueDownload("./Sprites/Magic/GreenProjectile.png");
 ASSET_MANAGER.queueDownload("./Sprites/Magic/FireProjectile.png");
 ASSET_MANAGER.queueDownload("./Sprites/Explosion/explosion.png")
 ASSET_MANAGER.queueDownload("./Sprites/Explosion/explosion2.png")
+ASSET_MANAGER.queueDownload("./Sprites/Explosion/explosion3.png")
 ASSET_MANAGER.queueDownload("./Sprites/Magic/Lightning.png");
 ASSET_MANAGER.queueDownload("./Sprites/Magic/Dark-Bolt.png");
 

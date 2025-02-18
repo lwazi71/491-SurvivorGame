@@ -132,6 +132,7 @@ class SceneManager {
 
        // this.waveManager.update();
 
+       
     }
 
     /**

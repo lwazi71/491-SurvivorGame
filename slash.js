@@ -111,7 +111,7 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
                 if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul || entity instanceof FreakyGhoul 
                     || entity instanceof BanditNecromancer || entity instanceof Necromancer || entity instanceof RatMage || entity instanceof FoxMage || entity instanceof Imp 
                     || entity instanceof Crow || entity instanceof Wizard || entity instanceof Goblin) 
-                    && !entity.dead) {
+                    && !entity.dead && !entity.invincible) {
                     // Only apply damage if we haven't hit this zombie yet
                     if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
                         // Add the entity to our hit set
@@ -129,7 +129,7 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
 
                 //charging mobs
                 if ((entity instanceof HellSpawn || entity instanceof Slime || entity instanceof Boar) 
-                    && !entity.dead) {
+                    && !entity.dead && !entity.invincible) {
                     if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
                         // Add the zombie to our hit set
                         this.hitEntities.add(entity);
@@ -192,7 +192,7 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
                 }
                 
                 //bosses/mini bosses
-                if (entity instanceof Minotaur || entity instanceof GoblinMech || entity instanceof Cyclops && this.friendly) {
+                if ((entity instanceof Minotaur || entity instanceof GoblinMech || entity instanceof Cyclops || entity instanceof Boss1) && this.friendly && !entity.invincible) {
                     //if we hit the bomb and another entity, the bomb wont have any knockback
                     if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
                         // Add the entity to our hit set

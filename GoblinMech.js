@@ -30,6 +30,7 @@ class GoblinMech {
 
         this.pushbackVector = { x: 0, y: 0 };
         this.pushbackDecay = 0.9; // Determines how quickly the pushback force decays
+        this.dead = false;
 
         this.attackDelay = 0;
 
@@ -220,6 +221,27 @@ class GoblinMech {
             } else if (dy < 40 && distance < 150) {
                 //player is above AND more horizontal than vertical - do attack1. dy < 0 checks if player is above mech
                 this.attack1();
+            }
+        }
+
+        const separationDistance = 200; 
+        const entities = this.game.entities;
+        for (let i = 0; i < entities.length; i++) {
+            let entity = entities[i];
+            if ((entity instanceof GoblinMech || entity instanceof Boss1 || entity instanceof Goblin) && entity !== this) {
+                const dx = entity.x - this.x;
+                const dy = entity.y - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+    
+                if (distance < separationDistance && distance > 0) {
+                    // Apply a repelling force
+                    const repelFactor = 40; // Adjust for stronger/weaker repulsion
+                    const repelX = dx / distance * repelFactor * this.game.clockTick;
+                    const repelY = dy / distance * repelFactor * this.game.clockTick;
+    
+                    this.x -= repelX;
+                    this.y -= repelY;
+                }
             }
         }
   
