@@ -106,6 +106,7 @@ class Adventurer { //every entity should have update and draw!
 
 
         //LIGHTNING PROPERTIES:
+        this.enableLightning = true;
         this.lightningMagic = false; 
         this.lightingDamage = 10;
         this.lightningScale = 5;
@@ -115,6 +116,7 @@ class Adventurer { //every entity should have update and draw!
         this.lightningCooldownTimer = 0;
 
         //DARK-BOLT PROPERTIES:
+        this.enableBolt = true;
         this.canBolt = true; 
         this.boltMagic = false; //if we currently are doing dark bolt magic
         this.boltDamage = 7;
