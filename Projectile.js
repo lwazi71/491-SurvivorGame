@@ -24,11 +24,11 @@ class Projectile {
      */
     constructor(game, x, y, angle, damage, speed, spritePath, knockback,
         friendly, scale, piercing, lifetime, 
-        animX, animY, animSizeX, animSizeY, frameCount, animDuration, reverse, loop, BBx, BBy, BBHeight, BBWidth, pixelX, pixelY) {
+        animX, animY, animSizeX, animSizeY, frameCount, animDuration, reverse, loop, BBx, BBy, BBHeight, BBWidth, pixelX, pixelY, person) {
 
         Object.assign(this, {game, x, y, angle, damage, speed, spritePath, knockback,
             friendly, scale, piercing, lifetime, animX, animY, animSizeX, animSizeY, 
-            frameCount, animDuration, reverse, loop, BBx, BBy, BBHeight, BBWidth, pixelX, pixelY});
+            frameCount, animDuration, reverse, loop, BBx, BBy, BBHeight, BBWidth, pixelX, pixelY, person});
         
 
         this.spritesheet = ASSET_MANAGER.getAsset(this.spritePath);
@@ -39,6 +39,8 @@ class Projectile {
             x: Math.cos(this.angle) * this.speed,
             y: Math.sin(this.angle) * this.speed
         };
+
+        this.entityOrder = 97;
     
 
          //Tracking hit entities to prevent multiple hits
@@ -77,6 +79,11 @@ class Projectile {
     update() {
         // Reduce lifetime
         this.timer -= this.game.clockTick;
+        if (this.timer <= 0 && this.person instanceof Boss1) { //This will only be used for boss1 because he's the only one that throws a money bag at the player
+            this.removeFromWorld = true;
+            this.game.addEntity(new Onecoin(this.game, (this.x + 28), (this.y + 55)));
+            return;
+        }
         if (this.timer <= 0) {
             this.removeFromWorld = true;
             return;
@@ -105,8 +112,8 @@ class Projectile {
                 //Player arrow hitting enemies (for melee and range enemies)
                 if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul || entity instanceof FreakyGhoul 
                     || entity instanceof BanditNecromancer || entity instanceof Necromancer || entity instanceof RatMage || entity instanceof FoxMage || entity instanceof Imp 
-                    || entity instanceof Crow) 
-                    && !entity.dead && 
+                    || entity instanceof Crow || entity instanceof Wizard || entity instanceof Goblin) 
+                    && !entity.dead && !entity.invincible &&
                     this.BB.collide(entity.BB) && !this.hitEntities.has(entity)) {
                      
                     this.hitEntities.add(entity);
@@ -124,7 +131,7 @@ class Projectile {
                     }
                 }
                 //for charging enemies
-                if ((entity instanceof HellSpawn) 
+                if ((entity instanceof HellSpawn || entity instanceof Slime || entity instanceof Boar) 
                     && !entity.dead) {
                     // Only apply damage if we haven't hit this zombie yet
                     if (this.BB.collide(entity.BB) && !this.hitEntities.has(entity)) {
@@ -150,7 +157,6 @@ class Projectile {
                         if (!this.piercing) {
                             this.removeFromWorld = true;
                         }
-                        
                     }
                 }
                 
@@ -166,8 +172,37 @@ class Projectile {
                         }
                     }
                 }
+
+                //Mini-bosses / bosses
+                if ((entity instanceof Minotaur || entity instanceof GoblinMech || entity instanceof Cyclops || entity instanceof Boss1) && !entity.invincible) { 
+                    if (this.BB.collide(entity.BB) && !this.hitEntities.has(entity)) {
+                        this.hitEntities.add(entity);
+                        entity.takeDamage(this.damage, 0);
+
+                        if (!this.piercing) {
+                            this.removeFromWorld = true;
+                        }
+                    }
+                }
             } else {
-                // Enemy projectile hitting player
+                //BOSS GOBLIN KING projectile
+                if (entity instanceof Adventurer && !entity.invincible && this.person instanceof Boss1 && this.BB.collide(entity.BB)) {
+                    const knockbackX = -Math.cos(this.angle) * this.knockback;
+                    const knockbackY = -Math.sin(this.angle) * this.knockback;
+                        
+                    entity.takeDamageKnockback(this.damage, this.knockback, 
+                        this.x + knockbackX, 
+                        this.y + knockbackY
+                    );
+
+                    this.game.addEntity(new Threecoin(this.game, (this.x - 20), (this.y - 20)));
+
+                    if (!this.piercing) {
+                        this.removeFromWorld = true;
+                    }
+                }
+
+                //Normal enemy projectile hitting player
                 if (entity === this.game.adventurer && !entity.invincible && 
                     this.BB.collide(entity.BB)) {
                     
@@ -177,6 +212,7 @@ class Projectile {
                         this.removeFromWorld = true;
                     }
                 }
+                
             }
         }
     }
@@ -202,8 +238,8 @@ class Projectile {
 
         ctx.restore();
 
-        // ctx.strokeStyle = 'Green';
-        // ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        ctx.strokeStyle = 'Green';
+        ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
     }
 
 

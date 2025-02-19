@@ -2,9 +2,12 @@ class SceneManager {
     constructor(game) {
         this.game = game;
         this.game.camera = this; //this class will be this.game.camera
-        this.adventurer = new Adventurer(this.game, 0, 0); //placing player character at 0, 0 in world map
         this.x = 0;
         this.y = 0;
+        this.game.camera.x = this.x;
+        this.game.camera.y = this.y;
+        
+        this.adventurer = new Adventurer(this.game, 0, 0); //placing player character at 0, 0 in world map
 
         this.waveManager = new WaveManager(game);
         this.HUD = new HUD(this.game, this.adventurer);
@@ -12,6 +15,9 @@ class SceneManager {
 
         this.shakeIntensity = 0;
         this.shakeDecay = 0.9; 
+
+        // Add the Game Map first so it's always underneath everything
+        this.game.addEntity(new GameMap(this.game));
 
         this.loadTestLevel();
     };
@@ -24,13 +30,12 @@ class SceneManager {
         // this.game.addEntity(new Adventurer(this.game, 0, 0));
 
         // this.game.addEntity(new BlueGhoul(this.game, 400, 400));
+        // this.game.addEntity(new BlueGhoul(this.game, 400, 400));
         // this.game.addEntity(new HellSpawn(this.game, 400, 400));
         // this.game.addEntity(new HellSpawn(this.game, 800, 400));
 
         // this.game.addEntity(new FreakyGhoul(this.game, 800, 800));
         // this.game.addEntity(new FreakyGhoul(this.game, 300, 800));
-
-
         // this.game.addEntity(new Ghost(this.game, 400, 400));
         // this.game.addEntity(new Ghost(this.game, 400, 400));
 
@@ -49,30 +54,45 @@ class SceneManager {
         // this.game.addEntity(new RatMage(this.game, 200, 400));
         // this.game.addEntity(new FoxMage(this.game, 200, 400));
         // this.game.addEntity(new Crow(this.game, 200, 400));
-        // this.game.addEntity(new BanditNecromancer(this.game, 42, 400));
-        // this.game.addEntity(new Necromancer(this.game, 42, 400));
-        
+        // this.game.addEntity(new Slime(this.game, 200, 400));
+        // this.game.addEntity(new Boar(this.game, 200, 400));
+        // this.game.addEntity(new Wizard(this.game, 200, 200));
+        // this.game.addEntity(new Goblin(this.game, 200, 200));
+        // this.game.addEntity(new Cyclops(this.game, 200, 400));
+        // this.game.addEntity(new Minotaur(this.game, 200, 400));
+        // this.game.addEntity(new GoblinMech(this.game, 200, 400));
 
-        this.game.addEntity(this.generateObject("Barrel", 100, 100));
-        this.game.addEntity(this.generateObject("Crate", 300, 100));
-        this.game.addEntity(this.generateObject("Pot", 500, 100));
-        this.game.addEntity(this.generateObject("Barrel", 200, 100));
-        this.game.addEntity(this.generateObject("Crate", 100, 300));
-        this.game.addEntity(this.generateObject("Pot", 100, 500));
-        this.game.addEntity(this.generateObject("Crate", 300, 500));
-        this.game.addEntity(this.generateObject("Barrel", 500, 500));
-        this.game.addEntity(this.generateObject("Crate", 500, 300));
+        this.game.addEntity(new Boss1(this.game, 200, 400));
+
+
+        // this.game.addEntity(this.generateObject("Barrel", 100, 100));
+        // this.game.addEntity(this.generateObject("Crate", 300, 100));
+        // this.game.addEntity(this.generateObject("Pot", 500, 100));
+        // this.game.addEntity(this.generateObject("Barrel", 200, 100));
+        // this.game.addEntity(this.generateObject("Crate", 100, 300));
+        // this.game.addEntity(this.generateObject("Pot", 100, 500));
+        // this.game.addEntity(this.generateObject("Crate", 300, 500));
+        // this.game.addEntity(this.generateObject("Barrel", 500, 500));
+        // this.game.addEntity(this.generateObject("Crate", 500, 300));
 
         //find a better way to do this.
         this.game.addEntity(new Sign(this.game, 20, 20, 
             "KeyBoard Controls:      - Move using WASD              - Attack using left click " +                
-            "                    - Use Ultimate AOE using right click                 - Switch weapons using 1 and 2 (Sword is 1 and Bow is 2)" + 
-            "                - To roll press shift (Will give invincibility frames          - Press e to place bomb down"));
+            "                    - Use Ultimate AOE using x                    - Switch weapons using 1 and 2 (Sword is 1 and Bow is 2)" + 
+            "                - To roll press shift (Will give invincibility frames          - Press e to place bomb down" +
+            "                    - Right click to strike down lightning"));
+
+        this.game.addEntity(new Sign(this.game, 220, 20, 
+            "KeyBoard Controls (cont):                  - Press f for Dark-bolt ability (will slow down enemies if hit and be in random places around character"));
+
+        this.game.addEntity(new Sign(this.game, 420, 20, 
+            "Cool Combos:                  - Slashing your arrow in mid air will double the arrow speed and damage                          " +
+                "- Putting a bomb down, you can slash it towards enemies                      " + 
+                "- Striking lightning down on dark-bolt will create an explosion that'll do ALOT of damage"));
         
       
 
-    //     this.game.addEntity(new Cyclops(this.game, 300, 300));
-
+        //this.game.addEntity(new GameMap(this.game));
     }
 
     generateObject(object, x, y) {
@@ -112,6 +132,7 @@ class SceneManager {
 
        // this.waveManager.update();
 
+       
     }
 
     /**
@@ -122,15 +143,25 @@ class SceneManager {
     }
 
     draw(ctx) {
-     //   this.waveManager.draw(ctx); //to tell us how many zombies are on screen and waves
+        // Sort entities by entityOrder (lower values are drawn first)
+        //this.game.entities.sort((a, b) => a.entityOrder - b.entityOrder);
+    
+        // Draw all entities
+        // for (let entity of this.game.entities) {
+        //     entity.draw(ctx);
+        // }
+    
+        // Draw UI text
         ctx.font = '20px Arial';
         ctx.fillStyle = 'white';
         // ctx.fillText(`Player Health: ${this.adventurer.health}`, 10, 120);
         // ctx.fillText(`Player Coins: ${this.adventurer.coins}`, 10, 150);
-        // ctx.fillText(`Player Bombs: ${this.adventurer.bombCurrentAmnt}`, 10, 180);
-        // ctx.fillText(`Player Bombs Cooldown: ${Math.ceil(this.adventurer.bombCooldownRetrieveTimer * 100) / 100}`, 10, 210);
+
+        ctx.fillText(`Player Dark Bolts: ${this.adventurer.boltCurrentAmount}`, 10, 180);
+        ctx.fillText(`Player Bolts Cooldown: ${Math.ceil(this.adventurer.boltCooldownRetrieveTimer * 100) / 100}`, 10, 210);
         this.HUD.update();
         this.HUD.draw(ctx);
     }
+    
 
 }

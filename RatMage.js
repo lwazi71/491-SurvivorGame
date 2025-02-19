@@ -26,7 +26,6 @@ class RatMage {
         this.deathAnimationTimer = 4 * 0.1;
 
         //AOE Warning Specific Properties
-        this.aoeWarningStage = 0; // 0 = not warning, 1 = warning following, 2 = stationary warning
         this.aoeWarningDuration = 4; //Total warning duration
         this.aoeWarningTimer = 0;
         this.aoeTargetX = (this.game.adventurer.x + (this.game.adventurer.bitSize * this.game.adventurer.scale)/2);
@@ -49,7 +48,14 @@ class RatMage {
         this.damageAnimationDuration = 2.9 * 0.2;
         this.isPlayingDamageAnimation = false;
 
+        this.entityOrder = 25;
+
         this.dropchance = 0.4;
+
+        this.isSlowed = false;
+        this.slowDuration = 0;
+        this.slowTimer = 0;
+        this.baseSpeed = this.speed;
 
         this.animations = [];
 
@@ -120,6 +126,16 @@ class RatMage {
             }
          }
 
+        if (this.isSlowed) {
+            this.slowTimer += this.game.clockTick;
+            if (this.slowTimer >= this.slowDuration) {
+                // Reset speed when slow duration expires
+                this.speed = this.baseSpeed;
+                this.isSlowed = false;
+                this.slowTimer = 0;
+            }
+        }
+
         // Apply knockback effect
         this.x += this.pushbackVector.x * this.game.clockTick;
         this.y += this.pushbackVector.y * this.game.clockTick;
@@ -166,7 +182,6 @@ class RatMage {
                 this.shootTimer = this.shootCooldown; //Reset to 5 seconds. This is for logic cooldown
                 this.castTimer = this.castDuration;
             }
-
         }
 
          const movement = this.speed * this.game.clockTick;
@@ -229,6 +244,12 @@ class RatMage {
                     }
                 }
             }
+
+            if (entity instanceof Lightning && entity.lightningOption === 1 && !this.isSlowed) {
+                if (entity.circle.BC.collidesWithBox(this.BB)) {
+                    this.applySlowEffect(this.game.adventurer.slowCooldown); 
+                }
+            }
         }
 
          this.updateBB();
@@ -269,6 +290,13 @@ class RatMage {
                 this.animations[3][1].elapsedTime = 0;
             }
         }
+    }
+
+    applySlowEffect(duration) {
+        this.isSlowed = true;
+        this.slowDuration = duration;
+        this.slowTimer = 0;
+        this.speed /= 2; // Reduce speed by half
     }
 
     draw(ctx) {

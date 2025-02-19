@@ -1,230 +1,352 @@
 class Cyclops {
-    constructor(game, x, y) {
+    constructor (game, x, y) {
         Object.assign(this, {game, x, y});
-        this.game = game;
-        this.spritesheet = ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png");
+        this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
 
-        this.x = x;
-        this.y = y;
-        this.speed = 1;
-        this.attacking = false;
-      
-        this.projectile = false;
-        this.melee = false;
-        this.damage = false;
-        this.attackTimer = 0;   
-        this.attackDuration = 2.6; //Throw attack
-        this.attack2Duration = 1.4; //Stomp attack
-        this.damageTimer = 0;
-        this.damagerDuration = 0.6;
-
-        this.throwAttackCooldown = 5;
-        this.AttackCooldown = 0;
-
-        this.detectionRange = 500;
-        this.meleeRange = 75;
-
+        this.bitSize = 64;
+        this.bitSizeX = 64;
+        this.bitSizeY = 64;
+        this.state = 0; //0 = idle, 1 = running, 2 = attack, 3 = Throwing, 4 = damaged
         this.facing = 0; //0 = right, 1 = left
-        this.state = 0; //Idle, walk, stomp, rock throw, take damage
+        this.scale = 2.8;
+        this.speed = 193;
+    
+        this.range = 400; //Shooting range (range until our Fox starts shooting at player)
+        this.shootCooldown = 8; //Shoot every 8 seconds
+        this.shootTimer = 0; //should be 0
+        this.throwSpeed = 700;
+        this.throwDuration = 12.9 * 0.1; //How long the throw animation plays
+        this.throwTimer = 0; //Timer for the throw animation
+        this.rockDamage = 30;
+        this.collisionDamage = 33;
+        this.knockback = 2000;
+        
+        this.health = 75; //Cyclops health 
         this.dead = false;
+        this.deathAnimationTimer = 8 * 0.1; 
+    
+        this.pushbackVector = { x: 0, y: 0 };
+        this.pushbackDecay = 0.9;
 
-        this.location = {x: this.x, y: this.y}; 
-        this.target = {x: 0, y: 0};
+        this.attackCooldown = 1.5; // Cooldown in seconds between attacks
+        this.attackCooldownTimer = 0; // Tracks remaining cooldown time
 
-        this.updateBB();
+        this.damageAnimationTimer = 0;
+        this.damageAnimationDuration = 0.2; // Duration of damage animation
+        this.isPlayingDamageAnimation = false;
+        this.shouldThrowRock = false; //track if we should shoot after throw
+
+        this.throwAnimationElapsedTime = 0; //used for when cyclops does throwing animation then it faces other way
+
+        this.entityOrder = 40;
+
+        this.projectileCount = 10;
+
+        this.dropchance = 0.4;
 
         this.animations = [];
-        this.deathAnim = [];
+
+        this.updateBB();
         this.loadAnimations();
 
-    };
+    }
+
+
     loadAnimations() {
-        for (var i = 0; i < 2; i++) {
+        for (var i = 0; i < 5; i++) { //4 states
             this.animations.push([]);
-            for (var j = 0; j < 8; j++) {
+            for (var j = 0; j < 2; j++) { //2 faces
                 this.animations[i].push([]);
             }
         }
+        //RIGHT
+        //idle
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 0, 0, 64, 64, 15, 0.2, false, false);
 
-        // facing right = 0
-        this.animations[0][0] = new Animator(this.spritesheet, 0, 1, 64, 64, 15, 0.2, false, true); //Idle
-        this.animations[0][1] = new Animator(this.spritesheet, 0, 65, 64, 64, 12, 0.2, false, true); //Walk
-        this.animations[0][2] = new Animator(this.spritesheet, 0, 129, 64, 64, 7, 0.2, false, true); //Stomp
-        this.animations[0][3] = new Animator(this.spritesheet, 0, 193, 64, 64, 13, 0.2, false, true); //Rock throw
-        this.animations[0][4] = new Animator(this.spritesheet, 0, 257, 64, 64, 3, 0.2, false, true); //Take Damage
-        this.animations[0][5] = new Animator(this.spritesheet, 0, 321, 64, 64, 5, 0.2, false, true); //Take heavy damage
-        this.animations[0][6] = new Animator(this.spritesheet, 0, 449, 64, 64, 4, 0.2, false, true); // Eye protect
-        this.animations[0][7] = new Animator(this.spritesheet, 0, 513, 64, 64, 6, 0.2, false, true); // Eye beam
+        //walking
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 0, 64, 64, 64, 11.9, 0.1, false, false);
 
-        this.deathAnim[0] = new Animator(this.spritesheet, 0,385, 64, 64, 9, 0.2, false, false); // Death
+        //attack
+        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 0, 128, 64, 64, 7, 0.1, false, false);
 
-        //facing left = 1
-        this.animations[1][0] = new Animator(this.spritesheet, 0,641, 64, 64, 15, 0.2, false, true); //Idle
-        this.animations[1][1] = new Animator(this.spritesheet, 0,705, 64, 64, 12, 0.2, false, true); //Walk
-        this.animations[1][2] = new Animator(this.spritesheet, 0,769, 64, 64, 7, 0.2, false, true); //Stomp
-        this.animations[1][3] = new Animator(this.spritesheet, 0,833, 64, 64, 13, 0.2, false, true); //Rock throw
-        this.animations[1][4] = new Animator(this.spritesheet, 0,897, 64, 64, 3, 0.2, false, true); //Take Damage
-        this.animations[1][5] = new Animator(this.spritesheet, 0,961, 64, 64, 5, 0.2, false, true); //Take heavy damage
-        this.animations[1][6] = new Animator(this.spritesheet, 0,1089, 64, 64, 4, 0.2, false, true); 
-        this.animations[1][7] = new Animator(this.spritesheet, 0,1153, 64, 64, 5, 0.2, false, true); 
+        //throwing
+        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 0, 192, 64, 64, 12.9, 0.1, false, false);
 
-        this.deathAnim[1] = new Animator(this.spritesheet, 11,1025, 64, 64, 9, 0.2, false, false); // Death
+        //damaged
+        this.animations[4][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 64, 256, 64, 64, 2, 0.2, false, false);
 
-    };
+        //LEFT
+        //idle
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 0, 640, 64, 64, 15, 0.2, false, false);
+
+        //running
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 0, 704, 64, 64, 11.9, 0.1, false, false);
+
+        //attack
+        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 0, 768, 64, 64, 7, 0.1, false, false);
+
+        //throwing
+        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 0, 832, 64, 64, 12.9, 0.1, false, false);
+
+        //damaged
+        this.animations[4][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 64, 896, 64, 64, 2, 0.2, false, false);
+    
+        //death animation
+        this.death = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 64, 384, 64, 64, 8, 0.1, false, false);
+    }
+
+
     updateBB() {
-        this.BB = new BoundingBox(this.x + 54, this.y + 72, 40*2, 60*2);
-    };
-    update() {
-        if (this.game.leftclick && !this.attacking) {
-            this.attack();
-            this.game.leftclick = false;
-        }
-        if (this.game.rightclick && !this.attacking) {
-            this.takeDamage();
-            this.game.rightclick = false;
-        }
-        if (this.damage) {
-            this.damageTimer -= this.game.clockTick;
-            if (this.damageTimer <= 0) {
-                this.damage = false;
-                this.state = 0;
-            }
-        }
-        //When outside of range, idle. When in range, ranged attack while walking towards character. When near character, stomp attack.
-        this.target = this.game.mouse;
-        if (this.target != null && this.location != null && !this.damage) {
-            if (!this.attacking && !this.damage) {
-                if (this.target != this.location && !this.dead && getDistance(this.location, this.target) < this.detectionRange) {
-                    let deltaX = this.target.x - this.location.x;
-                    let deltaY = this.target.y - this.location.y;
-                    let distance = Math.sqrt(deltaX*deltaX+deltaY*deltaY);
-                    
-                    //X movement
-                    if (this.target.x > this.location.x) {
-                        if (this.location.x + deltaX / distance * this.speed > this.target.x) { 
-                            this.location.x = this.target.x;
-                        } else {
-                            this.location.x += deltaX / distance * this.speed;
-                        }
-                        this.facing = 0;
-                        this.state = 1;
-                    } else if (this.target.x < this.location.x) {
-                        if (this.location.x + deltaX / distance * this.speed < this.target.x) {
-                            this.location.x = this.target.x;
-                        } else {
-                            this.location.x += deltaX / distance * this.speed;
-                        }
-                        this.facing = 1;
-                        this.state = 1;
-                    } else {
-                        this.state = 0;
-                    }
-            
-            
-                    //Y movement
-                    if (this.target.y > this.location.y) {
-                        if (this.location.y + deltaY / distance * this.speed > this.target.y) {
-                            this.location.y = this.target.y;
-                        } else {
-                            this.location.y += deltaY / distance * this.speed;
-                        }
-                        this.state = 1;
-                    } else if (this.target.y < this.location.y) {
-                        if (this.location.y + deltaY / distance * this.speed < this.target.y) {
-                            this.location.y = this.target.y;
-                        } else {
-                            this.location.y += deltaY / distance * this.speed;
-                        }
-                        this.state = 1;
-                    }
-                    this.x = this.location.x - 96;
-                    this.y = this.location.y - 128;
-                }
-            }
-            if (getDistance(this.location, this.target) < this.detectionRange && getDistance(this.location, this.target) < this.meleeRange) {
-                this.AttackCooldown = 0;
-            }
-            if (getDistance(this.location, this.target) < this.detectionRange && !this.attacking && this.AttackCooldown <= 0) {
-                if (getDistance(this.location, this.target) > this.meleeRange) {
-                    this.attack();
-                } else {
-                    this.attack2();
-                }
-            }
-            if (getDistance(this.location, this.target) < this.detectionRange) this.AttackCooldown -= this.game.clockTick; 
-        }
-        if (this.attacking) { 
-            this.attackTimer -= this.game.clockTick;
-            this.target = this.game.mouse;
-            // if (this.target.x > this.location.x) {
-            //     this.facing = 0;
-            // } else {
-            //     this.facing = 1;
-            // }
-            if (this.projectile && this.attackTimer <= 0.4) {
-                this.game.addEntity(new Rock(this.game, this.x + 96, this.y + 64, this.facing, this.target));
-                this.projectile = false;
-                this.AttackCooldown = this.throwAttackCooldown;
-            }
-            if (this.attackTimer <= 0) {
-                this.attacking = false;
-                this.melee = false;
-                this.state = 0;
-                this.animations[this.facing][this.state].elapsedTime = 0;
-                if (this.melee) this.AttackCooldown = 0;
-            }
-        }
-        this.updateBB();   
-    };
-    attack() {
-        this.attackTimer = this.attackDuration;
-        this.attacking = true;
-        this.state = 3;
-        this.projectile = true;
-        this.animations[this.facing][this.state].elapsedTime = 0;
-    };
-    attack2() {
-        this.attackTimer = this.attack2Duration;
-        this.attacking = true;
-        this.state = 2;
-        this.melee = true;
-        this.animations[this.facing][this.state].elapsedTime = 0;
-    };
-    takeDamage(damage) {
-        this.state = 4;
-        this.damage = true;
-        this.damageTimer = this.damagerDuration;
-        this.animations[this.facing][this.state].elapsedTime = 0;
-    };
+        const width = this.bitSizeX * this.scale * 0.3;  // Adjust scaling factor if needed
+        const height = this.bitSizeY * this.scale * 0.55; // Adjust scaling factor if needed
+        const offsetX = (this.bitSizeX * this.scale - width) / 2; // Center adjustment
+        const offsetY = (this.bitSizeY * this.scale - height) / 2 + 40; // Adjust Y position if needed
+    
+        this.BB = new BoundingBox(this.x + offsetX, this.y + offsetY, width, height);    
+    }
 
-    facing() {
-        if (this.target.x > this.location.x) {
-            this.facing = 0;
-        } else {
-            this.facing = 1;
+
+
+    update() {
+        if (this.dead) {
+            this.deathAnimationTimer -= this.game.clockTick;
+            if (this.deathAnimationTimer <= 0) {
+                this.removeFromWorld = true;
+            }
+            return;
         }
-    };
+        //Handle damage animation time so it isnt infinite. This is when the player hits the necromancer
+        if (this.isPlayingDamageAnimation) {
+            this.damageAnimationTimer -= this.game.clockTick;
+            if (this.damageAnimationTimer <= 0) {
+                this.isPlayingDamageAnimation = false; //should turn off when damage animation is over
+                this.state = 1; //return to walking state
+            }
+         }
+
+        // Reduce attack cooldown timer
+        if (this.attackCooldownTimer > 0) { //this is used for every mob attack. Makes sure a mob hits player once every second instead of every tick.
+            this.attackCooldownTimer -= this.game.clockTick;
+        }
+    
+        // Apply knockback effect
+        this.x += this.pushbackVector.x * this.game.clockTick;
+        this.y += this.pushbackVector.y * this.game.clockTick;
+        
+        // Decay the pushback vector
+        this.pushbackVector.x *= this.pushbackDecay;
+        this.pushbackVector.y *= this.pushbackDecay;
+    
+        const player = this.game.adventurer;
+        
+        // Calculate distance to player
+        const dx = (player.x + (player.bitSize * player.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2); 
+        const dy = (player.y + (player.bitSize * player.scale)/2) - (this.y + (this.bitSizeY * this.scale)/2 + 40);
+        const distance = Math.sqrt(dx * dx + dy * dy);
+    
+        // Update facing direction and sync animation if throwing
+        if (distance > 2) {
+            const newFacing = dx < 0 ? 1 : 0;
+            if (this.facing !== newFacing && this.throwTimer > 0) {
+                //Store current throw animation time before switching
+                this.throwAnimationElapsedTime = this.animations[3][this.facing].elapsedTime;
+                //Update facing
+                this.facing = newFacing;
+                // Set the new direction's animation to the same time
+                this.animations[3][this.facing].elapsedTime = this.throwAnimationElapsedTime;
+            } else {
+                this.facing = newFacing;
+            }
+        }
+    
+        // Handle shooting cooldown
+        if (this.shootTimer > 0) {
+            this.shootTimer -= this.game.clockTick;
+        }
+    
+        // Handle throw animation timer
+        if (this.throwTimer > 0) {
+            this.throwTimer -= this.game.clockTick;
+            this.state = 3; // Keep in throw state while timer is active
+            // Update the stored elapsed time
+            this.throwAnimationElapsedTime = this.animations[3][this.facing].elapsedTime;
+            // Check if we're at the end of the throw animation
+            if (this.throwTimer <= 0.25 && this.shouldThrowRock && !this.isAttacking) {
+                this.shootRock(); 
+                this.shouldThrowRock = false; // Reset the flag
+            }
+            this.updateBB();
+            return;
+        } else {
+            // Reset throw animation times when complete
+            this.animations[3][0].elapsedTime = 0;
+            this.animations[3][1].elapsedTime = 0;
+            this.throwAnimationElapsedTime = 0;
+            this.state = 1; // Return to running state when throw is done
+        }
+
+
+        if (distance <= this.range && this.shootTimer <= 0 && distance > 70) {
+            //Start throwing animation and set flag to shoot after
+            this.throwTimer = this.throwDuration;
+            this.shouldThrowRock = true; // Set flag to shoot when animation ends
+            this.shootTimer = this.shootCooldown; // Reset cooldown
+        }
+    
+        // Always move towards player
+        const moveSpeed = this.speed * this.game.clockTick;
+        const directionX = dx / distance;
+        const directionY = dy / distance;
+        
+        this.x += directionX * moveSpeed;
+        this.y += directionY * moveSpeed;
+
+        //COLLISIONS:
+        const separationDistance = 100; // Minimum distance between mobs
+        const entities = this.game.entities;
+        for (let i = 0; i < entities.length; i++) {
+            let entity = entities[i];
+            if ((entity instanceof Cyclops) && entity !== this) {
+                const dx = entity.x - this.x;
+                const dy = entity.y - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+      
+                if (distance < separationDistance && distance > 0) {
+                    // Apply a repelling force
+                    const repelFactor = 40; // Adjust for stronger/weaker repulsion
+                    const repelX = dx / distance * repelFactor * this.game.clockTick;
+                    const repelY = dy / distance * repelFactor * this.game.clockTick;
+      
+                    this.x -= repelX;
+                    this.y -= repelY;
+                }
+            }
+  
+            if (entity instanceof Adventurer) {
+                if (this.BB.collide(entity.BB) && !entity.invincible) {
+                    if (this.attackCooldownTimer <= 0) {
+                        // Attack the player and reset cooldown timer
+                        const centerX = this.BB.x + this.BB.width/2;
+                        const centerY = this.BB.y + this.BB.height/2;
+                        entity.takeDamageKnockback(this.collisionDamage, this.knockback, centerX, centerY);
+                        this.attackCooldownTimer = this.attackCooldown; // Reset the cooldown timer
+                        console.log("Cyclops attacked the player!");
+                    }
+                    this.state = 2; //Attacking state
+                }
+            }
+        }
+
+        if (this.state === 2) {
+            this.attackTimer -= this.game.clockTick;
+            if (this.attackTimer <= 0) {
+                this.attackTimer = 1.0; //Reset attack timer
+            }
+        }
+    
+        this.updateBB();
+    }
+
+
+    shootRock() {
+        const characterCenterX = this.x + (this.bitSize * this.scale) / 2;
+        const characterCenterY = this.y + (this.bitSize * this.scale) / 2;
+        const player = this.game.adventurer;
+        const dx = (player.x + (player.bitSize * player.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2);
+        const dy = (player.y + (player.bitSize * player.scale)/2) - (this.y + (this.bitSizeY * this.scale)/2);
+
+        const angle = Math.atan2(dy, dx);
+
+        this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, this.rockDamage, this.throwSpeed, 
+            "./Sprites/Projectiles/rock.png", 0, false, 3, false, 2,
+            0, 0, 16, 16, 1, 1, false, false, -16, -23, 32, 32, 16, 16));
+    }
+
+
+    
+    takeDamage(damage, knockbackForce, sourceX, sourceY) {
+
+        this.health -= damage;
+
+        if (this.throwTimer > 0) {
+            this.shouldThrowRock = false;
+            this.throwTimer = 0;
+        }
+
+
+        
+        // Apply knockback
+        const dx = (this.x + (this.bitSizeX * this.scale)/2) - sourceX;
+        const dy = (this.y + (this.bitSizeY * this.scale)/2) - sourceY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+
+        if (distance > 0) {
+            this.pushbackVector.x = (dx / distance) * knockbackForce;
+            this.pushbackVector.y = (dy / distance) * knockbackForce;
+        } else {
+            // Default knockback direction (e.g., upward) in case the mob and source overlap
+            this.pushbackVector.x = 0;
+            this.pushbackVector.y = -knockbackForce;
+        }
+    
+        if (this.health <= 0) {
+            let drop = Math.random();
+            if(drop < this.dropchance) {
+                this.game.addEntity(new Threecoin(this.game, (this.x + 28), (this.y + 55)));
+            }
+            this.dead = true;
+            this.state = 4;
+        } else {
+            this.state = 4;
+            this.isPlayingDamageAnimation = true;
+            this.damageAnimationTimer = this.damageAnimationDuration;
+            if (this.facing === 0) {
+                this.animations[4][0].elapsedTime = 0;
+            } else {
+                this.animations[4][1].elapsedTime = 0;
+            }
+        }
+    }
+
 
     draw(ctx) {
+        const shadowWidth = 53 * (this.scale / 2.8); 
+        const shadowHeight = 16 * (this.scale / 2.8);
+
+        const shadowX = (this.x + (64 * (this.scale / 2.8))) - this.game.camera.x;
+        const shadowY = (this.y + (170 * (this.scale / 2.8))) - this.game.camera.y;
+
+        ctx.drawImage(this.shadow, 0, 0, 64, 32, shadowX, shadowY, shadowWidth, shadowHeight);
+
         if (this.dead) {
-            this.deathAnim[this.facing].drawFrame(this.game.clockTick, ctx, this.x, this.y, 3);
-            this.removeFromWorld = true;
+            if (this.deathAnimationTimer > 0) {
+                this.death.drawFrame(
+                    this.game.clockTick, 
+                    ctx, 
+                    this.x - this.game.camera.x, 
+                    this.y - this.game.camera.y, 
+                    this.scale
+                );
+            }
+        } else if (this.isPlayingDamageAnimation) {
+            this.animations[4][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
         } else {
-            this.animations[this.facing][this.state].drawFrame(this.game.clockTick, ctx, this.x, this.y, 3);
+            // Draw necromancer
+            this.animations[this.state][this.facing].drawFrame(
+                this.game.clockTick, 
+                ctx, 
+                this.x - this.game.camera.x, 
+                this.y - this.game.camera.y, 
+                this.scale
+            );
         }
-        ctx.strokeStyle = 'Red';
-        ctx.strokeRect(this.BB.x, this.BB.y, this.BB.width, this.BB.height);
 
-        ctx.strokeStyle = "Green";
-        ctx.beginPath();
-        ctx.arc(this.x + 96, this.y + 128, this.detectionRange, 0, 2 * Math.PI);
-        ctx.closePath();
-        ctx.stroke();
+        //  ctx.strokeStyle = 'Green';
 
-        ctx.strokeStyle = 'Black';
-        ctx.beginPath();
-        ctx.arc(this.x + 96, this.y + 128, this.meleeRange, 0, 2 * Math.PI);
-        ctx.closePath();
-        ctx.stroke();
-    };
-};
+        // ctx.strokeRect(this.x - this.game.camera.x, this.y - this.game.camera.y, 20, 20);
+
+        ctx.strokeStyle = 'Yellow';
+        ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+    }
+}

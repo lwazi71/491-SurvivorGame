@@ -35,7 +35,15 @@ class Necromancer {
         this.damageAnimationDuration = 0.2; // Duration of damage animation
         this.isPlayingDamageAnimation = false;
 
+        this.isSlowed = false;
+        this.slowDuration = 0;
+        this.slowTimer = 0;
+        this.baseSpeed = this.speed;
+
         this.dropchance = 0.4;
+
+        this.entityOrder = 20;
+
 
         this.animations = [];
 
@@ -111,6 +119,16 @@ class Necromancer {
             }
          }
 
+        if (this.isSlowed) {
+            this.slowTimer += this.game.clockTick;
+            if (this.slowTimer >= this.slowDuration) {
+                // Reset speed when slow duration expires
+                this.speed = this.baseSpeed;
+                this.isSlowed = false;
+                this.slowTimer = 0;
+            }
+        }
+
         // Reduce attack cooldown timer
         if (this.attackCooldownTimer > 0) { //this is used for every mob attack. Makes sure a mob hits player once every second instead of every tick.
             this.attackCooldownTimer -= this.game.clockTick;
@@ -171,7 +189,7 @@ class Necromancer {
     
                 this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, this.damage, this.castSpeed, 
                     "./Sprites/Magic/BlackProjectile.png", 0, false, 3, false, 2,
-                    0, 0, 16, 16, 30, 0.1, false, false, -16, -23, 32, 32, 16, 16));
+                    0, 0, 16, 16, 30, 0.1, false, false, -16, -23, 32, 32, 16, 16, this));
             }
             
             this.shootTimer = this.shootCooldown;
@@ -216,9 +234,22 @@ class Necromancer {
                     }
                 }
             }
+
+            if (entity instanceof Lightning && entity.lightningOption === 1 && !this.isSlowed) {
+                if (entity.circle.BC.collidesWithBox(this.BB)) {
+                    this.applySlowEffect(this.game.adventurer.slowCooldown); 
+                }
+            }
         }
     
          this.updateBB();
+    }
+
+    applySlowEffect(duration) {
+        this.isSlowed = true;
+        this.slowDuration = duration;
+        this.slowTimer = 0;
+        this.speed /= 2; // Reduce speed by half
     }
 
 

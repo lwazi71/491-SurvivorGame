@@ -167,6 +167,22 @@ class WaveManager {
         this.game.addEntity(hellspawn);
     }
 
+    spawnMiniBossMelee(enemy) { //should pass in enemy object with coordinates. EX: spawnMiniBossMelee(new Zombie(game, x, y))
+        if (enemy instanceof Zombie || enemy instanceof Crow || enemy instanceof BlueGhoul || enemy instanceof FreakyGhoul || enemy instanceof Zombie || enemy instanceof Ghost || enemy instanceof Goblin) {
+            enemy.scale *= 1.4;
+            enemy.health *= 2;
+            enemy.speed *= 1.4;
+            enemy.attackPower *= 1.2;
+            enemy.entityOrder = 40;
+        } else {
+            console.log("this isn't a melee enemy");
+            return;
+        }
+        return enemy;
+    }
+
+
+
     draw(ctx) {
         // Draw wave information
     //     ctx.font = '20px Arial';

@@ -37,9 +37,15 @@ class HellSpawn {
 
         this.dropchance = 0.4; //40% chance of dropping something when dying
 
+        this.entityOrder = 30;
 
         
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
+
+        this.isSlowed = false;
+        this.slowDuration = 0;
+        this.slowTimer = 0;
+        this.baseSpeed = this.speed;
 
 
         this.animations = []; //will be used to store animations
@@ -115,6 +121,16 @@ class HellSpawn {
             return;
         }
 
+        if (this.isSlowed) {
+            this.slowTimer += this.game.clockTick;
+            if (this.slowTimer >= this.slowDuration) {
+                // Reset speed when slow duration expires
+                this.speed = this.baseSpeed;
+                this.isSlowed = false;
+                this.slowTimer = 0;
+            }
+        }
+
         // Apply pushback from previous damage. No knockback when charging.
         if (!this.dead && !this.isCharging) {
             this.x += this.pushbackVector.x * this.game.clockTick;
@@ -153,7 +169,7 @@ class HellSpawn {
         if (this.isPreparingCharge) {
           // Countdown preparation time
             this.chargePrepTimer -= this.game.clockTick;
-            
+            this.facing = dx < 0 ? 1 : 0; // 1 = left, 0 = right
             if (this.chargePrepTimer <= 0) {
                 // Initiate actual charge
                 this.isPreparingCharge = false;
@@ -235,6 +251,12 @@ class HellSpawn {
                     this.y -= repelY;
                 }
             }
+
+            if (entity instanceof Lightning && entity.lightningOption === 1 && !this.isSlowed) {
+                if (entity.circle.BC.collidesWithBox(this.BB)) {
+                    this.applySlowEffect(this.game.adventurer.slowCooldown); 
+                }
+            }
         }
  
            // Reduce attack cooldown timer
@@ -298,6 +320,13 @@ class HellSpawn {
                 this.animations[2][1].elapsedTime = 0;
             }
         }
+    }
+
+    applySlowEffect(duration) {
+        this.isSlowed = true;
+        this.slowDuration = duration;
+        this.slowTimer = 0;
+        this.speed /= 2; // Reduce speed by half
     }
 
 

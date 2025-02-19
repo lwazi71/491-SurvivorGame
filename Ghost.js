@@ -32,6 +32,13 @@ class Ghost {
         this.bitSizeX = 32;
         this.bitSizeY = 32;
 
+        this.isSlowed = false;
+        this.slowDuration = 0;
+        this.slowTimer = 0;
+        this.baseSpeed = this.speed;
+
+
+        this.entityOrder = 10;
 
         this.animations = []; //will be used to store animations
 
@@ -111,6 +118,16 @@ class Ghost {
                 return;
             }
         }
+
+        if (this.isSlowed) {
+            this.slowTimer += this.game.clockTick;
+            if (this.slowTimer >= this.slowDuration) {
+                // Reset speed when slow duration expires
+                this.speed = this.baseSpeed;
+                this.isSlowed = false;
+                this.slowTimer = 0;
+            }
+        }
         
         if (!this.dead) {
             // Apply knockback effect
@@ -132,7 +149,7 @@ class Ghost {
         const player = this.game.adventurer; // Reference to the player character
 
         // Calculate the direction vector to the player
-        const dx = (player.x + (player.bitSize * player.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2); 
+        const dx = (player.x + (player.bitSize * player.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2 - 5); 
         const dy = (player.y + (player.bitSize * player.scale)/2) - (this.y + (this.bitSizeY * this.scale)/2);
     
         // Calculate the distance to the player
@@ -204,6 +221,12 @@ class Ghost {
                     }
                 }
             }
+
+            if (entity instanceof Lightning && entity.lightningOption === 1 && !this.isSlowed) {
+                if (entity.circle.BC.collidesWithBox(this.BB)) {
+                    this.applySlowEffect(this.game.adventurer.slowCooldown); 
+                }
+            }
         }
 
         // Play attack animation and reduce timer
@@ -225,7 +248,7 @@ class Ghost {
         this.health -= damage;
         
         // Apply knockback
-        const dx = (this.x + (this.bitSizeX * this.scale)/2) - sourceX;
+        const dx = (this.x + (this.bitSizeX * this.scale)/2 - 5) - sourceX;
         const dy = (this.y + (this.bitSizeY * this.scale)/2) - sourceY;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
@@ -258,6 +281,13 @@ class Ghost {
         }
     }
 
+    applySlowEffect(duration) {
+        this.isSlowed = true;
+        this.slowDuration = duration;
+        this.slowTimer = 0;
+        this.speed /= 2; // Reduce speed by half
+    }
+
 
     draw(ctx) {
 
@@ -280,7 +310,8 @@ class Ghost {
             this.animations[this.state][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale); 
         }
 
-
+        ctx.strokeStyle = 'Green';
+        ctx.strokeRect((this.x + (this.bitSizeX * this.scale)/2 - 5) - this.game.camera.x, (this.y + (this.bitSizeY * this.scale)/2) - this.game.camera.y, 20, 20);
         
         ctx.strokeStyle = 'Yellow';
         ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);

@@ -25,6 +25,9 @@ class Crow {
         this.pushbackVector = { x: 0, y: 0 };
         this.pushbackDecay = 0.9; // Determines how quickly the pushback force decays
 
+
+        this.entityOrder = 10;
+
         
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  
 
@@ -32,6 +35,11 @@ class Crow {
 
         this.bitSizeX = 64;
         this.bitSizeY = 64;
+
+        this.isSlowed = false;
+        this.slowDuration = 0;
+        this.slowTimer = 0;
+        this.baseSpeed = this.speed;
 
 
         this.animations = []; //will be used to store animations
@@ -116,6 +124,16 @@ class Crow {
                 return;
             }
         }
+
+        if (this.isSlowed) {
+            this.slowTimer += this.game.clockTick;
+            if (this.slowTimer >= this.slowDuration) {
+                // Reset speed when slow duration expires
+                this.speed = this.baseSpeed;
+                this.isSlowed = false;
+                this.slowTimer = 0;
+            }
+        }
         
         if (!this.dead) {
             // Apply knockback effect
@@ -198,6 +216,12 @@ class Crow {
                     this.state = 2; //Attacking state
                 }
             }
+
+            if (entity instanceof Lightning && entity.lightningOption === 1 && !this.isSlowed) {
+                if (entity.circle.BC.collidesWithBox(this.BB)) {
+                    this.applySlowEffect(this.game.adventurer.slowCooldown); 
+                }
+            }
         }
 
         // Play attack animation and reduce timer
@@ -250,6 +274,13 @@ class Crow {
                 this.animations[3][1].elapsedTime = 0;
             }
         }
+    }
+
+    applySlowEffect(duration) {
+        this.isSlowed = true;
+        this.slowDuration = duration;
+        this.slowTimer = 0;
+        this.speed /= 2; // Reduce speed by half
     }
 
     drawMinimap(ctx, mmX, mmY) {
