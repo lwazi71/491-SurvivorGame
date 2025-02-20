@@ -165,7 +165,6 @@ class WaveManager {
         } else {
             this.scaleEnemy(enemy, isMiniBoss);
         }
-    
         this.game.addEntity(enemy);
     }
     
@@ -180,7 +179,6 @@ class WaveManager {
                enemy instanceof Ghost || 
                enemy instanceof Goblin;
     }
-    
     /**
      * Applies melee mini-boss scaling to the given enemy.
      */

@@ -134,7 +134,7 @@ class SceneManager {
             this.shakeIntensity *= this.shakeDecay; 
         }
 
-       // this.waveManager.update();
+       this.waveManager.update();
 
     }
 
@@ -146,7 +146,7 @@ class SceneManager {
     }
 
     draw(ctx) {
-     //   this.waveManager.draw(ctx); //to tell us how many zombies are on screen and waves
+        this.waveManager.draw(ctx); //to tell us how many zombies are on screen and waves
         ctx.font = '20px Arial';
         ctx.fillStyle = 'white';
         // ctx.fillText(`Player Health: ${this.adventurer.health}`, 10, 120);
