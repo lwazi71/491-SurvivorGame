@@ -11,6 +11,8 @@ class BlueGhoul {
         this.speed = 180;
 
         this.health = 20;
+        this.maxHealth = 20;
+        this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 22, -55));
         this.attackPower = 10;
         this.attackCooldown = 1.0; // Cooldown in seconds between attacks
         this.attackCooldownTimer = 0; // Tracks remaining cooldown time
@@ -320,10 +322,10 @@ class BlueGhoul {
         } else {
             this.animations[this.state][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale); 
         }
-
+        if (PARAMS.DEBUG) {
         //used to indicate the path the ghoul is going towards. (line 132 and 133);
-          ctx.strokeStyle = 'Green';
-        ctx.strokeRect((this.x + (this.bitSizeX * this.scale)/2) - this.game.camera.x, (this.y + (this.bitSizeY * this.scale)/2) - this.game.camera.y, 20, 20);
+            ctx.strokeStyle = 'Green';
+            ctx.strokeRect((this.x + (this.bitSizeX * this.scale)/2) - this.game.camera.x, (this.y + (this.bitSizeY * this.scale)/2) - this.game.camera.y, 20, 20);
 
         // const player = this.game.adventurer;
         // ctx.strokeRect(player.x - this.game.camera.x, player.y - this.game.camera.y, 20, 20);
@@ -333,8 +335,9 @@ class BlueGhoul {
 
 
         
-        ctx.strokeStyle = 'Yellow';
-        ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+            ctx.strokeStyle = 'Yellow';
+            ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        }
 
     }
     

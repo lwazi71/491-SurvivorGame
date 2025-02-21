@@ -237,9 +237,10 @@ class Projectile {
         );
 
         ctx.restore();
-
-        ctx.strokeStyle = 'Green';
-        ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        if (PARAMS.DEBUG) {
+            ctx.strokeStyle = 'Green';
+            ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        }
     }
 
 

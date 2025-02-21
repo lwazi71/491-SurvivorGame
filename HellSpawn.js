@@ -11,6 +11,8 @@ class HellSpawn {
         this.bitSizeY = 64;
 
         this.health = 20;
+        this.maxHealth = 20;
+        this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 10, -10));
         this.attackPower = 10;
         this.attackCooldown = 1.0; // Cooldown in seconds between attacks
         this.attackCooldownTimer = 0; // Tracks remaining cooldown time
@@ -387,13 +389,13 @@ class HellSpawn {
                 ctx.stroke();
                 ctx.restore();
         }
-        
-        ctx.strokeStyle = 'Green';
-        ctx.strokeRect((this.x + (this.bitSizeX * this.scale)/2) - this.game.camera.x, (this.y + (this.bitSizeY * this.scale)/2) - this.game.camera.y, 20, 20);
+        if (PARAMS.DEBUG) {
+            ctx.strokeStyle = 'Green';
+            ctx.strokeRect((this.x + (this.bitSizeX * this.scale)/2) - this.game.camera.x, (this.y + (this.bitSizeY * this.scale)/2) - this.game.camera.y, 20, 20);
 
-        ctx.strokeStyle = 'Yellow';
-        ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
-
+            ctx.strokeStyle = 'Yellow';
+            ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        }
 
     }
     

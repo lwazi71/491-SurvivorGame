@@ -91,11 +91,12 @@ class Bomb {
 
     draw(ctx) {
         this.animations[this.state].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
+        if (PARAMS.DEBUG) {
+            ctx.strokeStyle = 'Green';
+            ctx.strokeRect((this.x + (this.bitSize * this.scale)/2 - 10) - this.game.camera.x, (this.y + (this.bitSize * this.scale)/2 - 10) - this.game.camera.y, 20, 20);
 
-        ctx.strokeStyle = 'Green';
-        ctx.strokeRect((this.x + (this.bitSize * this.scale)/2 - 10) - this.game.camera.x, (this.y + (this.bitSize * this.scale)/2 - 10) - this.game.camera.y, 20, 20);
-
-        ctx.strokeStyle = 'Yellow';
-        ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+            ctx.strokeStyle = 'Yellow';
+            ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        }
     }
 }

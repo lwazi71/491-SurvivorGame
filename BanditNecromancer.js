@@ -10,7 +10,7 @@ class BanditNecromancer {
         this.facing = 0; //0 = right, 1 = left
         this.scale = 2.8;
         this.speed = 150;
-    
+        
         this.range = 400; //Shooting range (range until our necromancer starts shooting at player)
         this.shootCooldown = 3; //Shoot every 3 seconds
         this.shootTimer = 0; //should be 0
@@ -21,8 +21,10 @@ class BanditNecromancer {
         this.collisionDamage = 2;
         
         this.health = 20; //Necromancer health 
+        this.maxHealth = 20;
         this.dead = false;
         this.deathAnimationTimer = 7 * 0.2; //8 frames * 0.2 duration. Should be frameCount * frameDuration for death animation
+        this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 0, 7));
     
         this.pushbackVector = { x: 0, y: 0 };
         this.pushbackDecay = 0.9;
@@ -327,8 +329,9 @@ class BanditNecromancer {
         //  ctx.strokeStyle = 'Green';
 
         // ctx.strokeRect(this.x - this.game.camera.x, this.y - this.game.camera.y, 20, 20);
-
-        ctx.strokeStyle = 'Yellow';
-        ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        if (PARAMS.DEBUG) {
+            ctx.strokeStyle = 'Yellow';
+            ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        }
     }
 }

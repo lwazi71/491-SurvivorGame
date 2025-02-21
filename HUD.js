@@ -1,4 +1,4 @@
-class HUD {
+class Hud {
     constructor(game, adventurer) {
         Object.assign(this, {game, adventurer});
         this.proportion = PARAMS.CANVAS_WIDTH / 1024; //Assuming it's always going to be 4:3

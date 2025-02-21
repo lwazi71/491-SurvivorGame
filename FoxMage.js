@@ -21,6 +21,8 @@ class FoxMage {
         this.collisionDamage = 2;
         
         this.health = 20; //Fox health 
+        this.maxHealth = 20;
+        this.healthbar = this.game.addEntity(new HealthBar(this.game, this, -1, 10));
         this.dead = false;
         this.deathAnimationTimer = 6 * 0.2; 
     
@@ -344,8 +346,9 @@ class FoxMage {
         //  ctx.strokeStyle = 'Green';
 
         // ctx.strokeRect(this.x - this.game.camera.x, this.y - this.game.camera.y, 20, 20);
-
-        ctx.strokeStyle = 'Yellow';
-        ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        if (PARAMS.DEBUG) {
+            ctx.strokeStyle = 'Yellow';
+            ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        }
     }
 }

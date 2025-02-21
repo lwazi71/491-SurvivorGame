@@ -22,6 +22,8 @@ class Necromancer {
         this.collisionDamage = 2;
         
         this.health = 25; //Necromancer health 
+        this.maxHealth = 25;
+        this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 30, -70));
         this.dead = false;
         this.deathAnimationTimer = 8 * 0.1; //8 frames * 0.1 duration. Should be frameCount * frameDuration for death animation
     
@@ -329,8 +331,9 @@ class Necromancer {
 
         //  ctx.strokeStyle = 'Green';
         // ctx.strokeRect((this.x + (this.bitSizeX * this.scale)/2 + 25) - this.game.camera.x, (this.y + (this.bitSizeY * this.scale)/2 + 10) - this.game.camera.y, 20, 20);
-
-        ctx.strokeStyle = 'Yellow';
-        ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        if (PARAMS.DEBUG) {
+            ctx.strokeStyle = 'Yellow';
+            ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        }
     }
 }
