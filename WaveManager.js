@@ -80,32 +80,34 @@ class WaveManager {
                     interval: 3, // Spawn every 3 seconds
                     count: 1,
                     pool: "melee",
-                    enemy_type: "zombie" // Always spawn zombies
+                    enemy_type: "zombie", // Always spawn zombies
+                    oneTime: false //If we want to spawn the enemy one time. If this is true, it won't worry about the interval and just spawn at the start time
+
                 },
                 // {
                 //     startTime: 30, //After 30 seconds, zombie enemies will spawn faster now
                 //     interval: 4, count: 2, pool: "melee", enemy_type: "zombie"},
                 {
                     startTime: 30, //After 1 minute, melee enemies will spawn 2 times now
-                    interval: 7, count: 1, pool: "melee", enemy_type: "blueghoul"},
+                    interval: 7, count: 1, pool: "melee", enemy_type: "blueghoul", oneTime: false},
                 {
                     startTime: 45, //1 minute. The interval makes it go to 1 minute
-                    interval: 15, count: 2, pool: "melee", enemy_type: "crow"},
+                    interval: 15, count: 2, pool: "melee", enemy_type: "crow", oneTime: false},
                 {
                     startTime: 60, //1:30 minutes
-                    interval: 30, count: 2, pool: "ranged", enemy_type: "banditnecromancer"},
+                    interval: 30, count: 2, pool: "ranged", enemy_type: "banditnecromancer", oneTime: false},
                 {
                     startTime: 70, //2 and 30 minutes
-                    interval: 50, count: 1, pool: "rangedAOE", enemy_type: "ratmage"},
+                    interval: 50, count: 1, pool: "rangedAOE", enemy_type: "ratmage", oneTime: false},
                 {
                     startTime: 120, // 3 minutes
-                    interval: 60, count: 1, pool: "minibosses", enemy_type: "cyclops"},
+                    interval: 60, count: 1, pool: "minibosses", enemy_type: "cyclops", oneTime: false},
                 {
                     startTime: 210, //3:30 minutes
-                    interval: 40, count: 1, pool: "rangedAOE", enemy_type: "ratmage"},
+                    interval: 40, count: 1, pool: "rangedAOE", enemy_type: "ratmage", oneTime: false},
                 {
                     startTime: 230, //4:00 minutes
-                    interval: 15, count: 1, pool: "charge", enemy_type: "slime"},
+                    interval: 15, count: 1, pool: "charge", enemy_type: "slime", oneTime: false},
             ];
         } else if (this.game.currMap == 2) {
             //set spawn pattern for map 2 here
@@ -341,17 +343,27 @@ class WaveManager {
         // this.statsMultiplier.speed = Math.round(1 + (this.gameTime / 600) * 0.2);
         // this.statsMultiplier.attackPower = Math.round(1 + (this.gameTime / 400) * 0.2);
 
+        //spawn patterns:
         this.spawnPatterns.forEach((pattern, index) => {
             if (this.gameTime >= pattern.startTime) {
-                this.spawnTimers[index] += this.game.clockTick;
-                
-                if (this.spawnTimers[index] >= pattern.interval) {
+                if (pattern.oneTime) {
+                    // Spawn once and remove from patterns
                     for (let i = 0; i < pattern.count; i++) {
-                        // If pattern specifies enemy_type, use that instead of random selection
-                        const enemyType = pattern.enemy_type || this.weightedRandomEnemy(pattern.pool); //if no enemy was specified, then we're doing the whole pool. Maybe this could be for last level?
+                        const enemyType = pattern.enemy_type || this.weightedRandomEnemy(pattern.pool); //if there's an enemy listed, we'll used that enemy in the pattern, otherwise, we'll use whole pool
                         this.spawnEnemy(enemyType);
                     }
-                    this.spawnTimers[index] = 0;
+                    //remove this pattern
+                    this.spawnPatterns.splice(index, 1);
+                } else {
+                    //regular spawn pattern logic
+                    this.spawnTimers[index] += this.game.clockTick;
+                    if (this.spawnTimers[index] >= pattern.interval) {
+                        for (let i = 0; i < pattern.count; i++) {
+                            const enemyType = pattern.enemy_type || this.weightedRandomEnemy(pattern.pool);
+                            this.spawnEnemy(enemyType);
+                        }
+                        this.spawnTimers[index] = 0;
+                    }
                 }
             }
         });
