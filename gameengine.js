@@ -22,6 +22,9 @@ class GameEngine {
         this.upgradePause = false;
         this.setDelay = 0;
 
+        this.currMap = 1;
+        
+
         // Options and the Details
         this.options = options || {
             debugging: false,

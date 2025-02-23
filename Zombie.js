@@ -6,7 +6,7 @@ class Zombie {
         this.facing = 0; //0 = right, 1 = left
         this.attackPower = 5;
         this.scale = 2.6;
-        this.speed = 200;
+        this.speed = 73;
 
         this.health = 20;
         this.maxHealth = 20;
@@ -30,8 +30,6 @@ class Zombie {
         
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
 
-        this.dropchance = 0.4; //40% chance of dropping something when dying
-
         this.bitSizeX = 32;
         this.bitSizeY = 32;
 
@@ -40,6 +38,11 @@ class Zombie {
         this.slowTimer = 0;
         this.baseSpeed = this.speed;
 
+        this.currentTarget = null;  // Can be either player or bomb (for monkey bomb upgrade)
+        this.targetType = "player"; // "player" or "bomb"
+        this.nearestBomb = null;
+        
+        this.miniBoss = false;
 
         this.entityOrder = 10;
 
@@ -100,6 +103,10 @@ class Zombie {
 
 
         this.deadAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Zombie/Zombie.png"), 32, 160, 32, 32, 7, 0.15, false, false);
+
+        this.warning = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/warning.png"), 0, 0, 1024, 1024, 7.9, 0.1, false, true); //used for mini bosses
+
+        this.glowAnim = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/glow.png"), 192, 192, 32, 32, 2.9, 0.1, false, true);
     }
 
 
@@ -159,8 +166,28 @@ class Zombie {
 
         //Where on the player or near the player the zombie will be going towards
         //
-        const dx = (player.x + (player.bitSize * player.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2); 
-        const dy = (player.y + (player.bitSize * player.scale)/2) - (this.y + (this.bitSizeY * this.scale)/2);
+       // Find nearest bomb
+        if (this.game.adventurer.monkeyBomb && !this.miniBoss) { //if the player has the upgrade and this isn't a miniboss zombie
+            this.nearestBomb = this.findNearestBomb();
+        }
+        
+        //determine target (bomb or player)
+        let targetX, targetY;
+        if (this.nearestBomb) { //if it's null, the bomb either doesn't exist at the moment or player doesnt have upgrade
+            this.currentTarget = this.nearestBomb;
+            this.targetType = "bomb";
+            targetX = this.nearestBomb.x + (this.nearestBomb.bitSize * this.nearestBomb.scale)/2;
+            targetY = this.nearestBomb.y + (this.nearestBomb.bitSize * this.nearestBomb.scale)/2;
+        } else {
+            this.currentTarget = this.game.adventurer;
+            this.targetType = "player";
+            targetX = this.game.adventurer.x + (this.game.adventurer.bitSize * this.game.adventurer.scale)/2;
+            targetY = this.game.adventurer.y + (this.game.adventurer.bitSize * this.game.adventurer.scale)/2;
+        }
+
+        //Where on the player or near the player the zombie will be going towards
+        const dx = targetX - (this.x + (this.bitSizeX * this.scale)/2);
+        const dy = targetY - (this.y + (this.bitSizeY * this.scale)/2);
     
         //Calculate the distance to the player.
         const distance = Math.sqrt(dx * dx + dy * dy);
@@ -221,6 +248,18 @@ class Zombie {
                 }
             }
 
+            if (entity instanceof Bomb && this.game.adventurer.monkeyBomb) {
+                if (this.BB.collide(entity.BB) && !entity.invincible) {
+                    if (this.attackCooldownTimer <= 0) {
+                        // Attack the player and reset cooldown timer
+                        this.attackCooldownTimer = this.attackCooldown; // Reset the cooldown timer
+                    }
+                    //Set zombie to attacking state
+                    this.state = 2; //Attacking state
+                }
+            }
+
+
             if (entity instanceof Lightning && entity.lightningOption === 1 && !this.isSlowed) {
                 if (entity.circle.BC.collidesWithBox(this.BB)) {
                     this.applySlowEffect(this.game.adventurer.slowCooldown); 
@@ -262,10 +301,13 @@ class Zombie {
     
         if (this.health <= 0) {
             let drop = Math.random();
-            if(drop < this.dropchance) {
-                this.game.addEntity(new Onecoin(this.game, (this.x + 28), (this.y + 55)));
-                this.game.addEntity(new ExperienceOrb(this.game, (this.x + 28), (this.y + 55)));
-                console.log("confirm");
+            if(drop < this.game.adventurer.dropChance) {
+                this.game.addEntity(new Onecoin(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
+                this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
+            }
+            if (this.miniBoss) {
+                this.game.addEntity(new Chest(this.game, (this.x + (this.bitSizeX * this.scale)/2) - 125, (this.y + (this.bitSizeY * this.scale)/2) - 125));
+                this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2) + 15, (this.y + (this.bitSizeY * this.scale)/2)));
             }
             this.dead = true;
             this.state = 3;
@@ -279,6 +321,27 @@ class Zombie {
                 this.animations[3][1].elapsedTime = 0;
             }
         }
+    }
+
+    findNearestBomb() {
+        let nearestBomb = null;
+        let shortestDistance = this.game.adventurer.detectionRadius;
+
+        const entities = this.game.entities;
+        for (let entity of entities) {
+            if (entity instanceof Bomb) {
+                const dx = (entity.x + (entity.bitSize * entity.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2);
+                const dy = (entity.y + (entity.bitSize * entity.scale)/2) - (this.y + (this.bitSizeY * this.scale)/2);
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < shortestDistance) {
+                    shortestDistance = distance;
+                    nearestBomb = entity;
+                }
+            }
+        }
+
+        return nearestBomb;
     }
 
     applySlowEffect(duration) {
@@ -300,6 +363,11 @@ class Zombie {
 
         const shadowX = (this.x + (18 * (this.scale / 2.6))) - this.game.camera.x;
         const shadowY = (this.y + (77 * (this.scale / 2.6))) - this.game.camera.y;
+        if (this.miniBoss) {
+             this.warning.drawFrame(this.game.clockTick, ctx, shadowX, shadowY - (38 * this.scale), 0.05);
+            // this.glowAnim.drawFrame(this.game.clockTick, ctx, shadowX, shadowY - (38 * this.scale), this.scale);
+
+        }
 
         ctx.drawImage(this.shadow, 0, 0, 64, 32, shadowX, shadowY, shadowWidth, shadowHeight);
 

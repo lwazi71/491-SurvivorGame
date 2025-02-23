@@ -28,8 +28,6 @@ class Goblin {
         
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
 
-        this.dropchance = 0.4; //40% chance of dropping something when dying
-
         this.bitSizeX = 150;
         this.bitSizeY = 150;
 
@@ -40,7 +38,13 @@ class Goblin {
         this.slowTimer = 0;
         this.baseSpeed = this.speed;
 
+        this.currentTarget = null;  // Can be either player or bomb (for monkey bomb upgrade)
+        this.targetType = "player"; // "player" or "bomb"
+        this.nearestBomb = null;
+
         this.animations = []; //will be used to store animations
+
+        this.miniBoss = false;
 
         this.updateBB();
         this.loadAnimation();
@@ -94,6 +98,7 @@ class Goblin {
         //Damaged, to the left
         this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/Hurt-flipped.png"), 300, 0, 150, 150, 1, 0.2, true, false);
 
+        this.warning = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/warning.png"), 0, 0, 1024, 1024, 7.9, 0.1, false, true); //used for mini bosses
 
         this.deadAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/Death.png"), 0, 0, 150, 150, 4, 0.15, false, false);
     }
@@ -153,22 +158,39 @@ class Goblin {
 
         const player = this.game.adventurer; // Reference to the player character
 
-        //Where on the player or near the player the enemy will be going towards
-        //
-        const dx = (player.x + (player.bitSize * player.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2); 
-        const dy = (player.y + (player.bitSize * player.scale)/2) - (this.y + (this.bitSizeY * this.scale)/2);
+        if (this.game.adventurer.monkeyBomb && !this.miniBoss) { //if the player has the upgrade
+            this.nearestBomb = this.findNearestBomb();
+        }
+        
+        //determine target (bomb or player)
+        let targetX, targetY;
+        if (this.nearestBomb) { //if it's null, the bomb either doesn't exist at the moment or player doesnt have upgrade
+            this.currentTarget = this.nearestBomb;
+            this.targetType = "bomb";
+            targetX = this.nearestBomb.x + (this.nearestBomb.bitSize * this.nearestBomb.scale)/2;
+            targetY = this.nearestBomb.y + (this.nearestBomb.bitSize * this.nearestBomb.scale)/2;
+        } else {
+            this.currentTarget = this.game.adventurer;
+            this.targetType = "player";
+            targetX = this.game.adventurer.x + (this.game.adventurer.bitSize * this.game.adventurer.scale)/2;
+            targetY = this.game.adventurer.y + (this.game.adventurer.bitSize * this.game.adventurer.scale)/2;
+        }
+
+        //Where on the player or near the player the zombie will be going towards
+        const dx = targetX - (this.x + (this.bitSizeX * this.scale)/2);
+        const dy = targetY - (this.y + (this.bitSizeY * this.scale)/2);
     
         //Calculate the distance to the player.
         const distance = Math.sqrt(dx * dx + dy * dy);
         
-        //if the enemy isnt next to the player, then we should 
+        //if the zombie isnt next to the player, then we should 
         if (distance > 0) {
             // Normalize the direction vector. Which way we're going towards. left, right, bottom right etc.
             const directionX = dx / distance;
             const directionY = dy / distance;
             
     
-            //Move the enemy toward the player
+            //Move the zombie toward the player
             const movement = this.speed * this.game.clockTick; //Adjust speed for frame rate
     
             this.x += directionX * movement;
@@ -222,6 +244,18 @@ class Goblin {
                     this.applySlowEffect(this.game.adventurer.slowCooldown); 
                 }
             }
+
+
+            if (entity instanceof Bomb && this.game.adventurer.monkeyBomb) {
+                if (this.BB.collide(entity.BB) && !entity.invincible) {
+                    if (this.attackCooldownTimer <= 0) {
+                        this.attackCooldownTimer = this.attackCooldown; // Reset the cooldown timer
+                        console.log("Goblin attacked the bomb!");
+                    }
+                    //Set enemy to attacking state
+                    this.state = 2; //Attacking state
+                }
+            }
         }
 
         // Play attack animation and reduce timer
@@ -234,6 +268,28 @@ class Goblin {
         
         this.updateBB();
 
+    }
+
+
+    findNearestBomb() {
+        let nearestBomb = null;
+        let shortestDistance = this.game.adventurer.detectionRadius;
+
+        const entities = this.game.entities;
+        for (let entity of entities) {
+            if (entity instanceof Bomb) {
+                const dx = (entity.x + (entity.bitSize * entity.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2);
+                const dy = (entity.y + (entity.bitSize * entity.scale)/2) - (this.y + (this.bitSizeY * this.scale)/2);
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < shortestDistance) {
+                    shortestDistance = distance;
+                    nearestBomb = entity;
+                }
+            }
+        }
+
+        return nearestBomb;
     }
 
 
@@ -258,10 +314,13 @@ class Goblin {
     
         if (this.health <= 0) {
             let drop = Math.random();
-            if(drop < this.dropchance) {
-                this.game.addEntity(new Onecoin(this.game, (this.x + 28), (this.y + 55)));
-                this.game.addEntity(new ExperienceOrb(this.game, (this.x + 28), (this.y + 55)));
-                console.log("confirm");
+            if(drop < this.game.adventurer.dropChance) {
+                this.game.addEntity(new Onecoin(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
+                this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
+            }
+            if (this.miniBoss) {
+                this.game.addEntity(new Chest(this.game, (this.x + (this.bitSizeX * this.scale)/2) - 125, (this.y + (this.bitSizeY * this.scale)/2) - 125));
+                this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2) + 15, (this.y + (this.bitSizeY * this.scale)/2)));
             }
             this.dead = true;
             this.state = 3;
@@ -296,6 +355,10 @@ class Goblin {
 
         const shadowX = (this.x + (130 * (this.scale / 2))) - this.game.camera.x;
         const shadowY = (this.y + (197 * (this.scale / 2))) - this.game.camera.y;
+
+        if (this.miniBoss) {
+            this.warning.drawFrame(this.game.clockTick, ctx, shadowX + 8, shadowY - (50 * this.scale), 0.05);
+        }   
 
         ctx.drawImage(this.shadow, 0, 0, 64, 32, shadowX, shadowY, shadowWidth, shadowHeight);
 

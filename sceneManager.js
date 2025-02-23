@@ -16,8 +16,12 @@ class SceneManager {
         this.shakeIntensity = 0;
         this.shakeDecay = 0.9; 
 
+
         // Add the Game Map first so it's always underneath everything
         this.game.addEntity(new GameMap(this.game));
+
+        this.deathScreen = new DeathScreen(this.game);
+        this.game.addEntity(this.deathScreen);
 
         this.loadTestLevel();
     };
@@ -44,7 +48,7 @@ class SceneManager {
         // this.game.addEntity(new Zombie(this.game, 200, 400));
         // this.game.addEntity(new Zombie(this.game, 300, 450));
         // this.game.addEntity(new Zombie(this.game, 130, 400));
-        // this.game.addEntity(new Zombie(this.game, 323, 400));
+        //this.game.addEntity(new Zombie(this.game, 323, 400));
         // this.game.addEntity(new Zombie(this.game, 513, 400));
         // this.game.addEntity(new Zombie(this.game, 42, 400));
         // this.game.addEntity(new BanditNecromancer(this.game, 42, 400));
@@ -53,16 +57,16 @@ class SceneManager {
 
         // this.game.addEntity(new RatMage(this.game, 200, 400));
         // this.game.addEntity(new FoxMage(this.game, 200, 400));
-        // this.game.addEntity(new Crow(this.game, 200, 400));
+        //this.game.addEntity(new Crow(this.game, 200, 400));
         // this.game.addEntity(new Slime(this.game, 200, 400));
         // this.game.addEntity(new Boar(this.game, 200, 400));
         // this.game.addEntity(new Wizard(this.game, 200, 200));
-        // this.game.addEntity(new Goblin(this.game, 200, 200));
+        //this.game.addEntity(new Goblin(this.game, 200, 200));
         // this.game.addEntity(new Cyclops(this.game, 200, 400));
         // this.game.addEntity(new Minotaur(this.game, 200, 400));
         // this.game.addEntity(new GoblinMech(this.game, 200, 400));
 
-        this.game.addEntity(new Boss1(this.game, 200, 400));
+       // this.game.addEntity(new Boss1(this.game, 200, 400));
 
 
         // this.game.addEntity(this.generateObject("Barrel", 100, 100));
@@ -78,9 +82,9 @@ class SceneManager {
         //find a better way to do this.
         this.game.addEntity(new Sign(this.game, 20, 20, 
             "KeyBoard Controls:      - Move using WASD              - Attack using left click " +                
-            "                    - Use Ultimate AOE using x                    - Switch weapons using 1 and 2 (Sword is 1 and Bow is 2)" + 
+            "                    - Right click on item 1 to use close Range AOE                   - Switch weapons using 1 and 2 (Sword is 1 and Bow is 2)" + 
             "                - To roll press shift (Will give invincibility frames          - Press e to place bomb down" +
-            "                    - Right click to strike down lightning"));
+            "                    - Right click on bow item to use long-ranged AOE"));
 
         this.game.addEntity(new Sign(this.game, 220, 20, 
             "KeyBoard Controls (cont):                  - Press f for Dark-bolt ability (will slow down enemies if hit and be in random places around character"));
@@ -93,6 +97,15 @@ class SceneManager {
       
 
         //this.game.addEntity(new GameMap(this.game));
+    }
+
+    triggerDeathScreen() {
+        this.deathScreen.trigger();
+    }
+    
+
+    respawn() {
+        this.deathScreen.respawn();
     }
 
     generateObject(object, x, y) {
@@ -130,7 +143,7 @@ class SceneManager {
             this.shakeIntensity *= this.shakeDecay; 
         }
 
-       // this.waveManager.update();
+        this.waveManager.update();
 
        
     }
@@ -157,10 +170,13 @@ class SceneManager {
         // ctx.fillText(`Player Health: ${this.adventurer.health}`, 10, 120);
         // ctx.fillText(`Player Coins: ${this.adventurer.coins}`, 10, 150);
 
-        ctx.fillText(`Player Dark Bolts: ${this.adventurer.boltCurrentAmount}`, 10, 180);
-        ctx.fillText(`Player Bolts Cooldown: ${Math.ceil(this.adventurer.boltCooldownRetrieveTimer * 100) / 100}`, 10, 210);
-        this.HUD.update();
-        this.HUD.draw(ctx);
+        // ctx.fillText(`Player Dark Bolts: ${this.adventurer.boltCurrentAmount}`, 10, 180);
+        // ctx.fillText(`Player Bolts Cooldown: ${Math.ceil(this.adventurer.boltCooldownRetrieveTimer * 100) / 100}`, 10, 210);
+
+        if (!this.game.adventurer.dead) {
+            this.HUD.update();
+            this.HUD.draw(ctx);
+        }
     }
     
 

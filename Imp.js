@@ -39,12 +39,12 @@ class Imp {
 
         this.projectileCount = 10;
 
-        this.dropchance = 0.4;
-
         this.isSlowed = false;
         this.slowDuration = 0;
         this.slowTimer = 0;
         this.baseSpeed = this.speed;
+
+        this.miniBoss = false;
 
         this.animations = [];
 
@@ -87,6 +87,8 @@ class Imp {
         //damaged
         this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 32, 288, 32, 32, 3, 0.2, false, false);
     
+        this.warning = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/warning.png"), 0, 0, 1024, 1024, 7.9, 0.1, false, true); //used for mini bosses
+
         //death animation
         this.death = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 32, 128, 32, 32, 6, 0.2, false, false);
     }
@@ -194,7 +196,7 @@ class Imp {
         this.y += directionY * moveSpeed;
 
         //COLLISIONS:
-        const separationDistance = 100; // Minimum distance between mobs
+        const separationDistance = 200; // Minimum distance between mobs
         const entities = this.game.entities;
         for (let i = 0; i < entities.length; i++) {
             let entity = entities[i];
@@ -281,8 +283,13 @@ class Imp {
     
         if (this.health <= 0) {
             let drop = Math.random();
-            if(drop < this.dropchance) {
-                this.game.addEntity(new Threecoin(this.game, (this.x + 28), (this.y + 55)));
+            if(drop < this.game.adventurer.dropChance) {
+                this.game.addEntity(new Onecoin(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
+                this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
+            }
+            if (this.miniBoss) {
+                this.game.addEntity(new Chest(this.game, (this.x + (this.bitSizeX * this.scale)/2) - 125, (this.y + (this.bitSizeY * this.scale)/2) - 125));
+                this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2) + 15, (this.y + (this.bitSizeY * this.scale)/2)));
             }
             this.dead = true;
             this.state = 3;
@@ -307,12 +314,21 @@ class Imp {
 
 
     draw(ctx) {
+        const shadowWidth = 40 * (this.scale / 2.8); 
+        const shadowHeight = 16 * (this.scale / 2.8);
+
+        const shadowX = (this.x + (24 * (this.scale / 2.8))) - this.game.camera.x;
+        const shadowY = (this.y + (78 * (this.scale / 2.8))) - this.game.camera.y;
+
+        if (this.miniBoss) {
+            this.warning.drawFrame(this.game.clockTick, ctx, shadowX + 3, shadowY - (24 * this.scale), 0.05);
+        }
+
+        ctx.drawImage(this.shadow, 0, 0, 64, 32, shadowX, shadowY, shadowWidth, shadowHeight);
+
+
         if (this.dead) {
             if (this.deathAnimationTimer > 0) {
-                ctx.drawImage(this.shadow, 0, 0, 64, 32, 
-                    (this.x + 17) - this.game.camera.x, 
-                    (this.y + 77) - this.game.camera.y, 
-                    40, 16);
                 this.death.drawFrame(
                     this.game.clockTick, 
                     ctx, 
@@ -322,15 +338,8 @@ class Imp {
                 );
             }
         } else if (this.isPlayingDamageAnimation) {
-            ctx.drawImage(this.shadow, 0, 0, 64, 32, (this.x + 23) - this.game.camera.x, (this.y + 78) - this.game.camera.y, 40, 16);            
             this.animations[3][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
         } else {
-            // Draw shadow
-            ctx.drawImage(this.shadow, 0, 0, 64, 32, 
-                (this.x + 23) - this.game.camera.x, 
-                (this.y + 78) - this.game.camera.y, 
-                40, 16);
-            
             // Draw Imp
             this.animations[this.state][this.facing].drawFrame(
                 this.game.clockTick, 

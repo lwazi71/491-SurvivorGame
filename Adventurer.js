@@ -10,7 +10,7 @@ class Adventurer { //every entity should have update and draw!
         this.x = this.x - offSet; 
         this.y = this.y - offSet;
         
-        this.speed = 330; //how fast the player moves
+        this.speed = 200; //how fast the player moves
 
 
         this.state = 0; //0 = idle, 1 = walking, 2 = run, 3 = jumping, 4 = attack1, 5 = attack2, 6 = attack3, 7 = roll, 8 = ladder, 9 = bow, 10 = damaged, 11 = magic
@@ -53,7 +53,7 @@ class Adventurer { //every entity should have update and draw!
         this.attackDuration = 0.56;  // Duration of attack animation
         this.attackTimer = 0;
         this.canAttack = true;
-        this.attackCooldown = 0.6;   //Time between attacks.
+        this.attackCooldown = 1.1;   //Time between attacks.
         this.attackCooldownTimer = 0;
         this.slashType = 0; //0 = default right slash animation, 1 = up animation
         this.slashDistance = 27; //Distance from character center to slash
@@ -103,6 +103,8 @@ class Adventurer { //every entity should have update and draw!
         this.bombCurrentAmnt = 5;
         this.bombCooldownRetrieve = 5; //will be the cooldown for when will get another bomb back in their inventory.
         this.bombCooldownRetrieveTimer = 0; //the timer that will time that retrieve cooldown above.
+        this.monkeyBomb = false; //monkey bomb upgrade
+        this.detectionRadius = 200;
 
 
         //LIGHTNING PROPERTIES:
@@ -138,11 +140,20 @@ class Adventurer { //every entity should have update and draw!
 
         this.coins = 0;
         this.level = 1;
-        this.experience = 50;
+        this.experience = 0;
         this.experienceToNextLvl = 100;
         this.upgrade = null;
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
 
+        //respawn
+        this.respawnAnimationTimer = 8 * 0.12;
+        this.respawning = false;
+        this.respawningUlt = false;
+        this.respawningDamage = 40;
+        this.respawningKnockback = 5000;
+        this.respawningScale = 6;
+
+        this.dropChance = 0.4; //0.4 chance of dropping something for the player
         this.pushbackVector = { x: 0, y: 0 };
         this.pushbackDecay = 0.9; // Determines how quickly the pushback force decays
 
@@ -275,6 +286,8 @@ class Adventurer { //every entity should have update and draw!
         //death animation
         this.deadAnim = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 0, 448, 32, 32, 8, 0.12, false, false); 
 
+        this.respawnAnim = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 0, 448, 32, 32, 8, 0.12, true, false); 
+
     };
 
     updateFacing(velocityDirection) {
@@ -314,8 +327,27 @@ class Adventurer { //every entity should have update and draw!
                 // Keep playing the death animation
                 return;
             } else {
-                // Remove zombie from world after the animation finishes
-                this.removeFromWorld = true;
+                this.deathAnimationTimer = 8 * 0.12; //reset the death animation
+                this.game.camera.triggerDeathScreen(); // Notify SceneManager to show death screen
+                this.deathPosition = { x: this.x, y: this.y }; // Store death position
+               // this.removeFromWorld = true;
+                return;
+            }
+        }
+
+        if (this.respawning) {
+            // Handle death animation
+            this.respawnAnimationTimer -= this.game.clockTick;
+    
+            if (this.respawnAnimationTimer > 0) {
+                // Keep playing the death animation
+                return;
+            } else {
+                this.respawningUlt = true;
+                this.magicAOE();
+                this.respawnAnimationTimer = 8 * 0.12; //reset animation
+                this.respawning = false;
+                this.state = 0;
                 return;
             }
         }
@@ -468,7 +500,7 @@ class Adventurer { //every entity should have update and draw!
 
         if (this.game.keys["1"]) {
             this.currentWeapon = 0;
-            this.speed = 330;
+            // this.speed = 330;
         } else if (this.game.keys["2"]) {
             this.currentWeapon = 1;
         }
@@ -609,6 +641,7 @@ class Adventurer { //every entity should have update and draw!
                 }
             }
             
+            //coin section
             if ((entity instanceof Onecoin) && this.BB.collide(entity.BB)) {
                 //Math.floor(Math.random() * (max - min + 1)) + min;
                 const coinAmnt = Math.floor(Math.random() * 2) + 1; //1 - 2 when picking up a coin that looks like just 1
@@ -618,7 +651,21 @@ class Adventurer { //every entity should have update and draw!
                 const coinAmnt = Math.floor(Math.random() * (5 - 3 + 1)) + 3; //3 - 5 when picking up a coin that looks like 3 coins
                 this.coins += coinAmnt;
                 entity.removeFromWorld = true;
-            }
+            } else if ((entity instanceof MultipleCoins) && this.BB.collide(entity.BB)) {
+                const coinAmnt = Math.floor(Math.random() * (50 - 20 + 1)) + 20; //20 - 50 when picking up mulitple coins
+                this.coins += coinAmnt;
+                entity.removeFromWorld = true;
+            } else if ((entity instanceof CoinPile) && this.BB.collide(entity.BB)) {
+                const coinAmnt = Math.floor(Math.random() * (120 - 51 + 1)) + 51; //51 - 120 when picking up mulitple coins
+                this.coins += coinAmnt;
+                entity.removeFromWorld = true;
+            } 
+
+            if ((entity instanceof Chest) && this.BB.collide(entity.BB)) {
+                //open screen.
+
+                entity.removeFromWorld = true;
+            } 
         });
 
         if (this.attackCooldown < this.attackDuration) {
@@ -846,15 +893,35 @@ class Adventurer { //every entity should have update and draw!
         const characterCenterX = this.x + (this.bitSize * this.scale) / 2;
         const characterCenterY = this.y + (this.bitSize * this.scale) / 2;
 
-        if (this.facing == 2) { //when character is looking up
-            this.facing = 0; 
-        } else if (this.facing == 3) {//when character is looking down
-            this.facing = 1; 
+        if (this.game.mouse != null) {
+            const mouseX = this.game.mouse.x + this.game.camera.x;
+            const mouseY = this.game.mouse.y + this.game.camera.y;
+
+            const dx = mouseX - characterCenterX;
+            const dy = mouseY - characterCenterY;
+            const angle = Math.atan2(dy, dx);
+                
+            //Convert angle to degrees for easier checks
+            const degrees = angle * (180 / Math.PI);
+                
+            if (degrees >= -90 && degrees < 90) { //right side of charcter
+                this.facing = 0; 
+            } else {
+                this.facing = 1; //left side of character
+            }
         }
 
-        this.game.addEntity(new CircleAOE(this.game, characterCenterX, characterCenterY , "./Sprites/Magic/magic.png", 
-            null, this.magicScale, this.magicDamage, this.magicKnockback, this, true, 
-            0, 320, 64, 64, 9, 0.08, false, true))
+        if (this.respawningUlt) {
+            this.game.addEntity(new CircleAOE(this.game, characterCenterX, characterCenterY , "./Sprites/Magic/magic.png", 
+                null, this.respawningScale, this.respawningDamage, this.respawningKnockback, this, true, 
+                0, 64, 64, 64, 7, 0.08, false, true));
+        } else {
+            this.game.addEntity(new CircleAOE(this.game, characterCenterX, characterCenterY , "./Sprites/Magic/magic.png", 
+                null, this.magicScale, this.magicDamage, this.magicKnockback, this, true, 
+                0, 320, 64, 64, 9, 0.08, false, true));
+        }
+
+        this.respawningUlt = false;
 
         //change animation state to 11
         this.state = 11;
@@ -1022,6 +1089,34 @@ class Adventurer { //every entity should have update and draw!
         }
     }
     
+
+    respawnHere() {
+        console.log("testing here");
+        this.invincible = true;
+        this.coins -= 350; // Deduct respawn cost
+        this.health = this.maxhealth; // Reset health
+        this.dead = false;
+        this.game.camera.respawn();
+        this.game.pause = false;
+        this.respawning = true;
+        
+        // Reset position to where player died
+        this.x = this.deathPosition.x;
+        this.y = this.deathPosition.y;
+        
+        // Reset any other necessary stats
+        this.facing = this.lastMove;
+                
+        // Reset cooldowns
+        this.rollCooldownTimer = 0;
+        this.attackCooldownTimer = 0;
+        this.shootCooldownTimer = 0;
+        this.magicCooldownTimer = 0;
+        this.bombCooldownTimer = 0;
+        this.lightningCooldownTimer = 0;
+        this.boltCooldownTimer = 0;
+    }
+
     levelUp() {
         if (this.experience >= this.experienceToNextLvl) {
             // this.health = this.maxhealth;
@@ -1056,6 +1151,10 @@ class Adventurer { //every entity should have update and draw!
         if (this.dead) {
             if (this.deathAnimationTimer > 0) {
                 this.deadAnim.drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
+            }
+        } else if (this.respawning) {
+            if (this.respawnAnimationTimer > 0) {
+                this.respawnAnim.drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
             }
         } else if (this.isPlayingDamageAnimation) {
             this.animations[10][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale); 

@@ -199,7 +199,6 @@ class Boss1 { //goblin king
 
     update() {  
         this.goblinsAlive = this.game.entities.filter(entity => entity instanceof Goblin || entity instanceof GoblinMech && !entity.dead).length;
-        console.log(this.currentHealth);
         //in case the healing goes above max health
         if (this.currentHealth >= this.maxHealth) {
             this.currentHealth = this.maxHealth;
@@ -605,6 +604,8 @@ class Boss1 { //goblin king
     
         if (this.currentHealth <= 0) {
             this.game.addEntity(new CoinPile(this.game, (this.x + 28), (this.y + 55)));
+            this.game.addEntity(new Chest(this.game, (this.x + (this.bitSizeX * this.scale)/2) - 125, (this.y + (this.bitSizeY * this.scale)/2)));
+
             this.dead = true;
             this.state = 9;
             const entities = this.game.entities;

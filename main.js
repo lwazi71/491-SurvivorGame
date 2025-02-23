@@ -47,9 +47,9 @@ ASSET_MANAGER.queueDownload("./Sprites/Mages/FoxMage-Flipped.png")
 ASSET_MANAGER.queueDownload("./Sprites/Mages/Imp.png")
 ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_attack.png")
 ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_walk.png");
-ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_attack.png");
 ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_damage.png");
 ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_idle-flipped.png");
+ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_idle.png");
 ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_walk-flipped.png");
 ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_attack-flipped.png");
 ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_damage-flipped.png");
@@ -108,6 +108,12 @@ ASSET_MANAGER.queueDownload("./Sprites/Objects/ExperienceOrb.png");
 ASSET_MANAGER.queueDownload("./Sprites/HudIcons/weapons.png");
 ASSET_MANAGER.queueDownload("./Sprites/HudIcons/AdventurerSpriteHud.png");
 ASSET_MANAGER.queueDownload("./Sprites/HudIcons/AdventurerSpriteHud2.png");
+ASSET_MANAGER.queueDownload("./Sprites/Objects/spotlight.png");
+ASSET_MANAGER.queueDownload("./Sprites/Objects/brokenheart.png");
+ASSET_MANAGER.queueDownload("./Sprites/Objects/glow.png");
+ASSET_MANAGER.queueDownload("./Sprites/Objects/warning.png");
+
+
 
 
 

@@ -36,8 +36,6 @@ class Slime {
         this.pushbackVector = { x: 0, y: 0 };
         this.pushbackDecay = 0.9; // Determines how quickly the pushback force decays
 
-        this.dropchance = 0.4; //40% chance of dropping something when dying
-
 
         
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
@@ -51,6 +49,8 @@ class Slime {
         this.slowDuration = 0;
         this.slowTimer = 0;
         this.baseSpeed = this.speed;
+
+        this.miniBoss = false;
 
 
         this.updateBB();
@@ -83,6 +83,8 @@ class Slime {
 
         //Damaged, to the right
         this.animations[2] =  new Animator(ASSET_MANAGER.getAsset("./Sprites/Slime/slime.png"), 0, 17, 26, 17, 1, 0.2, false, false); 
+
+        this.warning = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/warning.png"), 0, 0, 1024, 1024, 7.9, 0.1, false, true); //used for mini bosses
 
         //death animation
         this.deadAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Slime/slime.png"), 0, 33, 26, 17, 4, 0.15, false, false);
@@ -206,7 +208,7 @@ class Slime {
 
         //collision
         const entities = this.game.entities;
-        const separationDistance = 600; // Minimum distance between enemy
+        const separationDistance = 200; // Minimum distance between enemy
 
         for (let i = 0; i < entities.length; i++) {
             let entity = entities[i];
@@ -291,8 +293,13 @@ class Slime {
     
         if (this.health <= 0) {
             let drop = Math.random();
-            if(drop < this.dropchance) {
-                this.game.addEntity(new Threecoin(this.game, (this.x + 28), (this.y + 55)));
+            if(drop < this.game.adventurer.dropChance) {
+                this.game.addEntity(new Threecoin(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
+                this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
+            }
+            if (this.miniBoss) {
+                this.game.addEntity(new Chest(this.game, (this.x + (this.bitSizeX * this.scale)/2) - 125, (this.y + (this.bitSizeY * this.scale)/2) - 125));
+                this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2) + 15, (this.y + (this.bitSizeY * this.scale)/2)));
             }
             this.dead = true;
             this.state = 2;
@@ -320,6 +327,10 @@ class Slime {
        // Adjust shadow position to stay centered under the zombie
        const shadowX = (this.x + (38 * (this.scale / 5))) - this.game.camera.x;
        const shadowY = (this.y + (75 * (this.scale / 5))) - this.game.camera.y;
+
+        if (this.miniBoss) {
+            this.warning.drawFrame(this.game.clockTick, ctx, shadowX + 34, shadowY - (16 * this.scale), 0.05);
+        }   
 
        ctx.drawImage(this.shadow, 0, 0, 64, 32, shadowX, shadowY, shadowWidth, shadowHeight);
 

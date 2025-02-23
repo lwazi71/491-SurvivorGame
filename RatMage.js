@@ -19,7 +19,7 @@ class RatMage {
         this.castDuration = 5.9 * 0.1; 
         this.castTimer = 0;
         this.damage = 33;
-        this.collisionDamage = 2;
+        this.collisionDamage = 7;
         
         this.health = 25;
         this.dead = false;
@@ -56,6 +56,8 @@ class RatMage {
         this.slowDuration = 0;
         this.slowTimer = 0;
         this.baseSpeed = this.speed;
+
+        this.miniBoss = false;
 
         this.animations = [];
 
@@ -96,6 +98,8 @@ class RatMage {
         //damaged
         this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage-Flipped.png"), 132, 128, 32, 32, 2.9, 0.2, true, false);
     
+        this.warning = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/warning.png"), 0, 0, 1024, 1024, 7.9, 0.1, false, true); //used for mini bosses
+
         //death animation
         this.death = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage.png"), 0, 160, 32, 32, 4, 0.1, false, false);
     }
@@ -214,7 +218,7 @@ class RatMage {
         }
 
         //COLLISIONS:
-        const separationDistance = 100; // Minimum distance between mobs
+        const separationDistance = 150; // Minimum distance between mobs
         const entities = this.game.entities;
         for (let i = 0; i < entities.length; i++) {
             let entity = entities[i];
@@ -275,8 +279,13 @@ class RatMage {
     
         if (this.health <= 0) {
             let drop = Math.random();
-            if(drop < this.dropchance) {
-                this.game.addEntity(new Threecoin(this.game, (this.x + 28), (this.y + 55)));
+            if(drop < this.game.adventurer.dropChance) {
+                this.game.addEntity(new Threecoin(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
+                this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
+            }
+            if (this.miniBoss) {
+                this.game.addEntity(new Chest(this.game, (this.x + (this.bitSizeX * this.scale)/2) - 125, (this.y + (this.bitSizeY * this.scale)/2) - 125));
+                this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2) + 15, (this.y + (this.bitSizeY * this.scale)/2)));
             }
             this.dead = true;
             this.state = 3;
@@ -306,6 +315,10 @@ class RatMage {
 
         const shadowX = (this.x + (27 * (this.scale / 2.8))) - this.game.camera.x;
         const shadowY = (this.y + (77 * (this.scale / 2.8))) - this.game.camera.y;
+
+        if (this.miniBoss) {
+            this.warning.drawFrame(this.game.clockTick, ctx, shadowX, shadowY - (28 * this.scale), 0.05);
+        }
 
         ctx.drawImage(this.shadow, 0, 0, 64, 32, shadowX, shadowY, shadowWidth, shadowHeight);
 

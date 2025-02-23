@@ -87,6 +87,9 @@ class Minotaur {
         //Damaged
         this.animations[4][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 96, 1728, 96, 96, 2, 0.15, false, false);
 
+        this.warning = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/warning.png"), 0, 0, 1024, 1024, 7.9, 0.1, false, true); //used for mini bosses
+
+
         this.deadAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 864, 96, 96, 6, 0.1, false, false);
     }
 
@@ -286,10 +289,10 @@ class Minotaur {
         }
     
         if (this.health <= 0) {
-            let drop = Math.random();
-            if(drop < this.dropchance) {
-                this.game.addEntity(new Threecoin(this.game, (this.x + 28), (this.y + 55)));
-            }
+            this.game.addEntity(new MultipleCoins(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
+            this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
+            this.game.addEntity(new Chest(this.game, (this.x + (this.bitSizeX * this.scale)/2) - 125, (this.y + (this.bitSizeY * this.scale)/2) - 125));
+
             this.dead = true;
             this.state = 4;
         } else {
@@ -310,6 +313,8 @@ class Minotaur {
         const shadowHeight = 32 * (this.scale / 2.8);
         const shadowX = (this.x + (84 * (this.scale / 2.8))) - this.game.camera.x;
         const shadowY = (this.y + (150* (this.scale / 2.8))) - this.game.camera.y;
+
+        this.warning.drawFrame(this.game.clockTick, ctx, shadowX + 25, shadowY - (48 * this.scale), 0.05);
         
         ctx.drawImage(this.shadow, 0, 0, 64, 32, shadowX, shadowY, shadowWidth, shadowHeight);
         
