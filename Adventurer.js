@@ -140,7 +140,7 @@ class Adventurer { //every entity should have update and draw!
 
         this.critChance = 0.05; //5%
         this.critDamage = 1.5; //150%
-        this.coins = 100;
+        this.coins = 0;
         this.level = 1;
         this.experience = 0;
         this.experienceToNextLvl = 100;
@@ -330,6 +330,7 @@ class Adventurer { //every entity should have update and draw!
                 return;
             } else {
                 this.deathAnimationTimer = 8 * 0.12; //reset the death animation
+                this.game.toggleDeathPause();
                 this.game.camera.triggerDeathScreen(); // Notify SceneManager to show death screen
                 this.deathPosition = { x: this.x, y: this.y }; // Store death position
                // this.removeFromWorld = true;
@@ -1109,6 +1110,7 @@ class Adventurer { //every entity should have update and draw!
 
     respawnHere() {
         console.log("testing here");
+        this.game.toggleDeathPause()
         this.invincible = true;
         this.coins -= 350; // Deduct respawn cost
         this.health = this.maxhealth; // Reset health

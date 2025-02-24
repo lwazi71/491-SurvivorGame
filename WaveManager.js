@@ -111,6 +111,17 @@ class WaveManager {
             ];
         } else if (this.game.currMap == 2) {
             //set spawn pattern for map 2 here
+            this.spawnPatterns = [
+                {
+                    startTime: 0, //when they'll start spawning
+                    interval: 0, // Spawn every 3 seconds
+                    count: 1,
+                    pool: "minibosses",
+                  //  enemy_type: "miniboss_zombie", // Always spawn zombies
+                    oneTime: false //If we want to spawn the enemy one time. If this is true, it won't worry about the interval and just spawn at the start time
+
+                }
+            ];
         } else if (this.game.currMap == 3) {
             //set spawn pattern for map 3 here
         } else {
@@ -425,6 +436,7 @@ class WaveManager {
     spawnMiniBossMelee(enemy) { //should pass in enemy object with coordinates. EX: spawnMiniBossMelee(new Zombie(game, x, y))
         if (enemy instanceof Zombie || enemy instanceof Crow || enemy instanceof BlueGhoul || enemy instanceof FreakyGhoul || enemy instanceof Ghost || enemy instanceof Goblin) {
             enemy.scale *= 1.4;
+            enemy.maxHealth *= 3;
             enemy.health *= 3;
             enemy.speed *= 1.4;
             enemy.attackPower = Math.floor(enemy.attackPower * 1.2);
@@ -440,6 +452,7 @@ class WaveManager {
     spawnMiniBossCharge(enemy) {
         if (enemy instanceof Slime || enemy instanceof HellSpawn || enemy instanceof Boar) {
             enemy.scale *= 1.4; 
+            enemy.maxHealth *= 3;
             enemy.health *= 3;
             enemy.speed *= 1.4;
             enemy.chargeSpeed *= 1.2;
@@ -457,6 +470,7 @@ class WaveManager {
     spawnMiniBossRange(enemy) {
         if (enemy instanceof BanditNecromancer || enemy instanceof Necromancer || enemy instanceof Imp || enemy instanceof FoxMage) {
             enemy.scale *= 1.3;
+            enemy.maxHealth *= 3;
             enemy.health *= 3;
             enemy.speed *= 1.4;
             enemy.damage = Math.floor(enemy.damage * 1.7);
@@ -473,6 +487,7 @@ class WaveManager {
     spawnMiniBossRangeAOE(enemy) {
         if (enemy instanceof RatMage || enemy instanceof Wizard) {
             enemy.scale *= 1.3;
+            enemy.maxHealth *= 3;
             enemy.health *= 3;
             enemy.speed *= 1.7;
             enemy.damage = Math.floor(enemy.damage * 1.7);

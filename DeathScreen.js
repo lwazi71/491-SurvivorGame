@@ -1,6 +1,7 @@
 class DeathScreen {
     constructor(game) {
         this.game = game;
+        this.game.deathScreen = this;
         this.visible = false; // Start hidden
         this.entityOrder = 500; //Put it over everything everything
         this.spotlight = ASSET_MANAGER.getAsset("./Sprites/Objects/spotlight.png");  //Spotlight over dead player

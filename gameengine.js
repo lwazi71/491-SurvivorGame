@@ -21,6 +21,7 @@ class GameEngine {
         this.pause = false;
         this.upgradePause = false;
         this.shopPause = false;
+        this.deathPause = false;
 
         this.currMap = 1;
         
@@ -252,7 +253,7 @@ class GameEngine {
         if (!this.pause) {
             this.clockTick = this.timer.tick();
             this.pauseTick = this.timer.pauseTick();
-            if (!this.upgradePause && !this.shopPause) { //Default loop
+            if (!this.upgradePause && !this.shopPause && !this.deathPause) { //Default loop
                 this.update();
                 this.draw();
                 this.timer.isPaused = false;
@@ -269,12 +270,22 @@ class GameEngine {
                 this.timer.isPaused = true;
                 this.timer.enablePauseTick = true;
                 this.disableMouseInputs();
+            } else if (this.deathPause) {
+                this.deathScreen.update();
+                this.deathScreen.draw(this.ctx);
+                this.timer.isPaused = true;
+                this.timer.enablePauseTick = true;
+                this.disableMouseInputs();
             }
         }
     };
 
     toggleUpgradePause() {
         this.upgradePause = !this.upgradePause;
+    }
+
+    toggleDeathPause() {
+        this.deathPause = !this.deathPause;
     }
 
     togglePause() {

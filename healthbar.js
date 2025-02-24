@@ -181,6 +181,7 @@ class DamageNumbers {
         if (this.damageTimer <= 0) this.removeFromWorld = true;
     }
     draw(ctx) {
+        ctx.save();
         if (this.damageTimer == this.damagerTime) {
             console.log("random");
             let minX = -10;
@@ -223,5 +224,6 @@ class DamageNumbers {
             )
             
         }
+        ctx.restore();
     }
 }
