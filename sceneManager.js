@@ -172,8 +172,10 @@ class SceneManager {
         // Draw UI text
         ctx.font = '20px Arial';
         ctx.fillStyle = 'white';
-        this.Hud.update();
-        this.Hud.draw(ctx);
+        if (!this.game.adventurer.dead) {
+            this.Hud.update();
+            this.Hud.draw(ctx);
+        }
         if(this.enableShop) {
             this.game.shopPause = true;
             this.enableShop = false;

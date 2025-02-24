@@ -24,7 +24,7 @@ class Adventurer { //every entity should have update and draw!
         this.invincible = false;
         this.velocity = {x: 0, y: 0};
         this.lastMove = 0;
-        this.health = 95; //default max health of the player
+        this.health = 100; //default max health of the player
         this.maxhealth = 100;
 
         //player getting damaged
