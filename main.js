@@ -47,9 +47,9 @@ ASSET_MANAGER.queueDownload("./Sprites/Mages/FoxMage-Flipped.png")
 ASSET_MANAGER.queueDownload("./Sprites/Mages/Imp.png")
 ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_attack.png")
 ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_walk.png");
-ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_attack.png");
 ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_damage.png");
 ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_idle-flipped.png");
+ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_idle.png");
 ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_walk-flipped.png");
 ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_attack-flipped.png");
 ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_damage-flipped.png");
@@ -82,6 +82,7 @@ ASSET_MANAGER.queueDownload("./Sprites/Goblin/Hurt-flipped.png");
 ASSET_MANAGER.queueDownload("./Sprites/Goblin/Death.png");
 ASSET_MANAGER.queueDownload("./Sprites/Boss/GoblinKing.png");
 ASSET_MANAGER.queueDownload("./Sprites/Boss/GoblinKing-flipped.png");
+ASSET_MANAGER.queueDownload("./Sprites/Boss/CoinBag.png");
 
 
 
@@ -94,6 +95,7 @@ ASSET_MANAGER.queueDownload("./Sprites/Magic/GreenProjectile.png");
 ASSET_MANAGER.queueDownload("./Sprites/Magic/FireProjectile.png");
 ASSET_MANAGER.queueDownload("./Sprites/Explosion/explosion.png")
 ASSET_MANAGER.queueDownload("./Sprites/Explosion/explosion2.png")
+ASSET_MANAGER.queueDownload("./Sprites/Explosion/explosion3.png")
 ASSET_MANAGER.queueDownload("./Sprites/Magic/Lightning.png");
 ASSET_MANAGER.queueDownload("./Sprites/Magic/Dark-Bolt.png");
 
@@ -103,9 +105,16 @@ ASSET_MANAGER.queueDownload("./Sprites/Magic/Dark-Bolt.png");
 ASSET_MANAGER.queueDownload("./Sprites/Objects/collectables.png");
 
 ASSET_MANAGER.queueDownload("./Sprites/Objects/ExperienceOrb.png");
+ASSET_MANAGER.queueDownload("./Sprites/HudIcons/Boss1Hud.png");
 ASSET_MANAGER.queueDownload("./Sprites/HudIcons/weapons.png");
 ASSET_MANAGER.queueDownload("./Sprites/HudIcons/AdventurerSpriteHud.png");
 ASSET_MANAGER.queueDownload("./Sprites/HudIcons/AdventurerSpriteHud2.png");
+ASSET_MANAGER.queueDownload("./Sprites/Objects/spotlight.png");
+ASSET_MANAGER.queueDownload("./Sprites/Objects/brokenheart.png");
+ASSET_MANAGER.queueDownload("./Sprites/Objects/glow.png");
+ASSET_MANAGER.queueDownload("./Sprites/Objects/warning.png");
+
+
 
 
 
@@ -125,11 +134,12 @@ ASSET_MANAGER.downloadAll(() => {
 	const canvas = document.getElementById("gameWorld");
 	const ctx = canvas.getContext("2d");
 	ctx.imageSmoothingEnabled = false;
-
-	
+	PARAMS.CHEATS = false;
+	document.getElementById("btn").addEventListener("click", function() {
+		PARAMS.CHEATS = true;
+	});
 	PARAMS.CANVAS_WIDTH = canvas.width;
 	PARAMS.CANVAS_HEIGHT = canvas.height;
-
 	
 	// gameEngine.addEntity(new Adventurer(gameEngine)); 
 	// gameEngine.addEntity(new Barrel(gameEngine, 40, 40, false));
@@ -137,7 +147,6 @@ ASSET_MANAGER.downloadAll(() => {
 	//new SceneManager(gameEngine);
 
 	gameEngine.init(ctx);
-
 	new SceneManager(gameEngine);
 
 	gameEngine.start();

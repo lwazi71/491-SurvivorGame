@@ -54,9 +54,7 @@ class CircleAOE { //this class will be for the sword slash entity. This will dam
        // console.log((this.spriteWidth * this.scale)/2);
         this.attackTimer -= this.game.clockTick;
 
-        if (this.person instanceof Lightning) { //if we're dealing with lightning dont center it. Do nothing
-
-        } else if (this.person) {
+        if (this.person instanceof Adventurer) { //magic ultimate
             //Get the character's center position. We have to update the character center when they're moving
             const characterCenterX = this.person.x + (this.person.bitSize * this.person.scale) / 2;
             const characterCenterY = this.person.y + (this.person.bitSize * this.person.scale) / 2;
@@ -83,8 +81,8 @@ class CircleAOE { //this class will be for the sword slash entity. This will dam
                 if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul || entity instanceof FreakyGhoul || entity instanceof HellSpawn 
                         || entity instanceof BanditNecromancer || entity instanceof Necromancer || entity instanceof RatMage || entity instanceof FoxMage || entity instanceof Imp
                         || entity instanceof Crow || entity instanceof Minotaur || entity instanceof GoblinMech || entity instanceof Cyclops || entity instanceof Slime 
-                        || entity instanceof Boar || entity instanceof Wizard || entity instanceof Goblin) 
-                    && !entity.dead) {
+                        || entity instanceof Boar || entity instanceof Wizard || entity instanceof Goblin || entity instanceof Boss1) 
+                    && !entity.dead && !entity.invincible) {
                     // Only apply damage if we haven't hit this mob yet
                     if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
                         // Add the zombie to our hit set
@@ -105,8 +103,8 @@ class CircleAOE { //this class will be for the sword slash entity. This will dam
                         entity.takeDamage(this.attackDamage);
                     }
                 }
-
-                if ((this.person instanceof Lightning && this.person.lightningOption == 0) && (entity instanceof Lightning && entity.lightningOption == 1)) {
+                //COMBO with lightning and dark-bolt abilities.
+                if ((this.person instanceof Lightning && this.person.lightningOption == 0) && (entity instanceof Lightning && entity.lightningOption == 1) && this.game.adventurer.lightningDarkBoltCombo) {
                     if (this.BC.collidesWithCircle(entity.circle.BC) && !this.hitEntities.has(entity)) {
                         this.hitEntities.add(entity);
                        // entity.removeFromWorld = true;

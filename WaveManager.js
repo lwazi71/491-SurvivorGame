@@ -1,15 +1,383 @@
 class WaveManager {
     constructor(game) {
         this.game = game;
-        this.currentWave = 0;
-        this.zombiesInWave = 0;
-        this.zombiesAlive = 0;
-        this.waveInProgress = false;
+        this.gameTime = 0; // Total time elapsed in seconds
+        this.spawnBuffer = 500;
+        this.bossSpawned = false;
+        this.bossActive = false;
+        this.maxEnemies =  700; //set to 500 so game doesnt start to lag or become too difficult
+         // Boss fight timing
+        this.bossTime = 300; //300 seconds seconds or 5 minutes until boss comes
+        this.mapCompleted = false; //will be for if we beat the boss
+        
+        // Enemy pools that unlock at different times
+        this.enemyPools = {
+            melee: {
+                unlockTime: 0,
+                enemies: [
+                    { type: "zombie", weight: 70 },
+                    { type: "goblin", weight: 25 },
+                    { type: "ghost", weight: 25 },
+                    { type: "blueghoul", weight: 25 },
+                    { type: "freakyghoul", weight: 25 },
+                    { type: "crow", weight: 25 },
+                ]
+            },
+            ranged: {
+                // unlockTime: 0,
+                enemies: [
+                    { type: "banditnecromancer", weight: 40 },
+                    { type: "necromancer", weight: 30 },
+                    { type: "foxmage", weight: 30 },
+                    { type: "imp", weight: 30 }
+                ]
+            },
+            chargers: {
+                // unlockTime: 150, 
+                enemies: [
+                    {type: "hellspawn", weight: 33},
+                    {type: "slime", weight: 33},
+                    {type: "boar", weight: 34}
+                ]
+            },
+            rangedAOE: {
+                // unlockTime: 180,
+                enemies: [
+                    {type: "ratmage", weight: 50},
+                    {type: "wizard", weight: 50}
+                ]
+            },
+            minibosses: {
+                // unlockTime: 300, // Unlocks at 5 minutes
+                enemies: [
+                    { type: "miniboss_zombie", weight: 25 },
+                    { type: "miniboss_hellspawn", weight: 50 },
+                    { type: "goblinmech", weight: 25},
+                    { type: "cyclops", weight: 25},
+                    { type: "minotaur", weight: 25},
+                    { type: "miniboss_ghost", weight: 25},
+                    { type: "miniboss_blueghoul", weight: 25},
+                    { type: "miniboss_freakyghoul", weight: 25},
+                    { type: "miniboss_banditnecromancer", weight: 25},
+                    { type: "miniboss_necromancer", weight: 25},
+                    { type: "miniboss_ratmage", weight: 25},
+                    { type: "miniboss_foxmage", weight: 25},
+                    { type: "miniboss_imp", weight: 25},
+                    { type: "miniboss_crow", weight: 25},
+                    { type: "miniboss_slime", weight: 25},
+                    { type: "miniboss_boar", weight: 25},
+                    { type: "miniboss_wizard", weight: 25},
+                    { type: "miniboss_goblin", weight: 25}
+                ]
+            }
+        };
 
-        //might change it to where there'll be a timer for each wave. Timer increases each wave.
-        this.timeBetweenWaves = 10; //Time in seconds between waves
-        this.waveTimer = this.timeBetweenWaves; 
-        this.spawnBuffer = 100; //Extra distance from screen edge for spawning
+        //Spawn patterns that activate at different times
+        if (this.game.currMap == 1) {
+            this.spawnPatterns = [
+                {
+                    startTime: 0, //when they'll start spawning
+                    interval: 3, // Spawn every 3 seconds
+                    count: 1,
+                    pool: "melee",
+                    enemy_type: "zombie", // Always spawn zombies
+                    oneTime: false //If we want to spawn the enemy one time. If this is true, it won't worry about the interval and just spawn at the start time
+
+                },
+                // {
+                //     startTime: 30, //After 30 seconds, zombie enemies will spawn faster now
+                //     interval: 4, count: 2, pool: "melee", enemy_type: "zombie"},
+                {
+                    startTime: 30, //After 1 minute, melee enemies will spawn 2 times now
+                    interval: 7, count: 1, pool: "melee", enemy_type: "blueghoul", oneTime: false},
+                {
+                    startTime: 45, //1 minute. The interval makes it go to 1 minute
+                    interval: 15, count: 2, pool: "melee", enemy_type: "crow", oneTime: false},
+                {
+                    startTime: 60, //1:30 minutes
+                    interval: 30, count: 2, pool: "ranged", enemy_type: "banditnecromancer", oneTime: false},
+                {
+                    startTime: 70, //2 and 30 minutes
+                    interval: 50, count: 1, pool: "rangedAOE", enemy_type: "ratmage", oneTime: false},
+                {
+                    startTime: 120, // 3 minutes
+                    interval: 60, count: 1, pool: "minibosses", enemy_type: "cyclops", oneTime: false},
+                {
+                    startTime: 210, //3:30 minutes
+                    interval: 40, count: 1, pool: "rangedAOE", enemy_type: "ratmage", oneTime: false},
+                {
+                    startTime: 230, //4:00 minutes
+                    interval: 15, count: 1, pool: "charge", enemy_type: "slime", oneTime: false},
+            ];
+        } else if (this.game.currMap == 2) {
+            //set spawn pattern for map 2 here
+            this.spawnPatterns = [
+                {
+                    startTime: 0, //when they'll start spawning
+                    interval: 0, // Spawn every 3 seconds
+                    count: 1,
+                    pool: "minibosses",
+                  //  enemy_type: "miniboss_zombie", // Always spawn zombies
+                    oneTime: false //If we want to spawn the enemy one time. If this is true, it won't worry about the interval and just spawn at the start time
+
+                }
+            ];
+        } else if (this.game.currMap == 3) {
+            //set spawn pattern for map 3 here
+        } else {
+            //if there's no map right now, there will be no spawn pattern
+            this.spawnPatterns = [];
+        }
+
+        // Spawn timers for each pattern
+        this.spawnTimers = this.spawnPatterns.map(() => 0);
+        
+        // Stats scaling
+        this.statsMultiplier = {
+            health: 1,
+            speed: 1,
+            attackPower: 1
+        };
+    }
+
+    weightedRandomEnemy(pool) {
+        const enemies = this.enemyPools[pool].enemies;
+        const totalWeight = enemies.reduce((sum, enemy) => sum + enemy.weight, 0);
+        let random = Math.random() * totalWeight;
+        
+        for (const enemy of enemies) {
+            random -= enemy.weight;
+            if (random <= 0) return enemy.type;
+        }
+        return enemies[0].type; // Fallback
+    }
+
+    spawnEnemy(enemyType) {
+        const spawnPos = this.getValidSpawnPosition();
+        let enemy;
+        if (this.getCurrentEnemyCount() >= this.maxEnemies) {
+            return; // Don't spawn if we've reached the limit
+        }
+
+        switch(enemyType) {
+            case "zombie":
+                enemy = new Zombie(this.game, spawnPos.x, spawnPos.y);
+                break;
+            case "goblin":
+                enemy = new Goblin(this.game, spawnPos.x, spawnPos.y);
+                break;
+            case "ghost":
+                enemy = new Ghost(this.game, spawnPos.x, spawnPos.y);
+                break;
+            case "blueghoul":
+                enemy = new BlueGhoul(this.game, spawnPos.x, spawnPos.y);
+                break;
+            case "freakyghoul":
+                enemy = new FreakyGhoul(this.game, spawnPos.x, spawnPos.y);
+                break;
+            case "crow":
+                enemy =  new Crow(this.game, spawnPos.x, spawnPos.y);
+                break;
+            case "banditnecromancer":
+                enemy = new BanditNecromancer(this.game, spawnPos.x, spawnPos.y);
+                break;
+            case "necromancer":
+                enemy = new Necromancer(this.game, spawnPos.x, spawnPos.y);
+                break;
+            case "foxmage":
+                enemy = new FoxMage(this.game, spawnPos.x, spawnPos.y);
+                break;
+            case "imp":
+                enemy = new Imp(this.game, spawnPos.x, spawnPos.y);
+                break;
+            case "hellspawn":
+                enemy = new HellSpawn(this.game, spawnPos.x, spawnPos.y);
+                break;
+            case "slime":
+                enemy = new Slime(this.game, spawnPos.x, spawnPos.y);
+                break;
+            case "boar":
+                enemy = new Boar(this.game, spawnPos.x, spawnPos.y);
+                break;
+            case "ratmage":
+                enemy = new RatMage(this.game, spawnPos.x, spawnPos.y);
+                break;
+            case "wizard":
+                enemy = new Wizard(this.game, spawnPos.x, spawnPos.y);
+                break;
+            case "miniboss_zombie": //just zombie miniboss for now
+                enemy = new Zombie(this.game, spawnPos.x, spawnPos.y);
+                this.spawnMiniBossMelee(enemy);
+                break;
+            case "goblinmech": 
+                enemy = new GoblinMech(this.game, spawnPos.x, spawnPos.y);
+                break;
+            case "cyclops": 
+                enemy = new Cyclops(this.game, spawnPos.x, spawnPos.y);
+                break;
+            case "minotaur": 
+                enemy = new Minotaur(this.game, spawnPos.x, spawnPos.y);
+                break;
+            case "miniboss_hellspawn":
+                enemy = new HellSpawn(this.game, spawnPos.x, spawnPos.y);
+                this.spawnMiniBossCharge(enemy);
+                break;
+            case "miniboss_ghost":
+                enemy = new Ghost(this.game, spawnPos.x, spawnPos.y);
+                this.spawnMiniBossMelee(enemy);
+                break;
+            case "miniboss_blueghoul":
+                enemy = new BlueGhoul(this.game, spawnPos.x, spawnPos.y);
+                this.spawnMiniBossMelee(enemy);
+                break;
+            case "miniboss_freakyghoul":
+                enemy = new FreakyGhoul(this.game, spawnPos.x, spawnPos.y);
+                this.spawnMiniBossMelee(enemy);
+                break;
+            case "miniboss_banditnecromancer":
+                enemy = new BanditNecromancer(this.game, spawnPos.x, spawnPos.y);
+                this.spawnMiniBossRange(enemy);
+                break;
+            case "miniboss_necromancer":
+                enemy = new Necromancer(this.game, spawnPos.x, spawnPos.y);
+                this.spawnMiniBossRange(enemy);
+                break;
+            case "miniboss_ratmage":
+                enemy = new RatMage(this.game, spawnPos.x, spawnPos.y);
+                this.spawnMiniBossRangeAOE(enemy);
+                break;
+            case "miniboss_foxmage":
+                enemy = new FoxMage(this.game, spawnPos.x, spawnPos.y);
+                this.spawnMiniBossRange(enemy);
+                break;
+            case "miniboss_imp":
+                enemy = new Imp(this.game, spawnPos.x, spawnPos.y);
+                this.spawnMiniBossRange(enemy);
+                break;
+            case "miniboss_crow":
+                enemy = new Crow(this.game, spawnPos.x, spawnPos.y);
+                this.spawnMiniBossMelee(enemy);
+                break;
+            case "miniboss_slime":
+                enemy = new Slime(this.game, spawnPos.x, spawnPos.y);
+                this.spawnMiniBossCharge(enemy);
+                break;
+            case "miniboss_boar":
+                enemy = new Boar(this.game, spawnPos.x, spawnPos.y);
+                this.spawnMiniBossCharge(enemy);
+                break;
+            case "miniboss_goblin":
+                enemy = new Goblin(this.game, spawnPos.x, spawnPos.y);
+                this.spawnMiniBossMelee(enemy);
+                break;
+            case "miniboss_wizard":
+                enemy = new Wizard(this.game, spawnPos.x, spawnPos.y);
+                this.spawnMiniBossRangeAOE(enemy);
+                break;
+        }
+
+        // Apply current stat multipliers
+        if (enemy) { //and melee
+            console.log(this.statsMultiplier.health);
+            //if (enemy.type === "zombie" || enemy.type === ...)
+            enemy.health = Math.floor(enemy.health * this.statsMultiplier.health);
+            // enemy.speed *= this.statsMultiplier.speed;
+                // enemy.attackPower *= this.statsMultiplier.attackPower;
+            this.game.addEntity(enemy);
+        }
+    }
+
+    getCurrentEnemyCount() {
+        return this.game.entities.filter(entity => 
+            entity instanceof Zombie || 
+            entity instanceof Goblin ||
+            entity instanceof Ghost ||
+            entity instanceof BlueGhoul ||
+            entity instanceof FreakyGhoul ||
+            entity instanceof Crow ||
+            entity instanceof BanditNecromancer ||
+            entity instanceof Necromancer ||
+            entity instanceof FoxMage ||
+            entity instanceof Imp ||
+            entity instanceof HellSpawn ||
+            entity instanceof Slime ||
+            entity instanceof Boar ||
+            entity instanceof RatMage ||
+            entity instanceof Wizard ||
+            entity instanceof GoblinMech ||
+            entity instanceof Cyclops ||
+            entity instanceof Minotaur
+        ).length;
+    }
+
+    isBossDefeated() {
+        // Check if the boss is still alive
+        const bossDefeated = !this.game.entities.some(entity => entity instanceof Boss1 && !entity.dead);
+        
+        // If boss is defeated, mark game as completed
+        if (bossDefeated && this.bossActive) {
+            this.mapCompleted = true;
+        }
+        
+        return bossDefeated;    
+    }
+
+    update() {
+        this.gameTime += this.game.clockTick;
+
+        // If game is completed, don't spawn anything
+        if (this.mapCompleted) {
+            return;
+        }
+        // Check for boss fight
+        if (this.gameTime >= this.bossTime && !this.bossSpawned) {
+           // this.clearAllEnemies();
+            this.spawnBoss();
+            return; // Don't spawn any more regular enemies
+        }
+
+        // Check for boss defeat
+        if (this.bossActive && this.isBossDefeated()) {
+            this.bossActive = false;
+            return; // Exit early since game is now completed
+        }
+
+
+        // Don't spawn regular enemies during boss fight or after game completion
+        if (this.bossActive || this.mapCompleted) return;
+
+
+        // Regular enemy spawning logic
+       // this.statsMultiplier.health = 1 + (this.gameTime / 120) * 0.2; //increase enemy health by 20% every 2:00. This is so enemy still has fighting chance against player
+        // const twoMinuteIntervals = Math.floor(this.gameTime / 15); // Get number of completed 2-minute intervals
+        // this.statsMultiplier.health = 1 + (twoMinuteIntervals * 0.2); // 20% increase per interval
+        // this.statsMultiplier.speed = Math.round(1 + (this.gameTime / 600) * 0.2);
+        // this.statsMultiplier.attackPower = Math.round(1 + (this.gameTime / 400) * 0.2);
+
+        //spawn patterns:
+        this.spawnPatterns.forEach((pattern, index) => {
+            if (this.gameTime >= pattern.startTime) {
+                if (pattern.oneTime) {
+                    // Spawn once and remove from patterns
+                    for (let i = 0; i < pattern.count; i++) {
+                        const enemyType = pattern.enemy_type || this.weightedRandomEnemy(pattern.pool); //if there's an enemy listed, we'll used that enemy in the pattern, otherwise, we'll use whole pool
+                        this.spawnEnemy(enemyType);
+                    }
+                    //remove this pattern
+                    this.spawnPatterns.splice(index, 1);
+                } else {
+                    //regular spawn pattern logic
+                    this.spawnTimers[index] += this.game.clockTick;
+                    if (this.spawnTimers[index] >= pattern.interval) {
+                        for (let i = 0; i < pattern.count; i++) {
+                            const enemyType = pattern.enemy_type || this.weightedRandomEnemy(pattern.pool);
+                            this.spawnEnemy(enemyType);
+                        }
+                        this.spawnTimers[index] = 0;
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -65,115 +433,15 @@ class WaveManager {
         return { x, y };
     }
 
-    update() {
-        // Count alive zombies
-        this.zombiesAlive = this.game.entities.filter(entity => entity instanceof Zombie || entity instanceof HellSpawn && !entity.dead).length;
-
-        if (!this.waveInProgress) {
-            // Update wave timer
-            this.waveTimer -= this.game.clockTick;
-
-            if (this.waveTimer <= 0) {
-                this.startNewWave();
-            }
-        } else if (this.zombiesAlive === 0) {
-            // Current wave is finished
-            this.waveInProgress = false;
-            this.waveTimer = this.timeBetweenWaves;
-        }
-    }
-
-    startNewWave() {
-        this.currentWave++;
-        this.waveInProgress = true;
-        
-        // Calculate number of zombies for this wave
-        // Increase zombies each wave: Wave 1 = 5 zombies, Wave 2 = 7 zombies, etc.
-        this.monstersInWave = Math.floor(5 + (this.currentWave - 1) * 2);
-
-       // var enemy_contact = ["zombie", "hellspawn", "ghost", "blueghoul", "freakyghoul"];
-        var enemypool = ["zombie", "hellspawn"];
-        
-        // Spawn zombies with slight delay between each
-        let monsterSpawned = 0;
-        const spawnInterval = setInterval(() => {
-            let enemy = enemypool[randomInt(enemypool.length)];
-            if (monsterSpawned < this.monstersInWave) {
-                this.spawnZombie();
-                monsterSpawned++;
-            } else {
-                clearInterval(spawnInterval);
-            }
-        }, 500); // Spawn a zombie every 500ms
-    }
-
-    spawnZombie() {
-        const spawnPos = this.getValidSpawnPosition(); //make sure the zombie spawns out of the camera
-        
-        const zombie = new Zombie(
-            this.game, 
-            spawnPos.x, 
-            spawnPos.y
-        );
-        
-        // // Scale zombie stats based on wave number
-        // zombie.health = Math.floor(20 * (1 + this.currentWave * 0.2)); // Increase health by 20% each wave
-        // zombie.attackPower = Math.floor(10 * (1 + this.currentWave * 0.1)); // Increase attack by 10% each wave
-        // zombie.speed = 200 * (1 + this.currentWave * 0.05); // Increase speed by 5% each wave
-        
-        this.game.addEntity(zombie);
-    }
-
-    spawnMiniBossZombie() {
-        const spawnPos = this.getValidSpawnPosition(); //make sure the zombie spawns out of the camera
-        
-        const zombie = new Zombie(
-            this.game, 
-            spawnPos.x, 
-            spawnPos.y
-        );
-        
-        // Scale zombie stats based on wave number
-        zombie.health *= 2;
-        zombie.attackPower *= 2;
-        zombie.speed *= 1.3;
-        zombie.scale *= 1.5;
-
-        this.game.addEntity(zombie);
-    }
-
-    // spawnMiniBoss(enemy) { //we'll pass in a enemy object in here. Should be passed in with the random coordinates already.
-    //     // const spawnPos = this.getValidSpawnPosition(); //make sure the zombie spawns out of the camera
-        
-    //     enemy.health *= 2;
-    //     enemy.attackPower *= 2;
-    // }
-
-    
-    spawnHellspawn() {
-        const spawnPos = this.getValidSpawnPosition(); //make sure the zombie spawns out of the camera
-        
-        const hellspawn = new HellSpawn(
-            this.game, 
-            spawnPos.x, 
-            spawnPos.y
-        );
-        
-        // Scale zombie stats based on wave number
-        // zombie.health = Math.floor(20 * (1 + this.currentWave * 0.2)); // Increase health by 20% each wave
-        // zombie.attackPower = Math.floor(10 * (1 + this.currentWave * 0.1)); // Increase attack by 10% each wave
-        // zombie.speed = 200 * (1 + this.currentWave * 0.05); // Increase speed by 5% each wave
-        
-        this.game.addEntity(hellspawn);
-    }
-
     spawnMiniBossMelee(enemy) { //should pass in enemy object with coordinates. EX: spawnMiniBossMelee(new Zombie(game, x, y))
-        if (enemy instanceof Zombie || enemy instanceof Crow || enemy instanceof BlueGhoul || enemy instanceof FreakyGhoul || enemy instanceof Zombie || enemy instanceof Ghost || enemy instanceof Goblin) {
+        if (enemy instanceof Zombie || enemy instanceof Crow || enemy instanceof BlueGhoul || enemy instanceof FreakyGhoul || enemy instanceof Ghost || enemy instanceof Goblin) {
             enemy.scale *= 1.4;
-            enemy.health *= 2;
+            enemy.maxHealth *= 3;
+            enemy.health *= 3;
             enemy.speed *= 1.4;
-            enemy.attackPower *= 1.2;
+            enemy.attackPower = Math.floor(enemy.attackPower * 1.2);
             enemy.entityOrder = 40;
+            enemy.miniBoss = true;
         } else {
             console.log("this isn't a melee enemy");
             return;
@@ -181,14 +449,74 @@ class WaveManager {
         return enemy;
     }
 
+    spawnMiniBossCharge(enemy) {
+        if (enemy instanceof Slime || enemy instanceof HellSpawn || enemy instanceof Boar) {
+            enemy.scale *= 1.4; 
+            enemy.maxHealth *= 3;
+            enemy.health *= 3;
+            enemy.speed *= 1.4;
+            enemy.chargeSpeed *= 1.2;
+            enemy.chargingDamage = Math.floor(enemy.chargingDamage * 1.2);
+            enemy.attackPower = Math.floor(enemy.attackPower * 1.5);
+            enemy.entityOrder = 40;
+            enemy.miniBoss = true;
+        } else {
+            console.log("this isn't a charge enemy");
+            return;
+        }
+        return enemy;
+    }
+
+    spawnMiniBossRange(enemy) {
+        if (enemy instanceof BanditNecromancer || enemy instanceof Necromancer || enemy instanceof Imp || enemy instanceof FoxMage) {
+            enemy.scale *= 1.3;
+            enemy.maxHealth *= 3;
+            enemy.health *= 3;
+            enemy.speed *= 1.4;
+            enemy.damage = Math.floor(enemy.damage * 1.7);
+            enemy.collisionDamage *= 2;
+            enemy.entityOrder = 40;
+            enemy.miniBoss = true;
+        } else {
+            console.log("this isn't a range enemy");
+            return;
+        }
+        return enemy;
+    }
+
+    spawnMiniBossRangeAOE(enemy) {
+        if (enemy instanceof RatMage || enemy instanceof Wizard) {
+            enemy.scale *= 1.3;
+            enemy.maxHealth *= 3;
+            enemy.health *= 3;
+            enemy.speed *= 1.7;
+            enemy.damage = Math.floor(enemy.damage * 1.7);
+            enemy.collisionDamage *= 2;
+            enemy.entityOrder = 40;
+            enemy.miniBoss = true;
+        } else {
+            console.log("this isn't a range AOE enemy");
+            return;
+        }
+        return enemy;
+    }
+
+    spawnBoss() {
+        const spawnPos = this.getValidSpawnPosition();
+        if (this.game.currMap == 1 && this.getCurrentEnemyCount() <= 15) { //less than 20 because boss will have a move that will bring a lot of enemy in. Dont want to make it too hard
+            console.log("boss should now spawn");
+            const boss1 = new Boss1(this.game, spawnPos.x, spawnPos.y);
+            this.game.addEntity(boss1);
+            this.bossSpawned = true;
+            this.bossActive = true;
+        }
+    }
 
 
     draw(ctx) {
         // Draw wave information
     //     ctx.font = '20px Arial';
     //     ctx.fillStyle = 'white';
-        ctx.fillText(`Wave: ${this.currentWave}`, 10, 240);
-        ctx.fillText(`Monsters Remaining: ${this.zombiesAlive}`, 10, 270);
         
     //     if (!this.waveInProgress) {
     //         ctx.fillText(`Next wave in: ${Math.ceil(this.waveTimer)}`, 10, 90);

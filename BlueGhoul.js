@@ -11,6 +11,8 @@ class BlueGhoul {
         this.speed = 180;
 
         this.health = 20;
+        this.maxHealth = 20;
+        this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 22, -55));
         this.attackPower = 10;
         this.attackCooldown = 1.0; // Cooldown in seconds between attacks
         this.attackCooldownTimer = 0; // Tracks remaining cooldown time
@@ -28,14 +30,18 @@ class BlueGhoul {
 
 
 
-        this.dropchance = 0.4; //40% chance of dropping something when dying
-
         this.entityOrder = 10;
 
         this.isSlowed = false;
         this.slowDuration = 0;
         this.slowTimer = 0;
         this.baseSpeed = this.speed;
+
+        this.currentTarget = null;  // Can be either player or bomb (for monkey bomb upgrade)
+        this.targetType = "player"; // "player" or "bomb"
+        this.nearestBomb = null;
+
+        this.miniBoss = false;
 
         
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
@@ -96,6 +102,7 @@ class BlueGhoul {
         //Damaged, to the left
         this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghoul/Blue_Ghoul-Flipped.png"), 256, 214, 64, 64, 3, 0.2, true, false);
 
+        this.warning = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/warning.png"), 0, 0, 1024, 1024, 7.9, 0.1, false, true); //used for mini bosses
 
         this.deadAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghoul/Blue_Ghoul.png"), 64, 278, 64, 64, 5, 0.15, false, false);
     }
@@ -156,20 +163,39 @@ class BlueGhoul {
 
         const player = this.game.adventurer; // Reference to the player character
 
-        // Calculate the direction vector to the player
-        const dx = (player.x + (player.bitSize * player.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2); 
-        const dy = (player.y + (player.bitSize * player.scale)/2) - (this.y + (this.bitSizeY * this.scale)/2);
+        if (this.game.adventurer.monkeyBomb && !this.miniBoss) { //if the player has the upgrade
+            this.nearestBomb = this.findNearestBomb();
+        }
+        
+        //determine target (bomb or player)
+        let targetX, targetY;
+        if (this.nearestBomb) { //if it's null, the bomb either doesn't exist at the moment or player doesnt have upgrade
+            this.currentTarget = this.nearestBomb;
+            this.targetType = "bomb";
+            targetX = this.nearestBomb.x + (this.nearestBomb.bitSize * this.nearestBomb.scale)/2;
+            targetY = this.nearestBomb.y + (this.nearestBomb.bitSize * this.nearestBomb.scale)/2;
+        } else {
+            this.currentTarget = this.game.adventurer;
+            this.targetType = "player";
+            targetX = this.game.adventurer.x + (this.game.adventurer.bitSize * this.game.adventurer.scale)/2;
+            targetY = this.game.adventurer.y + (this.game.adventurer.bitSize * this.game.adventurer.scale)/2;
+        }
+
+        //Where on the player or near the player the zombie will be going towards
+        const dx = targetX - (this.x + (this.bitSizeX * this.scale)/2);
+        const dy = targetY - (this.y + (this.bitSizeY * this.scale)/2);
     
-        // Calculate the distance to the player
+        //Calculate the distance to the player.
         const distance = Math.sqrt(dx * dx + dy * dy);
-    
+        
+        //if the zombie isnt next to the player, then we should 
         if (distance > 0) {
-            // Normalize the direction vector
+            // Normalize the direction vector. Which way we're going towards. left, right, bottom right etc.
             const directionX = dx / distance;
             const directionY = dy / distance;
             
     
-            //Move the Ghoul toward the player
+            //Move the zombie toward the player
             const movement = this.speed * this.game.clockTick; //Adjust speed for frame rate
     
             this.x += directionX * movement;
@@ -180,13 +206,12 @@ class BlueGhoul {
                 this.state = 1; // Walking
                 this.facing = dx < 0 ? 1 : 0; // 1 = left, 0 = right
             } 
-
         }
 
         this.previousState = this.state;
     
         // // Check for collision with any attack slashes
-        const separationDistance = 600; // Minimum distance between zombie
+        const separationDistance = 200; // Minimum distance between zombie
         const entities = this.game.entities;
         for (let i = 0; i < entities.length; i++) {
             let entity = entities[i];
@@ -236,6 +261,19 @@ class BlueGhoul {
                     this.applySlowEffect(this.game.adventurer.slowCooldown); 
                 }
             }
+
+            if (entity instanceof Bomb && this.game.adventurer.monkeyBomb) {
+                if (this.BB.collide(entity.BB) && !entity.invincible) {
+                    if (this.attackCooldownTimer <= 0) {
+                        this.attackCooldownTimer = this.attackCooldown;
+                        console.log("Ghoul attacked the bomb!");
+                    }
+            
+                    // Set ghoul to attacking state
+                    this.state = 2; // Attacking state
+                    this.attackTimer = 1.0;
+                } 
+            }
         }
 
         // Play attack animation and reduce timer
@@ -251,6 +289,27 @@ class BlueGhoul {
 
         this.updateBB();
 
+    }
+
+    findNearestBomb() {
+        let nearestBomb = null;
+        let shortestDistance = this.game.adventurer.detectionRadius;
+
+        const entities = this.game.entities;
+        for (let entity of entities) {
+            if (entity instanceof Bomb) {
+                const dx = (entity.x + (entity.bitSize * entity.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2);
+                const dy = (entity.y + (entity.bitSize * entity.scale)/2) - (this.y + (this.bitSizeY * this.scale)/2);
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < shortestDistance) {
+                    shortestDistance = distance;
+                    nearestBomb = entity;
+                }
+            }
+        }
+
+        return nearestBomb;
     }
 
 
@@ -275,8 +334,13 @@ class BlueGhoul {
     
         if (this.health <= 0) {
             let drop = Math.random();
-            if(drop < this.dropchance) {
-                this.game.addEntity(new Threecoin(this.game, (this.x + 28), (this.y + 55)));
+            if(drop < this.game.adventurer.dropChance) {
+                this.game.addEntity(new Threecoin(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
+                this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
+            }
+            if (this.miniBoss) {
+                this.game.addEntity(new Chest(this.game, (this.x + (this.bitSizeX * this.scale)/2) - 125, (this.y + (this.bitSizeY * this.scale)/2) - 125));
+                this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2) + 15, (this.y + (this.bitSizeY * this.scale)/2)));
             }
             this.dead = true;
             this.state = 3;
@@ -308,6 +372,10 @@ class BlueGhoul {
         const shadowX = (this.x + (75 * (this.scale / 2.8))) - this.game.camera.x;
         const shadowY = (this.y + (105 * (this.scale / 2.8))) - this.game.camera.y;
 
+        if (this.miniBoss) {
+            this.warning.drawFrame(this.game.clockTick, ctx, shadowX + 6, shadowY - (42 * this.scale), 0.05);
+        }
+
         ctx.drawImage(this.shadow, 0, 0, 64, 32, shadowX, shadowY, shadowWidth, shadowHeight);
 
         if (this.dead) {
@@ -320,10 +388,10 @@ class BlueGhoul {
         } else {
             this.animations[this.state][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale); 
         }
-
+        if (PARAMS.DEBUG) {
         //used to indicate the path the ghoul is going towards. (line 132 and 133);
-          ctx.strokeStyle = 'Green';
-        ctx.strokeRect((this.x + (this.bitSizeX * this.scale)/2) - this.game.camera.x, (this.y + (this.bitSizeY * this.scale)/2) - this.game.camera.y, 20, 20);
+            ctx.strokeStyle = 'Green';
+            ctx.strokeRect((this.x + (this.bitSizeX * this.scale)/2) - this.game.camera.x, (this.y + (this.bitSizeY * this.scale)/2) - this.game.camera.y, 20, 20);
 
         // const player = this.game.adventurer;
         // ctx.strokeRect(player.x - this.game.camera.x, player.y - this.game.camera.y, 20, 20);
@@ -333,8 +401,9 @@ class BlueGhoul {
 
 
         
-        ctx.strokeStyle = 'Yellow';
-        ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+            ctx.strokeStyle = 'Yellow';
+            ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        }
 
     }
     

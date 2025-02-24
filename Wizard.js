@@ -22,6 +22,8 @@ class Wizard {
         this.collisionDamage = 14;
         
         this.health = 25;
+        this.maxHealth = 25;
+        this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 1.5, 12));
         this.dead = false;
         this.deathAnimationTimer = 4 * 0.1;
 
@@ -49,7 +51,6 @@ class Wizard {
         this.damageAnimationDuration = 1 * 0.2;
         this.isPlayingDamageAnimation = false;
 
-        this.dropchance = 0.4;
 
         this.isSlowed = false;
         this.slowDuration = 0;
@@ -57,6 +58,8 @@ class Wizard {
         this.baseSpeed = this.speed;
 
         this.entityOrder = 25;
+
+        this.miniBoss = false;
 
 
         this.animations = [];
@@ -98,6 +101,8 @@ class Wizard {
         //damaged
         this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Wizard/Hurt-flipped.png"), 384, 0, 128, 128, 1, 0.2, true, false);
     
+        this.warning = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/warning.png"), 0, 0, 1024, 1024, 7.9, 0.1, false, true); //used for mini bosses
+
         //death animation
         this.death = new Animator(ASSET_MANAGER.getAsset("./Sprites/Wizard/Dead.png"), 0, 0, 128, 128, 4, 0.1, false, false);
     }
@@ -217,7 +222,7 @@ class Wizard {
         }
 
         //COLLISIONS:
-        const separationDistance = 100; // Minimum distance between mobs
+        const separationDistance = 200; // Minimum distance between mobs
         const entities = this.game.entities;
         for (let i = 0; i < entities.length; i++) {
             let entity = entities[i];
@@ -277,8 +282,13 @@ class Wizard {
     
         if (this.health <= 0) {
             let drop = Math.random();
-            if(drop < this.dropchance) {
-                this.game.addEntity(new Threecoin(this.game, (this.x + 28), (this.y + 55)));
+            if(drop < this.game.adventurer.dropChance) {
+                this.game.addEntity(new Threecoin(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
+                this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
+            }
+            if (this.miniBoss) {
+                this.game.addEntity(new Chest(this.game, (this.x + (this.bitSizeX * this.scale)/2) - 125, (this.y + (this.bitSizeY * this.scale)/2) - 125));
+                this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2) + 15, (this.y + (this.bitSizeY * this.scale)/2)));
             }
             this.dead = true;
             this.state = 3;
@@ -310,6 +320,10 @@ class Wizard {
         const shadowX = (this.x + (84 * (this.scale / 2))) - this.game.camera.x;
         const shadowY = (this.y + (253 * (this.scale / 2))) - this.game.camera.y;
 
+        if (this.miniBoss) {
+            this.warning.drawFrame(this.game.clockTick, ctx, shadowX + 25, shadowY - (85 * this.scale), 0.05);
+        }   
+
         ctx.drawImage(this.shadow, 0, 0, 64, 32, shadowX, shadowY, shadowWidth, shadowHeight);
 
         if (this.dead) {
@@ -334,9 +348,10 @@ class Wizard {
                 this.scale
             );
         }
-        ctx.strokeStyle = 'Yellow';
-        ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
-    
+        if (PARAMS.DEBUG) {
+            ctx.strokeStyle = 'Yellow';
+            ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        }
         // Draw AOE Warning Circle
         const drawX = this.aoeTargetX - this.game.camera.x;
         const drawY = this.aoeTargetY - this.game.camera.y;
@@ -364,7 +379,9 @@ class Wizard {
         ctx.stroke();
         ctx.restore();
         //debug
-        ctx.strokeStyle = 'Green';
-        ctx.strokeRect((this.x + (this.bitSizeX * this.scale)/2 - 20) - this.game.camera.x, (this.y + (this.bitSizeY * this.scale)/2 + 50) - this.game.camera.y, 20, 20);
+        if (PARAMS.DEBUG) {
+            ctx.strokeStyle = 'Green';
+            ctx.strokeRect((this.x + (this.bitSizeX * this.scale)/2 - 20) - this.game.camera.x, (this.y + (this.bitSizeY * this.scale)/2 + 50) - this.game.camera.y, 20, 20);
+        }
     }
 }

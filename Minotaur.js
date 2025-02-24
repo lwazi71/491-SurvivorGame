@@ -35,6 +35,9 @@ class Minotaur {
         this.pushbackDecay = 0.9; // Determines how quickly the pushback force decays
 
         this.health = 70;
+        this.maxHealth = 70;
+        this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 5, -80));
+        this.dead = false;
 
         this.entityOrder = 40;
 
@@ -85,6 +88,9 @@ class Minotaur {
 
         //Damaged
         this.animations[4][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 96, 1728, 96, 96, 2, 0.15, false, false);
+
+        this.warning = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/warning.png"), 0, 0, 1024, 1024, 7.9, 0.1, false, true); //used for mini bosses
+
 
         this.deadAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 864, 96, 96, 6, 0.1, false, false);
     }
@@ -285,10 +291,10 @@ class Minotaur {
         }
     
         if (this.health <= 0) {
-            let drop = Math.random();
-            if(drop < this.dropchance) {
-                this.game.addEntity(new Threecoin(this.game, (this.x + 28), (this.y + 55)));
-            }
+            this.game.addEntity(new MultipleCoins(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
+            this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
+            this.game.addEntity(new Chest(this.game, (this.x + (this.bitSizeX * this.scale)/2) - 125, (this.y + (this.bitSizeY * this.scale)/2) - 125));
+
             this.dead = true;
             this.state = 4;
         } else {
@@ -309,6 +315,8 @@ class Minotaur {
         const shadowHeight = 32 * (this.scale / 2.8);
         const shadowX = (this.x + (84 * (this.scale / 2.8))) - this.game.camera.x;
         const shadowY = (this.y + (150* (this.scale / 2.8))) - this.game.camera.y;
+
+        this.warning.drawFrame(this.game.clockTick, ctx, shadowX + 25, shadowY - (48 * this.scale), 0.05);
         
         ctx.drawImage(this.shadow, 0, 0, 64, 32, shadowX, shadowY, shadowWidth, shadowHeight);
         
@@ -325,12 +333,13 @@ class Minotaur {
         }
         
         // Debug: Draw bounding box
-        if (this.BB) {
-            ctx.strokeStyle = 'Red';
-            ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        if (PARAMS.DEBUG) {
+            if (this.BB) {
+                ctx.strokeStyle = 'Red';
+                ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+            }
+            ctx.strokeStyle = 'Green';
+            ctx.strokeRect((this.BB.x + this.BB.width/2) - 15 - this.game.camera.x, (this.BB.y + this.BB.height/2) - 10 - this.game.camera.y, 20, 20);
         }
-        ctx.strokeStyle = 'Green';
-        ctx.strokeRect((this.BB.x + this.BB.width/2) - 15 - this.game.camera.x, (this.BB.y + this.BB.height/2) - 10 - this.game.camera.y, 20, 20);
-
     }
 }

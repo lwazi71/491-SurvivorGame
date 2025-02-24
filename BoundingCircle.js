@@ -32,10 +32,12 @@ class BoundingCircle {
 
 
         //debug
-        ctx.beginPath();
-        ctx.arc(this.x - camera.x, this.y - camera.y, this.radius, 0, 2 * Math.PI);
-        ctx.strokeStyle = "blue";
-        ctx.stroke();
+        if (PARAMS.DEBUG) {
+            ctx.beginPath();
+            ctx.arc(this.x - camera.x, this.y - camera.y, this.radius, 0, 2 * Math.PI);
+            ctx.strokeStyle = "blue";
+            ctx.stroke();
+        }
     }
 
 

@@ -9,6 +9,8 @@ class FreakyGhoul {
         this.speed = 180;
 
         this.health = 20;
+        this.maxHealth = 20;
+        this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 0, 7));
         this.attackPower = 10;
         this.attackCooldown = 1.0; // Cooldown in seconds between attacks
         this.attackCooldownTimer = 0; // Tracks remaining cooldown time
@@ -24,9 +26,6 @@ class FreakyGhoul {
         this.pushbackVector = { x: 0, y: 0 };
         this.pushbackDecay = 0.9; // Determines how quickly the pushback force decays
 
-
-        this.dropchance = 0.4; //40% chance of dropping something when dying
-
         this.entityOrder = 10;
 
         
@@ -38,6 +37,12 @@ class FreakyGhoul {
         this.slowDuration = 0;
         this.slowTimer = 0;
         this.baseSpeed = this.speed;
+
+        this.currentTarget = null;  // Can be either player or bomb (for monkey bomb upgrade)
+        this.targetType = "player"; // "player" or "bomb"
+        this.nearestBomb = null;
+
+        this.miniBoss = false;
 
 
         this.animations = []; //will be used to store animations
@@ -95,6 +100,7 @@ class FreakyGhoul {
         //Damaged, to the left
         this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul-Flipped.png"), 128, 96, 32, 32, 3, 0.2, true, false);
 
+        this.warning = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/warning.png"), 0, 0, 1024, 1024, 7.9, 0.1, false, true); //used for mini bosses
 
         this.deadAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul.png"), 32, 128, 32, 32, 5, 0.15, false, false);
     }
@@ -154,21 +160,39 @@ class FreakyGhoul {
         }
 
         const player = this.game.adventurer; // Reference to the player character
+        if (this.game.adventurer.monkeyBomb && !this.miniBoss) { //if the player has the upgrade
+            this.nearestBomb = this.findNearestBomb();
+        }
+        
+        //determine target (bomb or player)
+        let targetX, targetY;
+        if (this.nearestBomb) { //if it's null, the bomb either doesn't exist at the moment or player doesnt have upgrade
+            this.currentTarget = this.nearestBomb;
+            this.targetType = "bomb";
+            targetX = this.nearestBomb.x + (this.nearestBomb.bitSize * this.nearestBomb.scale)/2;
+            targetY = this.nearestBomb.y + (this.nearestBomb.bitSize * this.nearestBomb.scale)/2;
+        } else {
+            this.currentTarget = this.game.adventurer;
+            this.targetType = "player";
+            targetX = this.game.adventurer.x + (this.game.adventurer.bitSize * this.game.adventurer.scale)/2;
+            targetY = this.game.adventurer.y + (this.game.adventurer.bitSize * this.game.adventurer.scale)/2;
+        }
 
-        // Calculate the direction vector to the player
-        const dx = (player.x + (player.bitSize * player.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2); 
-        const dy = (player.y + (player.bitSize * player.scale)/2) - (this.y + (this.bitSizeY * this.scale)/2);
+        //Where on the player or near the player the zombie will be going towards
+        const dx = targetX - (this.x + (this.bitSizeX * this.scale)/2);
+        const dy = targetY - (this.y + (this.bitSizeY * this.scale)/2);
     
-        // Calculate the distance to the player
+        //Calculate the distance to the player.
         const distance = Math.sqrt(dx * dx + dy * dy);
-    
+        
+        //if the zombie isnt next to the player, then we should 
         if (distance > 0) {
-            // Normalize the direction vector
+            // Normalize the direction vector. Which way we're going towards. left, right, bottom right etc.
             const directionX = dx / distance;
             const directionY = dy / distance;
             
     
-            //Move the Ghoul toward the player
+            //Move the zombie toward the player
             const movement = this.speed * this.game.clockTick; //Adjust speed for frame rate
     
             this.x += directionX * movement;
@@ -179,13 +203,12 @@ class FreakyGhoul {
                 this.state = 1; // Walking
                 this.facing = dx < 0 ? 1 : 0; // 1 = left, 0 = right
             } 
-
         }
 
         this.previousState = this.state;
     
         // // Check for collision with any attack slashes
-        const separationDistance = 600; // Minimum distance between zombie
+        const separationDistance = 300; // Minimum distance between itself
         const entities = this.game.entities;
         for (let i = 0; i < entities.length; i++) {
             let entity = entities[i];
@@ -235,6 +258,20 @@ class FreakyGhoul {
                     this.applySlowEffect(this.game.adventurer.slowCooldown); 
                 }
             }
+
+            if (entity instanceof Bomb && this.game.adventurer.monkeyBomb) {
+                if (this.BB.collide(entity.BB) && !entity.invincible) {
+                    if (this.attackCooldownTimer <= 0) {
+                        // Attack the player and reset cooldown timer
+                        this.attackCooldownTimer = this.attackCooldown;
+                        console.log("Ghoul attacked the bomb!");
+                    }
+            
+                    // Set ghoul to attacking state
+                    this.state = 2; // Attacking state
+                    this.attackTimer = 1.0;
+                } 
+            }
         }
 
         // Play attack animation and reduce timer
@@ -250,6 +287,27 @@ class FreakyGhoul {
 
         this.updateBB();
 
+    }
+
+    findNearestBomb() {
+        let nearestBomb = null;
+        let shortestDistance = this.game.adventurer.detectionRadius;
+
+        const entities = this.game.entities;
+        for (let entity of entities) {
+            if (entity instanceof Bomb) {
+                const dx = (entity.x + (entity.bitSize * entity.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2);
+                const dy = (entity.y + (entity.bitSize * entity.scale)/2) - (this.y + (this.bitSizeY * this.scale)/2);
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < shortestDistance) {
+                    shortestDistance = distance;
+                    nearestBomb = entity;
+                }
+            }
+        }
+
+        return nearestBomb;
     }
 
 
@@ -274,6 +332,15 @@ class FreakyGhoul {
     
         if (this.health <= 0) {
             this.dead = true;
+            let drop = Math.random();
+            if(drop < this.game.adventurer.dropChance) {
+                this.game.addEntity(new Onecoin(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
+                this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
+            }
+            if (this.miniBoss) {
+                this.game.addEntity(new Chest(this.game, (this.x + (this.bitSizeX * this.scale)/2) - 125, (this.y + (this.bitSizeY * this.scale)/2) - 125));
+                this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2) + 15, (this.y + (this.bitSizeY * this.scale)/2)));
+            }
             this.state = 3;
         } else {
             this.state = 3;
@@ -302,6 +369,9 @@ class FreakyGhoul {
 
         const shadowX = (this.x + (23 * (this.scale / 2.8))) - this.game.camera.x;
         const shadowY = (this.y + (77 * (this.scale / 2.8))) - this.game.camera.y;
+        if (this.miniBoss) {
+            this.warning.drawFrame(this.game.clockTick, ctx, shadowX + 3, shadowY - (34 * this.scale), 0.05);
+        }
 
         ctx.drawImage(this.shadow, 0, 0, 64, 32, shadowX, shadowY, shadowWidth, shadowHeight);
 
@@ -327,9 +397,10 @@ class FreakyGhoul {
 
 
 
-        
-        // ctx.strokeStyle = 'Yellow';
-        // ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        if (PARAMS.DEBUG) {
+            ctx.strokeStyle = 'Yellow';
+            ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        }
 
     }
     

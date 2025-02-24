@@ -20,7 +20,11 @@ class GameEngine {
         this.leftClick = null;
         this.pause = false;
         this.upgradePause = false;
-        this.setDelay = 0;
+        this.shopPause = false;
+        this.deathPause = false;
+
+        this.currMap = 1;
+        
 
         // Options and the Details
         this.options = options || {
@@ -201,6 +205,12 @@ class GameEngine {
         let entitiesCount = this.entities.length;
         if (this.keys["b"]) {
             this.toggleUpgradePause();
+            this.click = {x: 0, y: 0};
+        }
+        //How to open shop
+        if (this.keys["u"]) {
+            this.toggleShopPause();
+            this.click = {x: 0, y: 0};
         }
         for (let i = 0; i < entitiesCount; i++) {
             let entity = this.entities[i];
@@ -221,31 +231,51 @@ class GameEngine {
 
     loop() {
         if (this.keys["escape"]) {
-            if (this.upgradePause) {
+            if (this.upgradePause && !this.upgrade.enablePlayerStats) {
                 this.toggleUpgradePause();
-                this.setDelay = 1;
                 this.upgrade.makingChoice = false;
+                this.upgrade.enablePlayerStats = false;
+            } else if (this.upgradePause && this.upgrade.enablePlayerStats){
+                this.upgrade.enablePlayerStats = false;
+            } else if (this.shopPause) {
+                this.shop.enableBuy = false;
+                this.shop.showUpgrade = false;
+                this.shopPause = false;
             } else {
                 this.togglePause();
                 this.disableMouseInputs();
                 this.drawPause(this.ctx);
             }
+            this.resetDrawingValues();
             this.keys["escape"] = false;
         }
 
         if (!this.pause) {
             this.clockTick = this.timer.tick();
-            if (!this.upgradePause && this.setDelay <= 0) { //Default loop
+            this.pauseTick = this.timer.pauseTick();
+            if (!this.upgradePause && !this.shopPause && !this.deathPause) { //Default loop
                 this.update();
                 this.draw();
                 this.timer.isPaused = false;
-            } else if (this.setDelay <= 0) {
+                this.timer.enablePauseTick = false;
+            } else if (this.upgradePause) {
                 this.upgrade.update();
                 this.upgrade.draw(this.ctx);
                 this.timer.isPaused = true;
+                this.timer.enablePauseTick = true;
                 this.disableMouseInputs();
-            } else {
-                if (this.setDelay > 0) this.setDelay -= 0.1;
+            } else if (this.shopPause) {
+                this.shop.update();
+                this.shop.draw(this.ctx);
+                this.timer.isPaused = true;
+                this.timer.enablePauseTick = true;
+                this.disableMouseInputs();
+            } else if (this.deathPause) {
+                this.deathScreen.update();
+                this.deathScreen.draw(this.ctx);
+                this.timer.isPaused = true;
+                this.timer.enablePauseTick = true;
+                this.disableMouseInputs();
             }
         }
     };
@@ -254,8 +284,15 @@ class GameEngine {
         this.upgradePause = !this.upgradePause;
     }
 
+    toggleDeathPause() {
+        this.deathPause = !this.deathPause;
+    }
+
     togglePause() {
         this.pause = !this.pause;
+    }
+    toggleShopPause() {
+        this.shopPause = !this.shopPause;
     }
     drawPause(ctx) {
         ctx.textAlign = "center"; 
@@ -267,6 +304,13 @@ class GameEngine {
 
         ctx.textAlign = "left"; 
         ctx.textBaseline = "alphabetic";  
+    }
+    resetDrawingValues(ctx) {
+        this.ctx.textAlign = "left";
+        this.ctx.textBaseline = "alphabetic";
+        this.ctx.lineWidth = 1;
+        this.ctx.fillStyle = "Black";
+        this.ctx.strokeStyle = "Black";
     }
 };
 
