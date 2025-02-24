@@ -9,6 +9,7 @@ class Goblin {
         this.speed = 217;
 
         this.health = 26;
+        this.maxHealth = 26;
         this.attackPower = 10;
         this.attackCooldown = 1.0; // Cooldown in seconds between attacks
         this.attackCooldownTimer = 0; // Tracks remaining cooldown time
@@ -18,7 +19,7 @@ class Goblin {
         this.isPlayingDamageAnimation = false;
         this.attackTimer = 1;
 
-
+        this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 6, -88));
         this.dead = false;
         this.deathAnimationTimer = 4 * 0.15;
 
@@ -372,9 +373,11 @@ class Goblin {
         } else {
             this.animations[this.state][this.facing].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale); 
         }
-        
-        ctx.strokeStyle = 'Yellow';
-        ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        if (PARAMS.DEBUG) {
+            ctx.strokeStyle = 'Yellow';
+            ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        }
+
 
     }
     

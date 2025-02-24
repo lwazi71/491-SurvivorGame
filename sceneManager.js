@@ -10,8 +10,11 @@ class SceneManager {
         this.adventurer = new Adventurer(this.game, 0, 0); //placing player character at 0, 0 in world map
 
         this.waveManager = new WaveManager(game);
-        this.HUD = new HUD(this.game, this.adventurer);
+        this.Hud = new Hud(this.game, this.adventurer);
         this.upgrade = new UpgradeSystem(this.game);
+        this.shop = new Shop(this.game);
+        this.enableShop = false;
+        this.title = true;
 
         this.shakeIntensity = 0;
         this.shakeDecay = 0.9; 
@@ -125,6 +128,8 @@ class SceneManager {
 
 
     update() {
+        PARAMS.DEBUG = document.getElementById("debug").checked;
+        // PARAMS.CHEATS = document.getElementById("cheats").checked;
         //Midpoint of the canvas
         const midPointX = PARAMS.CANVAS_WIDTH / 2 ;
         const midPointY = PARAMS.CANVAS_HEIGHT / 2 ;
@@ -132,7 +137,7 @@ class SceneManager {
         //Update camera position to middle of the player
         this.x = this.adventurer.x - midPointX + (this.adventurer.bitSize * this.adventurer.scale)/2 + 20; //Hard code to add 20 because character was not yet in the middle of the canvas screen. (Was more bottom right)
         this.y = this.adventurer.y - midPointY + (this.adventurer.bitSize * this.adventurer.scale)/2 + 20; //Same here
-        if (this.game.keys["p"]) {
+        if (this.game.keys["p"]) {// && PARAMS.CHEATS
             this.game.addEntity(new ExperienceOrb(this.game, this.game.adventurer.x, this.game.adventurer.y));
             this.game.keys["p"] = false;
         }
@@ -167,17 +172,24 @@ class SceneManager {
         // Draw UI text
         ctx.font = '20px Arial';
         ctx.fillStyle = 'white';
-        // ctx.fillText(`Player Health: ${this.adventurer.health}`, 10, 120);
-        // ctx.fillText(`Player Coins: ${this.adventurer.coins}`, 10, 150);
-
-        // ctx.fillText(`Player Dark Bolts: ${this.adventurer.boltCurrentAmount}`, 10, 180);
-        // ctx.fillText(`Player Bolts Cooldown: ${Math.ceil(this.adventurer.boltCooldownRetrieveTimer * 100) / 100}`, 10, 210);
-
-        if (!this.game.adventurer.dead) {
-            this.HUD.update();
-            this.HUD.draw(ctx);
+        this.Hud.update();
+        this.Hud.draw(ctx);
+        if(this.enableShop) {
+            this.game.shopPause = true;
+            this.enableShop = false;
         }
     }
     
 
+}
+class Title {
+    constructor(game) {
+        Object.assign(this, {game});
+    }
+    update() {
+
+    }
+    draw(ctx) {
+
+    }
 }

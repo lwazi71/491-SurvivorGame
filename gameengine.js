@@ -20,7 +20,7 @@ class GameEngine {
         this.leftClick = null;
         this.pause = false;
         this.upgradePause = false;
-        this.setDelay = 0;
+        this.shopPause = false;
 
         this.currMap = 1;
         
@@ -206,6 +206,11 @@ class GameEngine {
             this.toggleUpgradePause();
             this.click = {x: 0, y: 0};
         }
+        //How to open shop
+        if (this.keys["u"]) {
+            this.toggleShopPause();
+            this.click = {x: 0, y: 0};
+        }
         for (let i = 0; i < entitiesCount; i++) {
             let entity = this.entities[i];
 
@@ -227,11 +232,14 @@ class GameEngine {
         if (this.keys["escape"]) {
             if (this.upgradePause && !this.upgrade.enablePlayerStats) {
                 this.toggleUpgradePause();
-                this.setDelay = 1;
                 this.upgrade.makingChoice = false;
                 this.upgrade.enablePlayerStats = false;
             } else if (this.upgradePause && this.upgrade.enablePlayerStats){
                 this.upgrade.enablePlayerStats = false;
+            } else if (this.shopPause) {
+                this.shop.enableBuy = false;
+                this.shop.showUpgrade = false;
+                this.shopPause = false;
             } else {
                 this.togglePause();
                 this.disableMouseInputs();
@@ -244,19 +252,23 @@ class GameEngine {
         if (!this.pause) {
             this.clockTick = this.timer.tick();
             this.pauseTick = this.timer.pauseTick();
-            if (!this.upgradePause && this.setDelay <= 0) { //Default loop
+            if (!this.upgradePause && !this.shopPause) { //Default loop
                 this.update();
                 this.draw();
                 this.timer.isPaused = false;
                 this.timer.enablePauseTick = false;
-            } else if (this.setDelay <= 0) {
+            } else if (this.upgradePause) {
                 this.upgrade.update();
                 this.upgrade.draw(this.ctx);
                 this.timer.isPaused = true;
                 this.timer.enablePauseTick = true;
                 this.disableMouseInputs();
-            } else {
-                if (this.setDelay > 0) this.setDelay -= 0.1;
+            } else if (this.shopPause) {
+                this.shop.update();
+                this.shop.draw(this.ctx);
+                this.timer.isPaused = true;
+                this.timer.enablePauseTick = true;
+                this.disableMouseInputs();
             }
         }
     };
@@ -267,6 +279,9 @@ class GameEngine {
 
     togglePause() {
         this.pause = !this.pause;
+    }
+    toggleShopPause() {
+        this.shopPause = !this.shopPause;
     }
     drawPause(ctx) {
         ctx.textAlign = "center"; 

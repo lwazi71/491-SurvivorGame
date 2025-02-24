@@ -24,7 +24,7 @@ class Adventurer { //every entity should have update and draw!
         this.invincible = false;
         this.velocity = {x: 0, y: 0};
         this.lastMove = 0;
-        this.health = 100; //default max health of the player
+        this.health = 95; //default max health of the player
         this.maxhealth = 100;
 
         //player getting damaged
@@ -87,11 +87,11 @@ class Adventurer { //every entity should have update and draw!
         this.magicKnockback = 2000;
         this.magicDamage = 100;
         this.magicScale = 6;
-        this.enableMagic = true; //changed to true for now for debugging
+        this.enableMagic = false; //changed to true for now for debugging
 
 
         //BOMB PROPERTIES
-        this.enableBomb = true; //changed to true for now for debugging
+        this.enableBomb = false; //changed to true for now for debugging
         this.bombDamage = 25;
         this.bombExplosionScale = 10;
         this.bombTimer = 4;
@@ -108,7 +108,7 @@ class Adventurer { //every entity should have update and draw!
 
 
         //LIGHTNING PROPERTIES:
-        this.enableLightning = true;
+        this.enableLightning = false;
         this.lightningMagic = false; 
         this.lightingDamage = 10;
         this.lightningScale = 5;
@@ -118,7 +118,7 @@ class Adventurer { //every entity should have update and draw!
         this.lightningCooldownTimer = 0;
 
         //DARK-BOLT PROPERTIES:
-        this.enableBolt = true;
+        this.enableBolt = false;
         this.canBolt = true; 
         this.boltMagic = false; //if we currently are doing dark bolt magic
         this.boltDamage = 7;
@@ -138,7 +138,9 @@ class Adventurer { //every entity should have update and draw!
         this.slashBombCombo = false; //combo where player can hit the bomb with their sword towards enemies
         this.lightningDarkBoltCombo = false; //combo where player can hit dark bolt with lightning to cause wider explosion + more damage
 
-        this.coins = 0;
+        this.critChance = 0.05; //5%
+        this.critDamage = 1.5; //150%
+        this.coins = 100;
         this.level = 1;
         this.experience = 0;
         this.experienceToNextLvl = 100;
@@ -531,6 +533,7 @@ class Adventurer { //every entity should have update and draw!
         } 
         //bomb controls
         if (this.game.keys["e"] && this.canBomb && !this.rolling && this.bombCurrentAmnt > 0 && this.enableBomb) {
+            this.game.keys["e"] = false;
             this.bombCurrentAmnt--;
             const characterCenterX = this.x + (this.bitSize * this.scale) / 2; 
             const characterCenterY = this.y + (this.bitSize * this.scale) / 2;
@@ -543,7 +546,7 @@ class Adventurer { //every entity should have update and draw!
         }
         
         //lightning control
-        if (this.game.rightClicks && this.canLightning && !this.rolling && !this.shooting && !this.attacking && this.currentWeapon == 1) {
+        if (this.game.rightClicks && this.canLightning && !this.rolling && !this.shooting && !this.attacking && this.currentWeapon == 1 && this.enableLightning) {
             this.lightningCooldownTimer = this.lightningCooldown;
             this.lightningOption = 0;
             this.lightning();
@@ -676,6 +679,20 @@ class Adventurer { //every entity should have update and draw!
             this.shootingDuration = this.shootCooldown;
         }
         this.elapsedTime += this.game.clockTick;
+
+        if(PARAMS.CHEATS) {
+            this.enableBolt = true;
+            this.enableBomb = true;
+            this.enableLightning = true;
+            this.enableMagic = true;
+            // this.attackDamage = 10;
+            this.health = 100;
+            this.maxhealth = 100;
+            this.slashArrowCombo = true;
+            this.slashBombCombo = true;
+            this.lightningDarkBoltCombo = true;
+            this.game.upgrade.giveAllUpgrade();
+        }
     };
 
     performRolling() {
@@ -1121,9 +1138,12 @@ class Adventurer { //every entity should have update and draw!
         if (this.experience >= this.experienceToNextLvl) {
             // this.health = this.maxhealth;
             this.level++;
+            this.attackDamage += 1;
+            this.maxhealth += 1;
+            this.health += 1;
             this.game.upgrade.points++;
             this.experience -= this.experienceToNextLvl;
-            this.experienceToNextLvl = Math.floor(this.experienceToNextLvl * 1.1);
+            // this.experienceToNextLvl = Math.floor(this.experienceToNextLvl * 1.1);
             this.levelUpMenu();
         }
     }
@@ -1166,9 +1186,10 @@ class Adventurer { //every entity should have update and draw!
 
             // ctx.strokeStyle = 'Green';
             // ctx.strokeRect((this.x + (this.bitSize * this.scale)/2) - this.game.camera.x, (this.y + (this.bitSize * this.scale)/2) - this.game.camera.y, 20, 20);
-
-             ctx.strokeStyle = 'Red';
-             ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        if (PARAMS.DEBUG) {
+            ctx.strokeStyle = 'Red';
+            ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        }
      
     };
 }

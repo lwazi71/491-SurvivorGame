@@ -22,6 +22,8 @@ class RatMage {
         this.collisionDamage = 7;
         
         this.health = 25;
+        this.maxHealth = 25;
+        this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 1.5, 7));
         this.dead = false;
         this.deathAnimationTimer = 4 * 0.1;
 
@@ -344,8 +346,10 @@ class RatMage {
                 this.scale
             );
         }
-        ctx.strokeStyle = 'Yellow';
-        ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        if (PARAMS.DEBUG) {
+            ctx.strokeStyle = 'Yellow';
+            ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        }
     
         // Draw AOE Warning Circle
         const drawX = this.aoeTargetX - this.game.camera.x;
@@ -374,7 +378,9 @@ class RatMage {
         ctx.stroke();
         ctx.restore();
         //debug
-        // ctx.strokeStyle = 'Green';
-        // ctx.strokeRect((this.x + (this.bitSizeX * this.scale)/2) - this.game.camera.x, (this.y + (this.bitSizeY * this.scale)/2) - this.game.camera.y, 20, 20);
+        if (PARAMS.DEBUG) {
+            ctx.strokeStyle = 'Green';
+            ctx.strokeRect((this.x + (this.bitSizeX * this.scale)/2) - this.game.camera.x, (this.y + (this.bitSizeY * this.scale)/2) - this.game.camera.y, 20, 20);
+        }
     }
 }

@@ -5,7 +5,10 @@ class Boss1 { //goblin king
 
         this.maxHealth = 300;
         this.currentHealth = 300;
-        this.name = "tbd";
+        this.name = "tbd, The Goblin King";
+
+        this.profileAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/HudIcons/Boss1Hud.png"), 0, 0, 32, 32, 12.9, 0.2, false, true);
+        this.healthbar = this.game.addEntity(new BossHealthBar(game, this, this.profileAnimation, 32, 0, 0, 3));
         this.state = 0; //0 = walk, 1 = attack, 2 = throwing, 3 = order, 4 = healing, 5 = jumping up, 6 = jumping down, 7 = dakmaged
         //attack will be throwing honestly
         this.facing = 0;
@@ -668,36 +671,35 @@ class Boss1 { //goblin king
                 this.scale
             );
         }    
-
-        ctx.strokeStyle = 'Yellow';
-        ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
-
-        // Draw AOE Warning Circle
-        const drawX = this.aoeTargetX - this.game.camera.x;
-        const drawY = this.aoeTargetY - this.game.camera.y;
-    
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(drawX, drawY, this.aoeScale, 0, Math.PI * 2);
-    
-        if (this.isPreparingAOE) {
-            // Gradually changing color from green to yellow to red
-            ctx.strokeStyle = 'rgba(255, 255, 0, 0.2)';
-            ctx.fillStyle = 'rgba(255, 255, 0, 0.2)';
-        } else if (this.isAboutToAOE) {
-            // Solid red when stationary
-            ctx.strokeStyle = 'rgba(255, 0, 0, 0.2)';
-            ctx.fillStyle = 'rgba(255, 0, 0, 0.2)';
-        } else {
-            // No circle if not preparing or about to AOE
-            ctx.restore();
-            return;
+        if (PARAMS.DEBUG) {
+            ctx.strokeStyle = 'Yellow';
+            ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
         }
-    
-        ctx.lineWidth = 5;
-        ctx.fill(); 
-        ctx.stroke();
-        ctx.restore();
+            // Draw AOE Warning Circle
+            const drawX = this.aoeTargetX - this.game.camera.x;
+            const drawY = this.aoeTargetY - this.game.camera.y;
+        
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(drawX, drawY, this.aoeScale, 0, Math.PI * 2);
+        
+            if (this.isPreparingAOE) {
+                // Gradually changing color from green to yellow to red
+                ctx.strokeStyle = 'rgba(255, 255, 0, 0.2)';
+                ctx.fillStyle = 'rgba(255, 255, 0, 0.2)';
+            } else if (this.isAboutToAOE) {
+                // Solid red when stationary
+                ctx.strokeStyle = 'rgba(255, 0, 0, 0.2)';
+                ctx.fillStyle = 'rgba(255, 0, 0, 0.2)';
+            } else {
+                // No circle if not preparing or about to AOE
+                ctx.restore();
+                return;
+            }
+            ctx.lineWidth = 5;
+            ctx.fill(); 
+            ctx.stroke();
+            ctx.restore();
 
 
     }

@@ -112,7 +112,7 @@ class UpgradeSystem {
                 name: "Bow Attack Speed Increase", 
                 upgrade() {this.game.adventurer.shootCooldown -= this.game.upgrade.attackSpeedIncreaseAmount; }, 
                 description: `Decreases Bow Attack Cooldown by ${this.attackSpeedIncreaseAmount}`,
-                type: 0,
+                type: 1,
                 max: 7,
                 current: 0,
                 color: "White",
@@ -206,7 +206,7 @@ class UpgradeSystem {
                 type: 1,
                 max: 1,
                 current: 0,
-                color: "Yellow",
+                color: rgb(65, 255, 90),
                 
             },
             {
@@ -219,6 +219,26 @@ class UpgradeSystem {
                 current: 0,
                 color: rgb(65, 214, 255),
             },
+            {
+                game: this.game,
+                name: "Unlocks Sword and Bow Combo", 
+                upgrade() {this.game.adventurer.slashArrowCombo = true; }, 
+                description: `Able to supercharge arrow damage when slashing arrow with sword`,
+                type: 10,
+                max: 1,
+                current: 0,
+                color: rgb(170, 65, 255),
+            },
+            {
+                game: this.game,
+                name: "Triple Shot", 
+                upgrade() {this.game.adventurer.tripleShot = true; }, 
+                description: `Fires three arrows at once`,
+                type: 1,
+                max: 1,
+                current: 0,
+                color: rgb(65, 255, 90),
+            }
         ];
         this.magicList = [
             {
@@ -329,6 +349,32 @@ class UpgradeSystem {
             },
 
         ];
+        this.lightningList = []; //4
+        this.darkBoltList = []; //5
+        this.bombUniqueList = [
+            {
+                game: this.game,
+                name: "Unlocks Sword and Bomb Combo", 
+                upgrade() {this.game.adventurer.slashBombCombo = true; }, 
+                description: `Able to bombs when slashing arrow with sword`,
+                type: 10,
+                max: 1,
+                current: 0,
+                color: rgb(170, 65, 255)
+            }
+        ];
+        this.lightningDarkBoltList = [
+            {
+                game: this.game,
+                name: "Unlocks Lightning and Darkbolt Combo", 
+                upgrade() {this.game.adventurer.lightningDarkBoltCombo = true; }, 
+                description: `Able to supercharge Darkbolt when combining it with lightning`,
+                type: 10,
+                max: 1,
+                current: 0,
+                color: rgb(170, 65, 255),
+            }
+        ];
 
         this.basic = [];
         this.unique = [];
@@ -338,6 +384,7 @@ class UpgradeSystem {
         this.third = null;
 
         this.selectedUpgrade = null;
+        this.first = true;
 
     }
     getThreeUpgrades() {
@@ -398,7 +445,7 @@ class UpgradeSystem {
     addValidUpgrade() {
         for (let i = 0; i < this.basicList.length; i++) {
             if (this.basicList[i].max > this.basicList[i].current) { //If the amount of time chosen does not reach the max, then add to upgrade pool
-                // this.basic.push(this.basicList[i]);
+                this.basic.push(this.basicList[i]);
             }
         }
         for (let i = 0; i < this.uniqueList.length; i++) { //Lower chance stuff
@@ -409,16 +456,20 @@ class UpgradeSystem {
         if (this.game.adventurer.enableMagic) {
             for (let i = 0; i < this.magicList.length; i++) { //If we get magic enabled, add to basic pool
                 if (this.magicList[i].max > this.magicList[i].current) {
-                    // this.basic.push(this.magicList[i]);
+                    this.basic.push(this.magicList[i]);
                 }
             }
         }
         if (this.game.adventurer.enableBomb) {
             for (let i = 0; i < this.bombList.length; i++) { //If we get magic enabled, add to basic pool
                 if (this.bombList[i].max > this.bombList[i].current) {
-                    // this.basic.push(this.bombList[i]);
+                    this.basic.push(this.bombList[i]);
                 }
             }
+            if (this.bombUniqueList[0].max > this.bombUniqueList[0].current) this.unique.push(this.bombUniqueList[0]);
+        }
+        if (this.game.adventurer.enableLightning && this.game.adventurer.enableBolt) {
+            if (this.lightningDarkBoltList[0].max > this.lightningDarkBoltList[0].current) this.unique.push(this.lightningDarkBoltList[0]);
         }
     }
 
@@ -482,8 +533,7 @@ class UpgradeSystem {
 
                 ) {
                     this.updateChoice(this.selectedUpgrade);
-                    this.selectedUpgrade = null;
-                    this.game.keys["enter"];
+                    this.game.keys["enter"] = false;
                 }
                 //Reroll Button location
                 if (mouseX > this.centerButtonX - 150 && mouseX < this.centerButtonX + this.buttonWidth - 150 &&
@@ -502,11 +552,9 @@ class UpgradeSystem {
                     this.game.click = {x:0, y:0};
                 }
                 //Exit Button
-                if (mouseX > PARAMS.CANVAS_WIDTH - this.exitButtonSize.width - 10 && mouseX < PARAMS.CANVAS_WIDTH + this.exitButtonSize.width &&
-                        mouseY > 10 && mouseY < 10 + this.exitButtonSize.height) {
+                if (this.checkExitButton(mouseX, mouseY)) {
                     this.game.click = {x:0, y:0};
                     this.game.toggleUpgradePause();
-                    this.game.setDelay = 1;
                     this.makingChoice = false;
                     this.enablePlayerStats = false;
                 }
@@ -517,6 +565,10 @@ class UpgradeSystem {
             }
         }
     }
+    checkExitButton(mouseX, mouseY) {
+        return mouseX > PARAMS.CANVAS_WIDTH - this.exitButtonSize.width - 10 && mouseX < PARAMS.CANVAS_WIDTH + this.exitButtonSize.width &&
+        mouseY > 10 && mouseY < 10 + this.exitButtonSize.height;
+    }
     updateChoice(upgrade) {
         this.selectedUpgrade = upgrade;
         upgrade.upgrade();
@@ -525,7 +577,7 @@ class UpgradeSystem {
         this.incrementType(upgrade.type);
         if (this.currentUpgrades.length > 0) {
             let count = 0;
-            for (let i = 0; i < this.currentUpgrades.length; i++) {
+            for (let i = 0; i < this.currentUpgrades.length; i++) { //See if the upgrade is in the current hero
                 if (this.currentUpgrades[i] == upgrade) count++;
             }
             if (count == 0) this.currentUpgrades.push(upgrade);
@@ -534,22 +586,25 @@ class UpgradeSystem {
         }
         if (this.swordUpgradeCount >= 5) this.updateSwordLevel();
         if (this.bowUpgradeCount >= 5) this.game.adventurer.bowUpgrade = 1;
-        if (this.points > 1) {
-            this.points--;
-            //Timer reroll
-            this.getThreeUpgrades();
-            if (!this.noUpgrades3) {
-                this.rerollTimer = 0.5; //Trigger for upgrades
+        if (!this.game.shop.showUpgrade) {
+            if (this.points > 1) {
+                this.points--;
+                //Timer reroll
+                this.getThreeUpgrades();
+                if (!this.noUpgrades3) {
+                    this.rerollTimer = 0.5; //Trigger for upgrades
+                }
+            } else {
+                this.points--;
+                // this.game.toggleUpgradePause();
             }
-        } else {
-            this.points--;
-            // this.game.toggleUpgradePause();
         }
         this.makingChoice = false;
         this.game.keys["1"] = false;
         this.game.keys["2"] = false;
         this.game.keys["3"] = false;
         this.game.leftClick = false;
+        this.selectedUpgrade = null;
     }
     incrementType(type) {
         if (type == 0) {
@@ -603,7 +658,7 @@ class UpgradeSystem {
                     );
                     ctx.font = '12px "Press Start 2P"';
                     this.wrapText(ctx, `${this.first.description}`, 
-                        PARAMS.CANVAS_WIDTH / 2 - 300, PARAMS.CANVAS_HEIGHT / 2 + 100,
+                        PARAMS.CANVAS_WIDTH / 2 - 300, PARAMS.CANVAS_HEIGHT / 2 + 50,
                         250, 25
                     );
                     ctx.fillText(`x${this.first.current}`, PARAMS.CANVAS_WIDTH / 2 - 300, PARAMS.CANVAS_HEIGHT / 2 + 190);
@@ -618,22 +673,10 @@ class UpgradeSystem {
                     );
                     ctx.font = '12px "Press Start 2P"';
                     this.wrapText(ctx, `${this.second.description}`, 
-                        PARAMS.CANVAS_WIDTH / 2, PARAMS.CANVAS_HEIGHT / 2 + 100,
+                        PARAMS.CANVAS_WIDTH / 2, PARAMS.CANVAS_HEIGHT / 2 + 50,
                         250, 25
                     );
                     ctx.fillText(`x${this.second.current}`, PARAMS.CANVAS_WIDTH / 2, PARAMS.CANVAS_HEIGHT / 2 + 190);
-    
-    
-                    // //Testing selection "buttons"
-                    // if (mouseX > this.centerButtonX && mouseX < this.centerButtonX + this.buttonWidth &&
-                    //     mouseY > this.centerButtonY && mouseY < this.centerButtonY + this.buttonHeight
-                    // ) {
-                    //     // console.log("hovering");
-                    //     ctx.fillStyle = rgb(41, 41, 41);
-                    // } else {
-                    //     ctx.fillStyle = rgb(74, 74, 74);
-                    // }
-                    // ctx.strokeStyle = "Black";
                 }
                 if (!this.noUpgrades3 && this.points > 0) {
                     ctx.fillStyle = this.third.color;
@@ -644,7 +687,7 @@ class UpgradeSystem {
                     );
                     ctx.font = '12px "Press Start 2P"';
                     this.wrapText(ctx, `${this.third.description}`, 
-                        PARAMS.CANVAS_WIDTH / 2 + 300, PARAMS.CANVAS_HEIGHT / 2 + 100,
+                        PARAMS.CANVAS_WIDTH / 2 + 300, PARAMS.CANVAS_HEIGHT / 2 + 50,
                         270, 25
                     );
                     ctx.fillText(`x${this.third.current}`, PARAMS.CANVAS_WIDTH / 2 + 300, PARAMS.CANVAS_HEIGHT / 2 + 190);
@@ -661,9 +704,6 @@ class UpgradeSystem {
                 this.heroStatus(ctx, mouseX, mouseY); //Last so it draw over everything
             }
         } 
-        if (!this.makingChoice){
-            this.game.setDelay = 1;
-        }
         this.exitButton(ctx, mouseX, mouseY);
         this.game.resetDrawingValues();
     }
@@ -740,9 +780,6 @@ class UpgradeSystem {
                 ctx.lineWidth = 1;
             }
             if (this.selectedUpgrade == this.third && this.selectedUpgrade != null) {
-                //Here cuz of a bug
-                // console.log(this.selectedUpgrade);
-                // console.log(this.third);
                 ctx.strokeStyle = 'White';
                 ctx.shadowColor = "White";
                 ctx.shadowBlur = 15;
@@ -914,6 +951,25 @@ class UpgradeSystem {
         ctx.textBaseline = "middle"; 
         ctx.fillText("X", PARAMS.CANVAS_WIDTH - 60, 32.5)
     }
+    giveAllUpgrade() {
+        if (this.first) {
+            this.currentUpgrades.push(...this.basicList);
+            this.currentUpgrades.push(...this.uniqueList);
+            this.currentUpgrades.push(...this.bombList);
+            this.currentUpgrades.push(...this.magicList);
+            this.currentUpgrades.push(...this.lightningList);
+            this.currentUpgrades.push(...this.darkBoltList);
+            this.currentUpgrades.push(...this.bombUniqueList);
+            this.currentUpgrades.push(...this.lightningDarkBoltList);
+            this.currentUpgrades.forEach(upgrade => {
+            while(upgrade.current < upgrade.max) {
+                upgrade.upgrade();
+                upgrade.current++;
+            }
+            this.first = false;
+        });
+        }
+    }
 }
 class PlayerStatus {
     constructor(game, upgrade) {
@@ -923,16 +979,26 @@ class PlayerStatus {
         this.healthBarSize = {width: 300, height: 25};
         this.selected = "Sword";
         // this.background = 
-        this.width = PARAMS.CANVAS_WIDTH / 2 - 60;
-        this.height = PARAMS.CANVAS_HEIGHT - 120;
+        this.startX = 60;
+        this.startY = 60;
+        this.width = PARAMS.CANVAS_WIDTH / 2 - this.startX;
+        this.height = PARAMS.CANVAS_HEIGHT - this.startY * 2;
 
+        this.bombAnimation =this.bombAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/collectables.png"), 0, 16, 16, 16, 4, 0.1, false, true);
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");
         this.animation = [];
         this.actions = 0;
         this.swordDuration = 0.9;
         this.currentTimer = 0;
-        this.bowDuration = 0.55;
+        this.bowDuration = 0.75;
         this.magicDuration = 0.6;
+        this.rollDuration = 0.55;
+        this.bombDuration = 0.35;
+
+        this.upgradeMenu = false;
+
+        this.upgradeButton = {length: 200, height: 40};
+
         this.loadAnimation();
 
     }
@@ -945,9 +1011,11 @@ class PlayerStatus {
         //Sword
         this.animation[1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 320, 32, 32, 10, 0.1, false, false);
         //Bow
-        this.animation[2] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/BowLeft.png"), 0, -8, 32, 32, 3, 0.2, true, false);
+        this.animation[2] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/BowLeft.png"), 0, -8, 32, 32, 8, 0.1, true, false);
         //Magic
-        this.animation[3] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2Flipped.png"), 224, 320, 32, 32, 6, 0.1, false, false);
+        this.animation[3] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2Flipped.png"), 224, 320, 32, 32, 6, 0.1, true, false);
+        //Bomb
+        this.animation[4] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2Flipped.png"), 224, 160, 32, 32, 6, 0.1, true, false);
     }
     update() {
         this.healthRatio = this.game.adventurer.health / this.game.adventurer.maxhealth;
@@ -960,10 +1028,10 @@ class PlayerStatus {
             mouseX = this.game.click.x;
             mouseY = this.game.click.y;
         }
-        let button = {width: (this.width - 50) / 4, height: 40};
+        let button = {width: (this.width - 20) / 4, height: 40};
 
-        let y = 110 + 10 + this.healthBarSize.height * 2 + 20 + 70;
-        if (this.game.keys["1"] || mouseX > 85 && mouseX < 85 + button.width &&
+        let y = this.startY + 50 + 10 + this.healthBarSize.height * 2 + 20 + 70 + 40;
+        if (this.game.keys["1"] || mouseX > this.startX + 10 && mouseX < this.startX + 10 + button.width &&
             mouseY > y && mouseY < y + button.height) {
             this.animation[1].elapsedTime = 0;
             this.actions = 1;
@@ -972,7 +1040,7 @@ class PlayerStatus {
             this.selected = "Sword";
             this.game.click = {x: 0, y: 0};
         }
-        if (this.game.keys["2"] || mouseX > 85 + button.width && mouseX < 85 + button.width * 2 &&
+        if (this.game.keys["2"] || mouseX > this.startX + 10 + button.width && mouseX < this.startX + 10 + button.width * 2 &&
             mouseY > y && mouseY < y + button.height) {
             this.animation[2].elapsedTime = 0;
             this.actions = 2;
@@ -981,23 +1049,32 @@ class PlayerStatus {
             this.selected = "Bow";
             this.game.click = {x: 0, y: 0};
         }
-        if (this.game.keys["3"] || mouseX > 85 + button.width * 2 && mouseX < 85 + button.width * 3 &&
+        if (this.game.keys["3"] || mouseX > this.startX + 10 + button.width * 2 && mouseX < this.startX + 10 + button.width * 3 &&
             mouseY > y && mouseY < y + button.height) {
-            this.animation[3].elapsedTime = 0;
-            this.actions = 3;
-            this.currentTimer = this.magicDuration;
+            this.animation[4].elapsedTime = 0;
+            this.actions = 4;
+            this.currentTimer = this.rollDuration;
             this.game.keys["3"] = false;
-            this.selected = "Magic";
-            this.game.click = {x: 0, y: 0};
-        }
-        if (this.game.keys["4"] || mouseX > 85 + button.width * 3 && mouseX < 85 + button.width * 4 &&
-            mouseY > y && mouseY < y + button.height) {
-            this.actions = 0;
-            this.game.keys["4"] = false;
             this.selected = "Bomb";
             this.game.click = {x: 0, y: 0};
         }
-
+        if (this.game.keys["4"] || mouseX > this.startX + 10 + button.width * 3 && mouseX < this.startX + 10 + button.width * 4 &&
+            mouseY > y && mouseY < y + button.height) {
+                this.animation[3].elapsedTime = 0;
+            this.actions = 3;
+            this.currentTimer = this.magicDuration;
+            this.game.keys["4"] = false;
+            this.selected = "DKBolt";
+            this.game.click = {x: 0, y: 0};
+        }
+        //Upgrade viewer button
+        let upgradeButtonX = this.startX + this.width / 2 - this.upgradeButton.length / 2;
+        let upgradeButtonY = y - 30 + this.width - 25 * 2 + 20 - 40;
+        if (mouseX > upgradeButtonX && mouseX < upgradeButtonX + this.upgradeButton.length &&
+            mouseY > upgradeButtonY && mouseY < upgradeButtonY + this.upgradeButton.height) {
+                this.game.click = {x:0, y:0};
+                this.toggleUpgradeMenu();
+        }
         if (mouseX > PARAMS.CANVAS_WIDTH - this.exitButtonSize.width - 10 && mouseX < PARAMS.CANVAS_WIDTH + this.exitButtonSize.width &&
             mouseY > 10 && mouseY < 10 + this.exitButtonSize.height) {
             this.game.click = {x:0, y:0};
@@ -1015,6 +1092,10 @@ class PlayerStatus {
             this.actions = 0;
             this.animation[0].elapsedTime = 0;
         }
+        if (this.actions == 4 && this.currentTimer <= 0) {
+            this.actions = 0;
+            this.animation[0].elapsedTime = 0;
+        }
         if (this.currentTimer > 0) {
             this.currentTimer -= this.game.pauseTick;
         }
@@ -1027,50 +1108,57 @@ class PlayerStatus {
         ctx.textAlign = "center"; 
         ctx.textBaseline = "middle";
         ctx.font = '20px "Press Start 2P"';
-        ctx.fillText("Player Stats:", 60 + this.width / 2, 85);
+        ctx.fillText("Player Stats:", this.startX + this.width / 2, this.startY + 25);
         this.drawHP(ctx);
         this.drawEXP(ctx);
-        let statList = ["Speed:", "Stamina Cooldown:"];
-        let statValues = [`${adventurer.speed.toFixed(0)}`, `${adventurer.rollCooldown} secs`]
-        let scale = 10;
-        let Y = 110 + 10 + this.healthBarSize.height * 2 + 20;
+        let statList = ["Speed:", "Stamina Cooldown:", "Crit Chance:", "Crit Damage"];
+        let statValues = [`${adventurer.speed.toFixed(0)}`, `${adventurer.rollCooldown} secs`, 
+            `${(adventurer.critChance * 100).toFixed(0)}%`, `${(adventurer.critDamage * 100).toFixed(0)}%`]
+        let buffer = 20;
+        let Y = this.startY + 50 + 10 + this.healthBarSize.height * 2 + buffer;
         ctx.font = '12px "Press Start 2P"';
 
         let currentY = Y;
         ctx.textAlign = "left"; 
         ctx.textBaseline = "top"; 
         for (let line of statList) {
-            ctx.fillText(line, 80, currentY);
+            ctx.fillText(line, this.startX + buffer, currentY);
             currentY += 20;
         }
         currentY = Y;
         ctx.textAlign = "right"; 
         for (let line of statValues) {
-            ctx.fillText(line, this.width + 40, currentY);
+            ctx.fillText(line, this.width + this.startX - buffer, currentY);
             currentY += 20;
         }
 
         ctx.beginPath();
-        ctx.moveTo(60, currentY + 10);
-        ctx.lineTo(this.width + 60, currentY + 10);
-        ctx.lineWidth = 5;
+        ctx.moveTo(this.startX, currentY + 10);
+        ctx.lineTo(this.width + this.startX, currentY + 10);
+        ctx.lineWidth = 3;
         ctx.stroke();
         this.drawAttacksBackground(ctx, currentY + 30);
-        this.animation[this.actions].drawFrame(this.game.pauseTick, ctx, PARAMS.CANVAS_WIDTH * 0.75 - (32 * 15) / 2, PARAMS.CANVAS_HEIGHT / 2 - 140, 15);
+        this.drawUpgradeButton(ctx);
+        if (this.actions == 4) this.bombAnimation.drawFrame(this.game.pauseTick, ctx, PARAMS.CANVAS_WIDTH * 0.75 - (16 * 15) / 2, PARAMS.CANVAS_HEIGHT / 2 + 70, 15);
+        this.animation[this.actions].drawFrame(this.game.pauseTick, ctx, PARAMS.CANVAS_WIDTH * 0.75 - (32 * 15) / 2 - 30, PARAMS.CANVAS_HEIGHT / 2 - 140, 15);
+        if (this.upgradeMenu) {
+            this.displayUpgrades(ctx);
+        }
         this.game.resetDrawingValues();
 
     }
     drawBackground(ctx) {
         ctx.beginPath();
-        ctx.roundRect(60, 60, this.width, this.height, [10]);
+        ctx.roundRect(this.startX, this.startY, this.width, this.height, [10]);
         ctx.strokeStyle = "Black";
+        ctx.lineWidth = 3;
         ctx.fillStyle = rgba(0,0,0, 0.5);
         ctx.fill();
         ctx.stroke();
     }
     drawHP(ctx) {
-        let X = 60 + this.width / 2 - this.healthBarSize.width / 2;
-        let Y = 110;
+        let X = this.startX + this.width / 2 - this.healthBarSize.width / 2;
+        let Y = this.startX + 50;
         ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.roundRect(X, Y, this.healthBarSize.width, this.healthBarSize.height, [5]);
@@ -1103,8 +1191,8 @@ class PlayerStatus {
         ctx.strokeText(`HP : ${this.game.adventurer.health} / ${this.game.adventurer.maxhealth}`, healthX, healthY);
     }
     drawEXP(ctx) {
-        let X = 60 + this.width / 2 - this.healthBarSize.width / 2;
-        let Y = 110 + 10 + this.healthBarSize.height;
+        let X = this.startX + this.width / 2 - this.healthBarSize.width / 2;
+        let Y = this.startY + 50 + 10 + this.healthBarSize.height;
         //Experience Bar
         ctx.beginPath();
         ctx.roundRect(X, Y, this.healthBarSize.width, this.healthBarSize.height, [5]);
@@ -1135,16 +1223,45 @@ class PlayerStatus {
         ctx.fillText(`Level ${this.game.adventurer.level} : ${this.game.adventurer.experience} / ${this.game.adventurer.experienceToNextLvl}`, X + this.healthBarSize.width / 2, Y + this.healthBarSize.height / 2);
         ctx.strokeText(`Level ${this.game.adventurer.level} : ${this.game.adventurer.experience} / ${this.game.adventurer.experienceToNextLvl}`, X + this.healthBarSize.width / 2, Y + this.healthBarSize.height / 2);
     }
-    drawAttacksBackground(ctx, y) {
+    drawUpgradeButton(ctx) {
+        let oldY = this.startY + 50 + 10 + this.healthBarSize.height * 2 + 20 + 70;
+        let y = oldY - 30 + this.width - 25 * 2 + 20;
         let mouseX = 0;
         let mouseY = 0;
         if (this.game.mouse != null) {
             mouseX = this.game.mouse.x;
             mouseY = this.game.mouse.y;
         }
-        let button = {width: (this.width - 50) / 4, height: 40};
-        let currentX = 85;
-        let attacks = ["Sword", "Bow", "Magic", "Bomb"];
+        ctx.beginPath();
+        let currentX = this.startX + this.width / 2 - this.upgradeButton.length / 2;
+        ctx.lineWidth = 2;
+        ctx.roundRect(currentX, y, this.upgradeButton.length, this.upgradeButton.height, [10, 10, 10, 10]);
+        ctx.strokeStyle = "Black";
+        if (mouseX > currentX && mouseX < currentX + this.upgradeButton.length &&
+            mouseY > y && mouseY < y + this.upgradeButton.height) {
+            ctx.fillStyle = rgb(70, 70, 70);
+        } else {
+            ctx.fillStyle = rgb(100, 100, 100);
+        }
+        ctx.fill();
+        ctx.stroke();
+        ctx.textAlign = "center"; 
+        ctx.textBaseline = "middle";
+        ctx.font = '14px "Press Start 2P"';
+        ctx.fillStyle = "Black";    
+        ctx.fillText("View Upgrades", currentX + this.upgradeButton.length / 2, y + this.upgradeButton.height / 2);
+    }
+    drawAttacksBackground(ctx, y) {
+        let mouseX = 0;
+        let mouseY = 0;
+        let offset = 25;
+        if (this.game.mouse != null) {
+            mouseX = this.game.mouse.x;
+            mouseY = this.game.mouse.y;
+        }
+        let attacks = ["Sword", "Bow", "Bomb", "DKBolt"];
+        let button = {width: (this.width - offset * 2) / attacks.length, height: 40};
+        let currentX = this.startX + offset;
         for (let attack of attacks) {
             ctx.beginPath();
             ctx.lineWidth = 2;
@@ -1169,7 +1286,7 @@ class PlayerStatus {
         }
         ctx.beginPath();
         ctx.lineWidth = 2;
-        ctx.roundRect(85, y + 40, this.width - 50, this.height - y, [0, 0, 10, 10]);
+        ctx.roundRect(this.startX + offset, y + 40, this.width - offset * 2, this.height - y - 50, [0, 0, 10, 10]);
         ctx.strokeStyle = "Black";
         // ctx.fillStyle = rgba(0, 0, 0, 0.5);
         // ctx.fill();
@@ -1180,98 +1297,292 @@ class PlayerStatus {
     displayAttackStats(ctx, attack, y) {
         let stats = [];
         let values = [];
+        let magicStats = [];
+        let magicValues = [];
+        let title = [];
         ctx.font = '12px "Press Start 2P"';
         ctx.fillStyle = "White"; 
         if (attack == "Sword") {
-            stats = ["Basic Sword Stats:", "Damage", "Attack Speed", "Knockback", "Attack Size", "", "Sword Upgrade:"];
-            values = ["",`${this.game.adventurer.attackDamage}`, `${this.game.adventurer.attackCooldown.toFixed(1)} secs`,
-                `${this.game.adventurer.knockback / 1000}`, `${this.game.adventurer.slashScale.toFixed(1)}`, "", ""
+            title.push("Basic Sword Stats:");
+            stats = ["Damage", "Attack Speed", "Knockback", "Attack Size", ""];
+            values = [`${this.game.adventurer.attackDamage}`, `${this.game.adventurer.attackCooldown.toFixed(1)} secs`,
+                `${this.game.adventurer.knockback / 1000}`, `${this.game.adventurer.slashScale.toFixed(1)}`, ""
             ];
-            let starting = stats.length;
-            this.upgrade.currentUpgrades.forEach(upgrade => {
-                if (upgrade.type == 0) {
-                    stats.push(upgrade.name);
-                    if (upgrade.max != 1) values.push("x" + upgrade.current);
-                }
-            });
-            let end = stats.length;
-            if (starting == end) stats.push("No Upgrades");
+            if (this.game.adventurer.enableMagic) {
+                title.push("Magic Slash Stats:");
+                magicStats = ["Damage", "Cooldown", "Knockback", "Attack Size"];
+                magicValues = [`${this.game.adventurer.magicDamage}`, `${this.game.adventurer.magicCooldown.toFixed(1)} secs`,
+                `${this.game.adventurer.magicKnockback / 1000}`, `${this.game.adventurer.magicScale.toFixed(1)}`
+                ];
+            }
+                
         }
         if (attack == "Bow") {
-            stats = ["Basic Bow Stats:","Damage", "Attack Speed", "Knockback", "Arrow Speed", "", "Bow Upgrade:"];
-            values = ["",`${this.game.adventurer.bowDamage}`, `${this.game.adventurer.shootCooldown.toFixed(1)} secs`,
-                `${this.game.adventurer.bowKnockback / 1000}`, `${this.game.adventurer.arrowSpeed}`, "", ""
+            title.push("Basic Bow Stats:");
+            stats = ["Damage", "Attack Speed", "Knockback", "Arrow Speed", ""];
+            values = [`${this.game.adventurer.bowDamage}`, `${this.game.adventurer.shootCooldown.toFixed(1)} secs`,
+                `${this.game.adventurer.bowKnockback / 1000}`, `${this.game.adventurer.arrowSpeed}`, ""
             ];
-            let starting = stats.length;
-            this.upgrade.currentUpgrades.forEach(upgrade => {
-                if (upgrade.type == 1) {
-                    stats.push(upgrade.name);
-                    if (upgrade.max != 1) values.push("x" + upgrade.current);
-                }
-            });
-            let end = stats.length;
-            if (starting == end) stats.push("No Upgrades");
-        }
-        if (attack == "Magic") {
-            if (!this.game.adventurer.enableMagic) {
-                ctx.textAlign = "center";
-                ctx.textBaseline = "middle";
-                ctx.fillText("Get Upgrade to Unlock", 85 + (this.width - 50) / 2, y + 40 + (this.height - y) / 2);
-            } else {
-                stats = ["Damage", "Cooldown", "Knockback", "Attack Size", "", "Magic Upgrade:"];
-                values = [`${this.game.adventurer.magicDamage}`, `${this.game.adventurer.magicCooldown.toFixed(1)} secs`,
-                `${this.game.adventurer.magicKnockback / 1000}`, `${this.game.adventurer.magicScale.toFixed(1)}`, "", ""
+            if (this.game.adventurer.enableLightning) {
+                title.push("Lightning Strike Stats:");
+                magicStats = ["Damage", "Cooldown", "Knockback", "Attack Size"];
+                magicValues = [`${this.game.adventurer.lightingDamage}`, `${this.game.adventurer.lightningCooldown.toFixed(1)} secs`,
+                `${this.game.adventurer.lightningKnockback / 1000}`, `${this.game.adventurer.lightningScale.toFixed(1)}`
                 ];
-                let starting = stats.length;
-                this.upgrade.currentUpgrades.forEach(upgrade => {
-                    if (upgrade.type == 2) {
-                        stats.push(upgrade.name);
-                        if (upgrade.max != 1) values.push("x" + upgrade.current);
-                    }
-                });
-                let end = stats.length;
-                if (starting == end) stats.push("No Upgrades");
             }
+            // let starting = stats.length;
+            // this.upgrade.currentUpgrades.forEach(upgrade => {
+            //     if (upgrade.type == 1) {
+            //         stats.push(upgrade.name);
+            //         if (upgrade.max != 1) values.push("x" + upgrade.current);
+            //     }
+            // });
+            // let end = stats.length;
+            // if (starting == end) stats.push("No Upgrades");
         }
         if (attack == "Bomb") {
             if (!this.game.adventurer.enableBomb) {
                 ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
-                ctx.fillText("Get Upgrade to Unlock", 85 + (this.width - 50) / 2, y + 40 + (this.height - y) / 2);
+                ctx.fillText("Get Upgrade to Unlock", this.startX + 25 + (this.width - 50) / 2, y + 40 + (this.height - y) / 2); //this.height - y - 50
             } else {
-                stats = ["Damage", "Cooldown", "Knockback", "Explosion Size", "Retrieval Speed ", "Max Amount", "", "Bomb Upgrade:"];
+                title.push("Bomb Stats:");
+                stats = ["Damage", "Cooldown", "Knockback", "Explosion Size", "Retrieval Speed ", "Max Amount", ""];
                 values = [`${this.game.adventurer.bombDamage}`, `${this.game.adventurer.bombCooldown.toFixed(1)} secs`,
                 `${this.game.adventurer.bombKnockback / 1000}`, `${this.game.adventurer.bombExplosionScale}`,
-                `${this.game.adventurer.bombCooldownRetrieve.toFixed(1)} secs`, `${this.game.adventurer.bombMaxAmount}`, "", ""
+                `${this.game.adventurer.bombCooldownRetrieve.toFixed(1)} secs`, `${this.game.adventurer.bombMaxAmount}`, ""
                 ];
-                let starting = stats.length;
-                this.upgrade.currentUpgrades.forEach(upgrade => {
-                    if (upgrade.type == 3) {
-                        stats.push(upgrade.name);
-                        if (upgrade.max != 1) values.push("x" + upgrade.current);
-                    }
-                });
-                let end = stats.length;
-                if (starting == end) stats.push("No Upgrades");
+                // let starting = stats.length;
+                // this.upgrade.currentUpgrades.forEach(upgrade => {
+                //     if (upgrade.type == 3) {
+                //         stats.push(upgrade.name);
+                //         if (upgrade.max != 1) values.push("x" + upgrade.current);
+                //     }
+                // });
+                // let end = stats.length;
+                // if (starting == end) stats.push("No Upgrades");
             }
 
-        } 
-        ctx.textAlign = "left"; 
-        ctx.textBaseline = "top"; 
-        let currentY = y + 60;
-        for (let line of stats) {
-            ctx.fillText(line, 100, currentY);
-            currentY += 20;
         }
-        currentY = y + 60;
-        ctx.textAlign = "right"; 
-        for (let line of values) {
-            ctx.fillText(line, this.width + 20, currentY);
-            currentY += 20;
+        if (attack == "DKBolt") {
+            if (!this.game.adventurer.enableBolt) {
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText("Get Upgrade to Unlock", this.startX + 25 + (this.width - 50) / 2, y + 40 + (this.height - y) / 2);
+            } else {
+                title.push("Dark Bolt Stats:");
+                stats = ["Damage", "Cooldown", "Explosion Size", "Retrieval Speed ", "Max Amount", ""];
+                values = [`${this.game.adventurer.boltDamage}`, `${this.game.adventurer.boltCooldown.toFixed(1)} secs`,
+                    `${this.game.adventurer.boltScale}`, `${this.game.adventurer.boltCooldownRetrieve.toFixed(1)} secs`, 
+                    `${this.game.adventurer.boltMaxAmount}`
+                ];
+                // let starting = stats.length;
+                // this.upgrade.currentUpgrades.forEach(upgrade => {
+                //     if (upgrade.type == 3) {
+                //         stats.push(upgrade.name);
+                //         if (upgrade.max != 1) values.push("x" + upgrade.current);
+                //     }
+                // });
+                // let end = stats.length;
+                // if (starting == end) stats.push("No Upgrades");
+            }
+        }
+
+        // }
+        // let fontSize = 12;
+        // console.log(stats.length);
+        // if (stats.length > 20) {
+        //     fontSize = 12;
+        // }
+        // if (stats.length > 23) {
+        //     fontSize = 10;
+        // }
+        // if (stats.length > 25) {
+        //     fontSize = 8;
+        // }
+        // ctx.font = fontSize + 'px "Press Start 2P"'
+        // 20 - 12, 23 - 11
+        if (stats.length > 0) {
+            ctx.textAlign = "left"; 
+            ctx.textBaseline = "top"; 
+            let currentY = y + 60;
+            ctx.font = '14px "Press Start 2P"';
+            ctx.fillText(title[0], this.startX + 40, currentY); //Title of stat
+            currentY += 25;
+            ctx.font = '12px "Press Start 2P"';
+    
+            for (let line of stats) {
+                ctx.fillText(line, this.startX + 40, currentY);
+                currentY += 20;
+            }
+            currentY = y + 85;
+            ctx.textAlign = "right"; 
+            for (let line of values) {
+                ctx.fillText(line, this.width + 20, currentY);
+                currentY += 20;
+            }
+    
+            if (magicStats.length > 0) {
+                let nextY = currentY;
+                ctx.textAlign = "left"; 
+                ctx.font = '14px "Press Start 2P"';
+                ctx.fillText(title[1], this.startX + 40, currentY); //title of stat
+                nextY += 25;
+                ctx.font = '12px "Press Start 2P"';
+    
+                for (let line of magicStats) {
+                    ctx.fillText(line, this.startX + 40, nextY);
+                    nextY += 20;
+                }
+                nextY = currentY + 25;
+                ctx.textAlign = "right"; 
+                for (let line of magicValues) {
+                    ctx.fillText(line, this.width + 20, nextY);
+                    nextY += 20;
+                }
+            }
         }
         //Reset changes
         ctx.textAlign = "left";
         ctx.textBaseline = "center";
+    }
+    displayUpgrades(ctx) {
+        ctx.beginPath();
+        ctx.roundRect(PARAMS.CANVAS_WIDTH / 2, this.startY, this.width, this.height, [10]);
+        ctx.strokeStyle = "Black";
+        ctx.lineWidth = 3;
+        ctx.fillStyle = rgba(0,0,0, 0.5);
+        ctx.fill();
+        ctx.stroke();
+        ctx.lineWidth = 1;
+        ctx.textAlign = "left"; 
+        ctx.textBaseline = "top"; 
+        let y = this.startY + 25;
+        let stats = [];
+        let values = [];
+        let sword = ["Sword Upgrade:"];
+        let bow = ["Bow Upgrade:"];
+        let swordSpecial = ["Sword Magic Upgrade:"];
+        let bowSpecial = ["Bow Magic Upgrade:"];
+        let darkBolt = ["DarkBolt Upgrade:"];
+        let bomb = ["Bomb Upgrade:"];
+
+        let swordAmount = [""];
+        let bowAmount = [""];
+        let swordSpecialAmount = [""];
+        let bowSpecialAmount = [""];
+        let darkBoltAmount = [""];
+        let bombAmount = [""];
+        let list = [sword, bow, swordSpecial, bowSpecial, bomb, darkBolt];
+        let list2 = [swordAmount, bowAmount, swordSpecialAmount, bowSpecialAmount, bombAmount, darkBoltAmount];
+        this.upgrade.currentUpgrades.forEach(upgrade => {
+            if (upgrade.type == 0) {
+                sword.push(upgrade.name);
+                (upgrade.max != 1) ? swordAmount.push("x" + upgrade.current) : swordAmount.push("");
+            }
+            if (upgrade.type == 1) {
+                bow.push(upgrade.name);
+                (upgrade.max != 1) ? bowAmount.push("x" + upgrade.current) : bowAmount.push("");
+            }
+            if (upgrade.type == 2) {  //Sword Magic
+                swordSpecial.push(upgrade.name);
+                (upgrade.max != 1) ? swordSpecialAmount.push("x" + upgrade.current) : swordSpecialAmount.push("");
+            }
+            if (upgrade.type == 3) { //Bomb
+                bomb.push(upgrade.name);
+                (upgrade.max != 1) ? bombAmount.push("x" + upgrade.current) : bombAmount.push("");
+            }
+            if (upgrade.type == 4) { //BowMagic
+                bowSpecial.push(upgrade.name);
+                (upgrade.max != 1) ? bowSpecialAmount.push("x" + upgrade.current) : bowSpecialAmount.push("");
+            }
+            if (upgrade.type == 5) { //DarkBolt
+                darkBolt.push(upgrade.name);
+                (upgrade.max != 1) ? darkBoltAmount.push("x" + upgrade.current) : darkBoltAmount.push("");
+            }
+        });
+        ctx.font = '24px "Press Start 2P"';
+        ctx.fillStyle = "White";
+        if (this.upgrade.currentUpgrades == 0) {
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText("No Upgrades", PARAMS.CANVAS_WIDTH / 2 + 25 + (this.width - 50) / 2, y + 40 + (this.height - y) / 2);
+        } else {
+            for (let i of list) {
+                if (i.length > 1) {
+                    stats.push(...i);
+                    stats.push("");
+                }
+            }
+            for (let i of list2) {
+                if (i.length > 1) {
+                    values.push(...i);
+                    values.push("");
+                }
+            }
+            // stats.push(...sword);
+            // values.push(...swordAmount)
+            // // if (sword.length == 1) {
+            // //     stats.push("No Upgrades"); 
+            // //     values.push("");
+            // // }
+            // stats.push("");
+            // values.push("");
+            // stats.push(...swordSpecial);
+            // values.push(...swordSpecialAmount);
+            // // if (swordSpecial.length == 1) {
+            // //     stats.push("No Upgrades"); 
+            // //     values.push("");
+            // // }
+            // stats.push("");
+            // values.push("");
+            // stats.push(...bow);
+            // values.push(...bowAmount);
+            // // if (bow.length == 1) {
+            // //     stats.push("No Upgrades"); 
+            // //     values.push("");
+            // // }
+            // stats.push("");
+            // values.push("");
+            // stats.push(...bowSpecial);
+            // values.push(...bowSpecialAmount);
+            // // if (bowSpecial.length == 1) {
+            // //     stats.push("No Upgrades"); 
+            // //     values.push("");
+            // // }
+            // stats.push("");
+            // values.push("");
+            // stats.push(...bomb);
+            // values.push(...bombAmount);
+            // // if (bomb.length == 1) {
+            // //     stats.push("No Upgrades"); 
+            // //     values.push("");
+            // // }
+            // // stats.push("");
+            // values.push("");
+            // stats.push(...darkBolt);
+            // values.push(...darkBoltAmount);
+            // // if (darkBolt.length == 1) {
+            // //     stats.push("No Upgrades"); 
+            // //     values.push("");
+            // // }
+        }
+        ctx.font = '10px "Press Start 2P"';
+        ctx.fillStyle = "White";
+        let currentY = y + 20;
+        for (let line of stats) {
+            ctx.fillText(line, PARAMS.CANVAS_WIDTH / 2 + 25, currentY);
+            currentY += 15;
+        }
+        currentY = y + 20;
+        ctx.textAlign = "right"; 
+        for (let line of values) {
+            ctx.fillText(line, PARAMS.CANVAS_WIDTH / 2 + this.width - 25, currentY);
+            currentY += 15;
+        }
+    }
+    toggleUpgradeMenu() {
+        this.upgradeMenu = !this.upgradeMenu;
     }
     
 }

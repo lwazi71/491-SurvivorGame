@@ -19,7 +19,7 @@ class Zombie {
         this.isPlayingDamageAnimation = false;
         this.attackTimer = 1;
 
-        this.healthbar = new HealthBar(this, this.game);
+        this.healthbar = this.game.addEntity(new HealthBar(this.game, this, -2, 12));
 
         this.dead = false;
         this.deathAnimationTimer = 7 * 0.15;
@@ -388,10 +388,10 @@ class Zombie {
 
         // const player = this.game.adventurer;
         // ctx.strokeRect(player.BB.x + 6 - this.game.camera.x, player.BB.y- this.game.camera.y, 20, 20);
-
-        this.healthbar.draw(ctx);
-        ctx.strokeStyle = 'Yellow';
-        ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        if (PARAMS.DEBUG) {
+            ctx.strokeStyle = 'Yellow';
+            ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        }
 
     }
     

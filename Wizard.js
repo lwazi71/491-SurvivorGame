@@ -22,6 +22,8 @@ class Wizard {
         this.collisionDamage = 14;
         
         this.health = 25;
+        this.maxHealth = 25;
+        this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 1.5, 12));
         this.dead = false;
         this.deathAnimationTimer = 4 * 0.1;
 
@@ -346,9 +348,10 @@ class Wizard {
                 this.scale
             );
         }
-        ctx.strokeStyle = 'Yellow';
-        ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
-    
+        if (PARAMS.DEBUG) {
+            ctx.strokeStyle = 'Yellow';
+            ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        }
         // Draw AOE Warning Circle
         const drawX = this.aoeTargetX - this.game.camera.x;
         const drawY = this.aoeTargetY - this.game.camera.y;
@@ -376,7 +379,9 @@ class Wizard {
         ctx.stroke();
         ctx.restore();
         //debug
-        ctx.strokeStyle = 'Green';
-        ctx.strokeRect((this.x + (this.bitSizeX * this.scale)/2 - 20) - this.game.camera.x, (this.y + (this.bitSizeY * this.scale)/2 + 50) - this.game.camera.y, 20, 20);
+        if (PARAMS.DEBUG) {
+            ctx.strokeStyle = 'Green';
+            ctx.strokeRect((this.x + (this.bitSizeX * this.scale)/2 - 20) - this.game.camera.x, (this.y + (this.bitSizeY * this.scale)/2 + 50) - this.game.camera.y, 20, 20);
+        }
     }
 }

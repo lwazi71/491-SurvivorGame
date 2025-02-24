@@ -35,6 +35,8 @@ class Minotaur {
         this.pushbackDecay = 0.9; // Determines how quickly the pushback force decays
 
         this.health = 70;
+        this.maxHealth = 70;
+        this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 5, -80));
         this.dead = false;
 
         this.entityOrder = 40;
@@ -331,12 +333,13 @@ class Minotaur {
         }
         
         // Debug: Draw bounding box
-        if (this.BB) {
-            ctx.strokeStyle = 'Red';
-            ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        if (PARAMS.DEBUG) {
+            if (this.BB) {
+                ctx.strokeStyle = 'Red';
+                ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+            }
+            ctx.strokeStyle = 'Green';
+            ctx.strokeRect((this.BB.x + this.BB.width/2) - 15 - this.game.camera.x, (this.BB.y + this.BB.height/2) - 10 - this.game.camera.y, 20, 20);
         }
-        ctx.strokeStyle = 'Green';
-        ctx.strokeRect((this.BB.x + this.BB.width/2) - 15 - this.game.camera.x, (this.BB.y + this.BB.height/2) - 10 - this.game.camera.y, 20, 20);
-
     }
 }

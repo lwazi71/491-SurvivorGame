@@ -9,6 +9,8 @@ class FreakyGhoul {
         this.speed = 180;
 
         this.health = 20;
+        this.maxHealth = 20;
+        this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 0, 7));
         this.attackPower = 10;
         this.attackCooldown = 1.0; // Cooldown in seconds between attacks
         this.attackCooldownTimer = 0; // Tracks remaining cooldown time
@@ -395,9 +397,10 @@ class FreakyGhoul {
 
 
 
-        
-        // ctx.strokeStyle = 'Yellow';
-        // ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        if (PARAMS.DEBUG) {
+            ctx.strokeStyle = 'Yellow';
+            ctx.strokeRect(this.BB.x - this.game.camera.x, this.BB.y - this.game.camera.y, this.BB.width, this.BB.height);
+        }
 
     }
     
