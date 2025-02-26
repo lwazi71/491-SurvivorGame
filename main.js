@@ -83,6 +83,9 @@ ASSET_MANAGER.queueDownload("./Sprites/Goblin/Death.png");
 ASSET_MANAGER.queueDownload("./Sprites/Boss/GoblinKing.png");
 ASSET_MANAGER.queueDownload("./Sprites/Boss/GoblinKing-flipped.png");
 ASSET_MANAGER.queueDownload("./Sprites/Boss/CoinBag.png");
+ASSET_MANAGER.queueDownload("./Sprites/Boss/GolemMech.png");
+ASSET_MANAGER.queueDownload("./Sprites/Boss/GolemMech-flipped.png");
+ASSET_MANAGER.queueDownload("./Sprites/Boss/arm_projectile.png");
 
 
 

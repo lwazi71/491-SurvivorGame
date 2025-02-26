@@ -84,12 +84,12 @@ class WaveManager {
                     oneTime: false //If we want to spawn the enemy one time. If this is true, it won't worry about the interval and just spawn at the start time
 
                 },
-                // {
-                //     startTime: 30, //After 30 seconds, zombie enemies will spawn faster now
-                //     interval: 4, count: 2, pool: "melee", enemy_type: "zombie"},
+                {
+                    startTime: 30, //After 30 seconds, zombie enemies will spawn faster now
+                    interval: 4, count: 2, pool: "melee", enemy_type: "zombie"},
                 {
                     startTime: 30, //After 1 minute, melee enemies will spawn 2 times now
-                    interval: 7, count: 1, pool: "melee", enemy_type: "blueghoul", oneTime: false},
+                    interval: 7, count: 2, pool: "melee", enemy_type: "blueghoul", oneTime: false},
                 {
                     startTime: 45, //1 minute. The interval makes it go to 1 minute
                     interval: 15, count: 2, pool: "melee", enemy_type: "crow", oneTime: false},
