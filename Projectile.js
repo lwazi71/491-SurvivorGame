@@ -21,14 +21,22 @@ class Projectile {
      * @param {*} animDuration how long does the animation last? How fast the animation will go.
      * @param {*} reverse Goes backwards for sprite 
      * @param {*} loop Loops through sprite
+     * @param {*} BBx Where the boundary x coordinate will start with this.x
+     * @param {*} BBy Where the boundary y coordinate will start with this.y
+     * @param {*} BBHeight How big our bounding box is for projectile, height wise
+     * @param {*} BBWidth How big our bounding box is for projectile, width wise
+     * @param {*} pixelX what the projectile image bitSizeX is
+     * @param {*} pixelY what the projectile image bitSizeY is
+     * @param {*} person what entity this is coming from
+     * @param {*} dynamicBB false if want to create the bounding box ourselves. true otherwise.
      */
     constructor(game, x, y, angle, damage, speed, spritePath, knockback,
         friendly, scale, piercing, lifetime, 
-        animX, animY, animSizeX, animSizeY, frameCount, animDuration, reverse, loop, BBx, BBy, BBHeight, BBWidth, pixelX, pixelY, person) {
+        animX, animY, animSizeX, animSizeY, frameCount, animDuration, reverse, loop, BBx, BBy, BBHeight, BBWidth, pixelX, pixelY, person, dynamicBB) {
 
         Object.assign(this, {game, x, y, angle, damage, speed, spritePath, knockback,
             friendly, scale, piercing, lifetime, animX, animY, animSizeX, animSizeY, 
-            frameCount, animDuration, reverse, loop, BBx, BBy, BBHeight, BBWidth, pixelX, pixelY, person});
+            frameCount, animDuration, reverse, loop, BBx, BBy, BBHeight, BBWidth, pixelX, pixelY, person, dynamicBB});
         
 
         this.spritesheet = ASSET_MANAGER.getAsset(this.spritePath);
@@ -67,23 +75,53 @@ class Projectile {
 
     updateBB() {
         // Create bounding box for collision. This only applies for arrows for now
-        this.BB = new BoundingBox(
-            this.x + this.BBx, 
-            this.y + this.BBy, 
-            this.BBHeight, 
-            this.BBWidth
-        );
-     
+
+        if (this.dynamicBB) {            
+            // Adjust the bounding box based on the angle
+            const offsetX = Math.cos(this.angle) * (this.BBx);
+            const offsetY = Math.sin(this.angle) * (this.BBy);
+            
+            this.boundingBoxX = this.x + offsetX;
+            this.boundingBoxY = this.y + offsetY;
+            // Create bounding box for collision with rotation applied
+            this.BB = new BoundingBox(
+                this.boundingBoxX, 
+                this.boundingBoxY, 
+                this.BBHeight, 
+                this.BBWidth
+            );
+        } else {
+            this.BB = new BoundingBox(
+                this.x + this.BBx, 
+                this.y + this.BBy, 
+                this.BBHeight, 
+                this.BBWidth
+            );
+        }
     }
 
     update() {
         // Reduce lifetime
         this.timer -= this.game.clockTick;
+        const player = this.game.adventurer;
+        const dx = (player.x + (player.bitSize * player.scale)/2) - this.x;
+        const dy = (player.y + (player.bitSize * player.scale)/2) - this.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        //BOSS1 and BOSS2 PROJECTILES
         if (this.timer <= 0 && this.person instanceof Boss1) { //This will only be used for boss1 because he's the only one that throws a money bag at the player
             this.removeFromWorld = true;
             this.game.addEntity(new Onecoin(this.game, (this.x + 28), (this.y + 55)));
             return;
         }
+        if (this.person instanceof GolemMech && (this.timer <= 0 || distance <= 150)) { //This will only be used for boss2 because he'll have an explosion at the end of his projectile
+            this.removeFromWorld = true;
+            this.game.camera.cameraShake(100);
+            this.game.addEntity(new CircleAOE
+                (this.game, this.boundingBoxX, this.boundingBoxY, "./Sprites/Explosion/explosion.png", null, 10, 25, 0, this, false, 0, 0, 48, 48, 8, 0.1, false, false));
+            return;
+        }
+
         if (this.timer <= 0) {
             this.removeFromWorld = true;
             return;
@@ -174,7 +212,7 @@ class Projectile {
                 }
 
                 //Mini-bosses / bosses
-                if ((entity instanceof Minotaur || entity instanceof GoblinMech || entity instanceof Cyclops || entity instanceof Boss1) && !entity.invincible) { 
+                if ((entity instanceof Minotaur || entity instanceof GoblinMech || entity instanceof Cyclops || entity instanceof Boss1 || entity instanceof GolemMech) && !entity.invincible) { 
                     if (this.BB.collide(entity.BB) && !this.hitEntities.has(entity)) {
                         this.hitEntities.add(entity);
                         entity.takeDamage(this.damage, 0);
@@ -196,6 +234,24 @@ class Projectile {
                     );
 
                     this.game.addEntity(new Threecoin(this.game, (this.x - 20), (this.y - 20)));
+
+                    if (!this.piercing) {
+                        this.removeFromWorld = true;
+                    }
+                }
+
+                //BOSS GOBLIN KING projectile
+                if (entity instanceof Adventurer && !entity.invincible && this.person instanceof GolemMech && this.BB.collide(entity.BB)) {
+                    const knockbackX = -Math.cos(this.angle) * this.knockback;
+                    const knockbackY = -Math.sin(this.angle) * this.knockback;
+                        
+                    entity.takeDamageKnockback(this.damage, this.knockback, 
+                        this.x + knockbackX, 
+                        this.y + knockbackY
+                    );
+
+                    this.game.addEntity(new CircleAOE
+                        (this.game, this.boundingBoxX, this.boundingBoxY, "./Sprites/Explosion/explosion.png", null, 10, 25, 0, this, false, 0, 0, 48, 48, 8, 0.1, false, false));
 
                     if (!this.piercing) {
                         this.removeFromWorld = true;

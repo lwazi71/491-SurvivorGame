@@ -23,7 +23,7 @@ class GameEngine {
         this.shopPause = false;
         this.deathPause = false;
 
-        this.currMap = 1;
+        this.currMap = 2;
         
 
         // Options and the Details

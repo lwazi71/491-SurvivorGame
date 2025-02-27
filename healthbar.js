@@ -181,6 +181,9 @@ class DamageNumbers {
         if (this.damageTimer <= 0) this.removeFromWorld = true;
     }
     draw(ctx) {
+        if (this.lastHealth < this.currentHealth) { //this means that the entity is healing. We don't want to show a number
+            return;
+        }
         ctx.save();
         if (this.damageTimer == this.damagerTime) {
             console.log("random");

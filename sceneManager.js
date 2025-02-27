@@ -51,7 +51,7 @@ class SceneManager {
         // this.game.addEntity(new Zombie(this.game, 200, 400));
         // this.game.addEntity(new Zombie(this.game, 300, 450));
         // this.game.addEntity(new Zombie(this.game, 130, 400));
-        //this.game.addEntity(new Zombie(this.game, 323, 400));
+        // this.game.addEntity(new Zombie(this.game, 323, 400));
         // this.game.addEntity(new Zombie(this.game, 513, 400));
         // this.game.addEntity(new Zombie(this.game, 42, 400));
         // this.game.addEntity(new BanditNecromancer(this.game, 42, 400));
@@ -60,17 +60,17 @@ class SceneManager {
 
         // this.game.addEntity(new RatMage(this.game, 200, 400));
         // this.game.addEntity(new FoxMage(this.game, 200, 400));
-        //this.game.addEntity(new Crow(this.game, 200, 400));
+        // this.game.addEntity(new Crow(this.game, 200, 400));
         // this.game.addEntity(new Slime(this.game, 200, 400));
         // this.game.addEntity(new Boar(this.game, 200, 400));
         // this.game.addEntity(new Wizard(this.game, 200, 200));
-        //this.game.addEntity(new Goblin(this.game, 200, 200));
-        // this.game.addEntity(new Cyclops(this.game, 200, 400));
+        // this.game.addEntity(new Goblin(this.game, 200, 200));
+        //  this.game.addEntity(new Cyclops(this.game, 200, 400));
         // this.game.addEntity(new Minotaur(this.game, 200, 400));
         // this.game.addEntity(new GoblinMech(this.game, 200, 400));
 
-        //this.game.addEntity(new Boss1(this.game, 200, 400));
-        this.game.addEntity(new GolemMech(this.game, 200, 200));
+        // this.game.addEntity(new Boss1(this.game, 200, 400));
+         this.game.addEntity(new GolemMech(this.game, 200, 200));
 
 
 
@@ -137,8 +137,8 @@ class SceneManager {
         const midPointY = PARAMS.CANVAS_HEIGHT / 2 ;
 
         //Update camera position to middle of the player
-        this.x = this.adventurer.x - midPointX + (this.adventurer.bitSize * this.adventurer.scale)/2 + 20; //Hard code to add 20 because character was not yet in the middle of the canvas screen. (Was more bottom right)
-        this.y = this.adventurer.y - midPointY + (this.adventurer.bitSize * this.adventurer.scale)/2 + 20; //Same here
+        this.x = this.adventurer.x - midPointX + (this.adventurer.bitSize * this.adventurer.scale)/2; //Removed + 20 here if we find a glitch.
+        this.y = this.adventurer.y - midPointY + (this.adventurer.bitSize * this.adventurer.scale)/2; 
         if (this.game.keys["p"]) {// && PARAMS.CHEATS
             this.game.addEntity(new ExperienceOrb(this.game, this.game.adventurer.x, this.game.adventurer.y));
             this.game.keys["p"] = false;
@@ -150,7 +150,7 @@ class SceneManager {
             this.shakeIntensity *= this.shakeDecay; 
         }
 
-        //this.waveManager.update();
+       // this.waveManager.update();
 
        
     }

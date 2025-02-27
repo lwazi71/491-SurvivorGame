@@ -47,6 +47,9 @@ class Boar {
 
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
 
+        this.maxChargeDuration = 10; // Maximum charge duration in seconds
+        this.currentChargeDuration = 0; 
+
         this.miniBoss = false;
 
 
@@ -178,6 +181,7 @@ class Boar {
                 this.isPreparingCharge = false;
                 this.isCharging = true;
                 this.chargeTimer = 0;
+                this.currentChargeDuration = 0;
 
                 //Calculate charge direction and target point
                 const chargeDistance = 300; //Adjust this value to control how far HellSpawn goes past the player
@@ -197,6 +201,15 @@ class Boar {
     
         if (this.isCharging) {
             this.state = 2;
+            this.currentChargeDuration += this.game.clockTick;
+
+            // Check if charge duration exceeded limit
+            if (this.currentChargeDuration >= this.maxChargeDuration) {
+                this.isCharging = false;
+                this.state = 0;
+                this.currentChargeDuration = 0;
+                return;
+            }
             // Move in charge direction
             this.x += this.chargeDirection.x * this.chargeSpeed * this.game.clockTick;
             this.y += this.chargeDirection.y * this.chargeSpeed * this.game.clockTick;
@@ -211,6 +224,7 @@ class Boar {
             if (currentDistanceToTarget <= 10) {
                 this.isCharging = false;
                 this.state = 0;
+                this.currentChargeDuration = 0;  // Reset the duration timer
             }
         }
         

@@ -824,6 +824,14 @@ class Adventurer { //every entity should have update and draw!
                 "./Sprites/Slash/red-slash-flipped.png", this.slashScale, angle, slashDirection, 
                 this.attackDamage, this.knockback, this, true));
         } else if (this.swordUpgrade == 1) {
+            this.game.addEntity(new AttackSlash(this.game, slashX, slashY, "./Sprites/Slash/blue2-slash.png", 
+                "./Sprites/Slash/blue2-slash-flipped.png", this.slashScale, angle, slashDirection, 
+                this.attackDamage, this.knockback, this, true));
+        } else if (this.swordUpgrade == 2) {
+            this.game.addEntity(new AttackSlash(this.game, slashX, slashY, "./Sprites/Slash/yellow-slash.png", 
+                "./Sprites/Slash/yellow-slash-flipped.png", this.slashScale, angle, 
+                slashDirection, this.attackDamage, this.knockback, this, true));
+        } else if (this.swordUpgrade == 3) {
             this.game.addEntity(new AttackSlash(this.game, slashX, slashY, "./Sprites/Slash/blue-slash.png", 
                 "./Sprites/Slash/blue-slash-flipped.png", this.slashScale, angle, 
                 slashDirection, this.attackDamage, this.knockback, this, true));
@@ -1140,9 +1148,9 @@ class Adventurer { //every entity should have update and draw!
         if (this.experience >= this.experienceToNextLvl) {
             // this.health = this.maxhealth;
             this.level++;
-            this.attackDamage += 1;
-            this.maxhealth += 1;
-            this.health += 1;
+            // this.attackDamage += 1;
+            // this.maxhealth += 1;
+            // this.health += 1;
             this.game.upgrade.points++;
             this.experience -= this.experienceToNextLvl;
             // this.experienceToNextLvl = Math.floor(this.experienceToNextLvl * 1.1);

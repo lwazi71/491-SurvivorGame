@@ -8,7 +8,7 @@ class Necromancer {
 
         this.state = 0; //0 = idle, 1 = running, 2 = Casting, 3 = damage
         this.facing = 0; //0 = right, 1 = left
-        this.scale = 2;
+        this.scale = 4;
         this.speed = 150;
     
         this.range = 400; //Shooting range (range until our necromancer starts shooting at player)
