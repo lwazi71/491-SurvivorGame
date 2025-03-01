@@ -13,8 +13,10 @@ class SceneManager {
         this.Hud = new Hud(this.game, this.adventurer);
         this.upgrade = new UpgradeSystem(this.game);
         this.shop = new Shop(this.game);
+        new Pause(this.game);
+        this.title = new Title(this.game);
         this.enableShop = false;
-        this.title = true;
+        this.enableTitle = true;
 
         this.shakeIntensity = 0;
         this.shakeDecay = 0.9; 
@@ -26,12 +28,23 @@ class SceneManager {
         this.deathScreen = new DeathScreen(this.game);
         this.game.addEntity(this.deathScreen);
 
-        this.loadTestLevel();
+        //this.loadTestLevel();
+        // this.loadTestLevel(false);
+
     };
 
 
 
-    loadTestLevel() {
+    loadTestLevel(transition) {
+        this.clearEntities();
+        this.game.click = {x:0, y:0};
+        this.transition = transition
+        if (this.transition) {
+            this.game.addEntity(new TransitionScreen(this.game, 1));
+        } else {
+            this.game.addEntity(new GameMap(this.game));
+            //Fade in effect
+            this.game.addEntity(new FadeIn(this.game));
         var adventurer = false;
         if(!adventurer) this.game.addEntity(this.adventurer);        
         // this.game.addEntity(new Adventurer(this.game, 0, 0));
@@ -102,6 +115,7 @@ class SceneManager {
       
 
         //this.game.addEntity(new GameMap(this.game));
+        }
     }
 
     triggerDeathScreen() {
@@ -127,21 +141,35 @@ class SceneManager {
             return new Pot(this.game, x, y, pool[randomInt(pool.length)]);    
         }
     }
-
+    clearEntities() {
+        this.game.entities.forEach(entity => {
+            entity.removeFromWorld = true;
+        });
+    }
 
     update() {
         PARAMS.DEBUG = document.getElementById("debug").checked;
-        // PARAMS.CHEATS = document.getElementById("cheats").checked;
         //Midpoint of the canvas
         const midPointX = PARAMS.CANVAS_WIDTH / 2 ;
         const midPointY = PARAMS.CANVAS_HEIGHT / 2 ;
-
+        if (!this.enableTitle) {
         //Update camera position to middle of the player
         this.x = this.adventurer.x - midPointX + (this.adventurer.bitSize * this.adventurer.scale)/2; //Removed + 20 here if we find a glitch.
         this.y = this.adventurer.y - midPointY + (this.adventurer.bitSize * this.adventurer.scale)/2; 
+        }
         if (this.game.keys["p"]) {// && PARAMS.CHEATS
             this.game.addEntity(new ExperienceOrb(this.game, this.game.adventurer.x, this.game.adventurer.y));
             this.game.keys["p"] = false;
+        }
+        if (this.enableTitle) {
+            if (this.game.leftClick) {
+                this.enableTitle = false;
+                this.loadTestLevel(true);
+            }
+            this.title.update();
+            this.x += 1;
+            this.y += 0.1;
+            // this.game.addEntity(new GameMap(this.game));
         }
         
         if (this.shakeIntensity > 0) {
@@ -172,28 +200,59 @@ class SceneManager {
         // }
     
         // Draw UI text
-        ctx.font = '20px Arial';
-        ctx.fillStyle = 'white';
-        if (!this.game.adventurer.dead) {
-            this.Hud.update();
-            this.Hud.draw(ctx);
-        }
-        if(this.enableShop) {
-            this.game.shopPause = true;
-            this.enableShop = false;
-        }
+        if (this.enableTitle) {
+            this.title.draw(ctx);
+        } else if (!this.transition){
+            ctx.font = '20px Arial';
+            ctx.fillStyle = 'white';
+            if (!this.game.adventurer.dead) {
+                this.Hud.update();
+                this.Hud.draw(ctx);
+            }
+            if(this.enableShop) {
+                this.game.shopPause = true;
+                this.enableShop = false;
+            }
+        }   
     }
-    
-
 }
 class Title {
     constructor(game) {
-        Object.assign(this, {game});
+        this.game = game;
+        this.elaspedTime = 0;
+        this.changes = 0;
     }
     update() {
-
+        this.elaspedTime += this.game.clockTick;
+        if (this.elaspedTime > 2) this.elaspedTime = 0;
+        if (this.elaspedTime >= 1) {
+            this.changes -= 0.01;
+        } else if (this.elaspedTime >= 0) {
+            this.changes += 0.01;
+        }
     }
     draw(ctx) {
-
+        // ctx.fillStyle = rgba(0,0,0, 0.5);
+        // ctx.fillRect(0, 0, PARAMS.CANVAS_WIDTH, PARAMS.CANVAS_HEIGHT);
+        ctx.textAlign = "center"; 
+        ctx.textBaseline = "top"; 
+        ctx.fillStyle = "White";
+        // ctx.strokeStyle = "Black";
+        // ctx.lineWidth = 5;
+        ctx.shadowColor = "Black";
+        // ctx.lineWidth = 5;
+        ctx.shadowBlur = 15;
+        ctx.shadowOffsetY = 10;
+        ctx.font = 84 + 'px "Press Start 2P"';
+        ctx.fillText("Holawrad",PARAMS.CANVAS_WIDTH / 2, PARAMS.CANVAS_HEIGHT / 2 -200);
+        // ctx.strokeText("Holawrad",PARAMS.CANVAS_WIDTH / 2, PARAMS.CANVAS_HEIGHT / 2 -200);
+        ctx.font = 16 + this.changes + 'px "Press Start 2P"';
+        ctx.shadowOffsetY = 0;
+        // ctx.lineWidth = 1;
+        ctx.fillText("Click to Enter",PARAMS.CANVAS_WIDTH / 2, PARAMS.CANVAS_HEIGHT / 2 + 250 + this.changes);
+        // ctx.shadowBlur = 5;
+        ctx.shadowBlur = 0;
+        ctx.textAlign = "left"; 
+        ctx.textBaseline = "alphabetic"; 
     }
 }

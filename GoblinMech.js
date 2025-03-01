@@ -56,30 +56,30 @@ class GoblinMech {
 
         //RIGHT
         //idle 
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/GoblinMech.png"), 0, 0, 160, 96, 2, 0.2, false, false);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/GoblinMech.png"), 0, 0, 160, 96, 2, 0.2, false, true);
 
         //walking
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/GoblinMech.png"), 0, 96, 160, 96, 7.9, 0.08, false, false);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/GoblinMech.png"), 0, 96, 160, 96, 8, 0.08, false, true);
 
         //Attack 1
-        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/GoblinMech.png"), 0, 192, 160, 96, 6.9, 0.05, false, false);
+        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/GoblinMech.png"), 0, 192, 160, 96, 7, 0.05, false, true);
 
         //Damaged
-        this.animations[4][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/GoblinMech.png"), 160, 288, 160, 96, 3, 0.15, false, false);
+        this.animations[4][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/GoblinMech.png"), 160, 288, 160, 96, 3, 0.15, false, true);
 
 
         //LEFT
         //idle
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/GoblinMech-flipped.png"), 960, 0, 160, 96, 4.9, 0.2, true, false);
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/GoblinMech-flipped.png"), 960, 0, 160, 96, 5, 0.2, true, true);
 
         //walking
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/GoblinMech-flipped.png"), 18, 96, 160, 96, 7.9, 0.08, true, false);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/GoblinMech-flipped.png"), 18, 96, 160, 96, 8, 0.08, true, true);
 
         //Attack 1
-        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/GoblinMech-flipped.png"), 178, 192, 160, 96, 6.9, 0.05, true, false);
+        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/GoblinMech-flipped.png"), 178, 192, 160, 96, 7, 0.05, true, true);
 
         //Damaged
-        this.animations[4][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/GoblinMech-flipped.png"), 640, 288, 160, 96, 3, 0.15, true, false);
+        this.animations[4][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/GoblinMech-flipped.png"), 640, 288, 160, 96, 3, 0.15, true, true);
 
         this.warning = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/warning.png"), 0, 0, 1024, 1024, 7.9, 0.1, false, true); //used for mini bosses
 

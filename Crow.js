@@ -75,31 +75,31 @@ class Crow {
 
         //LOOKNG RIGHT
         //idle, looking to the right
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Crow/crow_idle.png"), 0, 0, 64, 64, 3.9, 0.2, false, false);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Crow/crow_idle.png"), 0, 0, 64, 64, 4, 0.2, false, true);
 
         //Walking, looking right
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Crow/crow_walk.png"), 0, 0, 64, 64, 3.9, 0.09, false, false);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Crow/crow_walk.png"), 0, 0, 64, 64, 4, 0.09, false, true);
 
         //Attack, to the right
-        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Crow/crow_attack.png"), 0, 0, 64, 64, 4.9, 0.08, false, false);
+        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Crow/crow_attack.png"), 0, 0, 64, 64, 4, 0.08, false, true);
 
         //Damaged, to the right
-        this.animations[3][0] =  new Animator(ASSET_MANAGER.getAsset("./Sprites/Crow/crow_damage.png"), 0, 0, 64, 64, 3, 0.2, false, false); 
+        this.animations[3][0] =  new Animator(ASSET_MANAGER.getAsset("./Sprites/Crow/crow_damage.png"), 0, 0, 64, 64, 3, 0.2, false, true); 
 
         
 
         //LOOKING LEFT
         //idle, looking to the left
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Crow/crow_idle-flipped.png"), 5, 0, 64, 64, 3.9, 0.2, true, false);
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Crow/crow_idle-flipped.png"), 5, 0, 64, 64, 4, 0.2, true, true);
 
         //Walking, looking left
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Crow/crow_walk-flipped.png"), 5, 0, 64, 64, 3.9, 0.09, true, false);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Crow/crow_walk-flipped.png"), 5, 0, 64, 64, 4, 0.09, true, true);
 
         //Attack, to the left
-        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Crow/crow_attack-flipped.png"), 5, 0, 64, 64, 4.9, 0.08, true, false);
+        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Crow/crow_attack-flipped.png"), 5, 0, 64, 64, 5, 0.08, true, true);
 
         //Damaged, to the left
-        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Crow/crow_damage-flipped.png"), 5, 0, 64, 64, 3, 0.2, true, false);
+        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Crow/crow_damage-flipped.png"), 5, 0, 64, 64, 3, 0.2, true, true);
 
         this.warning = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/warning.png"), 0, 0, 1024, 1024, 7.9, 0.1, false, true); //used for mini bosses
 

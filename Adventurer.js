@@ -194,96 +194,96 @@ class Adventurer { //every entity should have update and draw!
         }
 
         //idle right
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 0, 32, 32, 12.9, 0.2, false, true);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 0, 32, 32, 13, 0.2, false, true);
 
 
         //idle left 
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 256, 32, 32, 12.9, 0.2, false, true); 
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 256, 32, 32, 13, 0.2, false, true); 
         //idle up
-        this.animations[0][2] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/WalkingUp.png"), 96, 0, 32, 32, 0.9, 0.12, false, false);
+        this.animations[0][2] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/WalkingUp.png"), 96, 0, 32, 32, 1, 0.12, false, true);
 
         //idle down
-        this.animations[0][3] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/WalkingDown.png"), 93, 0, 32, 32, 0.9, 0.12, false, false);
+        this.animations[0][3] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/WalkingDown.png"), 93, 0, 32, 32, 1, 0.12, false, true);
 
         //walking right 
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 32, 32, 32, 7.9, 0.08, false, false);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 32, 32, 32, 8, 0.08, false, true);
 
         //walking left 
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 288, 32, 32, 7.9, 0.08, false, true); 
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 288, 32, 32, 8, 0.08, false, true); 
 
         //walking up 
-        this.animations[1][2] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/WalkingUp.png"), 0, -1.5, 32, 32, 7.9, 0.08, false, false);
+        this.animations[1][2] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/WalkingUp.png"), 0, -1.5, 32, 32, 8, 0.08, false, true);
 
         //walking down
-        this.animations[1][3] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/WalkingDown.png"), -3, -2, 32, 32, 7.9, 0.08, false, false);
+        this.animations[1][3] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/WalkingDown.png"), -3, -2, 32, 32, 8, 0.08, false, true);
 
         //jump right/up
-        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 160, 32, 32, 5.9, 0.08, false, false);
+        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 160, 32, 32, 6, 0.08, false, true);
 
         //jump left/maybe down
-        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 416, 32, 32, 5.9, 0.08, false, false);
+        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 416, 32, 32, 6, 0.08, false, true);
 
         //attack1 right/down
-        this.animations[4][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 0, 64, 32, 32, 10, 0.056, false, false);
+        this.animations[4][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 0, 64, 32, 32, 10, 0.056, false, true);
 
         //attack1 left
-        this.animations[4][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 320, 32, 32, 10, 0.056, false, false);
+        this.animations[4][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 320, 32, 32, 10, 0.056, false, true);
 
         //attack up
-        this.animations[4][2] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AttackUp.png"), -3, 2, 32, 32, 10, 0.056, false, false);
+        this.animations[4][2] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AttackUp.png"), -3, 2, 32, 32, 10, 0.056, false, true);
 
         //attack2 right
-        this.animations[5][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 2, 96, 32, 32, 10, 0.056, false, false);
+        this.animations[5][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 2, 96, 32, 32, 10, 0.056, false, true);
 
         //attack2 left
-        this.animations[5][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 352, 32, 32, 10, 0.056, false, false);
+        this.animations[5][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 352, 32, 32, 10, 0.056, false, true);
 
         //attack3 right/down
-        this.animations[6][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 3.1, 128, 32, 32, 10, 0.056, false, false);
+        this.animations[6][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 3.1, 128, 32, 32, 10, 0.056, false, true);
 
         //attack 3 left/down
-        this.animations[6][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 384, 32, 32, 10, 0.056, false, false);
+        this.animations[6][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 384, 32, 32, 10, 0.056, false, true);
 
         //roll right/up
-        this.animations[7][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), -2, 384, 32, 32, 5, 0.075, false, false);
+        this.animations[7][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), -2, 384, 32, 32, 5, 0.075, false, true);
 
         //roll left/down
-        this.animations[7][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2Flipped.png"), 256, 384, 32, 32, 5, 0.075, true, false); //maybe take a look at this
+        this.animations[7][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2Flipped.png"), 256, 384, 32, 32, 5, 0.075, true, true); //maybe take a look at this
 
         //climbing up ladder
-        this.animations[8][2] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 0, 256, 32, 32, 3.9, 0.15, false, false);
+        this.animations[8][2] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 0, 256, 32, 32, 4, 0.15, false, true);
         
         //climbing down ladder
-        this.animations[8][3] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 0, 256, 32, 32, 3.9, 0.15, true, false);
+        this.animations[8][3] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 0, 256, 32, 32, 4, 0.15, true, true);
 
         //bow right
-        this.animations[9][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 160, 288, 32, 32, 3, 0.1, false, false);
+        this.animations[9][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 160, 288, 32, 32, 3, 0.1, false, true);
 
         //bow left
-        this.animations[9][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/BowLeft.png"), 0, -8, 32, 32, 3, 0.1, true, false);
+        this.animations[9][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/BowLeft.png"), 0, -8, 32, 32, 3, 0.1, true, true);
 
 
         //damaged to the right/up
-        this.animations[10][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 32, 192, 32, 32, 3, 0.12, false, false);
+        this.animations[10][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 32, 192, 32, 32, 3, 0.12, false, true);
 
         //damaged to the left/down
-        this.animations[10][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 32, 449, 32, 32, 3, 0.12, false, false);
+        this.animations[10][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 32, 449, 32, 32, 3, 0.12, false, true);
 
         //damaged to when hit looking up (honestly didnt need up and down)
-        this.animations[10][2] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 32, 192, 32, 32, 3, 0.12, false, false);
+        this.animations[10][2] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 32, 192, 32, 32, 3, 0.12, false, true);
 
         //damaged when hit looking down
-        this.animations[10][3] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 32, 192, 32, 32, 3, 0.12, false, false);
+        this.animations[10][3] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 32, 192, 32, 32, 3, 0.12, false, true);
 
         //magic animation, right
-        this.animations[11][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 0, 320, 32, 32, 6, 0.1, true, false);
+        this.animations[11][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 0, 320, 32, 32, 6, 0.1, true, true);
 
-        this.animations[11][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2Flipped.png"), 224, 320, 32, 32, 6, 0.1, false, false);
+        this.animations[11][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2Flipped.png"), 224, 320, 32, 32, 6, 0.1, false, true);
 
         //magic animations, but hands up. Will be used for lightning
-        this.animations[12][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 0, 320, 32, 32, 6, 0.1, false, false);
+        this.animations[12][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 0, 320, 32, 32, 6, 0.1, false, true);
 
-        this.animations[12][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2Flipped.png"), 224, 320, 32, 32, 6, 0.1, true, false);
+        this.animations[12][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2Flipped.png"), 224, 320, 32, 32, 6, 0.1, true, true);
 
         //death animation
         this.deadAnim = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 0, 448, 32, 32, 8, 0.12, false, false); 
@@ -891,12 +891,12 @@ class Adventurer { //every entity should have update and draw!
             angles.forEach(angle => {
                 this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, this.bowDamage, this.arrowSpeed, 
                     "./Sprites/Projectiles/Arrows_pack.png", this.bowKnockback, true, 2, this.piercing,
-                    2, 0, -6, 32, 32, 1, 0.2, false, false, - 15, -15, this.bitSize * 2 - 35, this.bitSize * 2 - 35, this.bitSize, this.bitSize, this)); 
+                    2, 0, -6, 32, 32, 1, 0.2, false, true, - 15, -15, this.bitSize * 2 - 35, this.bitSize * 2 - 35, this.bitSize, this.bitSize, this)); 
             });
         } else {
             this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, this.bowDamage, this.arrowSpeed, 
                 "./Sprites/Projectiles/Arrows_pack.png", this.bowKnockback, true, 2, this.piercing,
-                2, 0, -6, 32, 32, 1, 0.2, false, false, - 15, -15, this.bitSize * 2 - 35, this.bitSize * 2 - 35, this.bitSize, this.bitSize, this)); 
+                2, 0, -6, 32, 32, 1, 0.2, false, true, - 15, -15, this.bitSize * 2 - 35, this.bitSize * 2 - 35, this.bitSize, this.bitSize, this)); 
         }
         //bounding box will always start at this.x for the projectile. The -15 is just something that we could maybe offset it by. If no offset,  then we could just put 0
 

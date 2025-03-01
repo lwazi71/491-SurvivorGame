@@ -65,29 +65,29 @@ class Imp {
         }
         //RIGHT
         //idle
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 0, 32, 32, 7, 0.2, false, false);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 0, 32, 32, 7, 0.2, false, true);
 
         //walking
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 32, 32, 32, 7.9, 0.1, false, false);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 32, 32, 32, 8, 0.1, false, true);
 
         //casting
-        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 64, 32, 32, 5.9, 0.1, false, false);
+        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 64, 32, 32, 6, 0.1, false, true);
 
         //damaged
-        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 32, 96, 32, 32, 3, 0.2, false, false);
+        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 32, 96, 32, 32, 3, 0.2, false, true);
 
         //LEFT
         //idle
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 192, 32, 32, 8, 0.2, false, false);
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 192, 32, 32, 8, 0.2, false, true);
 
         //running
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 224, 32, 32, 7.9, 0.1, false, false);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 224, 32, 32, 8, 0.1, false, true);
 
         //casting
-        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 256, 32, 32, 5.9, 0.1, false, false);
+        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 256, 32, 32, 6, 0.1, false, true);
 
         //damaged
-        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 32, 288, 32, 32, 3, 0.2, false, false);
+        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 32, 288, 32, 32, 3, 0.2, false, true);
     
         this.warning = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/warning.png"), 0, 0, 1024, 1024, 7.9, 0.1, false, true); //used for mini bosses
 
@@ -258,7 +258,7 @@ class Imp {
         //create the projectile
         this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, this.damage, this.castSpeed, 
             "./Sprites/Magic/FireProjectile.png", 0, false, 3, false, 2,
-            0, 0, 16, 16, 30, 0.1, false, false, -16, -23, 32, 32, 16, 16, this));
+            0, 0, 16, 16, 30, 0.1, false, true, -16, -23, 32, 32, 16, 16, this));
 
     }
 

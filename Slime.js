@@ -81,13 +81,13 @@ class Slime {
 
         //LOOKNG RIGHT
         //idle/walking, looking to the right
-        this.animations[0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Slime/slime.png"), 0, 0, 26, 17, 2, 0.5, false, false);
+        this.animations[0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Slime/slime.png"), 0, 0, 26, 17, 2, 0.5, false, true);
 
         //Charge, to the right
-        this.animations[1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Slime/slime.png"), 0, 0, 26, 17, 1.9, 0.07, false, false);
+        this.animations[1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Slime/slime.png"), 0, 0, 26, 17, 2, 0.07, false, true);
 
         //Damaged, to the right
-        this.animations[2] =  new Animator(ASSET_MANAGER.getAsset("./Sprites/Slime/slime.png"), 0, 17, 26, 17, 1, 0.2, false, false); 
+        this.animations[2] =  new Animator(ASSET_MANAGER.getAsset("./Sprites/Slime/slime.png"), 0, 17, 26, 17, 1, 0.2, false, true); 
 
         this.warning = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/warning.png"), 0, 0, 1024, 1024, 7.9, 0.1, false, true); //used for mini bosses
 

@@ -51,6 +51,7 @@ ASSET_MANAGER.queueDownload("./Sprites/Mages/RatMage-Flipped.png")
 ASSET_MANAGER.queueDownload("./Sprites/Mages/FoxMage.png")
 ASSET_MANAGER.queueDownload("./Sprites/Mages/FoxMage-Flipped.png")
 ASSET_MANAGER.queueDownload("./Sprites/Mages/Imp.png")
+ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_idle.png")
 ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_attack.png")
 ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_walk.png");
 ASSET_MANAGER.queueDownload("./Sprites/Crow/crow_damage.png");

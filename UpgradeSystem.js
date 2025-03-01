@@ -484,13 +484,6 @@ class UpgradeSystem {
             this.player.update();
         } else {
             this.canReroll = this.game.adventurer.coins >= 10 && !this.noUpgrades3;
-            let mouseX = 0;
-            let mouseY = 0;
-            if (this.game.click != null) {
-                mouseX = this.game.click.x;
-                mouseY = this.game.click.y;
-            }
-            let mouse = {x: mouseX, y: mouseY};
             let width = 275;
             let height = 425;
             let x = PARAMS.CANVAS_WIDTH / 2 - width / 2;
@@ -506,39 +499,35 @@ class UpgradeSystem {
             this.makingChoice = true;
             if (this.rerollTimer <= 0) {
                 //Option 1 keys and mouse area
-                if((this.game.keys["1"] && !this.noUpgrades1) ||
-                (mouseX > x - 300 && mouseX < x - 300 + width &&
-                mouseY > y && mouseY < y + height && this.game.leftClick && !this.noUpgrades1)
-                ) {
+                if ((this.game.keys["1"] && !this.noUpgrades1) || (this.game.isClicking(x - 300, y, width, height) && 
+                this.game.leftClick && !this.noUpgrades1)) 
+                {
                     this.selectedUpgrade = this.first;
                 }
                 //Option 2 keys and mouse area
-                if((this.game.keys["2"] && !this.noUpgrades2) ||
-                        (mouseX > x && mouseX < x + width &&
-                        mouseY > y && mouseY < y + height && this.game.leftClick && !this.noUpgrades2)
-                ) {
+                if ((this.game.keys["2"] && !this.noUpgrades2) || (this.game.isClicking(x, y, width, height) && 
+                this.game.leftClick && !this.noUpgrades2)) 
+                {
                     this.selectedUpgrade = this.second;
                 }
                 //Option 3 keys and mouse area
-                if((this.game.keys["3"] && !this.noUpgrades3) ||
-                    (mouseX > x + 300 && mouseX < x + 300 + width &&
-                    mouseY > y && mouseY < y + height && this.game.leftClick && !this.noUpgrades3)
-                ) {
+                if ((this.game.keys["3"] && !this.noUpgrades3) || (this.game.isClicking(x + 300, y, width, height) && 
+                this.game.leftClick && !this.noUpgrades3)) 
+                {
                     this.selectedUpgrade = this.third;
                 }
                 //Selection Button location
-                if (this.selectedUpgrade != null && mouseX > this.centerButtonX + 150 && mouseX < this.centerButtonX + this.buttonWidth + 150 &&
-                    mouseY > this.centerButtonY && mouseY < this.centerButtonY + this.buttonHeight ||
-                    this.selectedUpgrade != null && this.game.keys["enter"]
-
-                ) {
+                if (this.selectedUpgrade != null && 
+                    this.game.isClicking(this.centerButtonX + 150, this.centerButtonY, this.buttonWidth, this.buttonHeight) ||
+                    this.selectedUpgrade != null && this.game.keys["enter"]) 
+                {
                     this.updateChoice(this.selectedUpgrade);
                     this.game.keys["enter"] = false;
                 }
                 //Reroll Button location
-                if (mouseX > this.centerButtonX - 150 && mouseX < this.centerButtonX + this.buttonWidth - 150 &&
-                    mouseY > this.centerButtonY && mouseY < this.centerButtonY + this.buttonHeight && this.canReroll ||
-                    this.game.keys["r"] && this.canReroll) {
+                if (this.game.isClicking(this.centerButtonX - 150, this.centerButtonY, this.buttonWidth, this.buttonHeight) && 
+                this.canReroll || this.game.keys["r"] && this.canReroll) 
+                {
                     this.getThreeUpgrades();
                     this.game.adventurer.coins -= 10;
                     this.game.keys["r"] = false;
@@ -547,12 +536,12 @@ class UpgradeSystem {
                     this.rerollTimer = 0.5;
                 }
                 //Player stat location
-                if(getDistance(mouse, circle) < circleRadius) {
+                if (getDistance(this.game.click, circle) < circleRadius) {
                     this.enablePlayerStats = true;
                     this.game.click = {x:0, y:0};
                 }
                 //Exit Button
-                if (this.checkExitButton(mouseX, mouseY)) {
+                if (this.checkExitButton(this.game.click.x, this.game.click.y)) {
                     this.game.click = {x:0, y:0};
                     this.game.toggleUpgradePause();
                     this.makingChoice = false;
@@ -629,12 +618,12 @@ class UpgradeSystem {
         this.game.adventurer.swordUpgrade = 1;
     }
     draw(ctx) {
-        let mouseX = 0;
-        let mouseY = 0;
-        if (this.game.mouse != null) {
-            mouseX = this.game.mouse.x;
-            mouseY = this.game.mouse.y;
-        }
+        // let mouseX = 0;
+        // let mouseY = 0;
+        // if (this.game.mouse != null) {
+        //     mouseX = this.game.mouse.x;
+        //     mouseY = this.game.mouse.y;
+        // }
         //visual for upgrade screen
         if (this.makingChoice) {
             if (this.enablePlayerStats) {
@@ -642,7 +631,7 @@ class UpgradeSystem {
                 this.player.draw(ctx);
             } else {
                 this.game.draw(ctx); // Only way to make it transparent
-                this.upgradeBackground(ctx, mouseX, mouseY);
+                this.upgradeBackground(ctx);
                 ctx.font = '18px "Press Start 2P"';
                 ctx.lineWidth = 1;
                 ctx.textAlign = "center"; 
@@ -701,17 +690,17 @@ class UpgradeSystem {
                     ctx.fillStyle = "White"
                     ctx.fillText(`Level Up to see Upgrades`, PARAMS.CANVAS_WIDTH / 2, PARAMS.CANVAS_HEIGHT / 2);
                 }
-                this.heroStatus(ctx, mouseX, mouseY); //Last so it draw over everything
+                this.heroStatus(ctx); //Last so it draw over everything
             }
         } 
-        this.exitButton(ctx, mouseX, mouseY);
+        this.exitButton(ctx);
         this.game.resetDrawingValues();
     }
     resetList() {
         this.basic = [];
         this.unique = [];
     }
-    upgradeBackground(ctx, X, Y) {
+    upgradeBackground(ctx) {
         let width = 275;
         let height = 425;
         let x = PARAMS.CANVAS_WIDTH / 2 - width / 2;
@@ -721,8 +710,7 @@ class UpgradeSystem {
         if (!this.noUpgrades && this.points > 0) {
             //First Upgrade
             ctx.beginPath();
-            if (X > x - 300 && X < x - 300 + width &&
-                Y > y && Y < y + height && !this.noUpgrades1 || 
+            if (this.game.isHovering(x - 300, y, width, height) && !this.noUpgrades1 || 
                 this.selectedUpgrade == this.first && this.selectedUpgrade != null
             ) {
                 ctx.fillStyle = rgb(50, 50, 50);
@@ -745,8 +733,7 @@ class UpgradeSystem {
 
             //Second Upgrade
             ctx.beginPath();
-            if (X > x && X < x + width &&
-                Y > y && Y < y + height && !this.noUpgrades2 || 
+            if (this.game.isHovering(x, y, width, height) && !this.noUpgrades2 || 
                 this.selectedUpgrade == this.second && this.selectedUpgrade != null
             ) {
                 ctx.fillStyle = rgb(50, 50, 50);
@@ -769,8 +756,7 @@ class UpgradeSystem {
 
             //Third Upgrade
             ctx.beginPath();
-            if (X > x + 300 && X < x + 300 + width &&
-                Y > y && Y < y + height && !this.noUpgrades3 || 
+            if (this.game.isHovering(x + 300, y, width, height) && !this.noUpgrades3 || 
                 this.selectedUpgrade == this.third && this.selectedUpgrade != null
             ) {
                 ctx.fillStyle = rgb(50, 50, 50);
@@ -799,10 +785,9 @@ class UpgradeSystem {
             ctx.textAlign = "center"; 
             ctx.textBaseline = "middle"; 
 
-            if (X > this.centerButtonX - 150 && X < this.centerButtonX + this.buttonWidth - 150 &&
-                Y > this.centerButtonY && Y < this.centerButtonY + this.buttonHeight && this.canReroll
-            ) {
-                // console.log("hovering");
+            if (this.game.isHovering(this.centerButtonX - 150, this.centerButtonY, this.buttonWidth, this.buttonHeight) 
+                && this.canReroll) 
+            {
                 ctx.fillStyle = rgb(41, 41, 41);
             } else {
                 ctx.fillStyle = rgb(74, 74, 74);
@@ -841,8 +826,7 @@ class UpgradeSystem {
             //Select button
             //Drawing the buttons
             if (this.selectedUpgrade != null) {
-                if (X > this.centerButtonX + 150 && X < this.centerButtonX + this.buttonWidth + 150 &&
-                    Y > this.centerButtonY && Y < this.centerButtonY + this.buttonHeight
+                if (this.game.isHovering(this.centerButtonX + 150, this.centerButtonY, this.buttonWidth, this.buttonHeight)
                 ) {
                     // console.log("hovering");
                     ctx.fillStyle = rgb(41, 41, 41);
@@ -870,14 +854,13 @@ class UpgradeSystem {
 
         }
     }
-    heroStatus(ctx, X, Y) {
-        let mouse = {x: X, y: Y};
+    heroStatus(ctx) {
         let circleX = this.heroIconX + (this.heroIconLength * this.heroIconScale / 2);
         let circleY = this.heroIconY + (this.heroIconHeight * this.heroIconScale / 2);
         let circle = {x: circleX, y: circleY};
         let circleRadius = (this.heroIconHeight / 2) * this.heroIconScale;
         let padding = 10;
-        if(getDistance(mouse, circle) < circleRadius) {
+        if(getDistance(this.game.mouse, circle) < circleRadius) {
             this.heroIconScale = 5;
             this.heroIconX = PARAMS.CANVAS_WIDTH - this.heroIconLength * this.heroIconScale - 5;
             this.heroIconY = PARAMS.CANVAS_HEIGHT - this.heroIconHeight * this.heroIconScale - 5;
@@ -919,8 +902,6 @@ class UpgradeSystem {
           const testWidth = metrics.width;
       
           if (testWidth > maxWidth && i > 0) {
-            ctx.textAlign = "center"; 
-            ctx.textBaseline = "middle"; 
             ctx.fillText(line, x, y);
             line = ' ' + words[i] + ' ';
             y += lineHeight;
@@ -930,19 +911,13 @@ class UpgradeSystem {
         }
         ctx.fillText(line, x, y);
     }
-    exitButton(ctx, mouseX, mouseY) {
+    exitButton(ctx) {
         let buffer = 10;
         ctx.beginPath();
         ctx.roundRect(PARAMS.CANVAS_WIDTH - this.exitButtonSize.width - buffer, buffer, this.exitButtonSize.width, this.exitButtonSize.height, [10, 30, 10, 10]);
         ctx.lineWidth = 5;
         ctx.strokeStyle = rgb(200, 0, 0);
-        if (mouseX > PARAMS.CANVAS_WIDTH - this.exitButtonSize.width - buffer && mouseX < PARAMS.CANVAS_WIDTH + this.exitButtonSize.width &&
-            mouseY > buffer && mouseY < buffer+this.exitButtonSize.height
-        ) {
-            ctx.fillStyle = rgb(100, 0, 0);
-        } else {
-            ctx.fillStyle = rgb(150, 0, 0);
-        }
+        (this.checkExitButton(this.game.mouse.x, this.game.mouse.y)) ? ctx.fillStyle = rgb(100, 0, 0) : ctx.fillStyle = rgb(150, 0, 0);
         ctx.fill();
         ctx.stroke();
         ctx.font = '36px "Press Start 2P"';
@@ -1031,8 +1006,7 @@ class PlayerStatus {
         let button = {width: (this.width - 20) / 4, height: 40};
 
         let y = this.startY + 50 + 10 + this.healthBarSize.height * 2 + 20 + 70 + 40;
-        if (this.game.keys["1"] || mouseX > this.startX + 10 && mouseX < this.startX + 10 + button.width &&
-            mouseY > y && mouseY < y + button.height) {
+        if (this.game.keys["1"] || this.game.isClicking(this.startX + 10, y, button.width, button.height)) {
             this.animation[1].elapsedTime = 0;
             this.actions = 1;
             this.currentTimer = this.swordDuration;
@@ -1040,8 +1014,7 @@ class PlayerStatus {
             this.selected = "Sword";
             this.game.click = {x: 0, y: 0};
         }
-        if (this.game.keys["2"] || mouseX > this.startX + 10 + button.width && mouseX < this.startX + 10 + button.width * 2 &&
-            mouseY > y && mouseY < y + button.height) {
+        if (this.game.keys["2"] || this.game.isClicking(this.startX + 10 + button.width, y, button.width, button.height)) {
             this.animation[2].elapsedTime = 0;
             this.actions = 2;
             this.currentTimer = this.bowDuration;
@@ -1049,8 +1022,7 @@ class PlayerStatus {
             this.selected = "Bow";
             this.game.click = {x: 0, y: 0};
         }
-        if (this.game.keys["3"] || mouseX > this.startX + 10 + button.width * 2 && mouseX < this.startX + 10 + button.width * 3 &&
-            mouseY > y && mouseY < y + button.height) {
+        if (this.game.keys["3"] || this.game.isClicking(this.startX + 10 + button.width * 2, y, button.width, button.height)) {
             this.animation[4].elapsedTime = 0;
             this.actions = 4;
             this.currentTimer = this.rollDuration;
@@ -1058,9 +1030,8 @@ class PlayerStatus {
             this.selected = "Bomb";
             this.game.click = {x: 0, y: 0};
         }
-        if (this.game.keys["4"] || mouseX > this.startX + 10 + button.width * 3 && mouseX < this.startX + 10 + button.width * 4 &&
-            mouseY > y && mouseY < y + button.height) {
-                this.animation[3].elapsedTime = 0;
+        if (this.game.keys["4"] || this.game.isClicking(this.startX + 10 + button.width * 3, y, button.width, button.height)) {
+            this.animation[3].elapsedTime = 0;
             this.actions = 3;
             this.currentTimer = this.magicDuration;
             this.game.keys["4"] = false;
@@ -1070,13 +1041,11 @@ class PlayerStatus {
         //Upgrade viewer button
         let upgradeButtonX = this.startX + this.width / 2 - this.upgradeButton.length / 2;
         let upgradeButtonY = y - 30 + this.width - 25 * 2 + 20 - 40;
-        if (mouseX > upgradeButtonX && mouseX < upgradeButtonX + this.upgradeButton.length &&
-            mouseY > upgradeButtonY && mouseY < upgradeButtonY + this.upgradeButton.height) {
-                this.game.click = {x:0, y:0};
-                this.toggleUpgradeMenu();
+        if (this.game.isClicking(upgradeButtonX, upgradeButtonY, this.upgradeButton.length, this.upgradeButton.height)) {
+            this.game.click = {x:0, y:0};
+            this.toggleUpgradeMenu();
         }
-        if (mouseX > PARAMS.CANVAS_WIDTH - this.exitButtonSize.width - 10 && mouseX < PARAMS.CANVAS_WIDTH + this.exitButtonSize.width &&
-            mouseY > 10 && mouseY < 10 + this.exitButtonSize.height) {
+        if (this.upgrade.checkExitButton(this.game.click.x, this.game.click.y)) {
             this.game.click = {x:0, y:0};
             this.upgrade.enablePlayerStats = false;
         }
@@ -1226,19 +1195,12 @@ class PlayerStatus {
     drawUpgradeButton(ctx) {
         let oldY = this.startY + 50 + 10 + this.healthBarSize.height * 2 + 20 + 70;
         let y = oldY - 30 + this.width - 25 * 2 + 20;
-        let mouseX = 0;
-        let mouseY = 0;
-        if (this.game.mouse != null) {
-            mouseX = this.game.mouse.x;
-            mouseY = this.game.mouse.y;
-        }
         ctx.beginPath();
         let currentX = this.startX + this.width / 2 - this.upgradeButton.length / 2;
         ctx.lineWidth = 2;
         ctx.roundRect(currentX, y, this.upgradeButton.length, this.upgradeButton.height, [10, 10, 10, 10]);
         ctx.strokeStyle = "Black";
-        if (mouseX > currentX && mouseX < currentX + this.upgradeButton.length &&
-            mouseY > y && mouseY < y + this.upgradeButton.height) {
+        if (this.game.isHovering(currentX, y, this.upgradeButton.length, this.upgradeButton.height)) {
             ctx.fillStyle = rgb(70, 70, 70);
         } else {
             ctx.fillStyle = rgb(100, 100, 100);
