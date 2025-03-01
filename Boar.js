@@ -38,8 +38,6 @@ class Boar {
         this.pushbackVector = { x: 0, y: 0 };
         this.pushbackDecay = 0.9; // Determines how quickly the pushback force decays
 
-        this.dropchance = 0.4; //40% chance of dropping something when dying
-
         this.entityOrder = 30;
 
         this.isSlowed = false;
@@ -48,6 +46,11 @@ class Boar {
         this.baseSpeed = this.speed;
 
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
+
+        this.maxChargeDuration = 10; // Maximum charge duration in seconds
+        this.currentChargeDuration = 0; 
+
+        this.miniBoss = false;
 
 
         this.animations = []; //will be used to store animations
@@ -105,6 +108,8 @@ class Boar {
 
         //Damaged, to the left
         this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boar/boar.png"), 0, 135, 32, 32, 1, 0.2, false, true);
+
+        this.warning = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/warning.png"), 0, 0, 1024, 1024, 7.9, 0.1, false, true); //used for mini bosses
 
         //death animation
         this.deadAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boar/boar-flipped.png"), 64, 101, 32, 32, 5, 0.15, true, false);
@@ -176,6 +181,7 @@ class Boar {
                 this.isPreparingCharge = false;
                 this.isCharging = true;
                 this.chargeTimer = 0;
+                this.currentChargeDuration = 0;
 
                 //Calculate charge direction and target point
                 const chargeDistance = 300; //Adjust this value to control how far HellSpawn goes past the player
@@ -195,6 +201,15 @@ class Boar {
     
         if (this.isCharging) {
             this.state = 2;
+            this.currentChargeDuration += this.game.clockTick;
+
+            // Check if charge duration exceeded limit
+            if (this.currentChargeDuration >= this.maxChargeDuration) {
+                this.isCharging = false;
+                this.state = 0;
+                this.currentChargeDuration = 0;
+                return;
+            }
             // Move in charge direction
             this.x += this.chargeDirection.x * this.chargeSpeed * this.game.clockTick;
             this.y += this.chargeDirection.y * this.chargeSpeed * this.game.clockTick;
@@ -209,6 +224,7 @@ class Boar {
             if (currentDistanceToTarget <= 10) {
                 this.isCharging = false;
                 this.state = 0;
+                this.currentChargeDuration = 0;  // Reset the duration timer
             }
         }
         
@@ -222,7 +238,7 @@ class Boar {
 
         //collision
         const entities = this.game.entities;
-        const separationDistance = 600; // Minimum distance between hellspawns
+        const separationDistance = 200; // Minimum distance between hellspawns
 
         for (let i = 0; i < entities.length; i++) {
             let entity = entities[i];
@@ -308,8 +324,13 @@ class Boar {
     
         if (this.health <= 0) {
             let drop = Math.random();
-            if(drop < this.dropchance) {
-                this.game.addEntity(new Threecoin(this.game, (this.x + 28), (this.y + 55)));
+            if(drop < this.game.adventurer.dropChance) {
+                this.game.addEntity(new Threecoin(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
+                this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
+            }
+            if (this.miniBoss) {
+                this.game.addEntity(new Chest(this.game, (this.x + (this.bitSizeX * this.scale)/2) - 125, (this.y + (this.bitSizeY * this.scale)/2) - 125));
+                this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2) + 15, (this.y + (this.bitSizeY * this.scale)/2)));
             }
             this.dead = true;
             this.state = 3;
@@ -335,12 +356,15 @@ class Boar {
 
     draw(ctx) {
        // Calculate shadow dimensions based on zombie scale
-       const shadowWidth = 80 * (this.scale / 4); 
-       const shadowHeight = 16 * (this.scale / 4);
+        const shadowWidth = 80 * (this.scale / 4); 
+        const shadowHeight = 16 * (this.scale / 4);
 
-       // Adjust shadow position to stay centered under the zombie
-       const shadowX = (this.x + (32 * (this.scale / 4))) - this.game.camera.x;
-       const shadowY = (this.y + (97 * (this.scale / 4))) - this.game.camera.y;
+        // Adjust shadow position to stay centered under the zombie
+        const shadowX = (this.x + (32 * (this.scale / 4))) - this.game.camera.x;
+        const shadowY = (this.y + (97 * (this.scale / 4))) - this.game.camera.y;
+        if (this.miniBoss) {
+            this.warning.drawFrame(this.game.clockTick, ctx, shadowX + 29, shadowY - (20 * this.scale), 0.05);
+        }   
 
        ctx.drawImage(this.shadow, 0, 0, 64, 32, shadowX, shadowY, shadowWidth, shadowHeight);
 

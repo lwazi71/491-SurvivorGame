@@ -9,6 +9,7 @@ class Boss1 { //goblin king
 
         this.profileAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/HudIcons/Boss1Hud.png"), 0, 0, 32, 32, 12.9, 0.2, false, true);
         this.healthbar = this.game.addEntity(new BossHealthBar(game, this, this.profileAnimation, 32, 0, 0, 3));
+        this.pointer = this.game.addEntity(new Pointer(game, this));
         this.state = 0; //0 = walk, 1 = attack, 2 = throwing, 3 = order, 4 = healing, 5 = jumping up, 6 = jumping down, 7 = dakmaged
         //attack will be throwing honestly
         this.facing = 0;
@@ -202,7 +203,6 @@ class Boss1 { //goblin king
 
     update() {  
         this.goblinsAlive = this.game.entities.filter(entity => entity instanceof Goblin || entity instanceof GoblinMech && !entity.dead).length;
-        console.log(this.currentHealth);
         //in case the healing goes above max health
         if (this.currentHealth >= this.maxHealth) {
             this.currentHealth = this.maxHealth;
@@ -608,6 +608,8 @@ class Boss1 { //goblin king
     
         if (this.currentHealth <= 0) {
             this.game.addEntity(new CoinPile(this.game, (this.x + 28), (this.y + 55)));
+            this.game.addEntity(new Chest(this.game, (this.x + (this.bitSizeX * this.scale)/2) - 125, (this.y + (this.bitSizeY * this.scale)/2)));
+
             this.dead = true;
             this.state = 9;
             const entities = this.game.entities;

@@ -21,10 +21,16 @@ class SceneManager {
         this.shakeIntensity = 0;
         this.shakeDecay = 0.9; 
 
+
         // Add the Game Map first so it's always underneath everything
         this.game.addEntity(new GameMap(this.game));
 
+        this.deathScreen = new DeathScreen(this.game);
+        this.game.addEntity(this.deathScreen);
+
+        //this.loadTestLevel();
         // this.loadTestLevel(false);
+
     };
 
 
@@ -72,11 +78,13 @@ class SceneManager {
         // this.game.addEntity(new Boar(this.game, 200, 400));
         // this.game.addEntity(new Wizard(this.game, 200, 200));
         // this.game.addEntity(new Goblin(this.game, 200, 200));
-        // this.game.addEntity(new Cyclops(this.game, 200, 400));
+        //  this.game.addEntity(new Cyclops(this.game, 200, 400));
         // this.game.addEntity(new Minotaur(this.game, 200, 400));
         // this.game.addEntity(new GoblinMech(this.game, 200, 400));
 
         // this.game.addEntity(new Boss1(this.game, 200, 400));
+         this.game.addEntity(new GolemMech(this.game, 200, 200));
+
 
 
         // this.game.addEntity(this.generateObject("Barrel", 100, 100));
@@ -92,9 +100,9 @@ class SceneManager {
         //find a better way to do this.
         this.game.addEntity(new Sign(this.game, 20, 20, 
             "KeyBoard Controls:      - Move using WASD              - Attack using left click " +                
-            "                    - Use Ultimate AOE using x                    - Switch weapons using 1 and 2 (Sword is 1 and Bow is 2)" + 
+            "                    - Right click on item 1 to use close Range AOE                   - Switch weapons using 1 and 2 (Sword is 1 and Bow is 2)" + 
             "                - To roll press shift (Will give invincibility frames          - Press e to place bomb down" +
-            "                    - Right click to strike down lightning"));
+            "                    - Right click on bow item to use long-ranged AOE"));
 
         this.game.addEntity(new Sign(this.game, 220, 20, 
             "KeyBoard Controls (cont):                  - Press f for Dark-bolt ability (will slow down enemies if hit and be in random places around character"));
@@ -108,6 +116,15 @@ class SceneManager {
 
         //this.game.addEntity(new GameMap(this.game));
         }
+    }
+
+    triggerDeathScreen() {
+        this.deathScreen.trigger();
+    }
+    
+
+    respawn() {
+        this.deathScreen.respawn();
     }
 
     generateObject(object, x, y) {
@@ -137,8 +154,8 @@ class SceneManager {
         const midPointY = PARAMS.CANVAS_HEIGHT / 2 ;
         if (!this.enableTitle) {
         //Update camera position to middle of the player
-        this.x = this.adventurer.x - midPointX + (this.adventurer.bitSize * this.adventurer.scale)/2 + 20; //Hard code to add 20 because character was not yet in the middle of the canvas screen. (Was more bottom right)
-        this.y = this.adventurer.y - midPointY + (this.adventurer.bitSize * this.adventurer.scale)/2 + 20; //Same here
+        this.x = this.adventurer.x - midPointX + (this.adventurer.bitSize * this.adventurer.scale)/2; //Removed + 20 here if we find a glitch.
+        this.y = this.adventurer.y - midPointY + (this.adventurer.bitSize * this.adventurer.scale)/2; 
         }
         if (this.game.keys["p"]) {// && PARAMS.CHEATS
             this.game.addEntity(new ExperienceOrb(this.game, this.game.adventurer.x, this.game.adventurer.y));
@@ -188,8 +205,10 @@ class SceneManager {
         } else if (!this.transition){
             ctx.font = '20px Arial';
             ctx.fillStyle = 'white';
-            this.Hud.update();
-            this.Hud.draw(ctx);
+            if (!this.game.adventurer.dead) {
+                this.Hud.update();
+                this.Hud.draw(ctx);
+            }
             if(this.enableShop) {
                 this.game.shopPause = true;
                 this.enableShop = false;

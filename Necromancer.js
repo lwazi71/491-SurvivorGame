@@ -8,7 +8,7 @@ class Necromancer {
 
         this.state = 0; //0 = idle, 1 = running, 2 = Casting, 3 = damage
         this.facing = 0; //0 = right, 1 = left
-        this.scale = 2;
+        this.scale = 4;
         this.speed = 150;
     
         this.range = 400; //Shooting range (range until our necromancer starts shooting at player)
@@ -41,6 +41,8 @@ class Necromancer {
         this.slowDuration = 0;
         this.slowTimer = 0;
         this.baseSpeed = this.speed;
+
+        this.miniBoss = false;
 
         this.dropchance = 0.4;
 
@@ -88,6 +90,8 @@ class Necromancer {
         //damaged
         this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/Necromancer-Flipped.png"), 1920, 640, 160, 128, 4, 0.2, true, true);
     
+        this.warning = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/warning.png"), 0, 0, 1024, 1024, 7.9, 0.1, false, true); //used for mini bosses
+
         //death animation
         this.death = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/Necromancer.png"), 160, 768, 160, 128, 8, 0.1, false, false);
     }
@@ -206,7 +210,7 @@ class Necromancer {
         this.y += directionY * moveSpeed;
 
         //COLLISIONS:
-        const separationDistance = 100; // Minimum distance between mobs
+        const separationDistance = 200; // Minimum distance between mobs
         const entities = this.game.entities;
         for (let i = 0; i < entities.length; i++) {
             let entity = entities[i];
@@ -278,8 +282,13 @@ class Necromancer {
     
         if (this.health <= 0) {
             let drop = Math.random();
-            if(drop < this.dropchance) {
-                this.game.addEntity(new Threecoin(this.game, (this.x + 28), (this.y + 55)));
+            if(drop < this.game.adventurer.dropChance) {
+                this.game.addEntity(new Threecoin(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
+                this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
+            }
+            if (this.miniBoss) {
+                this.game.addEntity(new Chest(this.game, (this.x + (this.bitSizeX * this.scale)/2) - 125, (this.y + (this.bitSizeY * this.scale)/2) - 125));
+                this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2) + 15, (this.y + (this.bitSizeY * this.scale)/2)));
             }
             this.dead = true;
             this.state = 3;
@@ -302,6 +311,10 @@ class Necromancer {
 
         const shadowX = (this.x + (128 * (this.scale / 2))) - this.game.camera.x;
         const shadowY = (this.y + (230 * (this.scale / 2))) - this.game.camera.y;
+
+        if (this.miniBoss) {
+            this.warning.drawFrame(this.game.clockTick, ctx, shadowX + 3, shadowY - (62 * this.scale), 0.05);
+        }
 
         ctx.drawImage(this.shadow, 0, 0, 64, 32, shadowX, shadowY, shadowWidth, shadowHeight);
         

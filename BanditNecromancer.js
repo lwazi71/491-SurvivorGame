@@ -36,12 +36,12 @@ class BanditNecromancer {
         this.damageAnimationDuration = 0.2; // Duration of damage animation
         this.isPlayingDamageAnimation = false;
 
-        this.dropchance = 0.4;
-
         this.isSlowed = false;
         this.slowDuration = 0;
         this.slowTimer = 0;
         this.baseSpeed = this.speed;
+
+        this.miniBoss = false;
 
         this.entityOrder = 20;
 
@@ -87,6 +87,8 @@ class BanditNecromancer {
         //damaged
         this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/BanditNecromancer-Flipped.png"), 128, 128, 32, 32, 3, 0.2, true, true);
     
+        this.warning = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/warning.png"), 0, 0, 1024, 1024, 7.9, 0.1, false, true); //used for mini bosses
+
         //death animation
         this.death = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/BanditNecromancer.png"), 32, 160, 32, 32, 7, 0.2, false, false);
     }
@@ -203,7 +205,7 @@ class BanditNecromancer {
         this.y += directionY * moveSpeed;
 
           //COLLISIONS:
-          const separationDistance = 100; // Minimum distance between mobs
+          const separationDistance = 200; // Minimum distance between mobs
           const entities = this.game.entities;
           for (let i = 0; i < entities.length; i++) {
             let entity = entities[i];
@@ -267,8 +269,13 @@ class BanditNecromancer {
     
         if (this.health <= 0) {
             let drop = Math.random();
-            if(drop < this.dropchance) {
+            if(drop < this.game.adventurer.dropChance) {
                 this.game.addEntity(new Threecoin(this.game, (this.x + 28), (this.y + 55)));
+                this.game.addEntity(new ExperienceOrb(this.game, (this.x + 28), (this.y + 55)));
+            }
+            if (this.miniBoss) {
+                this.game.addEntity(new Chest(this.game, (this.x + (this.bitSizeX * this.scale)/2) - 125, (this.y + (this.bitSizeY * this.scale)/2) - 125));
+                this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2) + 15, (this.y + (this.bitSizeY * this.scale)/2)));
             }
             this.dead = true;
             this.state = 3;
@@ -298,6 +305,10 @@ class BanditNecromancer {
 
         const shadowX = (this.x + (23 * (this.scale / 2.8))) - this.game.camera.x;
         const shadowY = (this.y + (78 * (this.scale / 2.8))) - this.game.camera.y;
+
+        if (this.miniBoss) {
+            this.warning.drawFrame(this.game.clockTick, ctx, shadowX + 3, shadowY - (33 * this.scale), 0.05);
+        }
 
         ctx.drawImage(this.shadow, 0, 0, 64, 32, shadowX, shadowY, shadowWidth, shadowHeight);
 
