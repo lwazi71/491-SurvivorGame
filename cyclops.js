@@ -47,6 +47,7 @@ class Cyclops {
         this.dropchance = 0.4;
 
         this.animations = [];
+        this.death = [];
 
         this.updateBB();
         this.loadAnimations();
@@ -61,40 +62,44 @@ class Cyclops {
                 this.animations[i].push([]);
             }
         }
+        for (var i = 0; i < 2; i++) { //2 death states
+            this.death.push([]);
+        }
         //RIGHT
         //idle
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 0, 0, 64, 64, 15, 0.2, false, false);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 0, 0, 64, 64, 15, 0.2, false, true);
 
         //walking
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 0, 64, 64, 64, 11.9, 0.1, false, false);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 0, 64, 64, 64, 12, 0.1, false, true);
 
         //attack
-        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 0, 128, 64, 64, 7, 0.1, false, false);
+        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 0, 128, 64, 64, 7, 0.1, false, true);
 
         //throwing
-        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 0, 192, 64, 64, 12.9, 0.1, false, false);
+        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 0, 192, 64, 64, 13, 0.1, false, true);
 
         //damaged
-        this.animations[4][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 64, 256, 64, 64, 2, 0.2, false, false);
+        this.animations[4][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 64, 256, 64, 64, 2, 0.2, false, true);
 
         //LEFT
         //idle
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 0, 640, 64, 64, 15, 0.2, false, false);
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 0, 640, 64, 64, 15, 0.2, false, true);
 
         //running
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 0, 704, 64, 64, 11.9, 0.1, false, false);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 0, 704, 64, 64, 12, 0.1, false, true);
 
         //attack
-        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 0, 768, 64, 64, 7, 0.1, false, false);
+        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 0, 768, 64, 64, 7, 0.1, false, true);
 
         //throwing
-        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 0, 832, 64, 64, 12.9, 0.1, false, false);
+        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 0, 832, 64, 64, 13, 0.1, false, true);
 
         //damaged
-        this.animations[4][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 64, 896, 64, 64, 2, 0.2, false, false);
+        this.animations[4][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 64, 896, 64, 64, 2, 0.2, false, true);
     
         //death animation
-        this.death = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 64, 384, 64, 64, 8, 0.1, false, false);
+        this.death[0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 64, 384, 64, 64, 8, 0.1, false, false);
+        this.death[1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 64, 1024, 64, 64, 8, 0.1, false, false);
     }
 
 
@@ -261,7 +266,7 @@ class Cyclops {
 
         this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, this.rockDamage, this.throwSpeed, 
             "./Sprites/Projectiles/rock.png", 0, false, 3, false, 2,
-            0, 0, 16, 16, 1, 1, false, false, -16, -23, 32, 32, 16, 16));
+            0, 0, 16, 16, 1, 1, false, true, -16, -23, 32, 32, 16, 16));
     }
 
 
@@ -323,7 +328,7 @@ class Cyclops {
 
         if (this.dead) {
             if (this.deathAnimationTimer > 0) {
-                this.death.drawFrame(
+                this.death[this.facing].drawFrame(
                     this.game.clockTick, 
                     ctx, 
                     this.x - this.game.camera.x, 

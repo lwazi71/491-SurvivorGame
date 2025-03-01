@@ -6,7 +6,7 @@ class ExperienceOrb {
         // this.y = this.y + 32;
         this.spritesheet = ASSET_MANAGER.getAsset("./Sprites/Objects/ExperienceOrb.png");
         this.scale = 0.3;
-        this.animations = new Animator(this.spritesheet, 0, 0, 64, 64, 12.9, 0.1, false, true);
+        this.animations = new Animator(this.spritesheet, 0, 0, 64, 64, 13, 0.1, false, true);
 
         this.radius = 200;
         this.speed = 0.1;

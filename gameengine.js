@@ -199,7 +199,8 @@ class GameEngine {
 
     update() {
         let entitiesCount = this.entities.length;
-        if (this.keys["b"]) {
+        //Upgrade
+        if (this.keys["b"] && !this.adventurer.dead) {
             this.toggleUpgradePause();
             this.click = {x: 0, y: 0};
         }
@@ -226,29 +227,10 @@ class GameEngine {
     };
 
     loop() {
-        if (this.keys["escape"]) {
-            if (this.upgradePause && !this.upgrade.enablePlayerStats) {
-                this.toggleUpgradePause();
-                this.upgrade.makingChoice = false;
-                this.upgrade.enablePlayerStats = false;
-            } else if (this.upgradePause && this.upgrade.enablePlayerStats){
-                this.upgrade.enablePlayerStats = false;
-            } else if (this.shopPause) {
-                this.shop.enableBuy = false;
-                this.shop.showUpgrade = false;
-                this.shopPause = false;
-            } else {
-                this.togglePause();
-                this.disableMouseInputs();
-                this.drawPause(this.ctx);
-            }
-            this.resetDrawingValues();
-            this.keys["escape"] = false;
-        }
-
+        this.clockTick = this.timer.tick();
+        this.pauseTick = this.timer.pauseTick();
+        this.escapeButton();
         if (!this.pause) {
-            this.clockTick = this.timer.tick();
-            this.pauseTick = this.timer.pauseTick();
             if (!this.upgradePause && !this.shopPause) { //Default loop
                 this.update();
                 this.draw();
@@ -267,9 +249,37 @@ class GameEngine {
                 this.timer.enablePauseTick = true;
                 this.disableMouseInputs();
             }
+        } else {
+            this.pauseMenu.update();
+            this.pauseMenu.draw(this.ctx);
+            this.timer.isPaused = true;
+            this.disableMouseInputs();
         }
     };
-
+    escapeButton() {
+        //escape settings
+        if (this.keys["escape"] && !this.camera.enableTitle && !this.camera.transition) {
+        if (this.upgradePause && !this.upgrade.enablePlayerStats) {
+            this.toggleUpgradePause();
+            this.upgrade.makingChoice = false;
+            this.upgrade.enablePlayerStats = false;
+        } else if (this.upgradePause && this.upgrade.enablePlayerStats){
+            this.upgrade.enablePlayerStats = false;
+        } else if (this.shopPause) {
+            this.shop.enableBuy = false;
+            this.shop.showUpgrade = false;
+            this.shopPause = false;
+        } else if (this.pause && this.pauseMenu.showSettings) {
+            this.pauseMenu.showSettings = false;
+        } else if (this.pause && this.pauseMenu.confirmation) {
+            this.pauseMenu.confirmation = false;
+        } else {
+            this.togglePause();
+        }
+        this.resetDrawingValues();
+        this.keys["escape"] = false;
+    }
+    }
     toggleUpgradePause() {
         this.upgradePause = !this.upgradePause;
     }
@@ -280,23 +290,24 @@ class GameEngine {
     toggleShopPause() {
         this.shopPause = !this.shopPause;
     }
-    drawPause(ctx) {
-        ctx.textAlign = "center"; 
-        ctx.textBaseline = "middle"; 
-        ctx.fillStyle = rgba(0,0,0, 0.5);
-        ctx.fillRect(0, 0, PARAMS.CANVAS_WIDTH, PARAMS.CANVAS_HEIGHT);
-        ctx.fillStyle = "White";
-        ctx.fillText("Paused",PARAMS.CANVAS_WIDTH / 2, PARAMS.CANVAS_HEIGHT / 2);
-
-        ctx.textAlign = "left"; 
-        ctx.textBaseline = "alphabetic";  
-    }
-    resetDrawingValues(ctx) {
+    resetDrawingValues() {
         this.ctx.textAlign = "left";
         this.ctx.textBaseline = "alphabetic";
         this.ctx.lineWidth = 1;
         this.ctx.fillStyle = "Black";
         this.ctx.strokeStyle = "Black";
+    }
+    isHovering(x, y, length, height) {
+        this.mouse ? this.mouse.x : 0;
+        this.mouse ? this.mouse.y : 0;
+        return this.mouse.x > x && this.mouse.x < x + length &&
+        this.mouse.y > y && this.mouse.y < y + height;
+    }
+    isClicking(x, y, length, height) {
+        this.mouse ? this.mouse.x : 0;
+        this.mouse ? this.mouse.y : 0;
+        return this.click.x > x && this.click.x < x + length &&
+        this.click.y > y && this.click.y < y + height;
     }
 };
 

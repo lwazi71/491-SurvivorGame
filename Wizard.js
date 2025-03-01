@@ -76,29 +76,29 @@ class Wizard {
         }
         //RIGHT
         //idle
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Wizard/Idle.png"), 0, 0, 128, 128, 7.9, 0.2, false, false);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Wizard/Idle.png"), 0, 0, 128, 128, 8, 0.2, false, true);
 
         //walking
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Wizard/Walk.png"), 0, 0, 128, 128, 6.9, 0.1, false, false);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Wizard/Walk.png"), 0, 0, 128, 128, 7, 0.1, false, true);
 
         //casting
-        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Wizard/Cast.png"), -8, 0, 128, 128, 6.9, 0.1, false, false);
+        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Wizard/Cast.png"), -8, 0, 128, 128, 7, 0.1, false, true);
 
         //damaged
-        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Wizard/Hurt.png"), 0, 0, 128, 128, 1, 0.2, false, false);
+        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Wizard/Hurt.png"), 0, 0, 128, 128, 1, 0.2, false, true);
 
         //LEFT
         //idle
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Wizard/Idle-flipped.png"), 0, 0, 128, 128, 7.9, 0.2, true, false);
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Wizard/Idle-flipped.png"), 0, 0, 128, 128, 8, 0.2, true, true);
 
         //running
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Wizard/Walk-flipped.png"), 20, 0, 128, 128, 6.9, 0.1, true, false);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Wizard/Walk-flipped.png"), 20, 0, 128, 128, 7, 0.1, true, true);
 
         //casting 
-        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Wizard/Cast-flipped.png"), 21, 0, 128, 128, 6.9, 0.1, true, false);
+        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Wizard/Cast-flipped.png"), 21, 0, 128, 128, 7, 0.1, true, true);
 
         //damaged
-        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Wizard/Hurt-flipped.png"), 384, 0, 128, 128, 1, 0.2, true, false);
+        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Wizard/Hurt-flipped.png"), 384, 0, 128, 128, 1, 0.2, true, true);
     
         //death animation
         this.death = new Animator(ASSET_MANAGER.getAsset("./Sprites/Wizard/Dead.png"), 0, 0, 128, 128, 4, 0.1, false, false);

@@ -133,65 +133,65 @@ class Boss1 { //goblin king
         }
 
         //walking
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing.png"), 0, 64, 64, 64, 5.9, 0.1, false, false);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing.png"), 0, 64, 64, 64, 6, 0.1, false, true);
 
         //attack
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing.png"), 128, 256, 64, 64, 5, 0.1, false, false);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing.png"), 128, 256, 64, 64, 5, 0.1, false, true);
 
         //throwing
-        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing.png"), 0, 256, 64, 64, 7.9, 0.1, false, false);
+        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing.png"), 0, 256, 64, 64, 8, 0.1, false, true);
 
         //order
-        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing.png"), 0, 512, 64, 64, 5.9, 0.2, false, false);
+        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing.png"), 0, 512, 64, 64, 6, 0.2, false, true);
 
         //healing
-        this.animations[4][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing.png"), 64, 320, 64, 64, 14.9, 0.1, false, false);
+        this.animations[4][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing.png"), 64, 320, 64, 64, 15, 0.1, false, true);
 
         //jumping up
-        this.animations[5][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing.png"), 0, 576, 64, 64, 5, 0.1, false, false);
+        this.animations[5][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing.png"), 0, 576, 64, 64, 5, 0.1, false, true);
         
         //jumping up. Peak animation (one frame)
-        this.animations[6][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing.png"), 320, 576, 64, 64, 0.9, 0.1, false, false);
+        this.animations[6][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing.png"), 320, 576, 64, 64, 1, 0.1, false, true);
 
         //jumping down
-        this.animations[7][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing.png"), 64, 640, 64, 64, 6, 0.1, false, false);
+        this.animations[7][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing.png"), 64, 640, 64, 64, 6, 0.1, false, true);
 
         //falling down (1 frame)
-        this.animations[8][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing.png"), 0, 640, 64, 64, 0.9, 0.1, false, false);
+        this.animations[8][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing.png"), 0, 640, 64, 64, 1, 0.1, false, true);
 
         //damaged
-        this.animations[9][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing.png"), 64, 384, 64, 64, 3, 0.1, false, false);
+        this.animations[9][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing.png"), 64, 384, 64, 64, 3, 0.1, false, true);
 
         //LEFT  
         //walking
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing-flipped.png"), 644, 64, 64, 64, 5.9, 0.1, true, false);
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing-flipped.png"), 644, 64, 64, 64, 6, 0.1, true, true);
 
         //attack
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing-flipped.png"), 580, 256, 64, 64, 5, 0.1, true, false);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing-flipped.png"), 580, 256, 64, 64, 5, 0.1, true, true);
 
         //throwing
-        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing-flipped.png"), 516, 256, 64, 64, 7.9, 0.1, true, false);
+        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing-flipped.png"), 516, 256, 64, 64, 8, 0.1, true, true);
 
         //order
-        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing-flipped.png"), 644, 512, 64, 64, 5.9, 0.2, true, false);
+        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing-flipped.png"), 644, 512, 64, 64, 6, 0.2, true, true);
 
         //healing
-        this.animations[4][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing-flipped.png"), 68, 320, 64, 64, 14.9, 0.1, true, false);
+        this.animations[4][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing-flipped.png"), 68, 320, 64, 64, 15, 0.1, true, true);
 
         //jumping up
-        this.animations[5][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing-flipped.png"), 644, 576, 64, 64, 4.9, 0.1, true, false);
+        this.animations[5][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing-flipped.png"), 644, 576, 64, 64, 5, 0.1, true, true);
         
         //jumping up. Peak animation (one frame)
-        this.animations[6][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing-flipped.png"), 644, 576, 64, 64, 0.9, 0.1, true, false);
+        this.animations[6][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing-flipped.png"), 644, 576, 64, 64, 1, 0.1, true, true);
 
         //falling down
-        this.animations[7][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing-flipped.png"), 580, 640, 64, 64, 5.9, 0.1, true, false);
+        this.animations[7][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing-flipped.png"), 580, 640, 64, 64, 6, 0.1, true, true);
 
         //falling down. first animation
-        this.animations[8][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing-flipped.png"), 964, 640, 64, 64, 0.9, 0.1, true, false);
+        this.animations[8][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing-flipped.png"), 964, 640, 64, 64, 1, 0.1, true, true);
 
         //damaged
-        this.animations[9][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing-flipped.png"), 771, 384, 64, 64, 3, 0.1, true, false);
+        this.animations[9][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing-flipped.png"), 771, 384, 64, 64, 3, 0.1, true, true);
 
         this.death = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GoblinKing.png"), 64, 448, 64, 64, 10, 0.1, false, false);
     }
@@ -518,7 +518,7 @@ class Boss1 { //goblin king
 
         this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, this.moneyDamage, this.throwSpeed, 
             "./Sprites/Boss/CoinBag.png", this.moneyKnockback, false, this.moneyBagScale, false, this.moneyLifeTime,
-            0, 0, 32, 32, 3, 0.1, false, false, -16, -23, 32, 32, 32, 32, this));
+            0, 0, 32, 32, 3, 0.1, false, true, -16, -23, 32, 32, 32, 32, this));
     }
 
     heal() {

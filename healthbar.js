@@ -211,7 +211,12 @@ class DamageNumbers {
             ctx.strokeText(`-${damage}`, this.xRange + this.entity.BB.x - this.game.camera.x, this.yRange + this.entity.BB.y - this.game.camera.y + this.movement);
             this.damageTimer -= this.game.clockTick;
             ctx.lineWidth = 1;
-            this.movement -= 1;
+            if (this.game.timer.isPaused) {
+                this.movement -= 0;
+            } else {
+                this.movement -= 1;
+            }
+            
         } else {
             this.damageTimer = this.damagerTime;
         }
@@ -223,5 +228,6 @@ class DamageNumbers {
             )
             
         }
+        
     }
 }

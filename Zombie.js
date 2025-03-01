@@ -72,31 +72,31 @@ class Zombie {
 
         //LOOKNG RIGHT
         //idle, looking to the right
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Zombie/Zombie.png"), 0, 0, 32, 32, 7.9, 0.2, false, false);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Zombie/Zombie.png"), 0, 0, 32, 32, 8, 0.2, false, true);
 
         //Walking, looking right
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Zombie/Zombie.png"), 0, 64, 32, 32, 7.9, 0.09, false, false);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Zombie/Zombie.png"), 0, 64, 32, 32, 8, 0.09, false, true);
 
         //Attack, to the right
-        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Zombie/Zombie.png"), 0, 32, 32, 32, 7, 0.08, false, false);
+        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Zombie/Zombie.png"), 0, 32, 32, 32, 7, 0.08, false, true);
 
         //Damaged, to the right
-        this.animations[3][0] =  new Animator(ASSET_MANAGER.getAsset("./Sprites/Zombie/Zombie.png"), 32, 160, 32, 32, 2, 0.2, false, false); //wanna start at where the zombie turns white or else there'll be a delay
+        this.animations[3][0] =  new Animator(ASSET_MANAGER.getAsset("./Sprites/Zombie/Zombie.png"), 32, 160, 32, 32, 2, 0.2, false, true); //wanna start at where the zombie turns white or else there'll be a delay
 
         
 
         //LOOKING LEFT
         //idle, looking to the left
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Zombie/Zombie-Flipped.png"), 162, 0, 32, 32, 7.9, 0.2, true, false);
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Zombie/Zombie-Flipped.png"), 162, 0, 32, 32, 8, 0.2, true, true);
 
         //Walking, looking left
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Zombie/Zombie-Flipped.png"), 166, 64, 32, 31.9, 7.9, 0.09, true, false);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Zombie/Zombie-Flipped.png"), 166, 64, 32, 31.9, 8, 0.09, true, true);
 
         //Attack, to the left
-        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Zombie/Zombie-Flipped.png"), 193, 32, 32, 32, 7, 0.08, true, false);
+        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Zombie/Zombie-Flipped.png"), 193, 32, 32, 32, 7, 0.08, true, true);
 
         //Damaged, to the left
-        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Zombie/Zombie-Flipped.png"), 350, 160, 32, 32, 1, 0.2, true, false);
+        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Zombie/Zombie-Flipped.png"), 350, 160, 32, 32, 1, 0.2, true, true);
 
 
         this.deadAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Zombie/Zombie.png"), 32, 160, 32, 32, 7, 0.15, false, false);

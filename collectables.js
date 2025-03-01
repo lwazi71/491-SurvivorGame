@@ -15,7 +15,7 @@ class Onecoin {
     }
 
     loadAnimations() {
-        this.animations[0] = new Animator(this.spritesheet, 10, 140, 14, 14, 0.9, 0.15, false, true);
+        this.animations[0] = new Animator(this.spritesheet, 10, 140, 14, 14, 1, 0.15, false, true);
     }
 
     update() {
@@ -51,7 +51,7 @@ class Threecoin {
     }
 
     loadAnimations() {
-        this.animations[0] = new Animator(this.spritesheet, 38, 140, 16, 14, 0.9, 1, false, true);
+        this.animations[0] = new Animator(this.spritesheet, 38, 140, 16, 14, 1, 1, false, true);
     }
 
     update() {
@@ -85,7 +85,7 @@ class MultipleCoins {
     }
 
     loadAnimations() {
-        this.animations[0] = new Animator(this.spritesheet, 72, 140, 15, 10, 0.9, 1, false, true);
+        this.animations[0] = new Animator(this.spritesheet, 72, 140, 15, 10, 1, 1, false, true);
     }
 
     update() {
@@ -119,7 +119,7 @@ class CoinPile {
     }
 
     loadAnimations() {
-        this.animations[0] = new Animator(this.spritesheet, 160, 128, 32, 32, 0.9, 1, false, true);
+        this.animations[0] = new Animator(this.spritesheet, 160, 128, 32, 32, 1, 1, false, true);
     }
 
     update() {

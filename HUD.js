@@ -3,19 +3,6 @@ class Hud {
         Object.assign(this, {game, adventurer});
         this.proportion = PARAMS.CANVAS_WIDTH / 1024; //Assuming it's always going to be 4:3
         // this.minimap = new Minimap(this.game, PARAMS.CANVAS_WIDTH - 210, 10);
-        this.weaponIcon = ASSET_MANAGER.getAsset("./Sprites/HudIcons/weapons.png");
-        this.heroIcon = ASSET_MANAGER.getAsset("./Sprites/HudIcons/AdventurerSpriteHud2.png");
-        this.miscIcon = ASSET_MANAGER.getAsset("./Sprites/Objects/collectables.png");
-        this.magicIcon = ASSET_MANAGER.getAsset("./Sprites/Magic/magic.png");
-        this.lightningIcon = ASSET_MANAGER.getAsset("./Sprites/Magic/Lightning.png");
-        this.darkBoltIcon = ASSET_MANAGER.getAsset("./Sprites/Magic/Dark-Bolt.png");
-        this.ultAnimation = new Animator(this.magicIcon, 0, 320, 64, 64, 9, 0.08, false, true);
-        this.bombAnimation = new Animator(this.miscIcon, 0, 16, 16, 16, 4, 0.1, false, true);
-        this.lightningAnimation = new Animator(this.lightningIcon, 0, 0, 64, 128, 10, 0.1, false, false);
-        this.boltAnimation = new Animator(
-            this.darkBoltIcon,
-            0, 0, 64, 88, 11, 0.08, false, false
-        );
         this.scale = 2 * this.proportion;
         // this.weaponIconX = PARAMS.CANVAS_WIDTH - 32 * this.scale - 10; 
         // this.weaponIconY = PARAMS.CANVAS_HEIGHT - 32 * this.scale - 20;
@@ -35,7 +22,6 @@ class Hud {
         this.heroIconHeight = 16;
         this.heroIconX = 10;
         this.heroIconY = 10;
-        this.heroanimation = new Animator(this.heroIcon, 0, 0, this.heroIconLength, this.heroIconHeight, 12.9, 0.2, false, true);
 
         this.experienceBarLength = 200 * this.proportion; //375 174
         this.experienceBarHeight = 25 * this.proportion;
@@ -46,6 +32,15 @@ class Hud {
         this.attackCount = 0;
         this.magicAdded = false;
         this.bombAdded = false;
+
+        this.weaponIcon = ASSET_MANAGER.getAsset("./Sprites/HudIcons/weapons.png");
+        this.miscIcon = ASSET_MANAGER.getAsset("./Sprites/Objects/collectables.png");
+        
+        this.ultAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Magic/magic.png"), 0, 320, 64, 64, 9, 0.08, false, true);
+        this.bombAnimation = new Animator(this.miscIcon, 0, 16, 16, 16, 4, 0.1, false, true);
+        this.lightningAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Magic/Lightning.png"), 0, 0, 64, 128, 10, 0.1, false, true);
+        this.boltAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Magic/Dark-Bolt.png"), 0, 0, 64, 88, 11, 0.08, false, true);
+        this.heroanimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/HudIcons/AdventurerSpriteHud2.png"), 0, 0, this.heroIconLength, this.heroIconHeight, 12.9, 0.2, false, true);
 
     };
     update() {
@@ -85,8 +80,9 @@ class Hud {
             mouseX = this.game.click.x;
             mouseY = this.game.click.y;
         }
-        if (mouseX > PARAMS.CANVAS_WIDTH - 16* this.menuScale * 1.5 - this.menuBuffer && mouseX < PARAMS.CANVAS_WIDTH - this.menuBuffer &&
-            mouseY > PARAMS.CANVAS_HEIGHT - 16 * this.menuScale * 1.5 - this.menuBuffer && PARAMS.CANVAS_HEIGHT - this.menuBuffer && !this.game.upgradePause
+        if (mouseX > PARAMS.CANVAS_WIDTH - 16 * this.menuScale * 1.5 - this.menuBuffer && mouseX < PARAMS.CANVAS_WIDTH - this.menuBuffer &&
+            mouseY > PARAMS.CANVAS_HEIGHT - 16 * this.menuScale * 1.5 - this.menuBuffer && PARAMS.CANVAS_HEIGHT - this.menuBuffer && 
+            !this.game.upgradePause && !this.game.adventurer.dead && !this.game.pause
         ) {
             this.game.toggleUpgradePause();
             this.game.click = {x: 0, y: 0};
@@ -483,7 +479,8 @@ class Hud {
             mouseY = this.game.mouse.y;
         }
         if (mouseX > PARAMS.CANVAS_WIDTH - 16* this.menuScale * 1.5 - this.menuBuffer && mouseX < PARAMS.CANVAS_WIDTH - this.menuBuffer &&
-            mouseY > PARAMS.CANVAS_HEIGHT - 16 * this.menuScale * 1.5 - this.menuBuffer && PARAMS.CANVAS_HEIGHT - this.menuBuffer && !this.game.upgradePause
+            mouseY > PARAMS.CANVAS_HEIGHT - 16 * this.menuScale * 1.5 - this.menuBuffer && PARAMS.CANVAS_HEIGHT - this.menuBuffer && 
+            !this.game.upgradePause && !this.game.pause
         ) {
             this.menuScale = 4.5 * this.proportion;
             this.menuBuffer = 5 * this.proportion;

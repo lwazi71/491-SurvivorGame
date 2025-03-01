@@ -74,29 +74,29 @@ class RatMage {
         }
         //RIGHT
         //idle
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage.png"), 0, 0, 32, 32, 7.9, 0.2, false, false);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage.png"), 0, 0, 32, 32, 8, 0.2, false, true);
 
         //walking
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage.png"), 0, 32, 32, 32, 7.9, 0.1, false, false);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage.png"), 0, 32, 32, 32, 8, 0.1, false, true);
 
         //casting
-        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage.png"), 0, 96, 32, 32, 5.9, 0.1, false, false);
+        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage.png"), 0, 96, 32, 32, 6, 0.1, false, true);
 
         //damaged
-        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage.png"), 32, 128, 32, 32, 2.9, 0.2, false, false);
+        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage.png"), 32, 128, 32, 32, 3, 0.2, false, true);
 
         //LEFT
         //idle
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage-Flipped.png"), 4, 0, 32, 32, 7.9, 0.2, true, false);
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage-Flipped.png"), 4, 0, 32, 32, 8, 0.2, true, true);
 
         //running
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage-Flipped.png"), 4, 32, 32, 32, 7.9, 0.1, true, false);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage-Flipped.png"), 4, 32, 32, 32, 8, 0.1, true, true);
 
         //casting 
-        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage-Flipped.png"), 68, 96, 32, 32, 5.9, 0.1, true, false);
+        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage-Flipped.png"), 68, 96, 32, 32, 6, 0.1, true, true);
 
         //damaged
-        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage-Flipped.png"), 132, 128, 32, 32, 2.9, 0.2, true, false);
+        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage-Flipped.png"), 132, 128, 32, 32, 3, 0.2, true, true);
     
         //death animation
         this.death = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage.png"), 0, 160, 32, 32, 4, 0.1, false, false);
