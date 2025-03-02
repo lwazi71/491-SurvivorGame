@@ -69,8 +69,10 @@ class SceneManager {
         // this.game.addEntity(new Minotaur(this.game, 200, 400));
         // this.game.addEntity(new GoblinMech(this.game, 200, 400));
 
-        // this.game.addEntity(new Boss1(this.game, 200, 400));
-         this.game.addEntity(new GolemMech(this.game, 200, 200));
+        //this.game.addEntity(new Boss1(this.game, 200, 400));
+        // this.game.addEntity(new GolemMech(this.game, 200, 200));
+       // this.game.addEntity(new Boss3(this.game, 200, 200));
+       // this.game.addEntity(new PortalDoor(this.game, 100, 100));
 
 
 
@@ -150,7 +152,7 @@ class SceneManager {
             this.shakeIntensity *= this.shakeDecay; 
         }
 
-       // this.waveManager.update();
+        this.waveManager.update();
 
        
     }

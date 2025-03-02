@@ -212,7 +212,7 @@ class Projectile {
                 }
 
                 //Mini-bosses / bosses
-                if ((entity instanceof Minotaur || entity instanceof GoblinMech || entity instanceof Cyclops || entity instanceof Boss1 || entity instanceof GolemMech) && !entity.invincible) { 
+                if ((entity instanceof Minotaur || entity instanceof GoblinMech || entity instanceof Cyclops || entity instanceof Boss1 || entity instanceof GolemMech || entity instanceof Boss3) && !entity.invincible) { 
                     if (this.BB.collide(entity.BB) && !this.hitEntities.has(entity)) {
                         this.hitEntities.add(entity);
                         entity.takeDamage(this.damage, 0);

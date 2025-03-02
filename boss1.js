@@ -384,7 +384,7 @@ class Boss1 { //goblin king
             this.throwTimer -= this.game.clockTick;
             this.state = 2; // Keep in throw state while timer is active
             // Update the stored elapsed time
-            this.throwAnimationElapsedTime = this.animations[3][this.facing].elapsedTime;
+            this.throwAnimationElapsedTime = this.animations[2][this.facing].elapsedTime;
             // Check if we're at the end of the throw animation
             if (this.throwTimer <= 0.55 && this.shouldThrowMoney && !this.isJumping) {
                 console.log("testing");
@@ -609,7 +609,15 @@ class Boss1 { //goblin king
         if (this.currentHealth <= 0) {
             this.game.addEntity(new CoinPile(this.game, (this.x + 28), (this.y + 55)));
             this.game.addEntity(new Chest(this.game, (this.x + (this.bitSizeX * this.scale)/2) - 125, (this.y + (this.bitSizeY * this.scale)/2)));
+            this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
 
+            setTimeout(() => {
+                // Check if the game still exists before adding the entity
+                if (this.game && this.game.addEntity) {
+                    this.game.addEntity(new PortalDoor(this.game, (this.BB.x + this.BB.width/2), (this.BB.y + this.BB.height/2)));
+                }
+            }, 5000);
+    
             this.dead = true;
             this.state = 9;
             const entities = this.game.entities;

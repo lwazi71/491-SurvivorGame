@@ -496,6 +496,13 @@ class GolemMech {
             this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
             this.game.addEntity(new Chest(this.game, (this.x + (this.bitSizeX * this.scale)/2) - 125, (this.y + (this.bitSizeY * this.scale)/2)));
 
+            setTimeout(() => {
+                // Check if the game still exists before adding the entity
+                if (this.game && this.game.addEntity) {
+                    this.game.addEntity(new PortalDoor(this.game, (this.BB.x + this.BB.width/2), (this.BB.y + this.BB.height/2)));
+                }
+            }, 5000);
+            
             this.dead = true;
             this.state = 5;
         } else {

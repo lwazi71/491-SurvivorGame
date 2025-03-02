@@ -8,11 +8,11 @@ class Necromancer {
 
         this.state = 0; //0 = idle, 1 = running, 2 = Casting, 3 = damage
         this.facing = 0; //0 = right, 1 = left
-        this.scale = 4;
+        this.scale = 2;
         this.speed = 150;
     
         this.range = 400; //Shooting range (range until our necromancer starts shooting at player)
-        this.shootCooldown = 5; //Shoot every 3 seconds
+        this.shootCooldown = 5; //Shoot every 5 seconds
         this.shootTimer = 0; //should be 0
         this.castSpeed = 400;
         this.castDuration = 13 * 0.1; //How long the cast animation plays

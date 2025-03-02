@@ -92,7 +92,15 @@ ASSET_MANAGER.queueDownload("./Sprites/Boss/CoinBag.png");
 ASSET_MANAGER.queueDownload("./Sprites/Boss/GolemMech.png");
 ASSET_MANAGER.queueDownload("./Sprites/Boss/GolemMech-flipped.png");
 ASSET_MANAGER.queueDownload("./Sprites/Boss/arm_projectile.png");
-
+ASSET_MANAGER.queueDownload("./Sprites/Boss/FlyingDemon/ATTACK.png");
+ASSET_MANAGER.queueDownload("./Sprites/Boss/FlyingDemon/FLYING.png");
+ASSET_MANAGER.queueDownload("./Sprites/Boss/FlyingDemon/HURT.png");
+ASSET_MANAGER.queueDownload("./Sprites/Boss/FlyingDemon/ATTACK-flipped.png");
+ASSET_MANAGER.queueDownload("./Sprites/Boss/FlyingDemon/FLYING-flipped.png");
+ASSET_MANAGER.queueDownload("./Sprites/Boss/FlyingDemon/HURT-flipped.png");
+ASSET_MANAGER.queueDownload("./Sprites/Boss/FlyingDemon/projectile.png");
+ASSET_MANAGER.queueDownload("./Sprites/Boss/FlyingDemon/DEATH.png");
+ASSET_MANAGER.queueDownload("./Sprites/Boss/FlyingDemon/IDLE.png");
 
 
 
@@ -124,6 +132,7 @@ ASSET_MANAGER.queueDownload("./Sprites/Objects/spotlight.png");
 ASSET_MANAGER.queueDownload("./Sprites/Objects/brokenheart.png");
 ASSET_MANAGER.queueDownload("./Sprites/Objects/glow.png");
 ASSET_MANAGER.queueDownload("./Sprites/Objects/warning.png");
+ASSET_MANAGER.queueDownload("./Sprites/Objects/portal.png");
 
 
 
