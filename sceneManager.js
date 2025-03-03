@@ -13,23 +13,25 @@ class SceneManager {
         this.Hud = new Hud(this.game, this.adventurer);
         this.upgrade = new UpgradeSystem(this.game);
         this.shop = new Shop(this.game);
+        this.levelShop = new LevelShop(this.game);
         new Pause(this.game);
         this.title = new Title(this.game);
         this.enableShop = false;
-        this.enableTitle = true;
+        this.enableLevelShop = false;
+        this.enableTitle = false;
 
         this.shakeIntensity = 0;
         this.shakeDecay = 0.9; 
 
 
         // Add the Game Map first so it's always underneath everything
-        this.game.addEntity(new GameMap(this.game));
+        this.game.addEntity(new GameMap(this.game)); //Will add to title when we get other maps
 
         this.deathScreen = new DeathScreen(this.game);
         this.game.addEntity(this.deathScreen);
 
         //this.loadTestLevel();
-        // this.loadTestLevel(false);
+        this.loadTestLevel(this.enableTitle);
 
     };
 
@@ -45,6 +47,7 @@ class SceneManager {
             this.game.addEntity(new GameMap(this.game));
             //Fade in effect
             this.game.addEntity(new FadeIn(this.game));
+            // ASSET_MANAGER.playAsset("./Audio/Music/Survivorio Clone Battle Song (1).wav");
         var adventurer = false;
         if(!adventurer) this.game.addEntity(this.adventurer);        
         // this.game.addEntity(new Adventurer(this.game, 0, 0));
@@ -83,7 +86,7 @@ class SceneManager {
         // this.game.addEntity(new GoblinMech(this.game, 200, 400));
 
         // this.game.addEntity(new Boss1(this.game, 200, 400));
-         this.game.addEntity(new GolemMech(this.game, 200, 200));
+        //  this.game.addEntity(new GolemMech(this.game, 200, 200));
 
 
 
@@ -211,7 +214,11 @@ class SceneManager {
             }
             if(this.enableShop) {
                 this.game.shopPause = true;
-                this.enableShop = false;
+                // this.shop.
+            }
+            if (this.enableLevelShop) {
+                this.game.shopPause = true;
+                // this.enableLevelShop = false;
             }
         }   
     }

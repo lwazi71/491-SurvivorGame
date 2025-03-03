@@ -117,10 +117,12 @@ ASSET_MANAGER.queueDownload("./Sprites/Objects/collectables.png");
 
 ASSET_MANAGER.queueDownload("./Sprites/Objects/ExperienceOrb.png");
 ASSET_MANAGER.queueDownload("./Sprites/HudIcons/Boss1Hud.png");
+ASSET_MANAGER.queueDownload("./Sprites/HudIcons/Boss2Hud.png");
 ASSET_MANAGER.queueDownload("./Sprites/HudIcons/weapons.png");
 ASSET_MANAGER.queueDownload("./Sprites/HudIcons/AdventurerSpriteHud.png");
 ASSET_MANAGER.queueDownload("./Sprites/HudIcons/AdventurerSpriteHud2.png");
 ASSET_MANAGER.queueDownload("./Sprites/HudIcons/pointer.png");
+ASSET_MANAGER.queueDownload("./Sprites/HudIcons/PlayerBackground.png");
 ASSET_MANAGER.queueDownload("./Sprites/Objects/spotlight.png");
 ASSET_MANAGER.queueDownload("./Sprites/Objects/brokenheart.png");
 ASSET_MANAGER.queueDownload("./Sprites/Objects/glow.png");
@@ -130,23 +132,25 @@ ASSET_MANAGER.queueDownload("./Sprites/Objects/warning.png");
 
 
 
-
-ASSET_MANAGER.queueDownload("./Sprites/Projectiles/arrow.png")
-ASSET_MANAGER.queueDownload("./Sprites/Projectiles/Arrows_pack.png")
+ASSET_MANAGER.queueDownload("./Sprites/Projectiles/arrow.png");
+ASSET_MANAGER.queueDownload("./Sprites/Projectiles/Arrows_pack.png");
 ASSET_MANAGER.queueDownload("./Sprites/Map/testagain.png");
 
+//Audio
+ASSET_MANAGER.queueDownload("./Audio/Music/Survivorio Clone Battle Song (1).wav");
 
 
 
 
 
-
-// ASSET_MANAGER.queueDownload("./rock.png")
 
 ASSET_MANAGER.downloadAll(() => {
 	const canvas = document.getElementById("gameWorld");
 	const ctx = canvas.getContext("2d");
 	ctx.imageSmoothingEnabled = false;
+
+	ASSET_MANAGER.autoRepeat("./Audio/Music/Survivorio Clone Battle Song (1).wav");
+	
 	PARAMS.CHEATS = false;
 	document.getElementById("btn").addEventListener("click", function() {
 		PARAMS.CHEATS = true;

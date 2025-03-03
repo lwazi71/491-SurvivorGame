@@ -186,7 +186,6 @@ class DamageNumbers {
         }
         ctx.save();
         if (this.damageTimer == this.damagerTime) {
-            console.log("random");
             let minX = -10;
             let maxX = minX + this.entity.BB.width + 20;
             let minY = -10;

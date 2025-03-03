@@ -4,6 +4,7 @@ class Hud {
         this.proportion = PARAMS.CANVAS_WIDTH / 1024; //Assuming it's always going to be 4:3
         // this.minimap = new Minimap(this.game, PARAMS.CANVAS_WIDTH - 210, 10);
         this.scale = 2 * this.proportion;
+        this.abilitiesScale = 1.5;
         // this.weaponIconX = PARAMS.CANVAS_WIDTH - 32 * this.scale - 10; 
         // this.weaponIconY = PARAMS.CANVAS_HEIGHT - 32 * this.scale - 20;
         this.weaponIconX = (PARAMS.CANVAS_WIDTH / 2) - 16 * this.scale; // 16 half of size 32 
@@ -11,8 +12,8 @@ class Hud {
         this.healthBarLength = 300 * this.proportion;
         this.healthBarHeight = 25 * this.proportion;
 
-        this.secondaryIconX = (PARAMS.CANVAS_WIDTH / 2) - 16 * this.scale;
-        this.BombIconX = (PARAMS.CANVAS_WIDTH / 2) - 16 * this.scale;
+        // this.secondaryIconX = (PARAMS.CANVAS_WIDTH / 2) - 16 * this.scale;
+        // this.BombIconX = (PARAMS.CANVAS_WIDTH / 2) - 16 * this.scale;
 
         this.coinScale = 4 * this.proportion;
         this.menuScale = 4 * this.proportion;
@@ -58,7 +59,7 @@ class Hud {
         this.lightningCD = (this.adventurer.lightningCooldown - this.adventurer.lightningCooldownTimer) / this.adventurer.lightningCooldown;
         this.boltCD = (this.adventurer.boltCooldown - this.adventurer.boltCooldownTimer) / this.adventurer.boltCooldown;
         this.boltRetrieveCD = (this.adventurer.boltCooldownRetrieve - this.adventurer.boltCooldownRetrieveTimer) / this.adventurer.boltCooldownRetrieve;
-
+        this.potionCD = (this.adventurer.potionCooldown - this.adventurer.potionCooldownTimer) / this.adventurer.potionCooldown;
         this.healthRatio = this.adventurer.health / this.adventurer.maxhealth;
         this.stamina = (this.adventurer.rollCooldown - this.adventurer.rollCooldownTimer) / this.adventurer.rollCooldown;
         this.experience = this.adventurer.experience / this.adventurer.experienceToNextLvl;
@@ -72,6 +73,7 @@ class Hud {
         if (this.lightningCD > 1) this.lightningCD = 1;
         if (this.boltCD > 1) this.boltCD = 1;
         if (this.boltRetrieveCD > 1) this.boltRetrieveCD = 1;
+        if (this.potionCD > 1) this.potionCD = 1;
 
         
         let mouseX = 0;
@@ -80,9 +82,10 @@ class Hud {
             mouseX = this.game.click.x;
             mouseY = this.game.click.y;
         }
+        //Upgrade menu icon
         if (mouseX > PARAMS.CANVAS_WIDTH - 16 * this.menuScale * 1.5 - this.menuBuffer && mouseX < PARAMS.CANVAS_WIDTH - this.menuBuffer &&
             mouseY > PARAMS.CANVAS_HEIGHT - 16 * this.menuScale * 1.5 - this.menuBuffer && PARAMS.CANVAS_HEIGHT - this.menuBuffer && 
-            !this.game.upgradePause && !this.game.adventurer.dead && !this.game.pause
+            !this.game.upgradePause && !this.game.adventurer.dead && !this.game.pause && !this.game.shopPause
         ) {
             this.game.toggleUpgradePause();
             this.game.click = {x: 0, y: 0};
@@ -258,12 +261,12 @@ class Hud {
         }
         //Speical Ability Icons
         if(this.adventurer.enableBomb && this.adventurer.enableBolt) {
-            this.BombIconX = (PARAMS.CANVAS_WIDTH / 5) - 16 * this.bombScale - 37; 
-            this.boltIconX = (PARAMS.CANVAS_WIDTH / 5) - 16 * this.boltScale + 37;
+            this.BombIconX = (PARAMS.CANVAS_WIDTH / 5) - 16 * this.abilitiesScale - 37; 
+            this.boltIconX = (PARAMS.CANVAS_WIDTH / 5) - 16 * this.abilitiesScale + 37;
         } else if (this.adventurer.enableBomb) {
-            this.BombIconX = (PARAMS.CANVAS_WIDTH / 5) - 16 * this.bombScale;
+            this.BombIconX = (PARAMS.CANVAS_WIDTH / 5) - 16 * this.abilitiesScale;
         } else if (this.adventurer.enableBolt) {
-            this.boltIconX = (PARAMS.CANVAS_WIDTH / 5) - 16 * this.boltScale;
+            this.boltIconX = (PARAMS.CANVAS_WIDTH / 5) - 16 * this.abilitiesScale;
         }
             
         ctx.beginPath();
@@ -367,14 +370,15 @@ class Hud {
             // ctx.strokeText(`x${this.adventurer.bombCurrentAmnt}`, this.secondaryIconX + 50, this.weaponIconY + 32 * this.scale - 10);
         }
         if (this.adventurer.enableBomb) {
-            this.bombScale = 1.5;
+            let length = 32 * this.abilitiesScale + 20;
+            let height = 32 * this.abilitiesScale + 30;
             ctx.beginPath();
-            ctx.roundRect(this.BombIconX- 10, this.weaponIconY - 10 + 10 * this.bombScale, 32 * this.bombScale + 20, 32 * this.bombScale + 30, [5]);
+            ctx.roundRect(this.BombIconX, this.weaponIconY - 10 + 10 * this.abilitiesScale, length, height, [5]);
             ctx.fillStyle = rgba(0,0,0, 0.5);
             ctx.fill();
 
             //Bomb Icon
-            this.bombAnimation.drawFrame(this.game.clockTick, ctx, this.BombIconX, this.weaponIconY - 10 + 10 * this.bombScale, 3);
+            this.bombAnimation.drawFrame(this.game.clockTick, ctx, this.BombIconX + length / 2 - (16 * 3) / 2, this.weaponIconY - 10 + 10 * this.abilitiesScale, 3);
             // ctx.drawImage(this.miscIcon, 
             //     0, 16, //0 for unlit, 16 for lit 
             //     16, 16, 
@@ -389,7 +393,7 @@ class Hud {
             } else {
                 ctx.fillStyle = rgb(250, 60, 60);
             }
-            ctx.roundRect(this.BombIconX, this.weaponIconY + 7.5 * this.bombScale, 32 * this.bombScale * this.bombRetrieveCD, 5, [5]); // 32 offset from image
+            ctx.roundRect(this.BombIconX + length / 2 - (32 * this.abilitiesScale) / 2, this.weaponIconY + 7.5 * this.abilitiesScale, 32 * this.abilitiesScale * this.bombRetrieveCD, 5, [5]); // 32 offset from image
             ctx.fill();
 
             //Cooldown time
@@ -399,33 +403,41 @@ class Hud {
             } else {
                 ctx.fillStyle = rgb(250, 60, 60);
             }
-            ctx.roundRect(this.BombIconX, this.weaponIconY + 32 * this.bombScale + 10 * this.bombScale, 32 * this.bombScale * this.bombCD, 10, [5]); // 32 offset from image
+            ctx.roundRect(this.BombIconX  + length / 2 - (32 * this.abilitiesScale) / 2, this.weaponIconY + 32 * this.abilitiesScale + 10 * this.abilitiesScale, 32 * this.abilitiesScale * this.bombCD, 10, [5]); // 32 offset from image
             ctx.fill();
 
             ctx.beginPath();
-            ctx.roundRect(this.BombIconX, this.weaponIconY + 32 * this.bombScale + 10 * this.bombScale, 32 * this.bombScale, 10, [5]);
+            ctx.roundRect(this.BombIconX + length / 2 - (32 * this.abilitiesScale) / 2, this.weaponIconY + 32 * this.abilitiesScale + 10 * this.abilitiesScale, 32 * this.abilitiesScale, 10, [5]);
             ctx.strokeStyle = 'Black';
             ctx.stroke();
+
+            ctx.textAlign = "right";
+            ctx.textBaseline = "bottom";
             if (this.adventurer.bombCurrentAmnt < this.adventurer.bombMaxAmount && this.adventurer.bombCurrentAmnt > 0) ctx.fillStyle = "White";
             ctx.font = 20 * this.proportion + 'px Lilita One';
-            ctx.fillText(`x${this.adventurer.bombCurrentAmnt}`, this.BombIconX + 25 * this.bombScale, this.weaponIconY + 32 * this.bombScale - 10 + 10 * this.bombScale);
-            ctx.strokeText(`x${this.adventurer.bombCurrentAmnt}`, this.BombIconX + 25 * this.bombScale, this.weaponIconY + 32 * this.bombScale - 10 + 10 * this.bombScale);
+            ctx.fillText(`x${this.adventurer.bombCurrentAmnt}`, this.BombIconX + length / 2 + (32 * this.abilitiesScale) / 2, 
+                this.weaponIconY + 32 * this.abilitiesScale + 10 * this.abilitiesScale);
+            ctx.strokeText(`x${this.adventurer.bombCurrentAmnt}`, this.BombIconX + length / 2 + (32 * this.abilitiesScale) / 2, 
+                this.weaponIconY + 32 * this.abilitiesScale + 10 * this.abilitiesScale);
             
+            ctx.textAlign = "center";
+            ctx.textBaseline = "bottom";
             ctx.font = 36 * this.proportion + 'px Lilita One';
             ctx.fillStyle = "White";
-            ctx.fillText(`E`, this.BombIconX + 16 * this.bombScale, this.weaponIconY + 32 * this.bombScale - 45 - 10 * this.bombScale);
-            ctx.strokeText(`E`, this.BombIconX + 16 * this.bombScale, this.weaponIconY + 32 * this.bombScale - 45 - 10 * this.bombScale);
+            ctx.fillText(`E`, this.BombIconX + length / 2, this.weaponIconY - 10 + 10 * this.abilitiesScale);
+            ctx.strokeText(`E`, this.BombIconX + length / 2, this.weaponIconY - 10 + 10 * this.abilitiesScale);
 
         } 
         if (this.adventurer.enableBolt) { //Dark bolt
-            this.boltScale = 1.5;
+            let length = 32 * this.abilitiesScale + 20;
+            let height = 32 * this.abilitiesScale + 30;
             ctx.beginPath();
-            ctx.roundRect(this.boltIconX- 10, this.weaponIconY - 10 + 10 * this.boltScale, 32 * this.boltScale + 20, 32 * this.boltScale + 30, [5]);
+            ctx.roundRect(this.boltIconX, this.weaponIconY - 10 + 10 * this.abilitiesScale, length, height, [5]);
             ctx.fillStyle = rgba(0,0,0, 0.5);
             ctx.fill();
 
             //Dark bolt Icon
-            this.boltAnimation.drawFrame(this.game.clockTick, ctx, this.boltIconX + 6, this.weaponIconY - 10 + 10 * this.boltScale, 0.7);
+            this.boltAnimation.drawFrame(this.game.clockTick, ctx, this.boltIconX + length / 2 - (64 * 0.7) / 2, this.weaponIconY - 10 + 10 * this.abilitiesScale, 0.7);
             // ctx.drawImage(this.miscIcon, 
             //     0, 16, //0 for unlit, 16 for lit 
             //     16, 16, 
@@ -440,7 +452,7 @@ class Hud {
             } else {
                 ctx.fillStyle = rgb(250, 60, 60);
             }
-            ctx.roundRect(this.boltIconX, this.weaponIconY + 7.5 * this.boltScale, 32 * this.boltScale * this.boltRetrieveCD, 5, [5]); // 32 offset from image
+            ctx.roundRect(this.boltIconX + length / 2 - (32 * this.abilitiesScale) / 2, this.weaponIconY + 7.5 * this.abilitiesScale, 32 * this.abilitiesScale * this.boltRetrieveCD, 5, [5]); // 32 offset from image
             ctx.fill();
 
             //Cooldown time
@@ -450,22 +462,85 @@ class Hud {
             } else {
                 ctx.fillStyle = rgb(250, 60, 60);
             }
-            ctx.roundRect(this.boltIconX, this.weaponIconY + 32 * this.boltScale + 10 * this.boltScale, 32 * this.boltScale * this.boltCD, 10, [5]); // 32 offset from image
+            ctx.roundRect(this.boltIconX + length / 2 - (32 * this.abilitiesScale) / 2, this.weaponIconY + 32 * this.abilitiesScale + 10 * this.abilitiesScale, 32 * this.abilitiesScale * this.boltCD, 10, [5]); // 32 offset from image
             ctx.fill();
 
             ctx.beginPath();
-            ctx.roundRect(this.boltIconX, this.weaponIconY + 32 * this.boltScale + 10 * this.boltScale, 32 * this.boltScale, 10, [5]);
+            ctx.roundRect(this.boltIconX + length / 2 - (32 * this.abilitiesScale) / 2, this.weaponIconY + 32 * this.abilitiesScale + 10 * this.abilitiesScale, 32 * this.abilitiesScale, 10, [5]);
             ctx.strokeStyle = 'Black';
             ctx.stroke();
+
+            ctx.textAlign = "right";
+            ctx.textBaseline = "bottom";
             if (this.adventurer.boltCurrentAmount < this.adventurer.boltMaxAmount && this.adventurer.boltCurrentAmount > 0) ctx.fillStyle = "White";
             ctx.font = 20 * this.proportion + 'px Lilita One';
-            ctx.fillText(`x${this.adventurer.boltCurrentAmount}`, this.boltIconX + 25 * this.boltScale, this.weaponIconY + 32 * this.boltScale - 10 + 10 * this.boltScale);
-            ctx.strokeText(`x${this.adventurer.boltCurrentAmount}`, this.boltIconX + 25 * this.boltScale, this.weaponIconY + 32 * this.boltScale - 10 + 10 * this.boltScale);
+            ctx.fillText(`x${this.adventurer.boltCurrentAmount}`, this.boltIconX + length / 2 + (32 * this.abilitiesScale) / 2, 
+                this.weaponIconY + 32 * this.abilitiesScale + 10 * this.abilitiesScale);
+            ctx.strokeText(`x${this.adventurer.boltCurrentAmount}`, this.boltIconX + length / 2 + (32 * this.abilitiesScale) / 2, 
+                this.weaponIconY + 32 * this.abilitiesScale + 10 * this.abilitiesScale);
             
+            ctx.textAlign = "center";
+            ctx.textBaseline = "bottom";
             ctx.font = 36 * this.proportion + 'px Lilita One';
             ctx.fillStyle = "White";
-            ctx.fillText(`F`, this.boltIconX + 16 * this.boltScale, this.weaponIconY + 32 * this.boltScale - 45 - 10 * this.boltScale);
-            ctx.strokeText(`F`, this.boltIconX + 16 * this.boltScale, this.weaponIconY + 32 * this.boltScale - 45 - 10 * this.boltScale);
+            ctx.fillText(`F`, this.boltIconX + length / 2, this.weaponIconY - 10 + 10 * this.abilitiesScale);
+            ctx.strokeText(`F`, this.boltIconX + length / 2, this.weaponIconY - 10 + 10 * this.abilitiesScale);
+        }
+        if (this.adventurer.enablePotion) {
+            const locationX = (PARAMS.CANVAS_WIDTH * 0.8) - 32 * this.abilitiesScale;
+            let length = 32 * this.abilitiesScale + 20;
+            let height = 32 * this.abilitiesScale + 30;
+            ctx.beginPath();
+            ctx.roundRect(locationX, this.weaponIconY - 10 + 10 * this.abilitiesScale, length, height, [5]);
+            ctx.fillStyle = rgba(0,0,0, 0.5);
+            ctx.fill();
+
+            //Health Potion Icon
+            ctx.drawImage(this.miscIcon, 
+                32, 160, 
+                16, 16, 
+                locationX + length / 2 - (16 * 3.8) / 2, this.weaponIconY - 15 + 10 * this.abilitiesScale, 
+                16 * 3.8, 16 * 3.8
+            );
+
+            //Retrieve time
+            // ctx.beginPath();
+            // if (this.boltRetrieveCD == 1) {
+            //     ctx.fillStyle = rgba(0, 0, 0, 0);
+            // } else {
+            //     ctx.fillStyle = rgb(250, 60, 60);
+            // }
+            // ctx.roundRect(this.boltIconX, this.weaponIconY + 7.5 * this.abilitiesScale, 32 * this.abilitiesScale * this.boltRetrieveCD, 5, [5]); // 32 offset from image
+            // ctx.fill();
+
+            // //Cooldown time
+            ctx.beginPath();
+            if (this.potionCD == 1 && this.adventurer.potion > 0) {
+                ctx.fillStyle = rgb(250, 180, 60);
+            } else {
+                ctx.fillStyle = rgb(250, 60, 60);
+            }
+            ctx.roundRect(locationX + length / 2 - (32 * this.abilitiesScale) / 2, this.weaponIconY + 32 * this.abilitiesScale + 10 * this.abilitiesScale, 32 * this.abilitiesScale * this.potionCD, 10, [5]);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.roundRect(locationX + length / 2 - (32 * this.abilitiesScale) / 2, this.weaponIconY + 32 * this.abilitiesScale + 10 * this.abilitiesScale, 32 * this.abilitiesScale, 10, [5]);
+            ctx.strokeStyle = 'Black';
+            ctx.stroke();
+
+            ctx.textAlign = "right";
+            ctx.textBaseline = "bottom";
+            if (this.adventurer.potion < this.adventurer.potionMaxAmount && this.adventurer.boltCurrentAmount > 0) ctx.fillStyle = "White";
+            ctx.font = 20 * this.proportion + 'px Lilita One';
+            ctx.fillText(`x${this.adventurer.potion}`, locationX + length / 2 + (32 * this.abilitiesScale) / 2, 
+                this.weaponIconY + 32 * this.abilitiesScale + 10 * this.abilitiesScale);
+            ctx.strokeText(`x${this.adventurer.potion}`, locationX + length / 2 + (32 * this.abilitiesScale) / 2, 
+                this.weaponIconY + 32 * this.abilitiesScale + 10 * this.abilitiesScale);
+            ctx.textAlign = "center";
+            ctx.textBaseline = "bottom";
+            ctx.font = 36 * this.proportion + 'px Lilita One';
+            ctx.fillStyle = "White";
+            ctx.fillText(`X`, locationX + length / 2, this.weaponIconY - 10 + 10 * this.abilitiesScale);
+            ctx.strokeText(`X`, locationX + length / 2, this.weaponIconY - 10 + 10 * this.abilitiesScale);
         }
     }
     displayMenu(ctx) {
@@ -480,7 +555,7 @@ class Hud {
         }
         if (mouseX > PARAMS.CANVAS_WIDTH - 16* this.menuScale * 1.5 - this.menuBuffer && mouseX < PARAMS.CANVAS_WIDTH - this.menuBuffer &&
             mouseY > PARAMS.CANVAS_HEIGHT - 16 * this.menuScale * 1.5 - this.menuBuffer && PARAMS.CANVAS_HEIGHT - this.menuBuffer && 
-            !this.game.upgradePause && !this.game.pause
+            !this.game.upgradePause && !this.game.pause && !this.game.shopPause
         ) {
             this.menuScale = 4.5 * this.proportion;
             this.menuBuffer = 5 * this.proportion;

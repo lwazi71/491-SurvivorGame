@@ -10,10 +10,10 @@ class GameEngine {
         this.entities = [];
 
         // Information on the input
-        this.click = null;
+        this.click = {x: 0, y: 0};
         this.leftclick = null;
         this.rightclick = null;
-        this.mouse = null;
+        this.mouse = {x: 0, y: 0};
         this.wheel = null;
         this.keys = {};
 
@@ -84,6 +84,20 @@ class GameEngine {
             this.rightclick = getXandY(e);
             this.rightClicks = true;
         });
+
+        this.ctx.canvas.addEventListener('mousedown', e => {
+            if (e.button === 0) { // Left mouse button
+              this.leftClickHeld = true;
+              console.log('Left mouse button is held down.');
+            }
+        });
+        this.ctx.canvas.addEventListener('mouseup', e => {
+            if (event.button === 0) { // Left mouse button
+              this.leftClickHeld = false;
+              console.log('Left mouse button is released.');
+            }
+          });
+
 
         // this.ctx.canvas.addEventListener("keydown", e => {
         //     if (e.shiftKey && e.repeat) return;
@@ -181,6 +195,7 @@ class GameEngine {
     disableMouseInputs() {
         this.leftClick = false;
         this.rightClicks = false;
+        // this.click = {x:0, y:0};
     }
 
     addEntity(entity) {
@@ -210,6 +225,12 @@ class GameEngine {
         }
         //How to open shop
         if (this.keys["u"]) {
+            this.camera.enableShop = true;
+            this.toggleShopPause();
+            this.click = {x: 0, y: 0};
+        }
+        if (this.keys["i"]) {
+            this.camera.enableLevelShop = true;
             this.toggleShopPause();
             this.click = {x: 0, y: 0};
         }
@@ -231,6 +252,7 @@ class GameEngine {
     };
 
     loop() {
+        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         this.clockTick = this.timer.tick();
         this.pauseTick = this.timer.pauseTick();
         this.escapeButton();
@@ -246,9 +268,17 @@ class GameEngine {
                 this.timer.isPaused = true;
                 this.timer.enablePauseTick = true;
                 this.disableMouseInputs();
-            } else if (this.shopPause) {
+            } else if (this.shopPause && this.camera.enableShop) {
+                this.shop.enableBuy = true;
                 this.shop.update();
                 this.shop.draw(this.ctx);
+                this.timer.isPaused = true;
+                this.timer.enablePauseTick = true;
+                this.disableMouseInputs();
+            } else if (this.shopPause && this.camera.enableLevelShop) {
+                this.levelShop.enableBuy = true;
+                this.levelShop.update();
+                this.levelShop.draw(this.ctx);
                 this.timer.isPaused = true;
                 this.timer.enablePauseTick = true;
                 this.disableMouseInputs();
@@ -275,15 +305,24 @@ class GameEngine {
             this.upgrade.enablePlayerStats = false;
         } else if (this.upgradePause && this.upgrade.enablePlayerStats){
             this.upgrade.enablePlayerStats = false;
-        } else if (this.shopPause) {
+        } else if (this.shopPause && this.shop.showPlayer) {
+            this.shop.showPlayer = false;
+        } else if (this.shopPause && this.camera.enableShop) {
             this.shop.enableBuy = false;
             this.shop.showUpgrade = false;
             this.shopPause = false;
+        } else if (this.shopPause && this.camera.enableLevelShop) {
+            this.camera.enableLevelShop = false;
+            this.levelShop.enableBuy = false;
+            this.levelShop.showUpgrade = false;
+            this.shopPause = false;
+        } else if (this.deathPause && this.deathScreen.showUpgrade) {
+            this.deathScreen.showUpgrade = false;
         } else if (this.pause && this.pauseMenu.showSettings) {
             this.pauseMenu.showSettings = false;
         } else if (this.pause && this.pauseMenu.confirmation) {
             this.pauseMenu.confirmation = false;
-        } else {
+        } else if (!this.deathPause){
             this.togglePause();
         }
         this.resetDrawingValues();
@@ -312,14 +351,14 @@ class GameEngine {
         this.ctx.strokeStyle = "Black";
     }
     isHovering(x, y, length, height) {
-        this.mouse ? this.mouse.x : 0;
-        this.mouse ? this.mouse.y : 0;
+        this.mouse.x ? this.mouse.x : 0;
+        this.mouse.y ? this.mouse.y : 0;
         return this.mouse.x > x && this.mouse.x < x + length &&
         this.mouse.y > y && this.mouse.y < y + height;
     }
     isClicking(x, y, length, height) {
-        this.mouse ? this.mouse.x : 0;
-        this.mouse ? this.mouse.y : 0;
+        this.mouse.x ? this.mouse.x : 0;
+        this.mouse.y ? this.mouse.y : 0;
         return this.click.x > x && this.click.x < x + length &&
         this.click.y > y && this.click.y < y + height;
     }

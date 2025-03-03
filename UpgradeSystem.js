@@ -349,7 +349,21 @@ class UpgradeSystem {
             },
 
         ];
-        this.lightningList = []; //4
+        this.lightningList = [
+            {
+                game: this.game,
+                name: "HP Increase", 
+                upgrade() {this.game.adventurer.maxhealth += this.game.upgrade.hpIncreaseAmount;
+                    this.game.adventurer.health += this.game.upgrade.hpIncreaseAmount;
+                }, 
+                description: `Increase Max HP by ${this.hpIncreaseAmount}`,
+                type: 4,
+                max: this.maxAmount,
+                current: 0,
+                color: "White",
+            
+            },
+    ]; //4
         this.darkBoltList = []; //5
         this.bombUniqueList = [
             {
@@ -361,7 +375,18 @@ class UpgradeSystem {
                 max: 1,
                 current: 0,
                 color: rgb(170, 65, 255)
-            }
+            },
+            {
+                game: this.game,
+                name: "Unlocks Monkey Bomb", 
+                upgrade() {this.game.adventurer.monkeyBomb = true; }, 
+                description: `Bombs can not attract melee enemies`,
+                type: 3,
+                max: 1,
+                current: 0,
+                color: rgb(65, 255, 90)
+            },
+
         ];
         this.lightningDarkBoltList = [
             {
@@ -536,7 +561,7 @@ class UpgradeSystem {
                     this.rerollTimer = 0.5;
                 }
                 //Player stat location
-                if (getDistance(this.game.click, circle) < circleRadius) {
+                if (this.checkHeroStatus()) {
                     this.enablePlayerStats = true;
                     this.game.click = {x:0, y:0};
                 }
@@ -557,6 +582,13 @@ class UpgradeSystem {
     checkExitButton(mouseX, mouseY) {
         return mouseX > PARAMS.CANVAS_WIDTH - this.exitButtonSize.width - 10 && mouseX < PARAMS.CANVAS_WIDTH + this.exitButtonSize.width &&
         mouseY > 10 && mouseY < 10 + this.exitButtonSize.height;
+    }
+    checkHeroStatus() {
+        let circleX = this.heroIconX + (this.heroIconLength * this.heroIconScale / 2);
+        let circleY = this.heroIconY + (this.heroIconHeight * this.heroIconScale / 2);
+        let circle = {x: circleX, y: circleY};
+        let circleRadius = (this.heroIconHeight / 2) * this.heroIconScale;
+        return getDistance(this.game.click, circle) < circleRadius;
     }
     updateChoice(upgrade) {
         this.selectedUpgrade = upgrade;
@@ -855,6 +887,9 @@ class UpgradeSystem {
         }
     }
     heroStatus(ctx) {
+        ctx.textAlign = "center"; 
+        ctx.textBaseline = "middle";
+        ctx.font = '18px "Press Start 2P"';
         let circleX = this.heroIconX + (this.heroIconLength * this.heroIconScale / 2);
         let circleY = this.heroIconY + (this.heroIconHeight * this.heroIconScale / 2);
         let circle = {x: circleX, y: circleY};
@@ -960,7 +995,7 @@ class PlayerStatus {
         this.height = PARAMS.CANVAS_HEIGHT - this.startY * 2;
 
         this.bombAnimation =this.bombAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/collectables.png"), 0, 16, 16, 16, 4, 0.1, false, true);
-        this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");
+        this.background = ASSET_MANAGER.getAsset("./Sprites/HudIcons/PlayerBackground.png");
         this.animation = [];
         this.actions = 0;
         this.swordDuration = 0.9;
@@ -997,12 +1032,6 @@ class PlayerStatus {
         this.stamina = (this.game.adventurer.rollCooldown - this.game.adventurer.rollCooldownTimer) / this.game.adventurer.rollCooldown;
         this.experience = this.game.adventurer.experience / this.game.adventurer.experienceToNextLvl;
 
-        let mouseX = 0;
-        let mouseY = 0;
-        if (this.game.click != null) {
-            mouseX = this.game.click.x;
-            mouseY = this.game.click.y;
-        }
         let button = {width: (this.width - 20) / 4, height: 40};
 
         let y = this.startY + 50 + 10 + this.healthBarSize.height * 2 + 20 + 70 + 40;
@@ -1045,9 +1074,13 @@ class PlayerStatus {
             this.game.click = {x:0, y:0};
             this.toggleUpgradeMenu();
         }
-        if (this.upgrade.checkExitButton(this.game.click.x, this.game.click.y)) {
+        if (this.upgrade.checkExitButton(this.game.click.x, this.game.click.y) && this.game.upgradePause) {
             this.game.click = {x:0, y:0};
             this.upgrade.enablePlayerStats = false;
+        }
+        if (this.upgrade.checkExitButton(this.game.click.x, this.game.click.y) && this.game.deathScreen.showUpgrade) {
+            this.game.click = {x:0, y:0};
+            this.game.deathScreen.showUpgrade = false;
         }
         if (this.actions == 1 && this.currentTimer <= 0) {
             this.actions = 0;
@@ -1072,6 +1105,7 @@ class PlayerStatus {
     }
     draw(ctx) {
         let adventurer = this.game.adventurer;
+
         this.drawBackground(ctx);
         ctx.fillStyle = "White";
         ctx.textAlign = "center"; 
@@ -1117,11 +1151,19 @@ class PlayerStatus {
 
     }
     drawBackground(ctx) {
+        ctx.drawImage(this.background, 
+            0, 0, 
+            1024, 768, 
+            0, 0, 
+            PARAMS.CANVAS_WIDTH, PARAMS.CANVAS_HEIGHT
+        );
+
+
         ctx.beginPath();
         ctx.roundRect(this.startX, this.startY, this.width, this.height, [10]);
         ctx.strokeStyle = "Black";
         ctx.lineWidth = 3;
-        ctx.fillStyle = rgba(0,0,0, 0.5);
+        ctx.fillStyle = rgba(38, 38, 38, 0.9);
         ctx.fill();
         ctx.stroke();
     }
@@ -1210,7 +1252,7 @@ class PlayerStatus {
         ctx.textAlign = "center"; 
         ctx.textBaseline = "middle";
         ctx.font = '14px "Press Start 2P"';
-        ctx.fillStyle = "Black";    
+        ctx.fillStyle = "White";    
         ctx.fillText("View Upgrades", currentX + this.upgradeButton.length / 2, y + this.upgradeButton.height / 2);
     }
     drawAttacksBackground(ctx, y) {
@@ -1221,6 +1263,14 @@ class PlayerStatus {
             mouseX = this.game.mouse.x;
             mouseY = this.game.mouse.y;
         }
+        ctx.beginPath();
+        ctx.lineWidth = 2;
+        ctx.roundRect(this.startX + offset, y + 40, this.width - offset * 2, this.height - y - 50, [0, 0, 10, 10]);
+        ctx.strokeStyle = "Black";
+        ctx.fillStyle = rgba(101, 101, 101, 0.5);
+        ctx.fill();
+        ctx.stroke();
+
         let attacks = ["Sword", "Bow", "Bomb", "DKBolt"];
         let button = {width: (this.width - offset * 2) / attacks.length, height: 40};
         let currentX = this.startX + offset;
@@ -1242,17 +1292,10 @@ class PlayerStatus {
             ctx.textAlign = "center"; 
             ctx.textBaseline = "middle";
             ctx.font = '12px "Press Start 2P"';
-            ctx.fillStyle = "Black";    
+            ctx.fillStyle = "White";    
             ctx.fillText(attack, currentX + button.width / 2, y + button.height / 2);
             currentX += button.width;
         }
-        ctx.beginPath();
-        ctx.lineWidth = 2;
-        ctx.roundRect(this.startX + offset, y + 40, this.width - offset * 2, this.height - y - 50, [0, 0, 10, 10]);
-        ctx.strokeStyle = "Black";
-        // ctx.fillStyle = rgba(0, 0, 0, 0.5);
-        // ctx.fill();
-        ctx.stroke();
         ctx.textAlign = "left"; 
         ctx.textBaseline = "alphabetic";
     }
@@ -1306,7 +1349,7 @@ class PlayerStatus {
             if (!this.game.adventurer.enableBomb) {
                 ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
-                ctx.fillText("Get Upgrade to Unlock", this.startX + 25 + (this.width - 50) / 2, y + 40 + (this.height - y) / 2); //this.height - y - 50
+                ctx.fillText("Get Upgrade to Unlock", this.startX + 25 + (this.width - 50) / 2, y + 20 + (this.height - y) / 2); //this.height - y - 50
             } else {
                 title.push("Bomb Stats:");
                 stats = ["Damage", "Cooldown", "Knockback", "Explosion Size", "Retrieval Speed ", "Max Amount", ""];
@@ -1330,7 +1373,7 @@ class PlayerStatus {
             if (!this.game.adventurer.enableBolt) {
                 ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
-                ctx.fillText("Get Upgrade to Unlock", this.startX + 25 + (this.width - 50) / 2, y + 40 + (this.height - y) / 2);
+                ctx.fillText("Get Upgrade to Unlock", this.startX + 25 + (this.width - 50) / 2, y + 20 + (this.height - y) / 2);
             } else {
                 title.push("Dark Bolt Stats:");
                 stats = ["Damage", "Cooldown", "Explosion Size", "Retrieval Speed ", "Max Amount", ""];
@@ -1413,7 +1456,7 @@ class PlayerStatus {
         ctx.roundRect(PARAMS.CANVAS_WIDTH / 2, this.startY, this.width, this.height, [10]);
         ctx.strokeStyle = "Black";
         ctx.lineWidth = 3;
-        ctx.fillStyle = rgba(0,0,0, 0.5);
+        ctx.fillStyle = rgba(39, 39, 39, 0.9);
         ctx.fill();
         ctx.stroke();
         ctx.lineWidth = 1;
@@ -1531,12 +1574,12 @@ class PlayerStatus {
         }
         ctx.font = '10px "Press Start 2P"';
         ctx.fillStyle = "White";
-        let currentY = y + 20;
+        let currentY = y;
         for (let line of stats) {
             ctx.fillText(line, PARAMS.CANVAS_WIDTH / 2 + 25, currentY);
             currentY += 15;
         }
-        currentY = y + 20;
+        currentY = y;
         ctx.textAlign = "right"; 
         for (let line of values) {
             ctx.fillText(line, PARAMS.CANVAS_WIDTH / 2 + this.width - 25, currentY);

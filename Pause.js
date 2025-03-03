@@ -124,6 +124,31 @@ class Pause {
         ctx.fillStyle = rgba(0,0,0, 0.75);
         ctx.roundRect(75, 75, length, height, [10]);
         ctx.fill();
+
+        let currentY = 75 + 30;
+        ctx.font = '16px "Press Start 2P"';
+        ctx.fillStyle ="White";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("Master Volume", PARAMS.CANVAS_WIDTH / 2, currentY);
+
+        currentY += 20;
+
+        ctx.beginPath();
+        ctx.fillStyle = rgb(74, 74, 74);
+        ctx.roundRect(PARAMS.CANVAS_WIDTH / 2 - 60, currentY, 50, 40, [10]);
+        ctx.roundRect(PARAMS.CANVAS_WIDTH / 2 + 10, currentY, 50, 40, [10]);
+        ctx.fill();
+
+
+        // if (this.game.isHovering(, , 50, 40)) {
+        //     ctx.fillStyle = rgb(50, 50, 50);
+        //     ctx.lineWidth = 3;
+        // } else {
+        //     ctx.fillStyle = rgb(74, 74, 74);
+        //     ctx.lineWidth = 1;
+        // }
+
     }
     drawConfirmation(ctx) {
         const length = 200;

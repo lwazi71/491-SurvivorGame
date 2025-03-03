@@ -2,6 +2,8 @@ class Shop {
     constructor(game) {
         Object.assign(this, {game});
         this.game.shop = this;
+        this.player = new PlayerStatus(game, this.game.upgrade);
+        this.showPlayer = false;
         this.showUpgrade = false;
         this.enableBuy = false;
         this.length = 250;
@@ -11,6 +13,8 @@ class Shop {
         this.coinImage = ASSET_MANAGER.getAsset("./Sprites/Objects/collectables.png");
         this.selected = null;
         this.upgradeCard = {length:275, height:425};
+
+        this.collected = false;
 
         this.basic = [];
         this.unique = [];
@@ -22,22 +26,19 @@ class Shop {
             {
                 name: "Heal",
                 game: this.game,
-                description: "Restores 20 hp",
-                price: 10,
+                description: "Fully restores HP",
                 condition: this.game.adventurer.health < this.game.adventurer.maxhealth
             }, 
             {
-                name: "Basic Upgrade",
+                name: "Coins",
                 game: this.game,
-                description: "Gets a random basic upgrade",
-                price: 20,
-                condition: this.game.shop.checkBasicUpgrade()
+                description: "Get 100 coins",
+                condition: true
             }, 
             {
                 name:"Rare Upgrade",
                 game: this.game,
                 description: "Gets a random rare upgrade",
-                price: 40,
                 condition: this.game.shop.checkUniqueUpgrade()
             }
         ];
@@ -53,8 +54,8 @@ class Shop {
         this.firstX = this.center.x - 300;
         this.options.forEach(choice => {
             if (mouseX > this.firstX && mouseX < this.firstX + this.length &&
-                mouseY > this.center.y && mouseY < this.center.y + this.height && this.game.adventurer.coins >= choice.price &&
-                choice.condition && !this.showUpgrade
+                mouseY > this.center.y && mouseY < this.center.y + this.height &&
+                choice.condition && !this.showUpgrade && !this.showPlayer
             ) {
                 this.selected = choice.name;
                 this.game.click = {x:0, y:0};
@@ -76,12 +77,11 @@ class Shop {
             mouseY > this.center.y + this.height + 50 && mouseY < this.center.y + this.height + 50 + this.button.height 
                 
         ) {
-            if (this.showUpgrade && this.selected != null) {
+            if (this.showUpgrade && this.selected != null) { //Upgrade menu
                 this.game.upgrade.updateChoice(this.selected);
                 this.game.upgrade.addValidUpgrade();
-                this.showUpgrade = false;
                 this.selected = null;
-                this.game.click = {x:0, y:0};
+                this.closingShop();
                 this.mouseX = 0;
             } else if (this.selected != null) {
                 this.selectChoice(this.selected);
@@ -91,27 +91,30 @@ class Shop {
             }
 
         }
-        if (this.game.upgrade.checkExitButton(mouseX, mouseY) && !this.showUpgrade) {
-            this.enableBuy = false;
-            this.showUpgrade = false;
-            this.game.shopPause = false;
+        if (this.game.upgrade.checkHeroStatus()) {
+            this.showPlayer = true;
+            this.game.click = {x:0, y:0};
+        }
+        if (this.game.upgrade.checkExitButton(mouseX, mouseY) && this.showPlayer) {
+            this.showPlayer = false;
+            // this.enableBuy = false;
+            // this.showUpgrade = false;
+            // this.game.shopPause = false;
+            // this.game.camera.enableShop = false;
             this.game.click = {x:0, y:0};
         }
     }
     selectChoice(choice) {
         switch(choice) {
             case "Heal":
-                let health = this.game.adventurer.health;
-                let maxHealth = this.game.adventurer.maxhealth;
-                this.game.adventurer.coins -= this.options[0].price;
-                (health + 20 > maxHealth) ? this.game.adventurer.health = maxHealth : this.game.adventurer.health += 20;
+                this.game.adventurer.health = this.game.adventurer.maxhealth;
+                this.closingShop();
                 break;
-            case "Basic Upgrade":
-                this.game.adventurer.coins -= this.options[1].price;
-                this.getRandomBasicUpgrade();
+            case "Coins":
+                this.game.adventurer.coins += 100;
+                this.closingShop();
                 break;
             case "Rare Upgrade":
-                this.game.adventurer.coins -= this.options[2].price;
                 this.getRandomUniqueUpgrade();
                 break;
             default:
@@ -146,24 +149,43 @@ class Shop {
         this.index = Math.floor(Math.random() * upgrades.length);
         return upgrades[this.index];
     }
+    closingShop() {
+        this.enableBuy = false;
+        this.showUpgrade = false;
+        this.game.shopPause = false;
+        this.game.camera.enableShop = false;
+        this.collected = true;
+        this.game.click = {x:0, y:0};
+    }
     draw(ctx) {
-        this.game.draw(ctx);
-        ctx.fillStyle = rgba(0,0,0, 0.75);
-        ctx.fillRect(0, 0, PARAMS.CANVAS_WIDTH, PARAMS.CANVAS_HEIGHT);
-        let mouseX = 0;
-        let mouseY = 0;
-        if (this.game.mouse != null) {
-            mouseX = this.game.mouse.x;
-            mouseY = this.game.mouse.y;
+        if (!this.enableBuy) {
+            this.game.draw(ctx);
         }
-        if (this.showUpgrade) {
-            this.drawUpgrade(ctx, mouseX, mouseY);
+        if (this.showPlayer) {
+            this.game.upgrade.exitButton(ctx);
+            this.player.update();
+            this.player.draw(ctx);
+            this.game.upgrade.exitButton(ctx)
         } else {
-            this.drawOptions(ctx, mouseX, mouseY);
-            this.drawCoins(ctx);
-            this.game.upgrade.exitButton(ctx, mouseX, mouseY);
+            this.game.draw(ctx);
+            ctx.fillStyle = rgba(0,0,0, 0.75);
+            ctx.fillRect(0, 0, PARAMS.CANVAS_WIDTH, PARAMS.CANVAS_HEIGHT);
+            let mouseX = 0;
+            let mouseY = 0;
+            if (this.game.mouse != null) {
+                mouseX = this.game.mouse.x;
+                mouseY = this.game.mouse.y;
+            }
+            if (this.showUpgrade) {
+                this.drawUpgrade(ctx, mouseX, mouseY);
+            } else {
+                this.drawOptions(ctx, mouseX, mouseY);
+                // this.drawCoins(ctx);
+                this.game.upgrade.heroStatus(ctx);
+                // this.game.upgrade.exitButton(ctx, mouseX, mouseY);
+            }
+            this.drawConfirm(ctx, mouseX, mouseY);
         }
-        this.drawConfirm(ctx, mouseX, mouseY);
 
     }
     drawOptions(ctx, mouseX, mouseY) {
@@ -174,7 +196,7 @@ class Shop {
         this.options.forEach(choice => {
             ctx.beginPath();
             if (mouseX > this.firstX && mouseX < this.firstX + this.length &&
-                mouseY > this.center.y && mouseY < this.center.y + this.height && this.game.adventurer.coins >= choice.price &&
+                mouseY > this.center.y && mouseY < this.center.y + this.height &&
                 choice.condition || this.selected == choice.name
             ) {
                 ctx.fillStyle = rgb(50, 50, 50);
@@ -194,23 +216,13 @@ class Shop {
             ctx.roundRect(this.firstX, this.center.y, this.length, this.height, [10]);
             ctx.fill();
             ctx.stroke();
-            (this.game.adventurer.coins >= choice.price && choice.condition) ? ctx.fillStyle = "White" : ctx.fillStyle = "Gray";
+            (choice.condition) ? ctx.fillStyle = "White" : ctx.fillStyle = "Gray";
             ctx.shadowBlur = 0;
             ctx.strokeStyle = 'Black';
             ctx.textBaseline = "top";
             ctx.fillText(choice.name, this.firstX + this.length / 2, this.center.y + 20);
             this.wrapText(ctx, choice.description, this.firstX + this.length / 2, this.center.y + this.height/2, 
                 this.length - 40, 20);
-
-            ctx.drawImage(this.coinImage, 
-                14, 143, 
-                5, 5, 
-                this.firstX + this.length / 2 - (5 * 4 )/ 2 - 25, this.center.y + this.height - 20 - 5 * 4 + 5, 
-                5 * 4, 5 * 4
-            );
-            ctx.textBaseline = "bottom";
-            (this.game.adventurer.coins >= choice.price) ? ctx.fillStyle = "White" : ctx.fillStyle = "Red";
-            ctx.fillText("x" + choice.price, this.firstX + this.length / 2 + 10, this.center.y + this.height - 20);
             this.firstX += 300;
         });
     }
@@ -322,7 +334,7 @@ class Shop {
     drawCoins(ctx) {
         let buffer = 10;
         ctx.font = '14px "Press Start 2P"';
-        let width = ctx.measureText(this.game.adventurer.coins.toString()).width + 20 + buffer * 2 + 5;
+        let width = ctx.measureText(this.game.adventurer.coins.toString()).width + 20 + buffer * 2 + 5; // 20 is coin length
         let height = buffer * 2 + 20;
         ctx.beginPath();
         ctx.fillStyle = rgb(74, 74, 74);

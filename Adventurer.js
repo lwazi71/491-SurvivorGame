@@ -24,7 +24,7 @@ class Adventurer { //every entity should have update and draw!
         this.invincible = false;
         this.velocity = {x: 0, y: 0};
         this.lastMove = 0;
-        this.health = 100; //default max health of the player
+        this.health = 10; //default max health of the player
         this.maxhealth = 100;
 
         //player getting damaged
@@ -133,6 +133,15 @@ class Adventurer { //every entity should have update and draw!
 
         this.lightningOption = 0; //0 = normal lightning, 1 = Dark-Bolt lightning
 
+        //POTION PROPERTIES:
+        this.enablePotion = false;
+        this.canPotion = true;
+        this.potion = 0;
+        this.potionMaxAmount = 99;
+        this.potionCooldown = 0.5;
+        this.potionCooldownTimer = 0;
+        this.potionHealingAmount = this.maxhealth * 0.2;
+
         //UPGRADE COMBO CONTROL VARIABLE:
         this.slashArrowCombo = false; //combo where player can hit arrow with their sword to make arrow go faster + do 2x more damage
         this.slashBombCombo = false; //combo where player can hit the bomb with their sword towards enemies
@@ -140,7 +149,7 @@ class Adventurer { //every entity should have update and draw!
 
         this.critChance = 0.05; //5%
         this.critDamage = 1.5; //150%
-        this.coins = 0;
+        this.coins = 1000;
         this.level = 1;
         this.experience = 0;
         this.experienceToNextLvl = 100;
@@ -499,6 +508,12 @@ class Adventurer { //every entity should have update and draw!
                 this.boltCurrentAmount++;
             }
         }
+        if (!this.canPotion) {
+            this.potionCooldownTimer -= this.game.clockTick;
+            if (this.potionCooldownTimer <= 0) { //once cooldown ends
+                this.canPotion = true; //we can now put bomb down again
+            }
+        }
         //-------------------------------------------------------------
 
         if (this.game.keys["1"]) {
@@ -557,13 +572,17 @@ class Adventurer { //every entity should have update and draw!
         }
         
         //dark-bolt control
-        if (this.game.keys["f"] && this.canBolt && !this.rolling && this.boltCurrentAmount > 0) {
+        if (this.game.keys["f"] && this.canBolt && !this.rolling && this.boltCurrentAmount > 0 && this.enableBolt) {
             this.boltCurrentAmount--;
             this.lightningOption = 1;
             if (this.boltCooldownRetrieveTimer <= 0) {
                 this.boltCooldownRetrieveTimer = this.boltCooldownRetrieve;
             }
             this.darkBolt();            
+        }
+        if (this.game.keys["x"] && this.canPotion && this.potion > 0 && this.health < this.maxhealth && this.enablePotion) {
+            this.potion--;
+            this.usePotion();          
         }
 
         //ANIMATION TIMING -------------------------------------------------------------------
@@ -667,7 +686,7 @@ class Adventurer { //every entity should have update and draw!
 
             if ((entity instanceof Chest) && this.BB.collide(entity.BB)) {
                 //open screen.
-
+                this.game.camera.enableShop = true;
                 entity.removeFromWorld = true;
             } 
         });
@@ -686,9 +705,9 @@ class Adventurer { //every entity should have update and draw!
             this.enableBomb = true;
             this.enableLightning = true;
             this.enableMagic = true;
+            this.enablePotion = true;
             // this.attackDamage = 10;
-            this.health = 100;
-            this.maxhealth = 100;
+            this.health = this.maxhealth;
             this.slashArrowCombo = true;
             this.slashBombCombo = true;
             this.lightningDarkBoltCombo = true;
@@ -1051,6 +1070,12 @@ class Adventurer { //every entity should have update and draw!
         this.animations[12][0].elapsedTime = 0;
         this.animations[12][1].elapsedTime = 0;
     }
+    usePotion() {
+        this.canPotion = false;
+        this.potionCooldownTimer = this.potionCooldown;
+        this.potionHealingAmount = this.maxhealth * 0.2;
+        (this.health + this.potionHealingAmount > this.maxhealth) ? this.health = this.maxhealth : this.health += this.potionHealingAmount;
+    }
 
 
 
@@ -1149,7 +1174,7 @@ class Adventurer { //every entity should have update and draw!
             // this.health = this.maxhealth;
             this.level++;
             // this.attackDamage += 1;
-            // this.maxhealth += 1;
+            this.maxhealth += 1;
             // this.health += 1;
             this.game.upgrade.points++;
             this.experience -= this.experienceToNextLvl;
