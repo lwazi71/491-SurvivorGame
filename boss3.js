@@ -90,9 +90,9 @@ class Boss3 {
         this.maxChargeDuration = 3; // Maximum charge duration in seconds
         this.currentChargeDuration = 0; // Tracks how long hellspawn has been charging
 
-        this.name = "tbd, also need to fix this icon ->";
-        this.profileAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/FlyingDemon/IDLE.png"), 12, 10, 81, 40, 3.94, 0.1, false, false);
-        this.healthbar = this.game.addEntity(new BossHealthBar(game, this, this.profileAnimation, 40, 0, 0, 3));
+        this.name = "Hellspawn Lord";
+        this.profileAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/FlyingDemon/IDLE.png"), 0, 0, 48, 48, 3.94, 0.1, false, false);
+        this.healthbar = this.game.addEntity(new BossHealthBar(game, this, this.profileAnimation, 48, 0, 0, 2));
         this.pointer = this.game.addEntity(new Pointer(game, this));
 
 
