@@ -19,7 +19,7 @@ class SceneManager {
         this.enableShop = false;
         this.enableLevelShop = false;
 
-        this.enableTitle = false; //Whether title screen shows up or not
+        this.enableTitle = true; //Whether title screen shows up or not
 
         this.shakeIntensity = 0;
         this.shakeDecay = 0.9; 
