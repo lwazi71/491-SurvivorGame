@@ -530,6 +530,7 @@ class Hud {
             ctx.textAlign = "right";
             ctx.textBaseline = "bottom";
             if (this.adventurer.potion < this.adventurer.potionMaxAmount && this.adventurer.boltCurrentAmount > 0) ctx.fillStyle = "White";
+            if (this.adventurer.potion == 0) ctx.fillStyle = "Red";
             ctx.font = 20 * this.proportion + 'px Lilita One';
             ctx.fillText(`x${this.adventurer.potion}`, locationX + length / 2 + (32 * this.abilitiesScale) / 2, 
                 this.weaponIconY + 32 * this.abilitiesScale + 10 * this.abilitiesScale);

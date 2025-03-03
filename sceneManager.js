@@ -18,7 +18,8 @@ class SceneManager {
         this.title = new Title(this.game);
         this.enableShop = false;
         this.enableLevelShop = false;
-        this.enableTitle = false;
+
+        this.enableTitle = false; //Whether title screen shows up or not
 
         this.shakeIntensity = 0;
         this.shakeDecay = 0.9; 
@@ -31,7 +32,7 @@ class SceneManager {
         this.game.addEntity(this.deathScreen);
 
         //this.loadTestLevel();
-        this.loadTestLevel(this.enableTitle);
+        if (!this.enableTitle) this.loadTestLevel(false);
 
     };
 
@@ -71,7 +72,7 @@ class SceneManager {
         // this.game.addEntity(new Zombie(this.game, 513, 400));
         // this.game.addEntity(new Zombie(this.game, 42, 400));
         // this.game.addEntity(new BanditNecromancer(this.game, 42, 400));
-        // this.game.addEntity(new Necromancer(this.game, 42, 400));
+        this.game.addEntity(new Necromancer(this.game, 42, 400));
         // this.game.addEntity(new Imp(this.game, 42, 400));
 
         // this.game.addEntity(new RatMage(this.game, 200, 400));
