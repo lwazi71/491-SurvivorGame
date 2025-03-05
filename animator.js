@@ -12,6 +12,7 @@ class Animator {
     drawFrame(tick, ctx, x, y, scale) { //goes into our spread sheet and select which frame we want to draw of our animation
         //x and y is where want to draw on the canvas
 
+        this.elapsedTime += tick; //if elasped time is just 0, it'll just give us first frame
         if (this.isDone()) {
             if (this.loop) {
                 this.elapsedTime -= this.totalTime;
@@ -19,12 +20,10 @@ class Animator {
                 return;
             }
         }
-
-        this.elapsedTime += tick; //if elasped time is just 0, it'll just give us first frame
         
         let frame = this.currentFrame(); //cant be const because of reverse. We're changing frame
 
-        if (this.elapsedTime > this.totalTime) this.elapsedTime -= this.totalTime; //used to keep the animation going
+        // if (this.elapsedTime > this.totalTime) this.elapsedTime -= this.totalTime; //used to keep the animation going
 
         if (this.reverse) frame = this.frameCount - frame - 1;
         ctx.drawImage(this.spritesheet, 

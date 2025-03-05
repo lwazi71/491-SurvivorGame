@@ -58,36 +58,36 @@ class Minotaur {
 
         //RIGHT
         //idle 
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 0, 96, 96, 4.9, 0.2, false, false);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 0, 96, 96, 4.9, 0.2, false, true);
 
         //walking
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 96, 96, 96, 7.9, 0.08, false, false);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 96, 96, 96, 7.9, 0.08, false, true);
 
         //Attack 1
-        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 288, 96, 96, 8.9, 0.08, false, false);
+        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 288, 96, 96, 8.9, 0.08, false, true);
 
         //Attack 3
-        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 576, 96, 96, 8.9, 0.08, false, false);
+        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 576, 96, 96, 8.9, 0.08, false, true);
 
         //Damaged
-        this.animations[4][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 96, 768, 96, 96, 2, 0.15, false, false);
+        this.animations[4][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 96, 768, 96, 96, 2, 0.15, false, true);
 
 
         //LEFT
         //idle
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 960, 96, 96, 4.9, 0.2, false, false);
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 960, 96, 96, 4.9, 0.2, false, true);
 
         //walking
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 1056, 96, 96, 7.9, 0.08, false, false);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 1056, 96, 96, 7.9, 0.08, false, true);
 
         //Attack 1
-        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 1248, 96, 96, 8.9, 0.08, false, false);
+        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 1248, 96, 96, 8.9, 0.08, false, true);
 
         //Attack 2
-        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 1536, 96, 96, 8.9, 0.08, false, false);
+        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 1536, 96, 96, 8.9, 0.08, false, true);
 
         //Damaged
-        this.animations[4][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 96, 1728, 96, 96, 2, 0.15, false, false);
+        this.animations[4][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 96, 1728, 96, 96, 2, 0.15, false, true);
 
         this.warning = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/warning.png"), 0, 0, 1024, 1024, 7.9, 0.1, false, true); //used for mini bosses
 
@@ -274,6 +274,9 @@ class Minotaur {
 
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
         this.health -= damage;
+        if (this.dead) {
+            return;
+        }
         
         // Apply knockback
         const dx = (this.x + (this.bitSizeX * this.scale)/2) - sourceX;

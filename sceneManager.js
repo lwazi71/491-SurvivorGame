@@ -36,55 +36,55 @@ class SceneManager {
         if(!adventurer) this.game.addEntity(this.adventurer);        
         // this.game.addEntity(new Adventurer(this.game, 0, 0));
 
-        // this.game.addEntity(new BlueGhoul(this.game, 400, 400));
-        // this.game.addEntity(new BlueGhoul(this.game, 400, 400));
-        // this.game.addEntity(new HellSpawn(this.game, 400, 400));
-        // this.game.addEntity(new HellSpawn(this.game, 800, 400));
+    //     this.game.addEntity(new BlueGhoul(this.game, 400, 400));
+    //     this.game.addEntity(new BlueGhoul(this.game, 400, 400));
+    //     this.game.addEntity(new HellSpawn(this.game, 400, 400));
+    //     this.game.addEntity(new HellSpawn(this.game, 800, 400));
 
-        // this.game.addEntity(new FreakyGhoul(this.game, 800, 800));
-        // this.game.addEntity(new FreakyGhoul(this.game, 300, 800));
-        // this.game.addEntity(new Ghost(this.game, 400, 400));
-        // this.game.addEntity(new Ghost(this.game, 400, 400));
-
-
-        // this.game.addEntity(new Zombie(this.game, 400, 400));
-        // this.game.addEntity(new Zombie(this.game, 200, 400));
-        // this.game.addEntity(new Zombie(this.game, 300, 450));
-        // this.game.addEntity(new Zombie(this.game, 130, 400));
-        // this.game.addEntity(new Zombie(this.game, 323, 400));
-        // this.game.addEntity(new Zombie(this.game, 513, 400));
-        // this.game.addEntity(new Zombie(this.game, 42, 400));
-        // this.game.addEntity(new BanditNecromancer(this.game, 42, 400));
-        // this.game.addEntity(new Necromancer(this.game, 42, 400));
-        // this.game.addEntity(new Imp(this.game, 42, 400));
-
-        // this.game.addEntity(new RatMage(this.game, 200, 400));
-        // this.game.addEntity(new FoxMage(this.game, 200, 400));
-        // this.game.addEntity(new Crow(this.game, 200, 400));
-        // this.game.addEntity(new Slime(this.game, 200, 400));
-        // this.game.addEntity(new Boar(this.game, 200, 400));
-        // this.game.addEntity(new Wizard(this.game, 200, 200));
-        // this.game.addEntity(new Goblin(this.game, 200, 200));
-        //  this.game.addEntity(new Cyclops(this.game, 200, 400));
-        // this.game.addEntity(new Minotaur(this.game, 200, 400));
-        // this.game.addEntity(new GoblinMech(this.game, 200, 400));
-
-        //this.game.addEntity(new Boss1(this.game, 200, 400));
-        // this.game.addEntity(new GolemMech(this.game, 200, 200));
-       // this.game.addEntity(new Boss3(this.game, 200, 200));
-       // this.game.addEntity(new PortalDoor(this.game, 100, 100));
+    //     this.game.addEntity(new FreakyGhoul(this.game, 800, 800));
+    //     this.game.addEntity(new FreakyGhoul(this.game, 300, 800));
+    //     this.game.addEntity(new Ghost(this.game, 400, 400));
+    //     this.game.addEntity(new Ghost(this.game, 400, 400));
 
 
+    //     this.game.addEntity(new Zombie(this.game, 400, 400));
+    //     this.game.addEntity(new Zombie(this.game, 200, 400));
+    //     this.game.addEntity(new Zombie(this.game, 300, 450));
+    //     this.game.addEntity(new Zombie(this.game, 130, 400));
+    //     this.game.addEntity(new Zombie(this.game, 323, 400));
+    //     this.game.addEntity(new Zombie(this.game, 513, 400));
+    //     this.game.addEntity(new Zombie(this.game, 42, 400));
+    //      this.game.addEntity(new BanditNecromancer(this.game, 42, 400));
+    //     this.game.addEntity(new Necromancer(this.game, 42, 400));
+    //     this.game.addEntity(new Imp(this.game, 42, 400));
 
-        // this.game.addEntity(this.generateObject("Barrel", 100, 100));
-        // this.game.addEntity(this.generateObject("Crate", 300, 100));
-        // this.game.addEntity(this.generateObject("Pot", 500, 100));
-        // this.game.addEntity(this.generateObject("Barrel", 200, 100));
-        // this.game.addEntity(this.generateObject("Crate", 100, 300));
-        // this.game.addEntity(this.generateObject("Pot", 100, 500));
-        // this.game.addEntity(this.generateObject("Crate", 300, 500));
-        // this.game.addEntity(this.generateObject("Barrel", 500, 500));
-        // this.game.addEntity(this.generateObject("Crate", 500, 300));
+    //     this.game.addEntity(new RatMage(this.game, 200, 400));
+    //     this.game.addEntity(new FoxMage(this.game, 200, 400));
+    //     this.game.addEntity(new Crow(this.game, 200, 400));
+    //     this.game.addEntity(new Slime(this.game, 200, 400));
+    //     this.game.addEntity(new Boar(this.game, 200, 400));
+    //     this.game.addEntity(new Wizard(this.game, 200, 200));
+    //     this.game.addEntity(new Goblin(this.game, 200, 200));
+    //     this.game.addEntity(new Cyclops(this.game, 200, 400));
+    //     this.game.addEntity(new Minotaur(this.game, 200, 400));
+    //     this.game.addEntity(new GoblinMech(this.game, 200, 400));
+
+    //      this.game.addEntity(new Boss1(this.game, 200, 400));
+    //     this.game.addEntity(new GolemMech(this.game, 200, 200));
+    //    this.game.addEntity(new Boss3(this.game, 200, 200));
+       //this.game.addEntity(new PortalDoor(this.game, 100, 100));
+
+
+
+        this.game.addEntity(this.generateObject("Barrel", 100, 100));
+        this.game.addEntity(this.generateObject("Crate", 300, 100));
+        this.game.addEntity(this.generateObject("Pot", 500, 100));
+        this.game.addEntity(this.generateObject("Barrel", 200, 100));
+        this.game.addEntity(this.generateObject("Crate", 100, 300));
+        this.game.addEntity(this.generateObject("Pot", 100, 500));
+        this.game.addEntity(this.generateObject("Crate", 300, 500));
+        this.game.addEntity(this.generateObject("Barrel", 500, 500));
+        this.game.addEntity(this.generateObject("Crate", 500, 300));
 
         //find a better way to do this.
         this.game.addEntity(new Sign(this.game, 20, 20, 

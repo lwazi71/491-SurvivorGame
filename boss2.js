@@ -94,25 +94,25 @@ class GolemMech {
 
         //RIGHT
         //walking
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 0, 0, 100, 100, 3.9, 0.1, false, false);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 0, 0, 100, 100, 3.9, 0.1, false, true);
 
         //projectile
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 0, 200, 100, 100, 8.9, 0.1, false, false);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 0, 200, 100, 100, 8.9, 0.1, false, true);
 
         //immunity transformation
-        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 0, 300, 100, 100, 6.9, 0.1, false, false);
+        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 0, 300, 100, 100, 6.9, 0.1, false, true);
 
         //immunity last frame. Should be when it starts healing
-        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 700, 300, 100, 100, 0.95, 0.2, false, false);
+        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 700, 300, 100, 100, 0.95, 0.2, false, true);
 
         //attack
-        this.animations[4][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 0, 400, 100, 100, 6.9, 0.1, false, false);
+        this.animations[4][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 0, 400, 100, 100, 6.9, 0.1, false, true);
 
         //damaged
-        this.animations[5][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 200, 700, 100, 100, 0.9, 0.1, false, false);
+        this.animations[5][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 200, 700, 100, 100, 0.9, 0.1, false, true);
 
         //immunity detransformation
-        this.animations[6][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 10, 300, 100, 100, 6.9, 0.1, true, false);
+        this.animations[6][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 10, 300, 100, 100, 6.9, 0.1, true, true);
 
 
         
@@ -121,25 +121,25 @@ class GolemMech {
 
         //LEFT
         //walking
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 611, 0, 100, 100, 3.9, 0.1, true, false);
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 611, 0, 100, 100, 3.9, 0.1, true, true);
 
         //projectile
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 111, 200, 100, 100, 8.9, 0.1, true, false);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 111, 200, 100, 100, 8.9, 0.1, true, true);
 
         //immunity transformation
-        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 311, 300, 100, 100, 6.9, 0.1, true, false);
+        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 311, 300, 100, 100, 6.9, 0.1, true, true);
 
         //immunity last frame. Should be when it starts healing
-        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 206, 300, 100, 100, 0.95, 0.2, true, false);
+        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 206, 300, 100, 100, 0.95, 0.2, true, true);
 
         //attack
-        this.animations[4][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 311, 400, 100, 100, 6.9, 0.1, true, false);
+        this.animations[4][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 311, 400, 100, 100, 6.9, 0.1, true, true);
 
         //damaged
-        this.animations[5][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 711, 700, 100, 100, 0.9, 0.1, true, false);
+        this.animations[5][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 711, 700, 100, 100, 0.9, 0.1, true, true);
         
         //immunity detransformation
-        this.animations[6][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 301, 300, 100, 100, 6.9, 0.1, false, false);
+        this.animations[6][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 301, 300, 100, 100, 6.9, 0.1, false, true);
 
         this.deathAnimation1 = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 200, 700, 100, 100, 5.9, 0.1, false, false);
 
@@ -452,12 +452,12 @@ class GolemMech {
             angles.forEach(angle => {
                 this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, this.armDamage, this.shootSpeed, 
                     "./Sprites/Boss/arm_projectile.png", this.armKnockback, false, this.armScale, false, this.armLifeTime,
-                    0, -10, 100, 100, 3, 0.1, false, false, 200, 200, 32, 32, 100, 100, this, true));
+                    0, -10, 100, 100, 3, 0.1, false, true, 200, 200, 32, 32, 100, 100, this, true));
             });
         } else {
             this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, this.armDamage, this.shootSpeed, 
                 "./Sprites/Boss/arm_projectile.png", this.armKnockback, false, this.armScale, false, this.armLifeTime,
-                0, -10, 100, 100, 3, 0.1, false, false, 200, 200, 32, 32, 100, 100, this, true));
+                0, -10, 100, 100, 3, 0.1, false, true, 200, 200, 32, 32, 100, 100, this, true));
         }
     }
 
@@ -471,6 +471,9 @@ class GolemMech {
 
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
         if (this.immunity) {
+            return;
+        }
+        if (this.dead) {
             return;
         }
         this.currentHealth -= damage;

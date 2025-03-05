@@ -91,7 +91,7 @@ class Boss3 {
         this.currentChargeDuration = 0; // Tracks how long hellspawn has been charging
 
         this.name = "Hellspawn Lord";
-        this.profileAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/FlyingDemon/IDLE.png"), 0, 0, 48, 48, 3.94, 0.1, false, false);
+        this.profileAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/FlyingDemon/IDLE.png"), 0, 0, 48, 48, 3.94, 0.1, false, true);
         this.healthbar = this.game.addEntity(new BossHealthBar(game, this, this.profileAnimation, 48, 0, 0, 2));
         this.pointer = this.game.addEntity(new Pointer(game, this));
 
@@ -137,31 +137,31 @@ class Boss3 {
 
         //LOOKNG RIGHT
         //flying, looking to the right
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/FlyingDemon/FLYING-flipped.png"), 0, 0, 81, 71, 3.94, 0.1, true, false);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/FlyingDemon/FLYING-flipped.png"), 0, 0, 81, 71, 3.94, 0.1, true, true);
 
         //Charge/preperation, to the right
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/FlyingDemon/FLYING-flipped.png"), 81, 0, 81, 71, 3, 0.05, true, false);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/FlyingDemon/FLYING-flipped.png"), 81, 0, 81, 71, 3, 0.05, true, true);
 
         //Damaged, to the right
-        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/FlyingDemon/HURT-flipped.png"), 0, 0, 81, 71, 3, 0.1, true, false); //wanna start at where the zombie turns white or else there'll be a delay
+        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/FlyingDemon/HURT-flipped.png"), 0, 0, 81, 71, 3, 0.1, true, true); //wanna start at where the zombie turns white or else there'll be a delay
 
         //Shoot/attack state
-        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/FlyingDemon/ATTACK-flipped.png"), 0, 0, 81, 71, 8, 0.1, true, false);
+        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/FlyingDemon/ATTACK-flipped.png"), 0, 0, 81, 71, 8, 0.1, true, true);
 
         
 
         //LOOKING LEFT
         //flying, looking to the left
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/FlyingDemon/FLYING.png"), 0, 0, 81, 71, 3.94, 0.1, false, false);
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/FlyingDemon/FLYING.png"), 0, 0, 81, 71, 3.94, 0.1, false, true);
 
         //Charge/preperation, to the left
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/FlyingDemon/FLYING.png"), 0, 0, 81, 71, 3, 0.05, false, false);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/FlyingDemon/FLYING.png"), 0, 0, 81, 71, 3, 0.05, false, true);
 
         //Damaged, to the left
-        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/FlyingDemon/HURT.png"), 81, 0, 81, 71, 3, 0.1, false, false); //wanna start at where the zombie turns white or else there'll be a delay
+        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/FlyingDemon/HURT.png"), 81, 0, 81, 71, 3, 0.1, false, true); //wanna start at where the zombie turns white or else there'll be a delay
 
         //Shoot/attack state
-        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/FlyingDemon/ATTACK.png"), 0, 0, 81, 71, 8, 0.1, false, false);
+        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/FlyingDemon/ATTACK.png"), 0, 0, 81, 71, 8, 0.1, false, true);
 
 
         //death animation
@@ -450,7 +450,7 @@ class Boss3 {
             this.projectileScale, 
             false, 
             5, 0, 0, 16, 16, 30, 0.1, 
-            false, false, -16, -23, 40, 40, 
+            false, true, -16, -23, 40, 40, 
             16, 16, this
         ));
     }
@@ -484,7 +484,7 @@ class Boss3 {
                 this.projectileScale, 
                 false, 
                 5, 0, 0, 16, 16, 30, 0.1, 
-                false, false, -16, -23, 40, 40, 
+                false, true, -16, -23, 40, 40, 
                 16, 16, this
             ));
         }
@@ -529,7 +529,7 @@ class Boss3 {
                         this.projectileScale, 
                         false, 
                         5, 0, 0, 16, 16, 30, 0.1, 
-                        false, false, -16, -23, 40, 40, 
+                        false, true, -16, -23, 40, 40, 
                         16, 16, this
                     ));
                 }
@@ -559,7 +559,7 @@ class Boss3 {
                 this.projectileScale, 
                 false, 
                 5, 0, 0, 16, 16, 30, 0.1, 
-                false, false, -16, -23, 40, 40, 
+                false, true, -16, -23, 40, 40, 
                 16, 16, this
             ));
         }
@@ -591,7 +591,7 @@ class Boss3 {
                         this.projectileScale, 
                         false, 
                         5, 0, 0, 16, 16, 30, 0.1, 
-                        false, false, -16, -23, 40, 40, 
+                        false, true, -16, -23, 40, 40, 
                         16, 16, this
                     ));
                 }
@@ -622,8 +622,10 @@ class Boss3 {
 
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
         this.currentHealth -= damage;
-        console.log(`Boss health: ${this.currentHealth}/${this.maxHealth}`);
 
+        if (this.dead) {
+            return;
+        }
         // Check if we've reached a health threshold that unlocks new attack patterns
         this.updateAvailablePatterns();
 

@@ -73,26 +73,26 @@ class Ghost {
 
         //LOOKNG RIGHT
         //Walking, looking right
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost.png"), 0, 0, 32, 32, 3.9, 0.1, false, false);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost.png"), 0, 0, 32, 32, 3.9, 0.1, false, true);
 
         //Attack, to the right
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost.png"), 0, 32, 32, 32, 3.9, 0.2, false, false);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost.png"), 0, 32, 32, 32, 3.9, 0.2, false, true);
 
         //Damaged, to the right
         //wanna start at where the ghost turns white or else there'll be a delay
-        this.animations[2][0] =  new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost.png"), 0, 64, 32, 32, 3.9, 0.2, false, false); 
+        this.animations[2][0] =  new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost.png"), 0, 64, 32, 32, 3.9, 0.2, false, true); 
 
         
 
         //LOOKING LEFT
         //idle, looking to the left
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost-Flipped.png"), 98, 0, 32, 32, 3.9, 0.2, true, false);
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost-Flipped.png"), 98, 0, 32, 32, 3.9, 0.2, true, true);
 
         //Attack, to the left
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost-Flipped.png"), 98, 32, 32, 32, 4, 0.2, true, false);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost-Flipped.png"), 98, 32, 32, 32, 4, 0.2, true, true);
 
         //Damaged, to the left
-        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost-Flipped.png"), 98, 64, 32, 32, 4, 0.2, true, false);
+        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost-Flipped.png"), 98, 64, 32, 32, 4, 0.2, true, true);
 
 
         this.deadAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost.png"), 0, 96, 32, 32, 7, 0.15, false, false);
@@ -283,6 +283,9 @@ class Ghost {
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
 
         this.health -= damage;
+        if (this.dead) {
+            return;
+        }
         
         // Apply knockback
         const dx = (this.x + (this.bitSizeX * this.scale)/2 - 5) - sourceX;

@@ -66,29 +66,29 @@ class Necromancer {
         }
         //RIGHT
         //idle
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/Necromancer.png"), 0, 0, 160, 128, 7.9, 0.2, false, false);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/Necromancer.png"), 0, 0, 160, 128, 7.9, 0.2, false, true);
 
         //walking
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/Necromancer.png"), 0, 128, 160, 128, 7.9, 0.1, false, false);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/Necromancer.png"), 0, 128, 160, 128, 7.9, 0.1, false, true);
 
         //casting
-        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/Necromancer.png"), 0, 256, 160, 128, 12.9, 0.1, false, false);
+        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/Necromancer.png"), 0, 256, 160, 128, 12.9, 0.1, false, true);
 
         //damaged
-        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/Necromancer.png"), 160, 640, 160, 128, 3.9, 0.2, false, false);
+        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/Necromancer.png"), 160, 640, 160, 128, 3.9, 0.2, false, true);
 
         //LEFT
         //idle
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/Necromancer-Flipped.png"), 1408, 0, 160, 128, 8, 0.2, true, false);
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/Necromancer-Flipped.png"), 1408, 0, 160, 128, 8, 0.2, true, true);
 
         //running
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/Necromancer-Flipped.png"), 1445, 128, 160, 128, 8, 0.1, true, false);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/Necromancer-Flipped.png"), 1445, 128, 160, 128, 8, 0.1, true, true);
 
         //casting 
-        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/Necromancer-Flipped.png"), 640, 256, 160, 128, 13, 0.1, true, false);
+        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/Necromancer-Flipped.png"), 640, 256, 160, 128, 13, 0.1, true, true);
 
         //damaged
-        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/Necromancer-Flipped.png"), 1920, 640, 160, 128, 4, 0.2, true, false);
+        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/Necromancer-Flipped.png"), 1920, 640, 160, 128, 4, 0.2, true, true);
     
         this.warning = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/warning.png"), 0, 0, 1024, 1024, 7.9, 0.1, false, true); //used for mini bosses
 
@@ -195,7 +195,7 @@ class Necromancer {
     
                 this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, this.damage, this.castSpeed, 
                     "./Sprites/Magic/BlackProjectile.png", 0, false, 3, false, 2,
-                    0, 0, 16, 16, 30, 0.1, false, false, -16, -23, 32, 32, 16, 16, this));
+                    0, 0, 16, 16, 30, 0.1, false, true, -16, -23, 32, 32, 16, 16, this));
             }
             
             this.shootTimer = this.shootCooldown;
@@ -263,6 +263,9 @@ class Necromancer {
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
 
         this.health -= damage;
+        if (this.dead) {
+            return;
+        }
         
         // Apply knockback
         //find the center of our character for the knockback.
