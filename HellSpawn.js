@@ -44,6 +44,9 @@ class HellSpawn {
         
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
 
+        this.maxChargeDuration = 4; // Maximum charge duration in seconds
+        this.currentChargeDuration = 0; // Tracks how long hellspawn has been charging
+
         this.isSlowed = false;
         this.slowDuration = 0;
         this.slowTimer = 0;
@@ -78,25 +81,25 @@ class HellSpawn {
 
         //LOOKNG RIGHT
         //idle/walking, looking to the right
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn.png"), 0, 0, 64, 64, 5.9, 0.2, false, false);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn.png"), 0, 0, 64, 64, 5.9, 0.2, false, true);
 
         //Charge, to the right
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn.png"), 0, 64, 64, 64, 5.3, 0.05, false, false);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn.png"), 0, 64, 64, 64, 5.3, 0.05, false, true);
 
         //Damaged, to the right
-        this.animations[2][0] =  new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn.png"), 64, 128, 64, 64, 3, 0.2, false, false); //wanna start at where the zombie turns white or else there'll be a delay
+        this.animations[2][0] =  new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn.png"), 64, 128, 64, 64, 3, 0.2, false, true); //wanna start at where the zombie turns white or else there'll be a delay
 
         
 
         //LOOKING LEFT
         //Walking/Idle, looking left
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn-Flipped.png"), 128, 0, 64, 64, 5.9, 0.09, true, false);
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn-Flipped.png"), 128, 0, 64, 64, 5.9, 0.09, true, true);
 
         //Charge, to the left
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn-Flipped.png"), 135, 64, 64, 64, 5.8, 0.05, true, false);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn-Flipped.png"), 135, 64, 64, 64, 5.8, 0.05, true, true);
 
         //Damaged, to the left
-        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn-Flipped.png"), 256, 128, 64, 64, 3, 0.2, true, false);
+        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn-Flipped.png"), 256, 128, 64, 64, 3, 0.2, true, true);
 
         this.warning = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/warning.png"), 0, 0, 1024, 1024, 7.9, 0.1, false, true); //used for mini bosses
 
@@ -179,6 +182,7 @@ class HellSpawn {
                 this.isPreparingCharge = false;
                 this.isCharging = true;
                 this.chargeTimer = 0;
+                this.currentChargeDuration = 0;
 
                 //Calculate charge direction and target point
                 const chargeDistance = 300; //Adjust this value to control how far HellSpawn goes past the player
@@ -196,6 +200,16 @@ class HellSpawn {
         }
     
         if (this.isCharging) {
+
+            this.currentChargeDuration += this.game.clockTick;
+
+            // Check if charge duration exceeded limit
+            if (this.currentChargeDuration >= this.maxChargeDuration) {
+                this.isCharging = false;
+                this.state = 0;
+                this.currentChargeDuration = 0;
+                return;
+            }
             // Move in charge direction
             this.x += this.chargeDirection.x * this.chargeSpeed * this.game.clockTick;
             this.y += this.chargeDirection.y * this.chargeSpeed * this.game.clockTick;
@@ -210,6 +224,7 @@ class HellSpawn {
             if (currentDistanceToTarget <= 10) {
                 this.isCharging = false;
                 this.state = 0;
+                this.currentChargeDuration = 0;  // Reset the duration timer
             }
         }
         
@@ -282,6 +297,9 @@ class HellSpawn {
 
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
         this.health -= damage;
+        if (this.dead) {
+            return;
+        }
         console.log(this.health);
 
         //damage to it when its preparing to charge will stop it from preparing to charge.

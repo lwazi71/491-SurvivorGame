@@ -24,7 +24,7 @@ class Imp {
         this.maxHealth = 12;
         this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 0, 10));
         this.dead = false;
-        this.deathAnimationTimer = 6 * 0.2; 
+        this.deathAnimationTimer = 6 * 0.1; 
     
         this.pushbackVector = { x: 0, y: 0 };
         this.pushbackDecay = 0.9;
@@ -65,29 +65,29 @@ class Imp {
         }
         //RIGHT
         //idle
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 0, 32, 32, 7, 0.2, false, false);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 0, 32, 32, 7, 0.2, false, true);
 
         //walking
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 32, 32, 32, 7.9, 0.1, false, false);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 32, 32, 32, 7.9, 0.1, false, true);
 
         //casting
-        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 64, 32, 32, 5.9, 0.1, false, false);
+        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 64, 32, 32, 5.9, 0.1, false, true);
 
         //damaged
-        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 32, 96, 32, 32, 3, 0.2, false, false);
+        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 32, 96, 32, 32, 3, 0.2, false, true);
 
         //LEFT
         //idle
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 192, 32, 32, 8, 0.2, false, false);
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 192, 32, 32, 8, 0.2, false, true);
 
         //running
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 224, 32, 32, 7.9, 0.1, false, false);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 224, 32, 32, 7.9, 0.1, false, true);
 
         //casting
-        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 256, 32, 32, 5.9, 0.1, false, false);
+        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 0, 256, 32, 32, 5.9, 0.1, false, true);
 
         //damaged
-        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 32, 288, 32, 32, 3, 0.2, false, false);
+        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/Imp.png"), 32, 288, 32, 32, 3, 0.2, false, true);
     
         this.warning = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/warning.png"), 0, 0, 1024, 1024, 7.9, 0.1, false, true); //used for mini bosses
 
@@ -267,6 +267,9 @@ class Imp {
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
 
         this.health -= damage;
+        if (this.dead) {
+            return;
+        }
         
         // Apply knockback
         const dx = (this.x + (this.bitSizeX * this.scale)/2) - sourceX;

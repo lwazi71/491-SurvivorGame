@@ -73,32 +73,32 @@ class FreakyGhoul {
 
         //LOOKNG RIGHT
         //idle, looking to the rights
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul.png"), 0, 0, 32, 32, 4, 0.2, false, false);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul.png"), 0, 0, 32, 32, 4, 0.2, false, true);
 
         //Walking, looking right
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul.png"), 0, 32, 32, 32, 7.9, 0.09, false, false);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul.png"), 0, 32, 32, 32, 7.9, 0.09, false, true);
 
         //Attack, to the right
-        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul.png"), 0, 64, 32, 32, 5, 0.08, false, false);
+        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul.png"), 0, 64, 32, 32, 5, 0.08, false, true);
 
         //Damaged, to the right
         //wanna start at where the blue ghoul turns red or else there'll be a delay
-        this.animations[3][0] =  new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul.png"), 32, 96, 32, 32, 3, 0.2, false, false); 
+        this.animations[3][0] =  new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul.png"), 32, 96, 32, 32, 3, 0.2, false, true); 
 
         
 
         //LOOKING LEFT
         //idle, looking to the left
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul-Flipped.png"), 125, 0, 32, 32, 3.9, 0.2, true, false);
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul-Flipped.png"), 125, 0, 32, 32, 3.9, 0.2, true, true);
 
         //Walking, looking left
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul-Flipped.png"), 5, 32, 32, 32, 7.9, 0.09, true, false);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul-Flipped.png"), 5, 32, 32, 32, 7.9, 0.09, true, true);
 
         //Attack, to the left
-        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul-Flipped.png"), 64, 64, 32, 32, 5, 0.08, true, false);
+        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul-Flipped.png"), 64, 64, 32, 32, 5, 0.08, true, true);
 
         //Damaged, to the left
-        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul-Flipped.png"), 128, 96, 32, 32, 3, 0.2, true, false);
+        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul-Flipped.png"), 128, 96, 32, 32, 3, 0.2, true, true);
 
         this.warning = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/warning.png"), 0, 0, 1024, 1024, 7.9, 0.1, false, true); //used for mini bosses
 
@@ -314,6 +314,9 @@ class FreakyGhoul {
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
 
         this.health -= damage;
+        if (this.dead) {
+            return;
+        }
         
         // Apply knockback
         const dx = (this.x + (this.bitSizeX * this.scale)/2) - sourceX;

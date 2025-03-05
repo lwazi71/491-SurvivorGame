@@ -52,6 +52,9 @@ class Slime {
         this.slowTimer = 0;
         this.baseSpeed = this.speed;
 
+        this.maxChargeDuration = 4; // Maximum charge duration in seconds
+        this.currentChargeDuration = 0; 
+
         this.miniBoss = false;
 
 
@@ -78,13 +81,13 @@ class Slime {
 
         //LOOKNG RIGHT
         //idle/walking, looking to the right
-        this.animations[0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Slime/slime.png"), 0, 0, 26, 17, 2, 0.5, false, false);
+        this.animations[0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Slime/slime.png"), 0, 0, 26, 17, 2, 0.5, false, true);
 
         //Charge, to the right
-        this.animations[1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Slime/slime.png"), 0, 0, 26, 17, 1.9, 0.07, false, false);
+        this.animations[1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Slime/slime.png"), 0, 0, 26, 17, 1.9, 0.07, false, true);
 
         //Damaged, to the right
-        this.animations[2] =  new Animator(ASSET_MANAGER.getAsset("./Sprites/Slime/slime.png"), 0, 17, 26, 17, 1, 0.2, false, false); 
+        this.animations[2] =  new Animator(ASSET_MANAGER.getAsset("./Sprites/Slime/slime.png"), 0, 17, 26, 17, 1, 0.2, false, true); 
 
         this.warning = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/warning.png"), 0, 0, 1024, 1024, 7.9, 0.1, false, true); //used for mini bosses
 
@@ -166,6 +169,7 @@ class Slime {
                 this.isPreparingCharge = false;
                 this.isCharging = true;
                 this.chargeTimer = 0;
+                this.currentChargeDuration = 0;
 
                 //Calculate charge direction and target point
                 const chargeDistance = 300; //Adjust this value to control how far enemy goes past the player
@@ -183,6 +187,15 @@ class Slime {
         }
     
         if (this.isCharging) {
+            this.currentChargeDuration += this.game.clockTick;
+
+            // Check if charge duration exceeded limit
+            if (this.currentChargeDuration >= this.maxChargeDuration) {
+                this.isCharging = false;
+                this.state = 0;
+                this.currentChargeDuration = 0;
+                return;
+            }
             // Move in charge direction
             this.x += this.chargeDirection.x * this.chargeSpeed * this.game.clockTick;
             this.y += this.chargeDirection.y * this.chargeSpeed * this.game.clockTick;
@@ -197,6 +210,7 @@ class Slime {
             if (currentDistanceToTarget <= 10) {
                 this.isCharging = false;
                 this.state = 0;
+                this.currentChargeDuration = 0;  // Reset the duration timer
             }
         }
         
@@ -268,7 +282,9 @@ class Slime {
 
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
         this.health -= damage;
-        console.log(this.health);
+        if (this.dead) {
+            return;
+        }
 
         //damage to it when its preparing to charge will stop it from preparing to charge.
         if (this.isPreparingCharge) {

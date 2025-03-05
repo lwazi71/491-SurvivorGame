@@ -86,10 +86,10 @@ class WaveManager {
                 },
                 // {
                 //     startTime: 30, //After 30 seconds, zombie enemies will spawn faster now
-                //     interval: 4, count: 2, pool: "melee", enemy_type: "zombie"},
+                //     interval: 7, count: 2, pool: "melee", enemy_type: "zombie"},
                 {
                     startTime: 30, //After 1 minute, melee enemies will spawn 2 times now
-                    interval: 7, count: 1, pool: "melee", enemy_type: "blueghoul", oneTime: false},
+                    interval: 7, count: 2, pool: "melee", enemy_type: "blueghoul", oneTime: false},
                 {
                     startTime: 45, //1 minute. The interval makes it go to 1 minute
                     interval: 15, count: 2, pool: "melee", enemy_type: "crow", oneTime: false},
@@ -280,7 +280,16 @@ class WaveManager {
         if (enemy) { //and melee
             console.log(this.statsMultiplier.health);
             //if (enemy.type === "zombie" || enemy.type === ...)
-            enemy.health = Math.floor(enemy.health * this.statsMultiplier.health);
+             if (enemy.miniBoss || enemy instanceof Cyclops || enemy instanceof GoblinMech || enemy instanceof Minotaur) {
+                const temp = enemy.health;
+                enemy.health = Math.floor(enemy.health * this.statsMultiplier.health * 3);
+                enemy.maxHealth = Math.floor(temp * this.statsMultiplier.health *3);
+             } else {
+                const temp = enemy.health;
+                enemy.health = Math.floor(enemy.health * this.statsMultiplier.health);
+                enemy.maxHealth = Math.floor(temp * this.statsMultiplier.health);
+             }
+
             // enemy.speed *= this.statsMultiplier.speed;
                 // enemy.attackPower *= this.statsMultiplier.attackPower;
             this.game.addEntity(enemy);
@@ -348,8 +357,8 @@ class WaveManager {
 
 
         // Regular enemy spawning logic
-       // this.statsMultiplier.health = 1 + (this.gameTime / 120) * 0.2; //increase enemy health by 20% every 2:00. This is so enemy still has fighting chance against player
-        // const twoMinuteIntervals = Math.floor(this.gameTime / 15); // Get number of completed 2-minute intervals
+       this.statsMultiplier.health = 1 + (this.gameTime / 120) * 0.2; //increase enemy health by 20% every 2:00. This is so enemy still has fighting chance against player
+        const twoMinuteIntervals = Math.floor(this.gameTime / 15); // Get number of completed 2-minute intervals
         // this.statsMultiplier.health = 1 + (twoMinuteIntervals * 0.2); // 20% increase per interval
         // this.statsMultiplier.speed = Math.round(1 + (this.gameTime / 600) * 0.2);
         // this.statsMultiplier.attackPower = Math.round(1 + (this.gameTime / 400) * 0.2);
