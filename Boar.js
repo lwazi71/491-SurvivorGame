@@ -12,6 +12,7 @@ class Boar {
 
         this.health = 20;
         this.maxHealth = 20;
+        this.didCrit = false;
         this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 8, -10));
         this.attackPower = 20;
         this.attackCooldown = 1.0; // Cooldown in seconds between attacks

@@ -10,6 +10,7 @@ class Zombie {
 
         this.health = 20;
         this.maxHealth = 20;
+        this.didCrit = false;
         this.attackPower = 10;
         this.attackCooldown = 1.0; // Cooldown in seconds between attacks
         this.attackCooldownTimer = 0; // Tracks remaining cooldown time

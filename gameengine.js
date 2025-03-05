@@ -23,7 +23,7 @@ class GameEngine {
         this.shopPause = false;
         this.deathPause = false;
 
-        this.currMap = 2;
+        this.currMap = 1;
         
 
         // Options and the Details
@@ -88,13 +88,13 @@ class GameEngine {
         this.ctx.canvas.addEventListener('mousedown', e => {
             if (e.button === 0) { // Left mouse button
               this.leftClickHeld = true;
-              console.log('Left mouse button is held down.');
+            //   console.log('Left mouse button is held down.');
             }
         });
         this.ctx.canvas.addEventListener('mouseup', e => {
             if (event.button === 0) { // Left mouse button
               this.leftClickHeld = false;
-              console.log('Left mouse button is released.');
+            //   console.log('Left mouse button is released.');
             }
           });
 
@@ -307,10 +307,10 @@ class GameEngine {
             this.upgrade.enablePlayerStats = false;
         } else if (this.shopPause && this.shop.showPlayer) {
             this.shop.showPlayer = false;
-        } else if (this.shopPause && this.camera.enableShop) {
-            this.shop.enableBuy = false;
-            this.shop.showUpgrade = false;
-            this.shopPause = false;
+        // } else if (this.shopPause && this.camera.enableShop) {
+        //     this.shop.enableBuy = false;
+        //     this.shop.showUpgrade = false;
+        //     this.shopPause = false;
         } else if (this.shopPause && this.camera.enableLevelShop) {
             this.camera.enableLevelShop = false;
             this.levelShop.enableBuy = false;
@@ -360,7 +360,10 @@ class GameEngine {
         this.mouse.x ? this.mouse.x : 0;
         this.mouse.y ? this.mouse.y : 0;
         return this.click.x > x && this.click.x < x + length &&
-        this.click.y > y && this.click.y < y + height;
+        this.click.y > y && this.click.y < y + height && this.leftClick;
+    }
+    isPaused() {
+        return this.pause || this.upgradePause || this.deathPause || this.shopPause;
     }
 };
 

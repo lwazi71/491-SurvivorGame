@@ -159,7 +159,7 @@ class Shop {
     }
     draw(ctx) {
         if (!this.enableBuy) {
-            this.game.draw(ctx);
+            // this.game.draw(ctx);
         }
         if (this.showPlayer) {
             this.game.upgrade.exitButton(ctx);
@@ -259,6 +259,7 @@ class Shop {
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText("Confirm", PARAMS.CANVAS_WIDTH / 2, this.center.y + this.height + this.button.height / 2 + 50); //PARAMS.CANVAS_HEIGHT / 2  + 250
+        ctx.lineWidth = 1;
     }
     wrapText(ctx, text, x, y, maxWidth, lineHeight) {
         const words = text.split(' ');

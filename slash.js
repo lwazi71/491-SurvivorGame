@@ -81,16 +81,16 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
             //[this.swordSwing][this.color/upgrade]
 
             //left to right slash 
-            this.animations[0] = new Animator(ASSET_MANAGER.getAsset(this.attackSpritePath), 0, 0, 128, 128, 5, 0.1, false, true);
+            this.animations[0] = new Animator(ASSET_MANAGER.getAsset(this.attackSpritePath), 0, 0, 128, 128, 5, 0.1, false, false);
 
             
-            this.animations[1] = new Animator(ASSET_MANAGER.getAsset(this.attackSpritePath), 0, 128, 128, 128, 4, 0.1, false, true);
+            this.animations[1] = new Animator(ASSET_MANAGER.getAsset(this.attackSpritePath), 0, 128, 128, 128, 4, 0.1, false, false);
 
 
             //reverse. Change sprite sheet to the flipped one (slash 1)
-            this.animations[2] = new Animator(ASSET_MANAGER.getAsset(this.attackSpritePathFlipped), 0, 0, 128, 128, 5, 0.1, true, true);
+            this.animations[2] = new Animator(ASSET_MANAGER.getAsset(this.attackSpritePathFlipped), 0, 0, 128, 128, 5, 0.1, true, false);
 
-            this.animations[3] = new Animator(ASSET_MANAGER.getAsset(this.attackSpritePathFlipped), 0, 128, 128, 128, 4, 0.1, false, true);
+            this.animations[3] = new Animator(ASSET_MANAGER.getAsset(this.attackSpritePathFlipped), 0, 128, 128, 128, 4, 0.1, false, false);
 
 
         }
@@ -122,7 +122,10 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
                         const centerY = this.person.y + (this.person.bitSize * this.person.scale) / 2 + Math.sin(this.angle) * this.slashDistance;
 
                         //Pass the center coordinates for knockback calculation and Apply damage and trigger damage state
-                        entity.takeDamage(this.attackDamage, this.knockback, centerX, centerY);
+                        let damage = this.attackDamage;
+                        if (this.person instanceof Adventurer) damage = this.person.critDamageCheck(damage);
+                        (this.attackDamage != damage) ? entity.didCrit = true : entity.didCrit = false;
+                        entity.takeDamage(damage, this.knockback, centerX, centerY);
                         
                     }
                 }
@@ -139,11 +142,15 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
                         const centerY = this.person.y + (this.person.bitSize * this.person.scale) / 2 + Math.sin(this.angle) * this.slashDistance;
 
                         //Pass the center coordinates for knockback calculation and Apply damage and trigger damage state
+                        let damage = this.attackDamage;
+                        if (this.person instanceof Adventurer) damage = this.person.critDamageCheck(damage);
+                        (this.attackDamage != damage) ? entity.didCrit = true : entity.didCrit = false;
+
                         if (entity.isCharging || entity.isPreparingCharge) {
                             //no knockback if the entity is charging
-                            entity.takeDamage(this.attackDamage, 0, centerX, centerY);
+                            entity.takeDamage(damage, 0, centerX, centerY);
                         } else {
-                            entity.takeDamage(this.attackDamage, this.knockback, centerX, centerY);
+                            entity.takeDamage(damage, this.knockback, centerX, centerY);
                         }
                         
                     }
@@ -203,7 +210,11 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
                         const centerY = this.person.y + (this.person.bitSize * this.person.scale) / 2 + Math.sin(this.angle) * this.slashDistance;
 
                         //We're gonna have 0 knockbacks for bosses/mini-bosses. Could potentially change
-                        entity.takeDamage(this.attackDamage, 0, centerX, centerY);
+                        let damage = this.attackDamage;
+                        if (this.person instanceof Adventurer) damage = this.person.critDamageCheck(damage);
+                        (this.attackDamage != damage) ? entity.didCrit = true : entity.didCrit = false;
+
+                        entity.takeDamage(damage, 0, centerX, centerY);
                         
                     }
                 }

@@ -36,6 +36,7 @@ class Minotaur {
 
         this.health = 70;
         this.maxHealth = 70;
+        this.didCrit = false;
         this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 5, -80));
         this.dead = false;
 

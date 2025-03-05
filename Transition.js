@@ -18,9 +18,9 @@ class TransitionScreen {
             this.heroAnimation.push([]);
         }
         //Walking
-        this.heroAnimation[0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 32, 32, 32, 7.9, 0.1, false, true);
+        this.heroAnimation[0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/HudIcons/AdventurerSpriteTransition.png"), 0, 0, 32, 32, 8, 0.1, false, true);
         //Pushing
-        this.heroAnimation[1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 0, 416, 32, 32, 7.9, 0.12, false, true); 
+        this.heroAnimation[1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 0, 416, 32, 32, 8, 0.12, false, true); 
         
         this.crate = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/DestructibleObjects.png"), 0, 128, 63.3, 63.3, 1, 1, false, true);;
     }
@@ -47,7 +47,9 @@ class TransitionScreen {
         ctx.textBaseline = "bottom"; 
         ctx.font = 24 + 'px "Press Start 2P"';
         ctx.fillText(this.loading[this.text],PARAMS.CANVAS_WIDTH / 2, PARAMS.CANVAS_HEIGHT - 120);
-        // this.heroAnimation[0].drawFrame(this.game.clockTick, ctx, PARAMS.CANVAS_WIDTH / 2 - 16 * this.scale, PARAMS.CANVAS_HEIGHT / 2, this.scale);
+
+        let runningScale = 4;
+        this.heroAnimation[0].drawFrame(this.game.clockTick, ctx, PARAMS.CANVAS_WIDTH / 2 - 16 * runningScale, PARAMS.CANVAS_HEIGHT / 2 - 16 * runningScale, runningScale);
 
         //Fake loading bar
 

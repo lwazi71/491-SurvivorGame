@@ -71,7 +71,6 @@ class WaveManager {
                 ]
             }
         };
-
         //Spawn patterns that activate at different times
         if (this.game.currMap == 1) {
             this.spawnPatterns = [
@@ -515,11 +514,12 @@ class WaveManager {
 
     draw(ctx) {
         // Draw wave information
-    //     ctx.font = '20px Arial';
-    //     ctx.fillStyle = 'white';
+        ctx.font = '20px Arial';
+        ctx.fillStyle = 'white';
         
-    //     if (!this.waveInProgress) {
-    //         ctx.fillText(`Next wave in: ${Math.ceil(this.waveTimer)}`, 10, 90);
-    //     }
+        // if (!this.waveInProgress) {
+        //     ctx.fillText(`Next wave in: ${Math.ceil(this.waveTimer)}`, PARAMS.CANVAS_WIDTH / 2, 200);
+        // }
+        ctx.fillText(this.gameTime.toFixed(0), PARAMS.CANVAS_WIDTH / 2, 200);
     }
 }

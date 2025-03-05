@@ -67,6 +67,7 @@ class GolemMech {
 
         this.currentHealth = 500;
         this.maxHealth = 500;
+        this.didCrit = false;
         this.name = "GolemMech"
 
         this.profileAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/HudIcons/Boss2Hud.png"), 0, 0, 32, 32, 7, 0.2, false, true);

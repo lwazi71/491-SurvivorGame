@@ -278,7 +278,12 @@ class DeathScreen {
     }
 
     restartGame() {
-        window.location.reload();
+        this.visible = false;
+        this.game.camera.enableTitle = true;
+        this.game.entities = [];
+        this.game.deathPause = false;
+        this.game.camera.startWave = false;
+        this.game.camera.adventurer = new Adventurer(this.game, 0, 0);
         // this.visible = false;
         // this.game.entities = []; // Clear all entities
 

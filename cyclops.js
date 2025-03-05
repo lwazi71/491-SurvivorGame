@@ -23,6 +23,7 @@ class Cyclops {
         
         this.health = 105; //Cyclops health 
         this.maxHealth = 105;
+        this.didCrit = false;
         this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 1, 10));
         this.dead = false;
         this.deathAnimationTimer = 8 * 0.1; 

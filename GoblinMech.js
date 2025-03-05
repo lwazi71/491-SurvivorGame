@@ -36,6 +36,7 @@ class GoblinMech {
 
         this.health = 120;
         this.maxHealth = 120;
+        this.didCrit = false;
         this.healthbar = this.game.addEntity(new HealthBar(this.game, this, -6, 18));
 
         this.entityOrder = 40;

@@ -92,7 +92,11 @@ class CircleAOE { //this class will be for the sword slash entity. This will dam
                         //Calculate the knockback TRUE CENTER of the slash circle for knockback source
     
                         //Pass the center coordinates for knockback calculation and Apply damage and trigger damage state
-                        entity.takeDamage(this.attackDamage, this.knockback, this.x, this.y);
+                        let damage = this.attackDamage;
+                        damage = this.game.adventurer.critDamageCheck(damage);
+                        (this.attackDamage != damage) ? entity.didCrit = true : entity.didCrit = false;
+
+                        entity.takeDamage(damage, this.knockback, this.x, this.y);
                         
                     }
                 }

@@ -165,6 +165,8 @@ class Adventurer { //every entity should have update and draw!
         this.respawningScale = 6;
 
         this.dropChance = 0.4; //0.4 chance of dropping something for the player
+        this.expMultiplier = 1;
+        this.coinMultiplier = 1;
         this.pushbackVector = { x: 0, y: 0 };
         this.pushbackDecay = 0.9; // Determines how quickly the pushback force decays
 
@@ -386,7 +388,8 @@ class Adventurer { //every entity should have update and draw!
         //We can roll when we're not already rolling, when we can roll (no cooldown atm) and we're not in an attacking animation
         if (this.game.keys["shift"] && !this.rolling && this.canRoll && !this.attacking) {
             this.invincible = true; //when we start rolling, we'll turn invincible into true (player won't get hurt)
-            this.performRolling(); 
+            this.performRolling();
+            this.game.keys["shift"] = false; 
         }
 
         //Handle rolling state
@@ -668,19 +671,19 @@ class Adventurer { //every entity should have update and draw!
             if ((entity instanceof Onecoin) && this.BB.collide(entity.BB)) {
                 //Math.floor(Math.random() * (max - min + 1)) + min;
                 const coinAmnt = Math.floor(Math.random() * 2) + 1; //1 - 2 when picking up a coin that looks like just 1
-                this.coins += coinAmnt;
+                this.coins += coinAmnt * this.coinMultiplier;
                 entity.removeFromWorld = true;
             } else if ((entity instanceof Threecoin) && this.BB.collide(entity.BB)) {
                 const coinAmnt = Math.floor(Math.random() * (5 - 3 + 1)) + 3; //3 - 5 when picking up a coin that looks like 3 coins
-                this.coins += coinAmnt;
+                this.coins += coinAmnt * this.coinMultiplier;
                 entity.removeFromWorld = true;
             } else if ((entity instanceof MultipleCoins) && this.BB.collide(entity.BB)) {
                 const coinAmnt = Math.floor(Math.random() * (50 - 20 + 1)) + 20; //20 - 50 when picking up mulitple coins
-                this.coins += coinAmnt;
+                this.coins += coinAmnt * this.coinMultiplier;
                 entity.removeFromWorld = true;
             } else if ((entity instanceof CoinPile) && this.BB.collide(entity.BB)) {
                 const coinAmnt = Math.floor(Math.random() * (120 - 51 + 1)) + 51; //51 - 120 when picking up mulitple coins
-                this.coins += coinAmnt;
+                this.coins += coinAmnt * this.coinMultiplier;
                 entity.removeFromWorld = true;
             } 
 
@@ -706,13 +709,14 @@ class Adventurer { //every entity should have update and draw!
             this.enableLightning = true;
             this.enableMagic = true;
             this.enablePotion = true;
+            this.monkeyBomb = true;
             // this.attackDamage = 10;
-            this.health = this.maxhealth;
-            this.slashArrowCombo = true;
-            this.slashBombCombo = true;
-            this.lightningDarkBoltCombo = true;
-            this.game.upgrade.giveAllUpgrade();
+            // this.slashArrowCombo = true;
+            // this.slashBombCombo = true;
+            // this.lightningDarkBoltCombo = true;
+            // this.game.upgrade.giveAllUpgrade();
         }
+        this.invincible = this.game.settings.enableInvincibility
     };
 
     performRolling() {
@@ -896,7 +900,6 @@ class Adventurer { //every entity should have update and draw!
             this.facing = 1; //left side of character
         }
         
-
         // Add arrow to game entities
         if (this.tripleShot) {
             const baseAngle = Math.atan2(dy, dx);
@@ -955,8 +958,9 @@ class Adventurer { //every entity should have update and draw!
                 this.facing = 1; //left side of character
             }
         }
-
+        
         if (this.respawningUlt) {
+            //If we want respawning ult to crit
             this.game.addEntity(new CircleAOE(this.game, characterCenterX, characterCenterY , "./Sprites/Magic/magic.png", 
                 null, this.respawningScale, this.respawningDamage, this.respawningKnockback, this, true, 
                 0, 64, 64, 64, 7, 0.08, false, true));
@@ -1007,7 +1011,6 @@ class Adventurer { //every entity should have update and draw!
             } else {
                 this.facing = 1; //left side of character
             }
-
             this.game.addEntity(new Lightning(
                 this.game,
                 mouseX,
@@ -1052,7 +1055,6 @@ class Adventurer { //every entity should have update and draw!
         } else if (this.facing == 3) {//when character is looking down
             this.facing = 1; 
         }
-
         this.game.addEntity(new Lightning(
             this.game,
             strikeX,
@@ -1073,11 +1075,9 @@ class Adventurer { //every entity should have update and draw!
     usePotion() {
         this.canPotion = false;
         this.potionCooldownTimer = this.potionCooldown;
-        this.potionHealingAmount = this.maxhealth * 0.2;
+        this.potionHealingAmount = Math.round(this.maxhealth * 0.2);
         (this.health + this.potionHealingAmount > this.maxhealth) ? this.health = this.maxhealth : this.health += this.potionHealingAmount;
     }
-
-
 
     takeDamage(amount) {
         if (!this.invincible) {
@@ -1187,6 +1187,15 @@ class Adventurer { //every entity should have update and draw!
             this.game.upgrade.getThreeUpgrades();
             // this.game.upgradePause = true;
         }
+    }
+    critDamageCheck(damage) {
+        // console.log(damage);
+        const random = Math.random();
+        let finalDamage = damage;
+        if(random < this.critChance) {
+            finalDamage *= this.critDamage;
+        }
+        return Math.round(finalDamage);
     }
     //If we want to do a minimap, need to add this for all entities being added
     drawMinimap(ctx, mmX, mmY) {

@@ -9,6 +9,7 @@ class Crow {
 
         this.health = 24;
         this.maxHealth = 24;
+        this.didCrit = false;
         this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 2, -27));
         this.attackPower = 13;
         this.attackCooldown = 1.0; // Cooldown in seconds between attacks

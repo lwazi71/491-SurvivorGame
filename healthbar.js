@@ -3,7 +3,7 @@ class HealthBar {
         Object.assign(this, { game, entity, offsetX, offsetY});
         this.length = 40;
         this.height = 8;
-        this.entityOrder = 99
+        this.entityOrder = 99;
         this.deathDelay = 1;
         this.deathTimer = this.deathDelay;
         this.lastHP = this.entity.health;
@@ -175,7 +175,7 @@ class DamageNumbers {
         Object.assign(this, { game, entity, lastHealth, currentHealth});
         this.damageTimer = 0.5;
         this.damagerTime = 0.5;
-        this.entityOrder = 99;
+        this.entityOrder = 100;
     }
     update() {
         if (this.damageTimer <= 0) this.removeFromWorld = true;
@@ -185,7 +185,7 @@ class DamageNumbers {
             return;
         }
         ctx.save();
-        if (this.damageTimer == this.damagerTime) {
+        if (this.damageTimer == this.damagerTime && !this.game.isPaused()) {
             let minX = -10;
             let maxX = minX + this.entity.BB.width + 20;
             let minY = -10;
@@ -198,7 +198,7 @@ class DamageNumbers {
             // console.log("damage");
             ctx.font = '30px Lilita One';
             ctx.strokeStyle = 'Black';
-            ctx.fillStyle = 'white';
+            (this.entity.didCrit) ? ctx.fillStyle = 'Yellow' : ctx.fillStyle = "White";
             ctx.textAlign = "center"; 
             ctx.textBaseline = "middle"; 
             ctx.lineWidth = 1;

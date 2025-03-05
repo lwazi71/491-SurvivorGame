@@ -22,6 +22,7 @@ class FoxMage {
         
         this.health = 20; //Fox health 
         this.maxHealth = 20;
+        this.didCrit = false;
         this.healthbar = this.game.addEntity(new HealthBar(this.game, this, -1, 10));
         this.dead = false;
         this.deathAnimationTimer = 6 * 0.2; 

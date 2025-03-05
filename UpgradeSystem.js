@@ -469,12 +469,12 @@ class UpgradeSystem {
     }
     addValidUpgrade() {
         for (let i = 0; i < this.basicList.length; i++) {
-            if (this.basicList[i].max > this.basicList[i].current) { //If the amount of time chosen does not reach the max, then add to upgrade pool
+            if (this.basicList[i].max > this.basicList[i].current || this.basicList[i].max == -1) { //If the amount of time chosen does not reach the max, then add to upgrade pool
                 this.basic.push(this.basicList[i]);
             }
         }
         for (let i = 0; i < this.uniqueList.length; i++) { //Lower chance stuff
-            if (this.uniqueList[i].max > this.uniqueList[i].current) {
+            if (this.uniqueList[i].max > this.uniqueList[i].current || this.uniqueList[i].max == -1) {
                 this.unique.push(this.uniqueList[i]);
             }
         }
@@ -607,7 +607,7 @@ class UpgradeSystem {
         }
         if (this.swordUpgradeCount >= 5) this.updateSwordLevel();
         if (this.bowUpgradeCount >= 5) this.game.adventurer.bowUpgrade = 1;
-        if (!this.game.shop.showUpgrade) {
+        if (this.game.upgradePause) {
             if (this.points > 1) {
                 this.points--;
                 //Timer reroll
@@ -640,14 +640,15 @@ class UpgradeSystem {
     updateSwordLevel() {
         // if (this.game.adventurer.swordUpgrade >= 20) {
         //     this.game.adventurer.swordUpgrade = 4;
-        // } else if (this.game.adventurer.swordUpgrade >= 15) {
-        //     this.game.adventurer.swordUpgrade = 3;
-        // } else if (this.game.adventurer.swordUpgrade >= 10) {
-        //     this.game.adventurer.swordUpgrade = 2;
-        // } else {
-        //     this.game.adventurer.swordUpgrade = 1;
-        // }
-        this.game.adventurer.swordUpgrade = 1;
+        // } else 
+        if (this.game.adventurer.swordUpgrade >= 15) {
+            this.game.adventurer.swordUpgrade = 3;
+        } else if (this.game.adventurer.swordUpgrade >= 10) {
+            this.game.adventurer.swordUpgrade = 2;
+        } else {
+            this.game.adventurer.swordUpgrade = 1;
+        }
+        // this.game.adventurer.swordUpgrade = 1;
     }
     draw(ctx) {
         // let mouseX = 0;

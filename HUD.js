@@ -597,6 +597,9 @@ class Hud {
             PARAMS.CANVAS_HEIGHT - this.menuBuffer - 5);
         //Reset text?
     }
+    displayWaves(ctx) {
+        // ctx.fillText
+    }
 };
 
 class Minimap {

@@ -122,6 +122,7 @@ ASSET_MANAGER.queueDownload("./Sprites/HudIcons/weapons.png");
 ASSET_MANAGER.queueDownload("./Sprites/HudIcons/AdventurerSpriteHud.png");
 ASSET_MANAGER.queueDownload("./Sprites/HudIcons/AdventurerSpriteHud2.png");
 ASSET_MANAGER.queueDownload("./Sprites/HudIcons/pointer.png");
+ASSET_MANAGER.queueDownload("./Sprites/HudIcons/AdventurerSpriteTransition.png");
 ASSET_MANAGER.queueDownload("./Sprites/HudIcons/PlayerBackground.png");
 ASSET_MANAGER.queueDownload("./Sprites/Objects/spotlight.png");
 ASSET_MANAGER.queueDownload("./Sprites/Objects/brokenheart.png");
@@ -150,11 +151,12 @@ ASSET_MANAGER.downloadAll(() => {
 	ctx.imageSmoothingEnabled = false;
 
 	ASSET_MANAGER.autoRepeat("./Audio/Music/Survivorio Clone Battle Song (1).wav");
-	
+
 	PARAMS.CHEATS = false;
 	document.getElementById("btn").addEventListener("click", function() {
 		PARAMS.CHEATS = true;
 	});
+	PARAMS.DEBUG = false;
 	PARAMS.CANVAS_WIDTH = canvas.width;
 	PARAMS.CANVAS_HEIGHT = canvas.height;
 	

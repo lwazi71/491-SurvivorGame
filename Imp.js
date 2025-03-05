@@ -22,6 +22,7 @@ class Imp {
         
         this.health = 12; //Imp Health
         this.maxHealth = 12;
+        this.didCrit = false;
         this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 0, 10));
         this.dead = false;
         this.deathAnimationTimer = 6 * 0.2; 
