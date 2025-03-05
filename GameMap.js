@@ -2,7 +2,7 @@ class GameMap {
     constructor(game) {
         this.game = game;
         this.image = ASSET_MANAGER.getAsset("./Sprites/Map/testlevel1map.png");
-        this.scale = 3; // Scale the map by 10x
+        this.scale = 3.5; // Scale the map by 10x
         this.entityOrder = -10; // Keep map underneath everything
     }
 
