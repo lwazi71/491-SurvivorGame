@@ -69,7 +69,7 @@ class SceneManager {
     //     this.game.addEntity(new Minotaur(this.game, 200, 400));
     //     this.game.addEntity(new GoblinMech(this.game, 200, 400));
 
-        this.game.addEntity(new Boss1(this.game, 200, 400));
+        //this.game.addEntity(new Boss1(this.game, 200, 400));
         //this.game.addEntity(new Boss2(this.game, 100, 400));
 
     //     this.game.addEntity(new GolemMech(this.game, 200, 200));
