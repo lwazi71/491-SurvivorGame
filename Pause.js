@@ -40,8 +40,10 @@ class Pause {
             if (this.game.isClicking(this.centerX, this.firstY, this.button.length, this.button.height) && 
             this.game.pause && this.game.leftClick && !this.confirmation && !this.showSettings) 
             {
+                
                 choice.action();
                 this.game.click = {x:0, y:0};
+                this.leftClick = false;
                 mouseY = 0;
             }
             this.firstY += this.button.height + 10;
@@ -56,6 +58,8 @@ class Pause {
         {
             // window.location.reload();
             //return to title
+            this.game.click = {x:0, y:0};
+            this.leftClick = false;
             this.game.pause = false;
             this.confirmation = false;
             this.game.camera.enableTitle = true;
@@ -84,6 +88,7 @@ class Pause {
         } else {
             this.drawOptions(ctx);
         }
+        ctx.lineWidth = 1;
         ctx.textAlign = "left"; 
         ctx.textBaseline = "alphabetic";  
         
@@ -202,6 +207,8 @@ class Settings {
         this.enableDebug = false;
         this.enableWeapons = false;
         this.enableInvincibility = false;
+        this.enableHUD = true;
+        this.enableLevelUpPause = true;
         this.button = {length: 150, height: 40};
         this.toggleButton = {length: 40, height: 40};
         this.options = [
@@ -243,6 +250,18 @@ class Settings {
                 action() {this.game.settings.toggleInvincibility()},
                 check: this.enableInvincibility
             },
+            {
+                name: "Disable HUD",
+                game: this.game,
+                action() {this.game.settings.toggleHud()},
+                check: this.enableHUD
+            },
+            {
+                name: "Enable Level Up Pause",
+                game: this.game,
+                action() {this.game.settings.toggleLevelUp()},
+                check: this.enableLevelUpPause
+            }
             
         ];
     }
@@ -298,6 +317,7 @@ class Settings {
             if (this.game.isClicking(buttonX, firstY, this.button.length, this.button.height)) {
                 choice.action();
                 console.log(this.currentMenu);
+                this.game.leftClick = false;
             }
             firstY += this.button.height + 10;
         });
@@ -311,6 +331,7 @@ class Settings {
         this.cheats.forEach(choice => {
             if (this.game.isClicking(centerX, currentY, this.toggleButton.length, this.toggleButton.height)) {
                 choice.action();
+                this.game.leftClick = false;
             }
             currentY += this.toggleButton.height + 10;
         });
@@ -321,6 +342,7 @@ class Settings {
         if (this.currentMenu == "Volume") this.drawVolume(ctx);
         if (this.currentMenu == "Help") this.drawHelp(ctx);
         if (this.currentMenu == "Other") this.drawOther(ctx);
+        ctx.lineWidth = 1;
     }
     drawBackgroundLayout(ctx) {
         //Setting background size
@@ -387,25 +409,28 @@ class Settings {
         currentY += 50;
 
         ctx.beginPath();
-        ctx.fillStyle = "White";
+        ctx.fillStyle = "gray";
         ctx.roundRect((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2, currentY, 
             this.volumeSlider.width, this.volumeSlider.height, [5]);
         ctx.fill();
         if (this.volumeSlider.currVolume > 0.015) {
             ctx.beginPath();
-            ctx.fillStyle = "Green";
+            ctx.fillStyle = "white";
             ctx.roundRect((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2, currentY, 
                 this.volumeSlider.width * this.volumeSlider.currVolume, this.volumeSlider.height, [5]);
             ctx.fill();
         }
         //Change the color
         ctx.beginPath();
-        ctx.fillStyle = "Red";
+        ctx.fillStyle = "white";
+        ctx.strokeStyle = "Black";
+        ctx.lineWidth = 2;
         //Slider start X + length 7.5 is half of 15
         ctx.roundRect((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 + this.volumeSlider.width * this.volumeSlider.currVolume - 7.5, 
             currentY + this.volumeSlider.height / 2 - 7.5, 
             15, 15, [5]);
         ctx.fill();
+        ctx.stroke();
 
         currentY -= 10; //I'm just lazy as it's to center the buttons to bar + 15 button height - 5 bar height
         ctx.beginPath();
@@ -474,30 +499,19 @@ class Settings {
         ctx.fillStyle ="White";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText("Cheats", (PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.toggleButton.length / 2, currentY);
+        ctx.fillText("Other Settings", (PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.toggleButton.length / 2, currentY);
         currentY += 50;
         let centerX = this.menuBuffer + this.menuSpace + ((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - (this.menuBuffer + this.menuSpace)) / 2 - this.toggleButton.length;
         this.cheats.forEach(choice => {
             ctx.beginPath();
             if (this.game.isHovering(centerX, currentY, this.toggleButton.length, this.toggleButton.height)) {
                 ctx.strokeStyle = "White";
-                if (choice.check) {
-                    ctx.fillStyle = rgb(150, 0, 0);
-                    ctx.lineWidth = 1;
-                } else {
-                    ctx.fillStyle = rgb(0, 150, 0);
                     ctx.lineWidth = 3;
-                }
             } else {
                 ctx.strokeStyle = "Black";
-                if (choice.check) {
-                    ctx.fillStyle = rgb(0, 150, 0);
-                    ctx.lineWidth = 3;
-                } else {
-                    ctx.fillStyle = rgb(150, 0, 0);
-                    ctx.lineWidth = 1;
-                }
+                ctx.lineWidth = 1;
             }
+            (choice.check) ? ctx.fillStyle = rgb(0, 150, 0) : ctx.fillStyle = rgb(150, 0, 0);
             ctx.roundRect(centerX, currentY, this.toggleButton.length, this.toggleButton.height, [10]);
             ctx.fill();
             ctx.stroke();
@@ -521,5 +535,11 @@ class Settings {
     }
     toggleInvincibility() {
         this.enableInvincibility = !this.enableInvincibility;
+    }
+    toggleHud() {
+        this.enableHUD = !this.enableHUD;
+    }
+    toggleLevelUp() {
+        this.enableLevelUpPause = !this.enableLevelUpPause;
     }
 }

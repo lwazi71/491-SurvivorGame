@@ -415,7 +415,7 @@ class UpgradeSystem {
     getThreeUpgrades() {
         this.addValidUpgrade();
         let random = Math.random();
-        if (this.unique.length > 0 && random < 0.1 && this.totalUpgradeCount > 4) { //Gamble for unique upgrades
+        if (this.unique.length > 0 && random < 0.3 && this.totalUpgradeCount > 4) { //Gamble for unique upgrades
             this.first = this.getRandomUpgrade(this.unique); //Set first option to a random unique upgrade
             this.unique.splice(this.index, 1); //Remove the unique upgrade from current pool so no overlap
         } else if (this.basic.length > 0) { //If we lose the chance for unique upgrade
@@ -997,12 +997,13 @@ class PlayerStatus {
 
         this.bombAnimation =this.bombAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/collectables.png"), 0, 16, 16, 16, 4, 0.1, false, true);
         this.background = ASSET_MANAGER.getAsset("./Sprites/HudIcons/PlayerBackground.png");
+        this.coinImage = ASSET_MANAGER.getAsset("./Sprites/Objects/collectables.png");
         this.animation = [];
         this.actions = 0;
         this.swordDuration = 0.9;
         this.currentTimer = 0;
         this.bowDuration = 0.75;
-        this.magicDuration = 0.6;
+        this.magicDuration = 0.55;
         this.rollDuration = 0.55;
         this.bombDuration = 0.35;
 
@@ -1143,6 +1144,8 @@ class PlayerStatus {
         ctx.stroke();
         this.drawAttacksBackground(ctx, currentY + 30);
         this.drawUpgradeButton(ctx);
+        this.drawMultipliers(ctx);
+        this.drawCoins(ctx);
         if (this.actions == 4) this.bombAnimation.drawFrame(this.game.pauseTick, ctx, PARAMS.CANVAS_WIDTH * 0.75 - (16 * 15) / 2, PARAMS.CANVAS_HEIGHT / 2 + 70, 15);
         this.animation[this.actions].drawFrame(this.game.pauseTick, ctx, PARAMS.CANVAS_WIDTH * 0.75 - (32 * 15) / 2 - 30, PARAMS.CANVAS_HEIGHT / 2 - 140, 15);
         if (this.upgradeMenu) {
@@ -1589,6 +1592,61 @@ class PlayerStatus {
     }
     toggleUpgradeMenu() {
         this.upgradeMenu = !this.upgradeMenu;
+    }
+    drawCoins(ctx) {
+        let buffer = (5 * 3.5) / 2;
+        ctx.font = '12px "Press Start 2P"';
+        let width = ctx.measureText(this.game.adventurer.coins.toString()).width + 20 + buffer * 2;
+        let height = buffer * 2 + 20;
+        ctx.beginPath();
+        ctx.fillStyle = rgba(101, 101, 101, 0.5);
+        ctx.strokeStyle = "Black";
+        ctx.lineWidth = 2;
+        ctx.roundRect(PARAMS.CANVAS_WIDTH * 0.75 - width / 2, this.startY + buffer, width, height, [10]);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = "White";
+        ctx.textBaseline = "middle";
+        ctx.textAlign = "left";
+        ctx.fillText(this.game.adventurer.coins, PARAMS.CANVAS_WIDTH * 0.75 - width / 2 + buffer + 20, this.startY + buffer + height / 2);
+        ctx.drawImage(this.coinImage, 
+            14, 143, 
+            5, 5, 
+            PARAMS.CANVAS_WIDTH * 0.75 - width / 2 + buffer, this.startY + buffer + height / 2 - buffer +1, 
+            5 * 3.5, 5 * 3.5
+        );
+        ctx.lineWidth = 1;
+    }
+    drawMultipliers(ctx) {
+        let buffer = 20;
+        ctx.beginPath();
+        ctx.fillStyle = rgba(38, 38, 38, 0.9);
+        ctx.strokeStyle = "Black";
+        ctx.lineWidth = 3;
+        ctx.roundRect(PARAMS.CANVAS_WIDTH * 0.75 - 175, this.startY, 350, 125, [10]);
+        ctx.fill();
+        ctx.stroke();
+
+        let adventurer = this.game.adventurer;
+        let statList = ["Exp Multiplier:", "Coin Multiplier:"];
+        let statValues = [`x${adventurer.expMultiplier.toFixed(1)}`, `x${adventurer.coinMultiplier.toFixed(1)}`]
+        let Y = this.startY + buffer * 2 + 30;
+        ctx.font = '12px "Press Start 2P"';
+
+        ctx.fillStyle = "White";
+        let currentY = Y;
+        ctx.textAlign = "left"; 
+        ctx.textBaseline = "top"; 
+        for (let line of statList) {
+            ctx.fillText(line, PARAMS.CANVAS_WIDTH * 0.75 - 175 + buffer, currentY);
+            currentY += 20;
+        }
+        currentY = Y;
+        ctx.textAlign = "right"; 
+        for (let line of statValues) {
+            ctx.fillText(line, PARAMS.CANVAS_WIDTH * 0.75 + 175 - buffer, currentY);
+            currentY += 20;
+        }
     }
     
 }

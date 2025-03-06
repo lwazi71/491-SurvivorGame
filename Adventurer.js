@@ -1185,7 +1185,7 @@ class Adventurer { //every entity should have update and draw!
     levelUpMenu() {
         if (!this.game.upgrade.noUpgrade) {
             this.game.upgrade.getThreeUpgrades();
-            // this.game.upgradePause = true;
+            if (this.game.settings.enableLevelUpPause) this.game.upgradePause = true;
         }
     }
     critDamageCheck(damage) {

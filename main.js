@@ -149,17 +149,16 @@ ASSET_MANAGER.downloadAll(() => {
 	const canvas = document.getElementById("gameWorld");
 	const ctx = canvas.getContext("2d");
 	ctx.imageSmoothingEnabled = false;
-
+	// canvas.style.cursor = "crosshair";
 	ASSET_MANAGER.autoRepeat("./Audio/Music/Survivorio Clone Battle Song (1).wav");
 
 	PARAMS.CHEATS = false;
-	document.getElementById("btn").addEventListener("click", function() {
-		PARAMS.CHEATS = true;
-	});
+	// document.getElementById("btn").addEventListener("click", function() {
+	// 	PARAMS.CHEATS = true;
+	// });
 	PARAMS.DEBUG = false;
 	PARAMS.CANVAS_WIDTH = canvas.width;
 	PARAMS.CANVAS_HEIGHT = canvas.height;
-	
 	// gameEngine.addEntity(new Adventurer(gameEngine)); 
 	// gameEngine.addEntity(new Barrel(gameEngine, 40, 40, false));
 

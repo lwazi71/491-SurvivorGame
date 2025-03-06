@@ -31,6 +31,10 @@
             font-family: "Press Start 2P";
             font-size: 12px;
         }
+        /* body {
+            cursor: url("./Sprites/HudIcons/cursor.png") 32 32, auto;
+        } */
+
     </style>
 
     <script type="text/javascript" src="./assetmanager.js"></script>
@@ -103,16 +107,6 @@
 <body>
     <div style = "text-align:center;">
     <canvas id="gameWorld" width="1024" height="768" style="background: grey; border: 1px solid black" tabindex="0" autofocus></canvas>
-    </div>
-    <div class = "menu">
-        <input type="checkbox" id="debug"> Debug 
-        <button type="button" id="btn" onclick="Click()">Cheats</button>
-        <script>
-            function Click() {
-            var btnX = document.getElementById("btn");
-            btnX.disabled = true;
-            }
-        </script>
     </div>
 </body>
 </html>

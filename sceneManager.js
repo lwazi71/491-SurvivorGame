@@ -19,7 +19,7 @@ class SceneManager {
         this.enableShop = false;
         this.enableLevelShop = false;
 
-        this.enableTitle = false; //Whether title screen shows up or not
+        this.enableTitle = true; //Whether title screen shows up or not
 
         this.shakeIntensity = 0;
         this.shakeDecay = 0.9; 
@@ -173,7 +173,6 @@ class SceneManager {
             //     this.loadTestLevel(true);
             // }
             //if click on quit // window.close();
-            this.title.update();
             this.x += 1;
             this.y += 0.1;
             // this.game.addEntity(new GameMap(this.game));
@@ -207,11 +206,12 @@ class SceneManager {
     
         // Draw UI text
         if (this.enableTitle) {
+            this.title.update(ctx);
             this.title.draw(ctx);
         } else if (!this.transition){
             ctx.font = '20px Arial';
             ctx.fillStyle = 'white';
-            if (!this.game.adventurer.dead) {
+            if (!this.game.adventurer.dead && this.game.settings.enableHUD) {
                 this.Hud.update(); //Comment out both when demoing
                 this.Hud.draw(ctx);
             }
@@ -249,7 +249,7 @@ class Title {
             {
                 name: "Settings",
                 game: this.game,
-                action() {this.game.pauseMenu.showSettings = true;
+                action() {this.game.camera.title.showSettings = true;
                     console.log(this.game.camera.title.showSettings = true);
                 }
             },
@@ -261,46 +261,53 @@ class Title {
         ];
 
     }
-    update() {
+    update(ctx) {
         this.elapsedTime += this.game.clockTick;
         this.titleEffectTimer += this.game.clockTick;
-        if (this.titleEffectTimer > 5) this.titleEffect += 0.015;
-        // if (this.titleEffect) this.titleEffectTimer = 0;
-        if (this.titleEffect >= 1) {
-            this.titleEffect = 0; 
-            this.titleEffectTimer = 0;
-            this.slashAnimation.elapsedTime = 0;
-        }
-        if (this.elapsedTime > 2) this.elapsedTime = 0;
-        if (this.elapsedTime >= 1) {
-            this.changes -= 0.01;
-        } else if (this.elapsedTime >= 0) {
-            this.changes += 0.01;
-        }
         //In settings
-        if (this.game.upgrade.checkExitButton(this.game.mouse.x, this.game.mouse.y) && this.showSettings) {
+        if (this.game.upgrade.checkExitButton(this.game.click.x, this.game.click.y) && this.showSettings) {
             this.showSettings = false;
         }
 
-        //Button clicks
-        let firstY = PARAMS.CANVAS_HEIGHT / 2 - this.button.height / 2 + 50;
-        let buttonX = PARAMS.CANVAS_WIDTH / 2 - this.button.length / 2;
-        this.options.forEach(choice => {
-            if (this.game.isClicking(0, firstY, PARAMS.CANVAS_WIDTH, this.button.height)) {
-                choice.action();
+        
+        if(!this.showSettings) {
+            //Timers for title screen
+            if (this.titleEffectTimer > 5) this.titleEffect += 0.015;
+            if (this.titleEffect >= 1.4) {
+                this.titleEffect = 0; 
+                this.titleEffectTimer = 0;
+                this.slashAnimation.elapsedTime = 0;
             }
-            firstY += this.button.height + 10;
-        });
+            if (this.elapsedTime > 2) this.elapsedTime = 0;
+            if (this.elapsedTime >= 1) {
+                this.changes -= 0.01;
+            } else if (this.elapsedTime >= 0) {
+                this.changes += 0.01;
+            }
+
+            //Button clicks
+            let firstY = PARAMS.CANVAS_HEIGHT / 2 - this.button.height / 2 + 50;
+            // let buttonX = PARAMS.CANVAS_WIDTH / 2 - this.button.length / 2;
+            this.options.forEach(choice => {
+                ctx.font = '32px "Press Start 2P"';
+                if (this.game.isClicking(PARAMS.CANVAS_WIDTH / 2 - ctx.measureText(choice.name).width / 2, firstY, 
+                ctx.measureText(choice.name).width, this.button.height) && this.game.leftClick) {
+                    choice.action();
+                    this.game.leftClick = false;
+                }
+                firstY += this.button.height + 10;
+            });
+        }
     }
     draw(ctx) {
         this.background.draw(ctx);
+        ctx.fillStyle = rgba(0,0,0, 0.25);
+        ctx.fillRect(0, 0, PARAMS.CANVAS_WIDTH, PARAMS.CANVAS_HEIGHT);
         if (this.showSettings) {
             this.settings.update();
             this.settings.draw(ctx);
             this.game.upgrade.exitButton(ctx);
         } else {
-            ctx.fillStyle = rgba(0,0,0, 0.25);
-            ctx.fillRect(0, 0, PARAMS.CANVAS_WIDTH, PARAMS.CANVAS_HEIGHT);
             this.drawTitle(ctx);
             this.drawButtons(ctx);
             // ctx.strokeText("Holawrad",PARAMS.CANVAS_WIDTH / 2, PARAMS.CANVAS_HEIGHT / 2 -200);
@@ -329,16 +336,18 @@ class Title {
 
         //Need to make it so it resets when first is at 1
         let location = this.titleEffect;
-        if (location - 0.20 < 0) location = 0.20;
-        gradient.addColorStop(location - 0.20, "White");
-
-        // location = this.titleEffect;
-        // if (location)
-        gradient.addColorStop(this.titleEffect, rgb(207, 207, 207));
+        if (location - 0.6 < 0) location = 0.6;
+        gradient.addColorStop(location - 0.6, "White");
 
         location = this.titleEffect;
-        if (location + 0.20 > 1) location = 0.80;
-        gradient.addColorStop(location + 0.20, "White");
+        if (location - 0.3 < 0) location = 0.3;
+        if (location - 0.3 > 1) location = 1.3;
+        gradient.addColorStop(location - 0.3, rgb(215, 198, 198));
+
+        location = this.titleEffect;
+        if (location > 1) location = 1;
+        gradient.addColorStop(location, "White");
+
         this.titleEffectTimer < 5 ? ctx.fillStyle = "White" : ctx.fillStyle = gradient;
         ctx.fillText("Holawrad",PARAMS.CANVAS_WIDTH / 2, PARAMS.CANVAS_HEIGHT / 2 -200);
         ctx.shadowOffsetY = 0;
@@ -410,15 +419,19 @@ class Title {
             ctx.textBaseline = "middle";
             ctx.textAlign = "center";
             ctx.fillStyle = "White";
-            if (this.game.isHovering(0, firstY, PARAMS.CANVAS_WIDTH, this.button.height)) {
-                ctx.font = '48px "Press Start 2P"';
-            } else {
-                ctx.font = '32px "Press Start 2P"';
+            ctx.font = '32px "Press Start 2P"';
+            // console.log(ctx.measureText(choice.name).width);
+            let fontSize = 32;
+            ctx.lineWidth = 3;
+            if (this.game.isHovering(PARAMS.CANVAS_WIDTH / 2 - ctx.measureText(choice.name).width / 2, firstY, 
+            ctx.measureText(choice.name).width, this.button.height)) {
+                fontSize = 40;
+                ctx.lineWidth = 5;
             }
-            // ctx.lineWidth = 3;
-            // ctx.strokeStyle = "Black";
+            ctx.strokeStyle = "Black";
+            ctx.font = fontSize + 'px "Press Start 2P"';
+            ctx.strokeText(choice.name, buttonX + this.button.length / 2, firstY + this.button.height / 2);
             ctx.fillText(choice.name, buttonX + this.button.length / 2, firstY + this.button.height / 2);
-            // ctx.strokeText(choice.name, buttonX + this.button.length / 2, firstY + this.button.height / 2);
             firstY += this.button.height + 10;
         });
     }

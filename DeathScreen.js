@@ -2,11 +2,14 @@ class DeathScreen {
     constructor(game) {
         this.game = game;
         this.game.deathScreen = this;
-        this.player = new PlayerStatus(game, this.game.upgrade);
+        // this.player = new PlayerStatus(game, this.game.upgrade);
+        this.player = this.game.upgrade.player;
         this.visible = false; // Start hidden
         this.entityOrder = 500; //Put it over everything everything
         this.spotlight = ASSET_MANAGER.getAsset("./Sprites/Objects/spotlight.png");  //Spotlight over dead player
         this.brokeheart = ASSET_MANAGER.getAsset("./Sprites/Objects/brokenheart.png");  //broken heart over dead player
+
+        this.elapsedTime = 0;
 
         this.buttonWidth = 320;
         this.buttonHeight = 60;
@@ -100,6 +103,8 @@ class DeathScreen {
     }
 
     update() {
+        if (this.showUpgrade) this.player.update();
+        (this.canRespawn) ? this.elapsedTime += 0.01 : this.elapsedTime = 0;
         this.canRespawn = this.game.adventurer.coins >= 350 && !this.respawnBefore;
         
         if (this.visible) {
@@ -109,31 +114,31 @@ class DeathScreen {
             const mouseX = this.game.mouse ? this.game.mouse.x : 0;
             const mouseY = this.game.mouse ? this.game.mouse.y : 0;
 
-            this.hoverStates.restart = this.isInsideButton(mouseX, mouseY, this.centerButtonY);
-            this.hoverStates.respawn = this.isInsideButton(mouseX, mouseY, this.centerButtonY + this.buttonHeight + 20);
-            this.hoverStates.stats = this.isInsideButton(mouseX, mouseY, this.centerButtonY + this.buttonHeight * 2 + 20 * 2);
+            this.hoverStates.respawn = this.isInsideButton(mouseX, mouseY, this.centerButtonY);
+            this.hoverStates.stats = this.isInsideButton(mouseX, mouseY, this.centerButtonY + this.buttonHeight + 20);
+            this.hoverStates.restart = this.isInsideButton(mouseX, mouseY, this.centerButtonY + this.buttonHeight * 2 + 20 * 2);
 
             //handle clicks
             if (this.game.leftClick) {
                 const clickX = this.game.click.x;
                 const clickY = this.game.click.y;
-
-                if (this.isInsideButton(clickX, clickY, this.centerButtonY)) {
-                    console.log("Restart clicked");
-                    this.restartGame();
-                }
                 
-                if (this.isInsideButton(clickX, clickY, this.centerButtonY + 20 + this.buttonHeight)) {
+                if (this.isInsideButton(clickX, clickY, this.centerButtonY)) {
                     if (this.canRespawn) {
                         console.log("Respawn clicked");
                         this.game.adventurer.respawnHere();
                     }
                 }
 
-                if (this.isInsideButton(clickX, clickY, this.centerButtonY + 40 + this.buttonHeight * 2)) {
+                if (this.isInsideButton(clickX, clickY, this.centerButtonY + 20 + this.buttonHeight)) {
                     console.log("Stats clicked");
                     this.showUpgrade = true;
                     //open player stats here
+                }
+
+                if (this.isInsideButton(clickX, clickY, this.centerButtonY + 40 + this.buttonHeight * 2)) {
+                    console.log("Restart clicked");
+                    this.restartGame();
                 }
 
                 this.game.leftClick = false;
@@ -150,9 +155,9 @@ class DeathScreen {
     draw(ctx) {
         if (!this.visible) return;
         if (this.showUpgrade) {
-            this.game.upgrade.exitButton(ctx);
             this.player.update();
             this.player.draw(ctx);
+            this.game.upgrade.exitButton(ctx);
         } else {
             // Background overlay
             ctx.fillStyle = "rgba(0, 0, 0, 1)";
@@ -183,23 +188,8 @@ class DeathScreen {
 
             ctx.textBaseline = "middle";
             const center = PARAMS.CANVAS_WIDTH / 2;
-            //restart Button
-            ctx.fillStyle = this.hoverStates.restart ? 'rgb(58, 58, 58)' : 'rgb(38, 38, 38)';
-            ctx.beginPath();
-            ctx.roundRect(this.centerButtonX, buttonY, this.buttonWidth, this.buttonHeight, [10]);
-            ctx.strokeStyle = "Black";
-            ctx.fill();
-            ctx.stroke();
 
-            ctx.fillStyle = this.hoverStates.restart ? 'rgb(246, 8, 8)' : 'rgb(108, 19, 19)';
             ctx.font = 24 + 'px "Press Start 2P"';
-            // let textWidthRestart = ctx.measureText("Restart").width;
-            // let textXRestart = this.centerButtonX + (this.buttonWidth - textWidthRestart) / 2 + 7;
-            // let textYRestart = this.centerButtonY - 42 + this.buttonHeight / 2 + 18;
-            ctx.fillText("Restart", center, buttonY + this.buttonHeight / 2);
-
-            buttonY += this.buttonHeight + 20;
-
             //respawn Button
             ctx.fillStyle = this.hoverStates.respawn ? 'rgb(58, 58, 58)' : 'rgb(38, 38, 38)';
             ctx.beginPath();
@@ -209,13 +199,14 @@ class DeathScreen {
             ctx.stroke();
 
             let gradient = ctx.createLinearGradient(this.centerButtonX, this.centerButtonY, this.centerButtonX + this.buttonWidth, this.centerButtonY);
-            gradient.addColorStop(0, this.hoverStates.respawn ? "#ff4040" : "red");
-            gradient.addColorStop(0.16, this.hoverStates.respawn ? "#ffa500" : "orange");
-            gradient.addColorStop(0.32, this.hoverStates.respawn ? "#ffff40" : "yellow");
-            gradient.addColorStop(0.48, this.hoverStates.respawn ? "#40ff40" : "green");
-            gradient.addColorStop(0.64, this.hoverStates.respawn ? "#4040ff" : "blue");
-            gradient.addColorStop(0.8, this.hoverStates.respawn ? "#4b0082" : "indigo");
-            gradient.addColorStop(1, this.hoverStates.respawn ? "#ee82ee" : "violet");
+            // console.log(this.elapsedTime + 0.8 % 1)
+            gradient.addColorStop(this.elapsedTime % 1, this.hoverStates.respawn ? "#ff4040" : "red");
+            gradient.addColorStop((this.elapsedTime + 0.16) % 1, this.hoverStates.respawn ? "#ffa500" : "orange");
+            gradient.addColorStop((this.elapsedTime + 0.32) % 1, this.hoverStates.respawn ? "#ffff40" : "yellow");
+            gradient.addColorStop((this.elapsedTime + 0.48) % 1, this.hoverStates.respawn ? "#40ff40" : "green");
+            gradient.addColorStop((this.elapsedTime + 0.64) % 1, this.hoverStates.respawn ? "#4040ff" : "blue");
+            gradient.addColorStop((this.elapsedTime + 0.8) % 1, this.hoverStates.respawn ? "#4b0082" : "indigo");
+            gradient.addColorStop((this.elapsedTime + 1) % 1, this.hoverStates.respawn ? "#ee82ee" : "violet");
 
             if (this.canRespawn) {
                 ctx.fillStyle = gradient;
@@ -274,6 +265,23 @@ class DeathScreen {
             // let textXStats = this.centerButtonX + (this.buttonWidth - textWidthStats) / 2 + 7;
             // let textYStats = this.centerButtonY - 42 + this.buttonHeight / 2 + 180;
             ctx.fillText("Player Stats", center, buttonY + this.buttonHeight / 2);
+
+            buttonY += this.buttonHeight + 20;
+
+            //restart Button
+            ctx.fillStyle = this.hoverStates.restart ? 'rgb(58, 58, 58)' : 'rgb(38, 38, 38)';
+            ctx.beginPath();
+            ctx.roundRect(this.centerButtonX, buttonY, this.buttonWidth, this.buttonHeight, [10]);
+            ctx.strokeStyle = "Black";
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = this.hoverStates.restart ? 'rgb(246, 8, 8)' : 'rgb(108, 19, 19)';
+            // let textWidthRestart = ctx.measureText("Restart").width;
+            // let textXRestart = this.centerButtonX + (this.buttonWidth - textWidthRestart) / 2 + 7;
+            // let textYRestart = this.centerButtonY - 42 + this.buttonHeight / 2 + 18;
+            ctx.fillText("Restart", center, buttonY + this.buttonHeight / 2);
+
         }
     }
 
