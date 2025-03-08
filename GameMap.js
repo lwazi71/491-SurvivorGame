@@ -3,15 +3,17 @@ class GameMap {
         this.map = map;
         this.game = game;
         if (this.map == 1) {
-            this.image = ASSET_MANAGER.getAsset("./Sprites/Map/testlevel1map.png");
+            this.image = ASSET_MANAGER.getAsset("./Sprites/Map/level1.png");
             this.scale = 3.5;
         } else if (this.map == 2) { 
-            this.image = ASSET_MANAGER.getAsset("./Sprites/Map/testagain.png");
+            this.image = ASSET_MANAGER.getAsset("./Sprites/Map/level2.png");
             this.scale = 5;
         } else if (this.map == 3) {
-            this.image = ASSET_MANAGER.getAsset("./Sprites/Map/testlevel1map.png");
+            this.image = ASSET_MANAGER.getAsset("./Sprites/Map/level3.png");
+            this.scale = 3;
         } else if (this.map == 4) {
-            this.image = ASSET_MANAGER.getAsset("./Sprites/Map/testagain.png");
+            this.image = ASSET_MANAGER.getAsset("./Sprites/Map/level4.png");
+            this.scale = 3;
         }
         // this.scale = 5; // Scale the map by 10x
         this.entityOrder = -10; // Keep map underneath everything
