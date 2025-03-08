@@ -1,8 +1,19 @@
 class GameMap {
-    constructor(game) {
+    constructor(game, map) {
+        this.map = map;
         this.game = game;
-        this.image = ASSET_MANAGER.getAsset("./Sprites/Map/testagain.png");
-        this.scale = 5; // Scale the map by 10x
+        if (this.map == 1) {
+            this.image = ASSET_MANAGER.getAsset("./Sprites/Map/testlevel1map.png");
+            this.scale = 3.5;
+        } else if (this.map == 2) { 
+            this.image = ASSET_MANAGER.getAsset("./Sprites/Map/testagain.png");
+            this.scale = 5;
+        } else if (this.map == 3) {
+            this.image = ASSET_MANAGER.getAsset("./Sprites/Map/testlevel1map.png");
+        } else if (this.map == 4) {
+            this.image = ASSET_MANAGER.getAsset("./Sprites/Map/testagain.png");
+        }
+        // this.scale = 5; // Scale the map by 10x
         this.entityOrder = -10; // Keep map underneath everything
     }
 
