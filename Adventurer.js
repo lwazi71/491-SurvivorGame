@@ -140,7 +140,7 @@ class Adventurer { //every entity should have update and draw!
 
         this.critChance = 0.05; //5%
         this.critDamage = 1.5; //150%
-        this.coins = 0;
+        this.coins = 350;
         this.level = 1;
         this.experience = 0;
         this.experienceToNextLvl = 100;
@@ -1153,7 +1153,7 @@ class Adventurer { //every entity should have update and draw!
             // this.health += 1;
             this.game.upgrade.points++;
             this.experience -= this.experienceToNextLvl;
-            // this.experienceToNextLvl = Math.floor(this.experienceToNextLvl * 1.1);
+            this.experienceToNextLvl = Math.floor(this.experienceToNextLvl * 1.1);
             this.levelUpMenu();
         }
     }
