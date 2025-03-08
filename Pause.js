@@ -59,6 +59,7 @@ class Pause {
             // window.location.reload();
             //return to title
             this.game.click = {x:0, y:0};
+            ASSET_MANAGER.pauseMusic();
             this.leftClick = false;
             this.game.pause = false;
             this.confirmation = false;
@@ -198,7 +199,8 @@ class Settings {
     constructor(game) {
         this.game = game;
         this.game.settings = this;
-        this.volumeSlider = {width: 150, height: 10, currVolume: 0.5};
+        this.volumeSlider = {width: 150, height: 10};
+        this.currVolume = 0.5;
         this.toggleMute = true;
         this.menuBuffer = 150;
         this.startY = this.menuBuffer + 50 //50 is buffer and 75 is border x value
@@ -282,33 +284,40 @@ class Settings {
         }
         //Vol Down
         if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 70, this.startY + 50, 40, 30) && this.currentMenu == "Volume") {
-            this.volumeSlider.currVolume -= 0.1;
+            this.currVolume -= 0.1;
+            ASSET_MANAGER.adjustVolume(this.currVolume);
             this.game.leftClick = false;
         }
         //Vol Up
         if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 + this.volumeSlider.width / 2 + 20, this.startY + 50, 40, 30) && this.currentMenu == "Volume") {
-            this.volumeSlider.currVolume += 0.1;
+            this.currVolume += 0.1;
+            ASSET_MANAGER.adjustVolume(this.currVolume);
             this.game.leftClick = false;
         }
         //Mute
         if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 110, this.startY + 50, 40, 30) && this.currentMenu == "Volume") {
             if (this.toggleMute) {
-                this.lastVolume = this.volumeSlider.currVolume;
+                this.lastVolume = this.currVolume;
                 console.log(this.lastVolume);
-                this.volumeSlider.currVolume = 0;
+                this.currVolume = 0;
                 this.toggleMute = false;
             } else {
-                this.volumeSlider.currVolume = this.lastVolume;
+                this.currVolume = this.lastVolume;
                 this.toggleMute = true;
             }
+            ASSET_MANAGER.muteAudio(!this.toggleMute);
 
         }
-        if (this.volumeSlider.currVolume < 0.015) this.volumeSlider.currVolume = 0;
-        if (this.volumeSlider.currVolume > 0.99) this.volumeSlider.currVolume = 1;
+        if (this.currVolume < 0.01) this.currVolume = 0;
+        if (this.currVolume > 0.99) this.currVolume = 1;
     }
     updateVolume() {
         let volume = (Math.round(this.game.mouse.x) - ((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2)) / this.volumeSlider.width;
-        this.volumeSlider.currVolume = volume;
+        if (volume < 0) volume = 0;
+        if (volume > 1) volume = 1;
+        this.currVolume = volume;
+        ASSET_MANAGER.adjustVolume(volume);
+        this.toggleMute = true;
     }
     updateMenuButtons() {
         let firstY = PARAMS.CANVAS_HEIGHT / 2 - this.button.height * 1.5 - 10;
@@ -364,6 +373,7 @@ class Settings {
         ctx.stroke();
         ctx.lineWidth = 1;
 
+        //Center line
         // ctx.beginPath();
         // ctx.moveTo(0, PARAMS.CANVAS_HEIGHT / 2);
         // ctx.lineTo(PARAMS.CANVAS_WIDTH, PARAMS.CANVAS_HEIGHT / 2);
@@ -413,11 +423,11 @@ class Settings {
         ctx.roundRect((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2, currentY, 
             this.volumeSlider.width, this.volumeSlider.height, [5]);
         ctx.fill();
-        if (this.volumeSlider.currVolume > 0.015) {
+        if (this.currVolume > 0.01) {
             ctx.beginPath();
             ctx.fillStyle = "white";
             ctx.roundRect((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2, currentY, 
-                this.volumeSlider.width * this.volumeSlider.currVolume, this.volumeSlider.height, [5]);
+                this.volumeSlider.width * this.currVolume, this.volumeSlider.height, [5]);
             ctx.fill();
         }
         //Change the color
@@ -426,7 +436,7 @@ class Settings {
         ctx.strokeStyle = "Black";
         ctx.lineWidth = 2;
         //Slider start X + length 7.5 is half of 15
-        ctx.roundRect((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 + this.volumeSlider.width * this.volumeSlider.currVolume - 7.5, 
+        ctx.roundRect((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 + this.volumeSlider.width * this.currVolume - 7.5, 
             currentY + this.volumeSlider.height / 2 - 7.5, 
             15, 15, [5]);
         ctx.fill();
@@ -457,7 +467,7 @@ class Settings {
         ctx.fillText(text, (PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 110 + 20, currentY + 11.5);
         ctx.textAlign = "left";
         ctx.font = '20px "Press Start 2P"';
-        ctx.fillText((this.volumeSlider.currVolume * 100).toFixed(0), (PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 + this.volumeSlider.width / 2 + 20 + 40 + 10, currentY + 15);
+        ctx.fillText((this.currVolume * 100).toFixed(0), (PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 + this.volumeSlider.width / 2 + 20 + 40 + 10, currentY + 15);
 
 
 

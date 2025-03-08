@@ -36,7 +36,7 @@ class UpgradeSystem {
         this.attackIncreaseAmount = 5;
         this.attackSpeedIncreaseAmount = 0.1;
         this.knockbackIncrease = 100;
-        this.maxAmount = 10;
+        this.maxAmount = -1;
         this.lowerMaxAmount = 5;
 
         this.speedIncrease = 10;
@@ -59,6 +59,8 @@ class UpgradeSystem {
         this.bombRetrieveCD = 0.5;
         this.bombMaxAmountIncrease = 1;
 
+        this.uniqueOdds = 0.2;
+
         this.exitButtonSize = {width: 100, height: 40};
 
         this.makingChoice = false;
@@ -72,7 +74,7 @@ class UpgradeSystem {
                 name: "Sword Attack Increase", 
                 upgrade() {this.game.adventurer.attackDamage += this.game.upgrade.attackIncreaseAmount;}, //What happens when upgrade() is called
                 description: `Increases Sword Attack by ${this.attackIncreaseAmount}`, //Description of upgrade
-                type: 0, // 0 for sword  
+                type: "Sword", // 0 for sword  
                 max: this.maxAmount, //Number of times this upgrade can so up
                 current: 0, //Current number of times selected
                 color: "White", //Color of text
@@ -82,8 +84,8 @@ class UpgradeSystem {
                 name: "Sword Attack Speed Increase", 
                 upgrade() {this.game.adventurer.attackCooldown -= this.game.upgrade.attackSpeedIncreaseAmount; }, 
                 description: `Decreases Attack Cooldown by ${this.attackSpeedIncreaseAmount}`,
-                type: 0,
-                max: 3,
+                type: "Sword",
+                max: 10,
                 current: 0,
                 color: "White",
             },
@@ -92,7 +94,7 @@ class UpgradeSystem {
                 name: "Sword Knockback Increase", 
                 upgrade() {this.game.adventurer.knockback += this.game.upgrade.knockbackIncrease; }, 
                 description: `Increase Sword Knockback by ${this.knockbackIncrease / 1000}`,
-                type: 0,
+                type: "Sword",
                 max: this.maxAmount,
                 current: 0,
                 color: "White",
@@ -102,7 +104,7 @@ class UpgradeSystem {
                 name: "Bow Attack Increase", 
                 upgrade() {this.game.adventurer.bowDamage += this.game.upgrade.attackIncreaseAmount;}, 
                 description: `Increase Bow Attack by ${this.attackIncreaseAmount}`,
-                type: 1,
+                type: "Bow",
                 max: this.maxAmount,
                 current: 0,
                 color: "White",
@@ -112,7 +114,7 @@ class UpgradeSystem {
                 name: "Bow Attack Speed Increase", 
                 upgrade() {this.game.adventurer.shootCooldown -= this.game.upgrade.attackSpeedIncreaseAmount; }, 
                 description: `Decreases Bow Attack Cooldown by ${this.attackSpeedIncreaseAmount}`,
-                type: 1,
+                type: "Bow",
                 max: 7,
                 current: 0,
                 color: "White",
@@ -122,7 +124,7 @@ class UpgradeSystem {
                 name: "Bow Knockback Increase", 
                 upgrade() {this.game.adventurer.bowKnockback += this.game.upgrade.knockbackIncrease; }, 
                 description: `Increase Bow Knockback by ${this.knockbackIncrease / 1000}`,
-                type: 1,
+                type: "Bow",
                 max: this.maxAmount,
                 current: 0,
                 color: "White",
@@ -132,7 +134,7 @@ class UpgradeSystem {
                 name: "Arrow Speed Increase", 
                 upgrade() {this.game.adventurer.arrowSpeed += this.game.upgrade.arrowSpeedIncrease; }, 
                 description: `Increase Arrow Speed by ${this.arrowSpeedIncrease}`,
-                type: 1,
+                type: "Bow",
                 max: this.maxAmount,
                 current: 0,
                 color: "White",
@@ -144,7 +146,7 @@ class UpgradeSystem {
                     this.game.adventurer.health += this.game.upgrade.hpIncreaseAmount;
                 }, 
                 description: `Increase Max HP by ${this.hpIncreaseAmount}`,
-                type: -1,
+                type: "Other",
                 max: this.maxAmount,
                 current: 0,
                 color: "White",
@@ -156,7 +158,7 @@ class UpgradeSystem {
                 upgrade() {this.game.adventurer.speed += this.game.upgrade.speedIncrease;
                 }, 
                 description: `Increase Speed by ${this.speedIncrease}`,
-                type: -1,
+                type: "Other",
                 max: this.maxAmount,
                 current: 0,
                 color: "White",
@@ -168,12 +170,42 @@ class UpgradeSystem {
                 upgrade() {this.game.adventurer.rollCooldown -= this.game.upgrade.rollingCooldownDecrease;
                 }, 
                 description: `Decrease Rolling Cooldown by ${this.rollingCooldownDecrease}`,
-                type: -1,
+                type: "Other",
                 max: 4,
                 current: 0,
                 color: "White",
                 
-            },  
+            }, 
+            {
+                game: this.game,
+                name: "Sword Attack Size Increase", 
+                upgrade() {this.game.adventurer.slashScale += this.game.upgrade.attackScale; }, 
+                description: `Increase Sword Attack Size by ${this.attackScale}`,
+                type: "Sword",
+                max: this.maxAmount,
+                current: 0,
+                color: "White",
+            }, 
+            {
+                game: this.game,
+                name: "Crit Chance Increase", 
+                upgrade() {this.game.adventurer.critChance += 0.05; }, 
+                description: `Increase Crit Chance by 5%`,
+                type: "Other",
+                max: 19, // to get to 100%
+                current: 0,
+                color: "White",
+            }, 
+            {
+                game: this.game,
+                name: "Crit Damage Increase", 
+                upgrade() {this.game.adventurer.critDamage += 0.1; }, 
+                description: `Increase Crit Damage by 10%`,
+                type: "Other",
+                max: this.maxAmount,
+                current: 0,
+                color: "White",
+            }, 
         ];
         this.uniqueList = [ //More rare upgrades
             {
@@ -181,7 +213,7 @@ class UpgradeSystem {
                 name: "Bombs", 
                 upgrade() {this.game.adventurer.enableBomb = true;}, 
                 description: `Able to use bombs`,
-                type: -1,
+                type: "Unlock",
                 max: 1,
                 current: 0,
                 color: "Yellow",
@@ -191,8 +223,30 @@ class UpgradeSystem {
                 game: this.game,
                 name: "Magic", 
                 upgrade() {this.game.adventurer.enableMagic = true;}, 
-                description: `Able to use magic`,
-                type: -1,
+                description: `Able to use magic when weapon is sword`,
+                type: "Unlock",
+                max: 1,
+                current: 0,
+                color: "Yellow",
+            
+            },
+            {
+                game: this.game,
+                name: "Lightning", 
+                upgrade() {this.game.adventurer.enableLightning = true;}, 
+                description: `Able to use lightning when weapon is bow`,
+                type: "Unlock",
+                max: 1,
+                current: 0,
+                color: "Yellow",
+            
+            },
+            {
+                game: this.game,
+                name: "DarkBolt", 
+                upgrade() {this.game.adventurer.enableBolt = true;}, 
+                description: `Able to use darkbolt`,
+                type: "Unlock",
                 max: 1,
                 current: 0,
                 color: "Yellow",
@@ -203,7 +257,7 @@ class UpgradeSystem {
                 name: "Piercing Arrows", 
                 upgrade() {this.game.adventurer.piercing = true;}, 
                 description: `Arrows can now pierce`,
-                type: 1,
+                type: "Bow",
                 max: 1,
                 current: 0,
                 color: rgb(65, 255, 90),
@@ -211,20 +265,42 @@ class UpgradeSystem {
             },
             {
                 game: this.game,
-                name: "Sword Attack Size Increase", 
-                upgrade() {this.game.adventurer.slashScale += this.game.upgrade.attackScale; }, 
-                description: `Increase Sword Attack Size by ${this.attackScale}`,
-                type: 0,
-                max: this.lowerMaxAmount,
+                name: "All Weapon Damage Increase", 
+                upgrade() {this.game.adventurer.attackDamage += this.game.upgrade.attackIncreaseAmount;
+                    this.game.adventurer.bowDamage += this.game.upgrade.attackIncreaseAmount;
+                    this.game.adventurer.magicDamage += this.game.upgrade.attackIncreaseAmount;
+                    this.game.adventurer.bombDamage += this.game.upgrade.attackIncreaseAmount;
+                    this.game.adventurer.lightingDamage += this.game.upgrade.attackIncreaseAmount;
+                    this.game.adventurer.boltDamage += this.game.upgrade.attackIncreaseAmount;
+                 }, 
+                description: `Increase all weapon damage by ${this.attackIncreaseAmount * 2}`,
+                type: "All",
+                max: this.maxAmount,
                 current: 0,
                 color: rgb(65, 214, 255),
             },
+            // {
+            //     game: this.game,
+            //     name: "Sword and Bow Attack Speed Increase", 
+            //     upgrade() {this.game.adventurer.attackDamage += this.game.upgrade.attackIncreaseAmount;
+            //         this.game.adventurer.bowDamage += this.game.upgrade.attackIncreaseAmount;
+            //         this.game.adventurer.magicDamage += this.game.upgrade.attackIncreaseAmount;
+            //         this.game.adventurer.bombDamage += this.game.upgrade.attackIncreaseAmount;
+            //         this.game.adventurer.lightingDamage += this.game.upgrade.attackIncreaseAmount;
+            //         this.game.adventurer.boltDamage += this.game.upgrade.attackIncreaseAmount;
+            //      }, 
+            //     description: `Increase all weapon damage by ${this.attackScale}`,
+            //     type: "Other",
+            //     max: this.maxAmount,
+            //     current: 0,
+            //     color: rgb(65, 214, 255),
+            // },
             {
                 game: this.game,
                 name: "Unlocks Sword and Bow Combo", 
                 upgrade() {this.game.adventurer.slashArrowCombo = true; }, 
                 description: `Able to supercharge arrow damage when slashing arrow with sword`,
-                type: 10,
+                type: "Combo",
                 max: 1,
                 current: 0,
                 color: rgb(170, 65, 255),
@@ -234,7 +310,7 @@ class UpgradeSystem {
                 name: "Triple Shot", 
                 upgrade() {this.game.adventurer.tripleShot = true; }, 
                 description: `Fires three arrows at once`,
-                type: 1,
+                type: "Bow",
                 max: 1,
                 current: 0,
                 color: rgb(65, 255, 90),
@@ -250,7 +326,7 @@ class UpgradeSystem {
                     }
                 }, 
                 description: `Decrease Magic Cooldown by ${this.cooldownReduction} seconds`,
-                type: 2,
+                type: "Magic",
                 max: 4,
                 current: 0,
                 color: "White",
@@ -260,8 +336,8 @@ class UpgradeSystem {
                 name: "Magic Damage Increase", 
                 upgrade() {this.game.adventurer.magicDamage += this.game.upgrade.magicDamageIncrease; }, 
                 description: `Increase Magic Damage by ${this.magicDamageIncrease}`,
-                type: 2,
-                max: 10,
+                type: "Magic",
+                max: this.maxAmount,
                 current: 0,
                 color: "White",
             },
@@ -270,8 +346,8 @@ class UpgradeSystem {
                 name: "Magic Knockback Increase", 
                 upgrade() {this.game.adventurer.magicKnockback += this.game.upgrade.magicKnockback; }, 
                 description: `Increase Magic Knockback by ${this.magicKnockback/1000}`,
-                type: 2,
-                max: 10,
+                type: "Magic",
+                max: this.maxAmount,
                 current: 0,
                 color: "White",
             },
@@ -280,8 +356,8 @@ class UpgradeSystem {
                 name: "Magic Size Increase", 
                 upgrade() {this.game.adventurer.magicScale += this.game.upgrade.magicSize; }, 
                 description: `Increase Magic Size by ${this.magicSize}`,
-                type: 2,
-                max: 10,
+                type: "Magic",
+                max: this.maxAmount,
                 current: 0,
                 color: "White",
             },
@@ -292,8 +368,8 @@ class UpgradeSystem {
                 name: "Explosion Scale Increase", 
                 upgrade() {this.game.adventurer.bombExplosionScale += this.game.upgrade.explosionScaleIncrease;}, 
                 description: `Increase Explosion Scale by ${this.explosionScaleIncrease}`,
-                type: 3,
-                max: this.lowerMaxAmount,
+                type: "Bomb",
+                max: this.maxAmount,
                 current: 0,
                 color: "White",
             },
@@ -302,8 +378,8 @@ class UpgradeSystem {
                 name: "Bomb Damage Increase", 
                 upgrade() {this.game.adventurer.bombDamage += this.game.upgrade.bombDamageIncrease;}, 
                 description: `Increase Bomb Damage by ${this.bombDamageIncrease}`,
-                type: 3,
-                max: this.lowerMaxAmount,
+                type: "Bomb",
+                max: this.maxAmount,
                 current: 0,
                 color: "White",
             },
@@ -311,8 +387,8 @@ class UpgradeSystem {
                 game: this.game,
                 name: "Bomb Cooldown Decrease", 
                 upgrade() {this.game.adventurer.bombCooldown -= this.game.upgrade.bombCooldown;}, 
-                description: `Decrease Bomb Cooldown by ${this.bombCooldown.toFixed(1)}`,
-                type: 3,
+                description: `Decrease Bomb Cooldown by ${this.bombCooldown.toFixed(1)} seconds`,
+                type: "Bomb",
                 max: 4,
                 current: 0,
                 color: "White",
@@ -322,8 +398,8 @@ class UpgradeSystem {
                 name: "Bomb Knockback Increase ", 
                 upgrade() {this.game.adventurer.bombKnockback += this.game.upgrade.bombKnockback;}, 
                 description: `Increase Bomb Knockback by ${this.bombKnockback / 1000}`,
-                type: 3,
-                max: this.lowerMaxAmount,
+                type: "Bomb",
+                max: this.maxAmount,
                 current: 0,
                 color: "White",
             },
@@ -332,8 +408,8 @@ class UpgradeSystem {
                 name: "Max Bomb Amount Increase", 
                 upgrade() {this.game.adventurer.bombMaxAmount += this.game.upgrade.bombMaxAmountIncrease;}, 
                 description: `Increase Max Bomb Amount by ${this.bombMaxAmountIncrease}`,
-                type: 3,
-                max: this.lowerMaxAmount,
+                type: "Bomb",
+                max: this.maxAmount,
                 current: 0,
                 color: "White",
             },
@@ -341,9 +417,9 @@ class UpgradeSystem {
                 game: this.game,
                 name: "Bomb Retrieval CD Decrease", 
                 upgrade() {this.game.adventurer.bombCooldownRetrieve -= this.game.upgrade.bombRetrieveCD;}, 
-                description: `Decrease Bomb Retrieval Cooldown by ${this.bombRetrieveCD}`,
-                type: 3,
-                max: this.lowerMaxAmount,
+                description: `Decrease Bomb Retrieval Cooldown by ${this.bombRetrieveCD} seconds`,
+                type: "Bomb",
+                max: this.maxAmount,
                 current: 0,
                 color: "White",
             },
@@ -352,36 +428,138 @@ class UpgradeSystem {
         this.lightningList = [
             {
                 game: this.game,
-                name: "HP Increase", 
-                upgrade() {this.game.adventurer.maxhealth += this.game.upgrade.hpIncreaseAmount;
-                    this.game.adventurer.health += this.game.upgrade.hpIncreaseAmount;
+                name: "Lightning Cooldown Decrease", 
+                upgrade() {this.game.adventurer.lightningCooldown -= 0.1; //Make sure the cooldown is not less than 0
+                    if (this.game.adventurer.lightningCooldownTimer != this.game.adventurer.lightningCooldown) {
+                        this.game.adventurer.lightningCooldownTimer -= 0.1;
+                    }
                 }, 
-                description: `Increase Max HP by ${this.hpIncreaseAmount}`,
-                type: 4,
+                description: `Decrease Lightning Cooldown by 0.25 seconds`,
+                type: "Lightning",
+                max: 19,
+                current: 0,
+                color: "White",
+            },
+            {
+                game: this.game,
+                name: "Lightning Damage Increase", 
+                upgrade() {this.game.adventurer.lightingDamage += this.game.upgrade.magicDamageIncrease; }, 
+                description: `Increase Lightning Damage by ${this.magicDamageIncrease}`,
+                type: "Lightning",
                 max: this.maxAmount,
                 current: 0,
                 color: "White",
-            
             },
-    ]; //4
-        this.darkBoltList = []; //5
+            {
+                game: this.game,
+                name: "Lightning Knockback Increase", 
+                upgrade() {this.game.adventurer.lightningKnockback += this.game.upgrade.magicKnockback; }, 
+                description: `Increase Lightning Knockback by ${this.lightningKnockback/1000}`,
+                type: "Lightning",
+                max: this.maxAmount,
+                current: 0,
+                color: "White",
+            },
+            {
+                game: this.game,
+                name: "Lightning Size Increase", 
+                upgrade() {this.game.adventurer.lightingScale += this.game.upgrade.magicSize; }, 
+                description: `Increase Lightning Size by ${this.magicSize}`,
+                type: "Lightning",
+                max: this.maxAmount,
+                current: 0,
+                color: "White",
+            },
+    ];
+        this.darkBoltList = [
+            {
+                game: this.game,
+                name: "DarkBolt Size Increase", 
+                upgrade() {this.game.adventurer.boltScale += this.game.upgrade.explosionScaleIncrease;}, 
+                description: `Increase Darkbolt size by ${this.explosionScaleIncrease}`,
+                type: "DarkBolt",
+                max: this.maxAmount,
+                current: 0,
+                color: "White",
+            },
+            {
+                game: this.game,
+                name: "DarkBolt Damage Increase", 
+                upgrade() {this.game.adventurer.boltDamage += this.game.upgrade.bombDamageIncrease;}, 
+                description: `Increase DarkBolt Damage by ${this.bombDamageIncrease}`,
+                type: "DarkBolt",
+                max: this.maxAmount,
+                current: 0,
+                color: "White",
+            },
+            {
+                game: this.game,
+                name: "DarkBolt Cooldown Decrease", 
+                upgrade() {this.game.adventurer.boltCooldown -= 0.1;}, 
+                description: `Decrease DarkBolt Cooldown by 0.1 seconds`,
+                type: "DarkBolt",
+                max: 3,
+                current: 0,
+                color: "White",
+            },
+            // {
+            //     game: this.game,
+            //     name: "Darkbolt Slow Increase ", 
+            //     upgrade() {this.game.adventurer.bombKnockback += this.game.upgrade.bombKnockback;}, 
+            //     description: `Increase Bomb Knockback by ${this.bombKnockback / 1000}`,
+            //     type: "DarkBolt",
+            //     max: this.maxAmount,
+            //     current: 0,
+            //     color: "White",
+            // },
+            {
+                game: this.game,
+                name: "Max DarkBolt Amount Increase", 
+                upgrade() {this.game.adventurer.boltMaxAmount += this.game.upgrade.bombMaxAmountIncrease;}, 
+                description: `Increase Max Darkbolt Amount by ${this.bombMaxAmountIncrease}`,
+                type: "DarkBolt",
+                max: this.maxAmount,
+                current: 0,
+                color: "White",
+            },
+            {
+                game: this.game,
+                name: "DarkBolt Retrieval CD Decrease", 
+                upgrade() {this.game.adventurer.boltCooldownRetrieve -= this.game.upgrade.bombRetrieveCD;}, 
+                description: `Decrease Bomb Retrieval Cooldown by ${this.bombRetrieveCD}`,
+                type: "DarkBolt",
+                max: this.maxAmount,
+                current: 0,
+                color: "White",
+            },
+        ];
         this.bombUniqueList = [
             {
                 game: this.game,
                 name: "Unlocks Sword and Bomb Combo", 
                 upgrade() {this.game.adventurer.slashBombCombo = true; }, 
                 description: `Able to bombs when slashing arrow with sword`,
-                type: 10,
+                type: "Combo",
                 max: 1,
                 current: 0,
                 color: rgb(170, 65, 255)
             },
             {
                 game: this.game,
-                name: "Unlocks Monkey Bomb", 
+                name: "Monkey Bomb", 
                 upgrade() {this.game.adventurer.monkeyBomb = true; }, 
-                description: `Bombs can not attract melee enemies`,
-                type: 3,
+                description: `Bombs can now attract melee enemies`,
+                type: "Bomb",
+                max: 1,
+                current: 0,
+                color: rgb(65, 255, 90)
+            },
+            {
+                game: this.game,
+                name: "Rolling Bomb", 
+                upgrade() {this.game.adventurer.enableRollingBomb = true; }, 
+                description: `Places a bomb when you roll. Does not comsume bomb`,
+                type: "Bomb",
                 max: 1,
                 current: 0,
                 color: rgb(65, 255, 90)
@@ -394,7 +572,7 @@ class UpgradeSystem {
                 name: "Unlocks Lightning and Darkbolt Combo", 
                 upgrade() {this.game.adventurer.lightningDarkBoltCombo = true; }, 
                 description: `Able to supercharge Darkbolt when combining it with lightning`,
-                type: 10,
+                type: "Combo",
                 max: 1,
                 current: 0,
                 color: rgb(170, 65, 255),
@@ -415,45 +593,54 @@ class UpgradeSystem {
     getThreeUpgrades() {
         this.addValidUpgrade();
         let random = Math.random();
-        if (this.unique.length > 0 && random < 0.3 && this.totalUpgradeCount > 4) { //Gamble for unique upgrades
+        if (this.unique.length > 0 && random < this.uniqueOdds) { //Gamble for unique upgrades // && this.totalUpgradeCount > 4
             this.first = this.getRandomUpgrade(this.unique); //Set first option to a random unique upgrade
             this.unique.splice(this.index, 1); //Remove the unique upgrade from current pool so no overlap
+            this.noUpgrades1 = false;
         } else if (this.basic.length > 0) { //If we lose the chance for unique upgrade
             this.first = this.getRandomUpgrade(this.basic); //Set first option to a basic upgrade
             this.basic.splice(this.index, 1); // Remove the basic upgrade from pool so no overlap
+            this.noUpgrades1 = false;
         } else if (this.unique.length > 0) { //If no more basic upgrades, use from unique pool
             this.first = this.getRandomUpgrade(this.unique); // Set to unique
             this.unique.splice(this.index, 1); 
+            this.noUpgrades1 = false;
         } else {
             console.log("No upgrade");
             this.first = null;
             this.noUpgrades1 = true;
         }
         random = Math.random();
-        if (this.unique.length > 0 && random < 0.1 && this.totalUpgradeCount > 4) {
+        if (this.unique.length > 0 && random < this.uniqueOdds) {
             this.second = this.getRandomUpgrade(this.unique);
             this.unique.splice(this.index, 1);
+            this.noUpgrades2 = false;
         } else if (this.basic.length > 0) {
             this.second = this.getRandomUpgrade(this.basic);
             this.basic.splice(this.index, 1);
+            this.noUpgrades2 = false;
         } else if (this.unique.length > 0) {
             this.second = this.getRandomUpgrade(this.unique);
             this.unique.splice(this.index, 1);
+            this.noUpgrades2 = false;
         } else {
             console.log("No upgrade");
             this.second = null;
             this.noUpgrades2 = true;
         }
         random = Math.random();
-        if (this.unique.length > 0 && random < 0.1 && this.totalUpgradeCount > 4) { //Gamble for unique upgrades
+        if (this.unique.length > 0 && random < this.uniqueOdds) { //Gamble for unique upgrades
             this.third = this.getRandomUpgrade(this.unique);
             this.unique.splice(this.index, 1);
+            this.noUpgrades3 = false;
         } else if (this.basic.length > 0) { //Defaults to basic upgrades
             this.third = this.getRandomUpgrade(this.basic);
             this.basic.splice(this.index, 1);
+            this.noUpgrades3 = false;
         } else if (this.unique.length > 0) { //If no more basic, then use unique upgrades
             this.third = this.getRandomUpgrade(this.unique);
             this.unique.splice(this.index, 1);
+            this.noUpgrades3 = false;
         } else { // No upgrades left
             console.log("No upgrade");
             this.third = null;
@@ -463,7 +650,9 @@ class UpgradeSystem {
         this.resetList();
         if (this.noUpgrades1 && this.noUpgrades2 && this.noUpgrades3) {
             this.noUpgrades = true;
-            this.game.adventurer.health = this.game.adventurer.maxhealth;
+            // this.game.adventurer.health = this.game.adventurer.maxhealth;
+        } else {
+            this.noUpgrades = false;
         }
         
     }
@@ -491,8 +680,25 @@ class UpgradeSystem {
                     this.basic.push(this.bombList[i]);
                 }
             }
-            if (this.bombUniqueList[0].max > this.bombUniqueList[0].current) this.unique.push(this.bombUniqueList[0]);
+            for (let i = 0; i < this.bombUniqueList.length; i++) {
+                if (this.bombUniqueList[i].max > this.bombUniqueList[i].current || this.bombUniqueList[i]. max == -1) this.unique.push(this.bombUniqueList[i]);
+            }
         }
+        if (this.game.adventurer.enableLightning) {
+            for (let i = 0; i < this.lightningList.length; i++) {
+                if (this.lightningList[i].max > this.lightningList[i].current) {
+                    this.basic.push(this.lightningList[i]);
+                }
+            }
+        }
+        if (this.game.adventurer.enableBolt) {
+            for (let i = 0; i < this.darkBoltList.length; i++) {
+                if (this.darkBoltList[i].max > this.darkBoltList[i].current) {
+                    this.basic.push(this.darkBoltList[i]);
+                }
+            }
+        }
+        
         if (this.game.adventurer.enableLightning && this.game.adventurer.enableBolt) {
             if (this.lightningDarkBoltList[0].max > this.lightningDarkBoltList[0].current) this.unique.push(this.lightningDarkBoltList[0]);
         }
@@ -606,7 +812,7 @@ class UpgradeSystem {
             this.currentUpgrades.push(upgrade);
         }
         if (this.swordUpgradeCount >= 5) this.updateSwordLevel();
-        if (this.bowUpgradeCount >= 5) this.game.adventurer.bowUpgrade = 1;
+        if (this.bowUpgradeCount >= 5) this.updateBowLevel();
         if (this.game.upgradePause) {
             if (this.points > 1) {
                 this.points--;
@@ -617,10 +823,10 @@ class UpgradeSystem {
                 }
             } else {
                 this.points--;
-                // this.game.toggleUpgradePause();
+                if(this.game.settings.enableLevelUpPause) this.game.toggleUpgradePause();
+                this.makingChoice = false;
             }
         }
-        this.makingChoice = false;
         this.game.keys["1"] = false;
         this.game.keys["2"] = false;
         this.game.keys["3"] = false;
@@ -628,9 +834,12 @@ class UpgradeSystem {
         this.selectedUpgrade = null;
     }
     incrementType(type) {
-        if (type == 0) {
+        if (type == "Sword") {
             this.swordUpgradeCount++;
-        } else if (type == 1) {
+        } else if (type == "Bow") {
+            this.bowUpgradeCount++;
+        } else if (type == "All") {
+            this.swordUpgradeCount++;
             this.bowUpgradeCount++;
         } else {
             this.otherUpgradeCount++;
@@ -641,22 +850,29 @@ class UpgradeSystem {
         // if (this.game.adventurer.swordUpgrade >= 20) {
         //     this.game.adventurer.swordUpgrade = 4;
         // } else 
-        if (this.game.adventurer.swordUpgrade >= 15) {
+        if (this.swordUpgradeCount >= 15) {
             this.game.adventurer.swordUpgrade = 3;
-        } else if (this.game.adventurer.swordUpgrade >= 10) {
+        } else if (this.swordUpgradeCount >= 10) {
             this.game.adventurer.swordUpgrade = 2;
         } else {
             this.game.adventurer.swordUpgrade = 1;
         }
         // this.game.adventurer.swordUpgrade = 1;
     }
+    updateBowLevel() {
+        // if (this.game.adventurer.swordUpgrade >= 20) {
+        //     this.game.adventurer.swordUpgrade = 4;
+        // } else 
+        if (this.bowUpgradeCount >= 15) {
+            this.game.adventurer.bowUpgrade = 3;
+        } else if (this.bowUpgradeCount >= 10) {
+            this.game.adventurer.bowUpgrade = 2;
+        } else {
+            this.game.adventurer.bowUpgrade = 1;
+        }
+        // this.game.adventurer.swordUpgrade = 1;
+    }
     draw(ctx) {
-        // let mouseX = 0;
-        // let mouseY = 0;
-        // if (this.game.mouse != null) {
-        //     mouseX = this.game.mouse.x;
-        //     mouseY = this.game.mouse.y;
-        // }
         //visual for upgrade screen
         if (this.makingChoice) {
             if (this.enablePlayerStats) {
@@ -1475,6 +1691,8 @@ class PlayerStatus {
         let bowSpecial = ["Bow Magic Upgrade:"];
         let darkBolt = ["DarkBolt Upgrade:"];
         let bomb = ["Bomb Upgrade:"];
+        let combo = ["Combo:"];
+        let other = ["Other Upgrade:"];
 
         let swordAmount = [""];
         let bowAmount = [""];
@@ -1482,32 +1700,42 @@ class PlayerStatus {
         let bowSpecialAmount = [""];
         let darkBoltAmount = [""];
         let bombAmount = [""];
-        let list = [sword, bow, swordSpecial, bowSpecial, bomb, darkBolt];
-        let list2 = [swordAmount, bowAmount, swordSpecialAmount, bowSpecialAmount, bombAmount, darkBoltAmount];
+        let comboAmount = [""];
+        let otherAmount = [""];
+        let list = [sword, bow, swordSpecial, bowSpecial, bomb, darkBolt, combo, other];
+        let list2 = [swordAmount, bowAmount, swordSpecialAmount, bowSpecialAmount, bombAmount, darkBoltAmount, comboAmount, otherAmount];
         this.upgrade.currentUpgrades.forEach(upgrade => {
-            if (upgrade.type == 0) {
+            if (upgrade.type == "Sword") {
                 sword.push(upgrade.name);
                 (upgrade.max != 1) ? swordAmount.push("x" + upgrade.current) : swordAmount.push("");
             }
-            if (upgrade.type == 1) {
+            if (upgrade.type == "Bow") {
                 bow.push(upgrade.name);
                 (upgrade.max != 1) ? bowAmount.push("x" + upgrade.current) : bowAmount.push("");
             }
-            if (upgrade.type == 2) {  //Sword Magic
+            if (upgrade.type == "Magic") {  //Sword Magic
                 swordSpecial.push(upgrade.name);
                 (upgrade.max != 1) ? swordSpecialAmount.push("x" + upgrade.current) : swordSpecialAmount.push("");
             }
-            if (upgrade.type == 3) { //Bomb
+            if (upgrade.type == "Bomb") { //Bomb
                 bomb.push(upgrade.name);
                 (upgrade.max != 1) ? bombAmount.push("x" + upgrade.current) : bombAmount.push("");
             }
-            if (upgrade.type == 4) { //BowMagic
+            if (upgrade.type == "Lightning") { //BowMagic
                 bowSpecial.push(upgrade.name);
                 (upgrade.max != 1) ? bowSpecialAmount.push("x" + upgrade.current) : bowSpecialAmount.push("");
             }
-            if (upgrade.type == 5) { //DarkBolt
+            if (upgrade.type == "DarkBolt") { //DarkBolt
                 darkBolt.push(upgrade.name);
                 (upgrade.max != 1) ? darkBoltAmount.push("x" + upgrade.current) : darkBoltAmount.push("");
+            }
+            if (upgrade.type == "Combo") {
+                combo.push(upgrade.name);
+                (upgrade.max != 1) ? comboAmount.push("x" + upgrade.current) : comboAmount.push("");
+            }
+            if (upgrade.type == "Other" || upgrade.type == "All") {
+                other.push(upgrade.name);
+                (upgrade.max != 1) ? otherAmount.push("x" + upgrade.current) : otherAmount.push("");
             }
         });
         ctx.font = '24px "Press Start 2P"';

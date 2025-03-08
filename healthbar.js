@@ -197,15 +197,25 @@ class DamageNumbers {
         if (this.damageTimer > 0) {
             // console.log("damage");
             ctx.font = '30px Lilita One';
-            ctx.strokeStyle = 'Black';
-            (this.entity.didCrit) ? ctx.fillStyle = 'Yellow' : ctx.fillStyle = "White";
             ctx.textAlign = "center"; 
             ctx.textBaseline = "middle"; 
-            ctx.lineWidth = 1;
-            ctx.shadowOffsetX = 2;
-            ctx.shadowOffsetY = 2;
-            ctx.shadowColor = "Black";
-            ctx.shadowBlur = 5;
+            if (this.entity.didCrit) {
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
+                ctx.fillStyle = 'Yellow';  
+                ctx.lineWidth = 1;
+                ctx.shadowColor = 'Black';
+                ctx.shadowBlur = 10;
+                ctx.strokeStyle = rgb(139, 118, 2);
+            } else {
+                ctx.shadowOffsetX = 2;
+                ctx.shadowOffsetY = 2;
+                ctx.fillStyle = "White";
+                ctx.lineWidth = 1;
+                ctx.shadowColor = "Black";
+                ctx.shadowBlur = 5;
+                ctx.strokeStyle = 'Black';
+            }
             let damage = this.lastHealth - this.currentHealth;
             ctx.fillText(`-${damage}`, this.xRange + this.entity.BB.x - this.game.camera.x, this.yRange + this.entity.BB.y - this.game.camera.y + this.movement);
             ctx.shadowBlur = 0;

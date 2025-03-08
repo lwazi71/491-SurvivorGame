@@ -15,6 +15,7 @@ ASSET_MANAGER.queueDownload("./Sprites/Adventurer/AdventurerSprite2Flipped.png")
 
 ASSET_MANAGER.queueDownload("./Sprites/Objects/DestructibleObjects.png");
 ASSET_MANAGER.queueDownload("./Sprites/Objects/shadow.png");
+ASSET_MANAGER.queueDownload("./Sprites/Objects/shopIcons.png");
 ASSET_MANAGER.queueDownload("./Sprites/Slash/red-slash.png");
 ASSET_MANAGER.queueDownload("./Sprites/Slash/red-slash-flipped.png");
 ASSET_MANAGER.queueDownload("./Sprites/Slash/blue-slash.png");
@@ -123,7 +124,9 @@ ASSET_MANAGER.queueDownload("./Sprites/HudIcons/AdventurerSpriteHud.png");
 ASSET_MANAGER.queueDownload("./Sprites/HudIcons/AdventurerSpriteHud2.png");
 ASSET_MANAGER.queueDownload("./Sprites/HudIcons/pointer.png");
 ASSET_MANAGER.queueDownload("./Sprites/HudIcons/AdventurerSpriteTransition.png");
+ASSET_MANAGER.queueDownload("./Sprites/HudIcons/AdventurerSpriteTransition2.png");
 ASSET_MANAGER.queueDownload("./Sprites/HudIcons/PlayerBackground.png");
+ASSET_MANAGER.queueDownload("./Sprites/HudIcons/shopBackground.png");
 ASSET_MANAGER.queueDownload("./Sprites/Objects/spotlight.png");
 ASSET_MANAGER.queueDownload("./Sprites/Objects/brokenheart.png");
 ASSET_MANAGER.queueDownload("./Sprites/Objects/glow.png");

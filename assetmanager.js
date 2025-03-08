@@ -108,7 +108,7 @@ class AssetManager {
         }
     };
 
-    pauseBackgroundMusic() {
+    pauseMusic() {
         for (var key in this.cache) {
             let asset = this.cache[key];
             if (asset instanceof Audio) {

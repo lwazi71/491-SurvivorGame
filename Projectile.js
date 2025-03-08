@@ -42,8 +42,6 @@ class Projectile {
         this.spritesheet = ASSET_MANAGER.getAsset(this.spritePath);
         this.removeFromWorld = false;
 
-        this.checkDamage();
-
         //Velocity components
         this.velocity = {
             x: Math.cos(this.angle) * this.speed,
@@ -62,9 +60,6 @@ class Projectile {
 
         this.updateBB();
         this.loadAnimations();
-    }
-    checkDamage() {
-        if (this.friendly) this.damage = this.person.critDamageCheck(this.damage);
     }
 
     loadAnimations() {

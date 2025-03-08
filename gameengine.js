@@ -299,35 +299,37 @@ class GameEngine {
     escapeButton() {
         //escape settings
         if (this.keys["escape"] && !this.camera.enableTitle && !this.camera.transition) {
-        if (this.upgradePause && !this.upgrade.enablePlayerStats) {
-            this.toggleUpgradePause();
-            this.upgrade.makingChoice = false;
-            this.upgrade.enablePlayerStats = false;
-        } else if (this.upgradePause && this.upgrade.enablePlayerStats){
-            this.upgrade.enablePlayerStats = false;
-        } else if (this.shopPause && this.shop.showPlayer) {
-            this.shop.showPlayer = false;
-        // } else if (this.shopPause && this.camera.enableShop) {
-        //     this.shop.enableBuy = false;
-        //     this.shop.showUpgrade = false;
-        //     this.shopPause = false;
-        } else if (this.shopPause && this.camera.enableLevelShop) {
-            this.camera.enableLevelShop = false;
-            this.levelShop.enableBuy = false;
-            this.levelShop.showUpgrade = false;
-            this.shopPause = false;
-        } else if (this.deathPause && this.deathScreen.showUpgrade) {
-            this.deathScreen.showUpgrade = false;
-        } else if (this.pause && this.pauseMenu.showSettings) {
-            this.pauseMenu.showSettings = false;
-        } else if (this.pause && this.pauseMenu.confirmation) {
-            this.pauseMenu.confirmation = false;
-        } else if (!this.deathPause){
-            this.togglePause();
+            if (this.upgradePause && !this.upgrade.enablePlayerStats) {
+                this.toggleUpgradePause();
+                this.upgrade.makingChoice = false;
+                this.upgrade.enablePlayerStats = false;
+            } else if (this.upgradePause && this.upgrade.enablePlayerStats){
+                this.upgrade.enablePlayerStats = false;
+            } else if (this.shopPause && this.shop.showPlayer) {
+                this.shop.showPlayer = false;
+            // } else if (this.shopPause && this.camera.enableShop) {
+            //     this.shop.enableBuy = false;
+            //     this.shop.showUpgrade = false;
+            //     this.shopPause = false;
+            } else if (this.shopPause && this.camera.enableLevelShop) {
+                this.camera.enableLevelShop = false;
+                this.levelShop.enableBuy = false;
+                this.levelShop.showUpgrade = false;
+                this.shopPause = false;
+            } else if (this.deathPause && this.deathScreen.showUpgrade) {
+                this.deathScreen.showUpgrade = false;
+            } else if (this.pause && this.pauseMenu.showSettings) {
+                this.pauseMenu.showSettings = false;
+            } else if (this.pause && this.pauseMenu.confirmation) {
+                this.pauseMenu.confirmation = false;
+            } else if (!this.deathPause){
+                this.togglePause();
+            } else if (this.game.camera.enableTitle && this.game.camera.title.showSettings) {
+                this.game.camera.title.showSettings = false;
+            }
+            this.resetDrawingValues();
+            this.keys["escape"] = false;
         }
-        this.resetDrawingValues();
-        this.keys["escape"] = false;
-    }
     }
     toggleUpgradePause() {
         this.upgradePause = !this.upgradePause;

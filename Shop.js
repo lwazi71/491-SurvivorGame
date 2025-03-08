@@ -36,10 +36,10 @@ class Shop {
                 condition: true
             }, 
             {
-                name:"Rare Upgrade",
+                name:"Upgrade",
                 game: this.game,
-                description: "Gets a random rare upgrade",
-                condition: this.game.shop.checkUniqueUpgrade()
+                description: "Gets a random upgrade",
+                condition: this.game.shop.checkUpgrade()
             }
         ];
     }
@@ -114,12 +114,15 @@ class Shop {
                 this.game.adventurer.coins += 100;
                 this.closingShop();
                 break;
-            case "Rare Upgrade":
-                this.getRandomUniqueUpgrade();
+            case "Upgrade":
+                this.getRandomTypeUpgrade()
                 break;
             default:
                 console.log("Not a valid choice");
         }
+    }
+    checkUpgrade() {
+        return this.checkUniqueUpgrade() || this.checkBasicUpgrade();
     }
     checkBasicUpgrade() {
         this.game.upgrade.addValidUpgrade();
@@ -129,9 +132,13 @@ class Shop {
     }
     checkUniqueUpgrade() {
         this.game.upgrade.addValidUpgrade();
-        let value =this.game.upgrade.unique.length > 0;
+        let value = this.game.upgrade.unique.length > 0;
         this.game.upgrade.resetList();
         return value
+    }
+    getRandomTypeUpgrade() {
+        let random = Math.random();
+        (this.checkUniqueUpgrade() && random < 0.75) ? this.getRandomUniqueUpgrade() : this.getRandomBasicUpgrade();
     }
     getRandomBasicUpgrade() {
         this.game.upgrade.addValidUpgrade();

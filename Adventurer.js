@@ -92,6 +92,7 @@ class Adventurer { //every entity should have update and draw!
 
         //BOMB PROPERTIES
         this.enableBomb = false; //changed to true for now for debugging
+        this.enableRollingBomb = false; //Rolling spawns a bomb
         this.bombDamage = 25;
         this.bombExplosionScale = 10;
         this.bombTimer = 4;
@@ -147,7 +148,7 @@ class Adventurer { //every entity should have update and draw!
         this.slashBombCombo = false; //combo where player can hit the bomb with their sword towards enemies
         this.lightningDarkBoltCombo = false; //combo where player can hit dark bolt with lightning to cause wider explosion + more damage
 
-        this.critChance = 0.05; //5%
+        this.critChance = 1; //5%
         this.critDamage = 1.5; //150%
         this.coins = 1000;
         this.level = 1;
@@ -671,19 +672,19 @@ class Adventurer { //every entity should have update and draw!
             if ((entity instanceof Onecoin) && this.BB.collide(entity.BB)) {
                 //Math.floor(Math.random() * (max - min + 1)) + min;
                 const coinAmnt = Math.floor(Math.random() * 2) + 1; //1 - 2 when picking up a coin that looks like just 1
-                this.coins += coinAmnt * this.coinMultiplier;
+                this.coins += Math.round(coinAmnt * this.coinMultiplier);
                 entity.removeFromWorld = true;
             } else if ((entity instanceof Threecoin) && this.BB.collide(entity.BB)) {
                 const coinAmnt = Math.floor(Math.random() * (5 - 3 + 1)) + 3; //3 - 5 when picking up a coin that looks like 3 coins
-                this.coins += coinAmnt * this.coinMultiplier;
+                this.coins += Math.round(coinAmnt * this.coinMultiplier);
                 entity.removeFromWorld = true;
             } else if ((entity instanceof MultipleCoins) && this.BB.collide(entity.BB)) {
                 const coinAmnt = Math.floor(Math.random() * (50 - 20 + 1)) + 20; //20 - 50 when picking up mulitple coins
-                this.coins += coinAmnt * this.coinMultiplier;
+                this.coins += Math.round(coinAmnt * this.coinMultiplier);
                 entity.removeFromWorld = true;
             } else if ((entity instanceof CoinPile) && this.BB.collide(entity.BB)) {
                 const coinAmnt = Math.floor(Math.random() * (120 - 51 + 1)) + 51; //51 - 120 when picking up mulitple coins
-                this.coins += coinAmnt * this.coinMultiplier;
+                this.coins += Math.round(coinAmnt * this.coinMultiplier);
                 entity.removeFromWorld = true;
             } 
 
@@ -782,6 +783,9 @@ class Adventurer { //every entity should have update and draw!
                     this.facing = 1;
                 }
         }
+        const characterCenterX = this.x + (this.bitSize * this.scale) / 2; 
+        const characterCenterY = this.y + (this.bitSize * this.scale) / 2;
+        if (this.enableRollingBomb) this.game.addEntity(new Bomb(this.game, characterCenterX - 50, characterCenterY -32, this.bombTimer, this.bombDamage, this.bombExplosionScale));
             
     }
     
@@ -899,7 +903,6 @@ class Adventurer { //every entity should have update and draw!
         } else {
             this.facing = 1; //left side of character
         }
-        
         // Add arrow to game entities
         if (this.tripleShot) {
             const baseAngle = Math.atan2(dy, dx);
@@ -909,7 +912,6 @@ class Adventurer { //every entity should have update and draw!
                 baseAngle,
                 baseAngle + spreadAngle
             ];
-
             angles.forEach(angle => {
                 this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, this.bowDamage, this.arrowSpeed, 
                     "./Sprites/Projectiles/Arrows_pack.png", this.bowKnockback, true, 2, this.piercing,
@@ -1175,7 +1177,7 @@ class Adventurer { //every entity should have update and draw!
             this.level++;
             // this.attackDamage += 1;
             this.maxhealth += 1;
-            // this.health += 1;
+            this.health += 1;
             this.game.upgrade.points++;
             this.experience -= this.experienceToNextLvl;
             // this.experienceToNextLvl = Math.floor(this.experienceToNextLvl * 1.1);
@@ -1183,8 +1185,8 @@ class Adventurer { //every entity should have update and draw!
         }
     }
     levelUpMenu() {
-        if (!this.game.upgrade.noUpgrade) {
-            this.game.upgrade.getThreeUpgrades();
+        this.game.upgrade.getThreeUpgrades();
+        if (!this.game.upgrade.noUpgrades) {
             if (this.game.settings.enableLevelUpPause) this.game.upgradePause = true;
         }
     }
@@ -1214,6 +1216,7 @@ class Adventurer { //every entity should have update and draw!
 
         if (this.dead) {
             if (this.deathAnimationTimer > 0) {
+                this.game.click = {x: 0, y: 0};
                 this.deadAnim.drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, this.scale);
             }
         } else if (this.respawning) {

@@ -18,7 +18,7 @@ class TransitionScreen {
             this.heroAnimation.push([]);
         }
         //Walking
-        this.heroAnimation[0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/HudIcons/AdventurerSpriteTransition.png"), 0, 0, 32, 32, 8, 0.1, false, true);
+        this.heroAnimation[0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/HudIcons/AdventurerSpriteTransition2.png"), 0, 0, 32, 32, 8, 0.1, false, true);
         //Pushing
         this.heroAnimation[1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 0, 416, 32, 32, 8, 0.12, false, true); 
         

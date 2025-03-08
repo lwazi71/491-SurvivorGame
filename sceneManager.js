@@ -19,7 +19,7 @@ class SceneManager {
         this.enableShop = false;
         this.enableLevelShop = false;
 
-        this.enableTitle = true; //Whether title screen shows up or not
+        this.enableTitle = false; //Whether title screen shows up or not
 
         this.shakeIntensity = 0;
         this.shakeDecay = 0.9; 
@@ -47,11 +47,13 @@ class SceneManager {
             this.game.addEntity(new GameMap(this.game));
             //Fade in effect
             this.game.addEntity(new FadeIn(this.game));
-            // ASSET_MANAGER.playAsset("./Audio/Music/Survivorio Clone Battle Song (1).wav");
+            ASSET_MANAGER.adjustVolume(this.game.settings.currVolume);
+            ASSET_MANAGER.playAsset("./Audio/Music/Survivorio Clone Battle Song (1).wav");
         var adventurer = false;
         if(!adventurer) this.game.addEntity(this.adventurer);
         this.Hud = new Hud(this.game, this.adventurer);
         this.upgrade = new UpgradeSystem(this.game);
+        this.deathScreen = new DeathScreen(this.game);
         this.startWave = true;        
         // this.game.addEntity(new Adventurer(this.game, 0, 0));
 
@@ -93,8 +95,8 @@ class SceneManager {
 
 
 
-        // this.game.addEntity(this.generateObject("Barrel", 100, 100));
-        // this.game.addEntity(this.generateObject("Crate", 300, 100));
+        this.game.addEntity(this.generateObject("Barrel", 100, 100));
+        this.game.addEntity(this.generateObject("Crate", 300, 100));
         // this.game.addEntity(this.generateObject("Pot", 500, 100));
         // this.game.addEntity(this.generateObject("Barrel", 200, 100));
         // this.game.addEntity(this.generateObject("Crate", 100, 300));
@@ -250,7 +252,6 @@ class Title {
                 name: "Settings",
                 game: this.game,
                 action() {this.game.camera.title.showSettings = true;
-                    console.log(this.game.camera.title.showSettings = true);
                 }
             },
             {

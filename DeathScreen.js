@@ -291,6 +291,7 @@ class DeathScreen {
         this.game.entities = [];
         this.game.deathPause = false;
         this.game.camera.startWave = false;
+        ASSET_MANAGER.pauseMusic();
         this.game.camera.adventurer = new Adventurer(this.game, 0, 0);
         // this.visible = false;
         // this.game.entities = []; // Clear all entities
