@@ -365,7 +365,7 @@ class WaveManager {
 
         // Regular enemy spawning logic
         if (this.game.camera.currMap < 2) {
-            this.statsMultiplier.health = 1 + (this.totalGameTime / 120) * 0.2; //increase enemy health by 20% every 2:00. This is so enemy still has fighting chance against player
+            this.statsMultiplier.health = 1 + (this.totalGameTime / 120) * 0.3; //increase enemy health by 30% every 2:00. This is so enemy still has fighting chance against player
             const twoMinuteIntervals = Math.floor(this.totalGameTime / 15); // Get number of completed 2-minute intervals
         }
         // this.statsMultiplier.health = 1 + (this.totalGameTime / 120) * 0.25; //increase enemy health by 30% every 2:00. This is so enemy still has fighting chance against player
@@ -583,7 +583,7 @@ class WaveManager {
             this.spawnPatterns = [
                 {
                     startTime: 0, //when they'll start spawning
-                    interval: 3, // Spawn every 3 seconds
+                    interval: 4, // Spawn every 4 seconds
                     count: 1,
                     pool: "melee",
                     enemy_type: "goblin", // Always spawn zombies
@@ -594,7 +594,7 @@ class WaveManager {
                 //     interval: 7, count: 2, pool: "melee", enemy_type: "zombie"},
                 {
                     startTime: 30, //After 1 minute, melee enemies will spawn 2 times now
-                    interval: 7, count: 2, pool: "melee", enemy_type: "blueghoul", oneTime: false},
+                    interval: 14, count: 2, pool: "melee", enemy_type: "blueghoul", oneTime: false},
                 {
                     startTime: 45, //1 minute. The interval makes it go to 1 minute
                     interval: 15, count: 2, pool: "melee", enemy_type: "zombie", oneTime: false},
@@ -617,7 +617,7 @@ class WaveManager {
         } else if (this.game.camera.currMap == 2) {
             //set spawn pattern for map 2 here
             this.spawnPatterns = [
-                {startTime: 0, interval: 7, count: 1, pool: "melee", enemy_type: "goblin", oneTime: false},
+                {startTime: 0, interval: 7, count: 1, pool: "melee", enemy_type: "zombie", oneTime: false},
                 {
                     startTime: 20, //After 30 seconds, zombie enemies will spawn faster now?
                     interval: 10, count: 2, pool: "melee", enemy_type: "ghost"},
