@@ -102,6 +102,21 @@ ASSET_MANAGER.queueDownload("./Sprites/Boss/FlyingDemon/projectile.png");
 ASSET_MANAGER.queueDownload("./Sprites/Boss/FlyingDemon/DEATH.png");
 ASSET_MANAGER.queueDownload("./Sprites/Boss/FlyingDemon/IDLE.png");
 
+ASSET_MANAGER.queueDownload("./Sprites/Boss/Executioner/idle.png");
+ASSET_MANAGER.queueDownload("./Sprites/Boss/Executioner/idle-flipped.png");
+ASSET_MANAGER.queueDownload("./Sprites/Boss/Executioner/attacking.png");
+ASSET_MANAGER.queueDownload("./Sprites/Boss/Executioner/attacking-flipped.png");
+ASSET_MANAGER.queueDownload("./Sprites/Boss/Executioner/casting.png");
+ASSET_MANAGER.queueDownload("./Sprites/Boss/Executioner/casting-flipped.png");
+ASSET_MANAGER.queueDownload("./Sprites/Boss/Executioner/skill.png");
+ASSET_MANAGER.queueDownload("./Sprites/Boss/Executioner/skill-flipped.png");
+ASSET_MANAGER.queueDownload("./Sprites/Boss/Executioner/death.png");
+ASSET_MANAGER.queueDownload("./Sprites/Boss/Executioner/death-flipped.png");
+ASSET_MANAGER.queueDownload("./Sprites/Boss/Executioner/summonDeath.png");
+ASSET_MANAGER.queueDownload("./Sprites/Boss/Executioner/summonIdle.png");
+ASSET_MANAGER.queueDownload("./Sprites/Boss/Executioner/summonEmerge.png");
+
+
 
 
 
@@ -110,6 +125,9 @@ ASSET_MANAGER.queueDownload("./Sprites/Magic/PurpleProjectile.png")
 ASSET_MANAGER.queueDownload("./Sprites/Magic/BlackProjectile.png");
 ASSET_MANAGER.queueDownload("./Sprites/Magic/GreenProjectile.png");
 ASSET_MANAGER.queueDownload("./Sprites/Magic/FireProjectile.png");
+ASSET_MANAGER.queueDownload("./Sprites/Magic/spark.png");
+ASSET_MANAGER.queueDownload("./Sprites/Magic/spark-blue.png");
+ASSET_MANAGER.queueDownload("./Sprites/Magic/spark-black.png");
 ASSET_MANAGER.queueDownload("./Sprites/Explosion/explosion.png")
 ASSET_MANAGER.queueDownload("./Sprites/Explosion/explosion2.png")
 ASSET_MANAGER.queueDownload("./Sprites/Explosion/explosion3.png")
@@ -124,6 +142,8 @@ ASSET_MANAGER.queueDownload("./Sprites/Objects/collectables.png");
 
 ASSET_MANAGER.queueDownload("./Sprites/Objects/ExperienceOrb.png");
 ASSET_MANAGER.queueDownload("./Sprites/HudIcons/Boss1Hud.png");
+ASSET_MANAGER.queueDownload("./Sprites/HudIcons/boss4Hud_32x32.png");
+ASSET_MANAGER.queueDownload("./Sprites/HudIcons/boss4Hud_48x48.png");
 ASSET_MANAGER.queueDownload("./Sprites/HudIcons/weapons.png");
 ASSET_MANAGER.queueDownload("./Sprites/HudIcons/AdventurerSpriteHud.png");
 ASSET_MANAGER.queueDownload("./Sprites/HudIcons/AdventurerSpriteHud2.png");
@@ -142,6 +162,7 @@ ASSET_MANAGER.queueDownload("./Sprites/Objects/portal.png");
 ASSET_MANAGER.queueDownload("./Sprites/Projectiles/arrow.png")
 ASSET_MANAGER.queueDownload("./Sprites/Projectiles/Arrows_pack.png")
 ASSET_MANAGER.queueDownload("./Sprites/Map/testagain.png");
+ASSET_MANAGER.queueDownload("./Sprites/Map/testlevel1map.png");
 
 
 

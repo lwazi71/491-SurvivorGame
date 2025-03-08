@@ -70,7 +70,7 @@ class Boss3 {
             // Unlocks at 25% health
             nova: {
                 name: "Nova Blast",
-                unlockThreshold: 0.25, // 25% health
+                unlockThreshold: 0.4, // 40% health
                 execute: this.fireNovaProjectile.bind(this)
             }
         };
@@ -490,7 +490,7 @@ class Boss3 {
         }
     }
 
-    // Spiral projectile (unlocks at 50% health)
+    //Random projectiles (unlocks at 50% health)
     fireRandomProjectile() {
         const characterCenterX = (this.BB.x + this.BB.width/2);
         const characterCenterY = (this.BB.y + this.BB.height/2);

@@ -58,7 +58,7 @@ class SceneManager {
     //     this.game.addEntity(new Necromancer(this.game, 42, 400));
     //     this.game.addEntity(new Imp(this.game, 42, 400));
 
-    //     this.game.addEntity(new RatMage(this.game, 200, 400));
+        //this.game.addEntity(new RatMage(this.game, 200, 400));
     //     this.game.addEntity(new FoxMage(this.game, 200, 400));
     //     this.game.addEntity(new Crow(this.game, 200, 400));
     //     this.game.addEntity(new Slime(this.game, 200, 400));
@@ -66,12 +66,15 @@ class SceneManager {
     //     this.game.addEntity(new Wizard(this.game, 200, 200));
     //     this.game.addEntity(new Goblin(this.game, 200, 200));
     //     this.game.addEntity(new Cyclops(this.game, 200, 400));
-    //     this.game.addEntity(new Minotaur(this.game, 200, 400));
+        //  this.game.addEntity(new Minotaur(this.game, 200, 400));
     //     this.game.addEntity(new GoblinMech(this.game, 200, 400));
 
-    //      this.game.addEntity(new Boss1(this.game, 200, 400));
-    //     this.game.addEntity(new GolemMech(this.game, 200, 200));
-    //    this.game.addEntity(new Boss3(this.game, 200, 200));
+        // this.game.addEntity(new Boss1(this.game, 200, 400));
+        // this.game.addEntity(new GolemMech(this.game, 200, 200));
+        // this.game.addEntity(new Boss3(this.game, 200, 200));
+        // this.game.addEntity(new Boss4(this.game, 200, 200));
+        // this.game.addEntity(new Summon(this.game, 200, 200));
+
        //this.game.addEntity(new PortalDoor(this.game, 100, 100));
 
 

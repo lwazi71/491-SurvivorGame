@@ -92,10 +92,10 @@ class WaveManager {
                     interval: 7, count: 2, pool: "melee", enemy_type: "blueghoul", oneTime: false},
                 {
                     startTime: 45, //1 minute. The interval makes it go to 1 minute
-                    interval: 15, count: 2, pool: "melee", enemy_type: "crow", oneTime: false},
+                    interval: 15, count: 2, pool: "melee", enemy_type: "goblin", oneTime: false},
                 {
                     startTime: 60, //1:30 minutes
-                    interval: 30, count: 2, pool: "ranged", enemy_type: "banditnecromancer", oneTime: false},
+                    interval: 30, count: 2, pool: "ranged", enemy_type: "imp", oneTime: false},
                 {
                     startTime: 70, //2 and 30 minutes
                     interval: 50, count: 1, pool: "rangedAOE", enemy_type: "ratmage", oneTime: false},
@@ -357,7 +357,7 @@ class WaveManager {
 
 
         // Regular enemy spawning logic
-       this.statsMultiplier.health = 1 + (this.gameTime / 120) * 0.2; //increase enemy health by 20% every 2:00. This is so enemy still has fighting chance against player
+       this.statsMultiplier.health = 1 + (this.gameTime / 120) * 0.3; //increase enemy health by 30% every 2:00. This is so enemy still has fighting chance against player
         const twoMinuteIntervals = Math.floor(this.gameTime / 15); // Get number of completed 2-minute intervals
         // this.statsMultiplier.health = 1 + (twoMinuteIntervals * 0.2); // 20% increase per interval
         // this.statsMultiplier.speed = Math.round(1 + (this.gameTime / 600) * 0.2);
@@ -512,10 +512,40 @@ class WaveManager {
 
     spawnBoss() {
         const spawnPos = this.getValidSpawnPosition();
-        if (this.game.currMap == 1 && this.getCurrentEnemyCount() <= 15) { //less than 20 because boss will have a move that will bring a lot of enemy in. Dont want to make it too hard
+        if (this.game.currMap == 1) { //less than 20 because boss will have a move that will bring a lot of enemy in. Dont want to make it too hard
             console.log("boss should now spawn");
             const boss1 = new Boss1(this.game, spawnPos.x, spawnPos.y);
+            const temp = boss1.currentHealth;
+            boss1.currentHealth = Math.floor(boss1.currentHealth * this.statsMultiplier.health * 4);
+            boss1.maxHealth = Math.floor(temp * this.statsMultiplier.health * 4);
             this.game.addEntity(boss1);
+            this.bossSpawned = true;
+            this.bossActive = true;
+        } else if (this.game.camera.currMap == 2) {
+            console.log("boss should now spawn");
+            const boss2 = new GolemMech(this.game, spawnPos.x, spawnPos.y);
+            const temp = boss2.currentHealth;
+            boss1.currentHealth = Math.floor(boss2.currentHealth * this.statsMultiplier.health * 5);
+            boss1.maxHealth = Math.floor(temp * this.statsMultiplier.health * 5);
+            this.game.addEntity(boss2);
+            this.bossSpawned = true;
+            this.bossActive = true;
+        } else if (this.game.camera.currMap == 3) {
+            console.log("boss should now spawn");
+            const boss3 = new Boss3(this.game, spawnPos.x, spawnPos.y);
+            const temp = boss3.currentHealth;
+            boss1.currentHealth = Math.floor(boss3.currentHealth * this.statsMultiplier.health * 5);
+            boss1.maxHealth = Math.floor(temp * this.statsMultiplier.health * 5);
+            this.game.addEntity(boss3);
+            this.bossSpawned = true;
+            this.bossActive = true;
+        } else if (this.game.camera.currMap == 4) {
+            console.log("boss should now spawn");
+            const boss4 = new Boss4(this.game, spawnPos.x, spawnPos.y);
+            const temp = boss4.currentHealth;
+            boss1.currentHealth = Math.floor(boss4.currentHealth * this.statsMultiplier.health * 5);
+            boss1.maxHealth = Math.floor(temp * this.statsMultiplier.health * 5);
+            this.game.addEntity(boss4);
             this.bossSpawned = true;
             this.bossActive = true;
         }

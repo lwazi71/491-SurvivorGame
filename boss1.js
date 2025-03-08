@@ -420,13 +420,13 @@ class Boss1 { //goblin king
                 this.initiateJumpAttack();
             }
 
-            if (randomMove == 1 && this.waveCooldownTimer <= 0 && this.waves > 0 && this.currentHealth <= 260 && !this.isPlayingDamageAnimation) { //&& this.goblinsAlive == 0
+            if (randomMove == 1 && this.waveCooldownTimer <= 0 && this.waves > 0 && this.currentHealth <= (this.maxHealth * 0.16) && !this.isPlayingDamageAnimation) { //&& this.goblinsAlive == 0
                 this.waves--;
                 this.invincible = true;
                 this.initiateCommandWave();
             }
 
-            if (randomMove == 2 && this.bossHeals > 0 && this.currentHealth <= 100 && !this.isPlayingDamageAnimation) {
+            if (randomMove == 2 && this.bossHeals > 0 && this.currentHealth <= (this.maxHealth * 0.33) && !this.isPlayingDamageAnimation) {
                 this.bossHeals--;
                 this.invincible = true;
                 this.heal();

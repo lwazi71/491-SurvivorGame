@@ -81,7 +81,8 @@ class CircleAOE { //this class will be for the sword slash entity. This will dam
                 if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul || entity instanceof FreakyGhoul || entity instanceof HellSpawn 
                         || entity instanceof BanditNecromancer || entity instanceof Necromancer || entity instanceof RatMage || entity instanceof FoxMage || entity instanceof Imp
                         || entity instanceof Crow || entity instanceof Minotaur || entity instanceof GoblinMech || entity instanceof Cyclops || entity instanceof Slime 
-                        || entity instanceof Boar || entity instanceof Wizard || entity instanceof Goblin || entity instanceof Boss1 || entity instanceof GolemMech || entity instanceof Boss3) 
+                        || entity instanceof Boar || entity instanceof Wizard || entity instanceof Goblin || entity instanceof Boss1 || entity instanceof GolemMech || entity instanceof Boss3 || entity instanceof Summon 
+                        || entity instanceof Boss4) 
                     && !entity.dead && !entity.invincible) {
                     // Only apply damage if we haven't hit this mob yet
                     if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
@@ -120,6 +121,7 @@ class CircleAOE { //this class will be for the sword slash entity. This will dam
                 if ((entity instanceof Adventurer)) {
                     if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
                         this.hitEntities.add(entity);
+                        console.log(this.attackDamage);
                         entity.takeDamage(this.attackDamage);
                     }
                 }
