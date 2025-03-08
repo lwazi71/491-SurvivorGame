@@ -11,10 +11,10 @@ class Hud {
         this.darkBoltIcon = ASSET_MANAGER.getAsset("./Sprites/Magic/Dark-Bolt.png");
         this.ultAnimation = new Animator(this.magicIcon, 0, 320, 64, 64, 9, 0.08, false, true);
         this.bombAnimation = new Animator(this.miscIcon, 0, 16, 16, 16, 4, 0.1, false, true);
-        this.lightningAnimation = new Animator(this.lightningIcon, 0, 0, 64, 128, 10, 0.1, false, false);
+        this.lightningAnimation = new Animator(this.lightningIcon, 0, 0, 64, 128, 10, 0.1, false, true);
         this.boltAnimation = new Animator(
             this.darkBoltIcon,
-            0, 0, 64, 88, 11, 0.08, false, false
+            0, 0, 64, 88, 11, 0.08, false, true
         );
         this.scale = 2 * this.proportion;
         // this.weaponIconX = PARAMS.CANVAS_WIDTH - 32 * this.scale - 10; 

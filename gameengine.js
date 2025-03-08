@@ -22,8 +22,6 @@ class GameEngine {
         this.upgradePause = false;
         this.shopPause = false;
         this.deathPause = false;
-
-        this.currMap = 1;
         
 
         // Options and the Details

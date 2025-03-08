@@ -267,7 +267,7 @@ class Minotaur {
                 const minotaurCenterY = this.BB.y + this.BB.height/2 - 10;
     
                 // Pass the minotaur's center position as the source of the knockback
-                player.takeDamageKnockback(this.damage * 1.5, this.knockback * 2, minotaurCenterX, minotaurCenterY);
+                player.takeDamageKnockback(Math.round(this.damage * 1.5), this.knockback * 2, minotaurCenterX, minotaurCenterY);
             }
         }
     }

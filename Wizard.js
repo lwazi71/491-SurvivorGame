@@ -163,7 +163,7 @@ class Wizard {
             this.facing = dx < 0 ? 1 : 0;
          }
 
-         if (this.shootTimer > 0) {
+        if (this.shootTimer > 0) {
             this.shootTimer -= this.game.clockTick;
         }
 
