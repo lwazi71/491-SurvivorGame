@@ -10,6 +10,7 @@ class WaveManager {
         this.bossTime = 300; //300 seconds seconds or 5 minutes until boss comes (initialization for map 1, can change it later on).
         this.mapCompleted = false; //will be for if we beat the boss
         this.totalGameTime = 0;
+        this.multiplier = 0.35;
         
         // Enemy pools that unlock at different times
         this.enemyPools = {
@@ -365,7 +366,7 @@ class WaveManager {
 
         // Regular enemy spawning logic
         if (this.game.camera.currMap < 4) {
-            this.statsMultiplier.health = 1 + (this.totalGameTime / 120) * 0.35; //increase enemy health by 30% every 2:00. This is so enemy still has fighting chance against player
+            this.statsMultiplier.health = 1 + (this.totalGameTime / 120) * this.multiplier; //increase enemy health by 35% every 2:00. This is so enemy still has fighting chance against player
             const twoMinuteIntervals = Math.floor(this.totalGameTime / 15); // Get number of completed 2-minute intervals
         }
         // this.statsMultiplier.health = 1 + (this.totalGameTime / 120) * 0.25; //increase enemy health by 30% every 2:00. This is so enemy still has fighting chance against player
@@ -615,6 +616,11 @@ class WaveManager {
                     startTime: 230, //4:00 minutes
                     interval: 15, count: 1, pool: "charge", enemy_type: "boar", oneTime: false},
                 ];
+                this.statsMultiplier = {
+                    health: 1,
+                    speed: 1,
+                    attackPower: 1
+                };
         } else if (this.game.camera.currMap == 2) {
             //set spawn pattern for map 2 here
             this.spawnPatterns = [
@@ -646,7 +652,7 @@ class WaveManager {
                     enemy_type: "goblinmech", 
                     oneTime: false},
                 {
-                    startTime: 180, //After 210 seconds, zombie enemies will spawn faster now
+                    startTime: 180, //After 187 seconds, zombie enemies will spawn faster now
                     interval: 7, count: 10, pool: "melee", enemy_type: "zombie"},
                 {
                     startTime: 210, //3:30 minutes
@@ -658,6 +664,7 @@ class WaveManager {
             this.statsMultiplier = currentStatsMultiplier;
         } else if (this.game.camera.currMap == 3) {
             //set spawn pattern for map 3 here
+
         } else if (this.game.camera.currMap == 4) {
             //set spawn pattern for map 4 here
 

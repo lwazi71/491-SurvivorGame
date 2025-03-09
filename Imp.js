@@ -17,7 +17,7 @@ class Imp {
         this.castSpeed = 700;
         this.castDuration = 6 * 0.1; //How long the cast animation plays
         this.castTimer = 0; //Timer for the cast animation
-        this.damage = 20;
+        this.damage = 15;
         this.collisionDamage = 2;
         
         this.health = 12; //Imp Health
