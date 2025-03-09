@@ -82,10 +82,10 @@ class Adventurer { //every entity should have update and draw!
         this.magicking = false;
         this.magicDuration = 6 * 0.1; //for animation
         this.canMagic = true;
-        this.magicCooldown = 45; //long cool down
+        this.magicCooldown = 20; //long cool down
         this.magicCooldownTimer = 0;
         this.magicKnockback = 2000;
-        this.magicDamage = 100;
+        this.magicDamage = 45;
         this.magicScale = 6;
         this.enableMagic = false; //changed to true for now for debugging
 
