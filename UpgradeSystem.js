@@ -772,11 +772,12 @@ class UpgradeSystem {
                 }
                 //Player stat location
                 if (this.checkHeroStatus()) {
+                    ASSET_MANAGER.playAsset("./Audio/SoundEffects/Select.mp3");
                     this.enablePlayerStats = true;
                     this.game.click = {x:0, y:0};
                 }
                 //Exit Button
-                if (this.checkExitButton(this.game.click.x, this.game.click.y)) {
+                if (this.checkExitButton(this.game.click.x, this.game.click.y, true)) {
                     this.game.click = {x:0, y:0};
                     this.game.toggleUpgradePause();
                     this.makingChoice = false;
@@ -789,7 +790,11 @@ class UpgradeSystem {
             }
         }
     }
-    checkExitButton(mouseX, mouseY) {
+    checkExitButton(mouseX, mouseY, clicking) {
+        if (mouseX > PARAMS.CANVAS_WIDTH - this.exitButtonSize.width - 10 && mouseX < PARAMS.CANVAS_WIDTH + this.exitButtonSize.width &&
+            mouseY > 10 && mouseY < 10 + this.exitButtonSize.height && clicking) {
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/Back.mp3");
+            }
         return mouseX > PARAMS.CANVAS_WIDTH - this.exitButtonSize.width - 10 && mouseX < PARAMS.CANVAS_WIDTH + this.exitButtonSize.width &&
         mouseY > 10 && mouseY < 10 + this.exitButtonSize.height;
     }
@@ -1173,7 +1178,7 @@ class UpgradeSystem {
         ctx.roundRect(PARAMS.CANVAS_WIDTH - this.exitButtonSize.width - buffer, buffer, this.exitButtonSize.width, this.exitButtonSize.height, [10, 30, 10, 10]);
         ctx.lineWidth = 5;
         ctx.strokeStyle = rgb(200, 0, 0);
-        (this.checkExitButton(this.game.mouse.x, this.game.mouse.y)) ? ctx.fillStyle = rgb(100, 0, 0) : ctx.fillStyle = rgb(150, 0, 0);
+        (this.checkExitButton(this.game.mouse.x, this.game.mouse.y, false)) ? ctx.fillStyle = rgb(100, 0, 0) : ctx.fillStyle = rgb(150, 0, 0);
         ctx.fill();
         ctx.stroke();
         ctx.font = '36px "Press Start 2P"';
@@ -1313,12 +1318,12 @@ class PlayerStatus {
             this.game.click = {x:0, y:0};
             this.toggleUpgradeMenu();
         }
-        if (this.upgrade.checkExitButton(this.game.click.x, this.game.click.y) && this.game.upgradePause) {
+        if (this.upgrade.checkExitButton(this.game.click.x, this.game.click.y, true) && this.game.upgradePause) {
             this.game.click = {x:0, y:0};
             this.upgrade.enablePlayerStats = false;
             this.upgradeMenu = false;
         }
-        if (this.upgrade.checkExitButton(this.game.click.x, this.game.click.y) && this.game.deathScreen.showUpgrade) {
+        if (this.upgrade.checkExitButton(this.game.click.x, this.game.click.y, true) && this.game.deathScreen.showUpgrade) {
             this.game.click = {x:0, y:0};
             this.game.deathScreen.showUpgrade = false;
         }

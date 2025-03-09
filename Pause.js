@@ -10,7 +10,7 @@ class Pause {
             {
                 name: "Resume",
                 game: this.game,
-                action() {this.game.pause = false; }
+                action() {this.game.pause = false; ASSET_MANAGER.playAsset(this.game.camera.levelMusicPath);}
             },
             {
                 name: "Settings",
@@ -40,7 +40,6 @@ class Pause {
             if (this.game.isClicking(this.centerX, this.firstY, this.button.length, this.button.height) && 
             this.game.pause && this.game.leftClick && !this.confirmation && !this.showSettings) 
             {
-                
                 choice.action();
                 this.game.click = {x:0, y:0};
                 this.leftClick = false;
@@ -48,7 +47,7 @@ class Pause {
             }
             this.firstY += this.button.height + 10;
         });
-        if (this.game.upgrade.checkExitButton(mouseX, mouseY) && this.showSettings) {
+        if (this.game.upgrade.checkExitButton(mouseX, mouseY, true) && this.showSettings) {
             this.showSettings = false;
             this.game.click = {x:0, y:0};
         }
@@ -66,6 +65,7 @@ class Pause {
             this.game.camera.enableTitle = true;
             this.game.entities = [];
             this.game.camera.startWave = false;
+            this.game.chestItems.closingShop();
             this.game.camera.adventurer = new Adventurer(this.game, 0, 0);
         }
         //Quit Prompt No
@@ -197,11 +197,18 @@ class Pause {
 }
 class Settings {
     constructor(game) {
+
         this.game = game;
         this.game.settings = this;
         this.volumeSlider = {width: 150, height: 10};
+
         this.currVolume = 0.5;
-        this.toggleMute = true;
+        this.currMusicVolume = 1;
+        this.currSFXVolume = 1;
+
+        this.toggleAllMute = true; //true == no
+        this.toggleMusicMute = true;
+        this.toggleSFXMute = true;
         this.menuBuffer = 150;
         this.startY = this.menuBuffer + 50 //50 is buffer and 75 is border x value
         this.menuSpace = 200;
@@ -282,7 +289,6 @@ class Settings {
 
     }
     updateVolumeMenu() {
-        // this.menuBuffer = 200;
         //Make area slightly bigger for user errors
         if(this.game.isHovering((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 10, this.startY + 40,
             this.volumeSlider.width + 20, this.volumeSlider.height + 20) && this.game.leftClickHeld && this.currentMenu == "Volume") 
@@ -290,41 +296,131 @@ class Settings {
             this.updateVolume();
         }
         //Vol Down
-        if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 70, this.startY + 50, 40, 30) && this.currentMenu == "Volume") {
+        if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 70, this.startY + 40, 40, 30) && this.currentMenu == "Volume") {
             this.currVolume -= 0.1;
-            ASSET_MANAGER.adjustVolume(this.currVolume);
+            if (this.currVolume < 0.01) this.currVolume = 0;
+            ASSET_MANAGER.adjustAllVolume(this.currVolume);
             this.game.leftClick = false;
         }
         //Vol Up
-        if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 + this.volumeSlider.width / 2 + 20, this.startY + 50, 40, 30) && this.currentMenu == "Volume") {
+        if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 + this.volumeSlider.width / 2 + 20, this.startY + 40, 40, 30) && this.currentMenu == "Volume") {
             this.currVolume += 0.1;
-            ASSET_MANAGER.adjustVolume(this.currVolume);
+            if (this.currVolume > 0.99) this.currVolume = 1;
+            ASSET_MANAGER.adjustAllVolume(this.currVolume);
             this.game.leftClick = false;
         }
         //Mute
-        if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 110, this.startY + 50, 40, 30) && this.currentMenu == "Volume") {
-            if (this.toggleMute) {
-                this.lastVolume = this.currVolume;
-                console.log(this.lastVolume);
+        if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 110, this.startY + 40, 40, 30) && this.currentMenu == "Volume") {
+            if (this.toggleAllMute) {
+                this.lastMasterVolume = this.currVolume;
+                console.log(this.lastMasterVolume);
                 this.currVolume = 0;
-                this.toggleMute = false;
+                this.toggleAllMute = false;
             } else {
-                this.currVolume = this.lastVolume;
-                this.toggleMute = true;
+                this.currVolume = this.lastMasterVolume;
+                this.toggleAllMute = true;
             }
-            ASSET_MANAGER.muteAudio(!this.toggleMute);
-
+            // ASSET_MANAGER.muteAudio(!this.toggleMute);
         }
         if (this.currVolume < 0.01) this.currVolume = 0;
         if (this.currVolume > 0.99) this.currVolume = 1;
+        this.updateMusicVolumeSlider();
+        this.updateSFXVolumeSlider();
+
+    }
+    updateMusicVolumeSlider() {
+        //Make area slightly bigger for user errors
+        if(this.game.isHovering((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 10, this.startY + 40 + 115,
+        this.volumeSlider.width + 20, this.volumeSlider.height + 20) && this.game.leftClickHeld && this.currentMenu == "Volume") 
+        {
+            this.updateMusicVolume();
+        }
+        //Vol Down
+        if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 70, this.startY + 50 + 105, 40, 30) && this.currentMenu == "Volume") {
+            this.currMusicVolume -= 0.1;
+            if (this.currMusicVolume < 0.01) this.currMusicVolume = 0;
+            ASSET_MANAGER.adjustMusicVolume(this.currMusicVolume);
+            this.game.leftClick = false;
+        }
+        //Vol Up
+        if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 + this.volumeSlider.width / 2 + 20, this.startY + 50 + 105, 40, 30) && this.currentMenu == "Volume") {
+            this.currMusicVolume += 0.1;
+            if (this.currMusicVolume > 0.99) this.currMusicVolume = 1;
+            ASSET_MANAGER.adjustMusicVolume(this.currMusicVolume);
+            this.game.leftClick = false;
+        }
+        //Mute
+        if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 110, this.startY + 50 + 105, 40, 30) && this.currentMenu == "Volume") {
+            if (this.toggleMusicMute) {
+                this.lastMusicVolume = this.currMusicVolume;
+                this.currMusicVolume = 0;
+                this.toggleMusicMute = false;
+            } else {
+                this.currMusicVolume = this.lastMusicVolume;
+                this.toggleMusicMute = true;
+            }
+        }
+        if (this.currMusicVolume < 0.01) this.currMusicVolume = 0;
+        if (this.currMusicVolume > 0.99) this.currMusicVolume = 1;
+    }
+    updateSFXVolumeSlider() {
+        //Make area slightly bigger for user errors
+        if(this.game.isHovering((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 10, this.startY + 40 + 115 * 2,
+        this.volumeSlider.width + 20, this.volumeSlider.height + 20) && this.game.leftClickHeld && this.currentMenu == "Volume") 
+        {
+            this.updateSFXVolume();
+        }
+        //Vol Down
+        if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 70, this.startY + 50 + 105 * 2, 40, 30) && this.currentMenu == "Volume") {
+            this.currSFXVolume -= 0.1;
+            if (this.currSFXVolume < 0.01) this.currSFXVolume = 0;
+            ASSET_MANAGER.adjustSFXVolume(this.currSFXVolume);
+            this.game.leftClick = false;
+        }
+        //Vol Up
+        if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 + this.volumeSlider.width / 2 + 20, this.startY + 50 + 105 * 2, 40, 30) && this.currentMenu == "Volume") {
+            this.currSFXVolume += 0.1;
+            if (this.currSFXVolume > 0.99) this.currSFXVolume = 1;
+            ASSET_MANAGER.adjustSFXVolume(this.currSFXVolume);
+            this.game.leftClick = false;
+        }
+        //Mute
+        if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 110, this.startY + 50 + 105 * 2, 40, 30) && this.currentMenu == "Volume") {
+            if (this.toggleSFXMute) {
+                this.lastSFXVolume = this.currSFXVolume;
+                this.currSFXVolume = 0;
+                this.toggleSFXMute = false;
+            } else {
+                this.currSFXVolume = this.lastSFXVolume;
+                this.toggleSFXMute = true;
+            }
+        }
+        if (this.currSFXVolume < 0.01) this.currSFXVolume = 0;
+        if (this.currSFXVolume > 0.99) this.currSFXVolume = 1;
     }
     updateVolume() {
         let volume = (Math.round(this.game.mouse.x) - ((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2)) / this.volumeSlider.width;
         if (volume < 0) volume = 0;
         if (volume > 1) volume = 1;
         this.currVolume = volume;
-        ASSET_MANAGER.adjustVolume(volume);
-        this.toggleMute = true;
+        ASSET_MANAGER.adjustAllVolume(volume);
+        this.toggleAllMute = true;
+    }
+    updateMusicVolume() {
+        let volume = (Math.round(this.game.mouse.x) - ((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2)) / this.volumeSlider.width;
+        if (volume < 0) volume = 0;
+        if (volume > 1) volume = 1;
+        this.currMusicVolume = volume;
+        ASSET_MANAGER.adjustMusicVolume(volume * this.currVolume);
+        this.toggleMusicMute = true;
+    }
+    updateSFXVolume() {
+        let volume = (Math.round(this.game.mouse.x) - ((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2)) / this.volumeSlider.width;
+        if (volume < 0) volume = 0;
+        if (volume > 1) volume = 1;
+        this.currSFXVolume = volume;
+        ASSET_MANAGER.adjustSFXVolume(volume * this.currVolume);
+        this.toggleSFXMute = true;
     }
     updateMenuButtons() {
         let firstY = PARAMS.CANVAS_HEIGHT / 2 - this.button.height * 1.5 - 10;
@@ -345,7 +441,7 @@ class Settings {
         let currentY = this.startY + 50;
         let centerX = this.menuBuffer + this.menuSpace + ((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - (this.menuBuffer + this.menuSpace)) / 2 - this.toggleButton.length;
         this.cheats.forEach(choice => {
-            if (this.game.isClicking(centerX, currentY, this.toggleButton.length, this.toggleButton.height)) {
+            if (this.game.isClicking(centerX, currentY, this.toggleButton.length, this.toggleButton.height) && this.currentMenu == "Other") {
                 choice.action();
                 this.game.leftClick = false;
             }
@@ -425,6 +521,7 @@ class Settings {
 
         currentY += 50;
 
+        //The background of the bar
         ctx.beginPath();
         ctx.fillStyle = "gray";
         ctx.roundRect((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2, currentY, 
@@ -437,7 +534,8 @@ class Settings {
                 this.volumeSlider.width * this.currVolume, this.volumeSlider.height, [5]);
             ctx.fill();
         }
-        //Change the color
+
+        //The bar that shows volume level
         ctx.beginPath();
         ctx.fillStyle = "white";
         ctx.strokeStyle = "Black";
@@ -468,7 +566,7 @@ class Settings {
         ctx.fillText("+", (PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 + this.volumeSlider.width / 2 + 20 + 20, currentY + 15);
         ctx.font = '20px "Press Start 2P"';
         let text = "🔊"
-        if (!this.toggleMute) {
+        if (!this.toggleAllMute) {
             text = "🔇";
         }
         ctx.fillText(text, (PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 110 + 20, currentY + 11.5);
@@ -478,13 +576,133 @@ class Settings {
 
 
 
-        // if (this.game.isHovering(, , 50, 40)) {
-        //     ctx.fillStyle = rgb(50, 50, 50);
-        //     ctx.lineWidth = 3;
-        // } else {
-        //     ctx.fillStyle = rgb(74, 74, 74);
-        //     ctx.lineWidth = 1;
-        // }
+
+
+        //Music Volume
+        currentY += 75;
+        ctx.font = '24px "Press Start 2P"';
+        ctx.fillStyle ="White";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("Music Volume", (PARAMS.CANVAS_WIDTH + this.menuSpace) / 2, currentY);
+
+        currentY += 50;
+        
+        ctx.beginPath();
+        ctx.fillStyle = "gray";
+        ctx.roundRect((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2, currentY, 
+            this.volumeSlider.width, this.volumeSlider.height, [5]);
+        ctx.fill();
+        if (this.currMusicVolume > 0.01) {
+            ctx.beginPath();
+            ctx.fillStyle = "white";
+            ctx.roundRect((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2, currentY, 
+                this.volumeSlider.width * this.currMusicVolume, this.volumeSlider.height, [5]);
+            ctx.fill();
+        }
+        //Change the color
+        ctx.beginPath();
+        ctx.fillStyle = "white";
+        ctx.strokeStyle = "Black";
+        ctx.lineWidth = 2;
+        //Slider start X + length 7.5 is half of 15
+        ctx.roundRect((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 + this.volumeSlider.width * this.currMusicVolume - 7.5, 
+            currentY + this.volumeSlider.height / 2 - 7.5, 
+            15, 15, [5]);
+        ctx.fill();
+        ctx.stroke();
+
+        currentY -= 10; //I'm just lazy as it's to center the buttons to bar + 15 button height - 5 bar height
+        ctx.beginPath();
+        ctx.fillStyle = rgb(74, 74, 74);
+        //Mute
+        ctx.roundRect((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 110, currentY, 40, 30, [10]);
+        //-
+        ctx.roundRect((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 60, currentY, 40, 30, [10]);
+        //+
+        ctx.roundRect((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 + this.volumeSlider.width / 2 + 20, currentY, 40, 30, [10]);
+        ctx.fill();
+
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = "White";
+        ctx.font = '12px "Press Start 2P"';
+        ctx.fillText("-", (PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 60 + 20, currentY + 15);
+        ctx.fillText("+", (PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 + this.volumeSlider.width / 2 + 20 + 20, currentY + 15);
+        ctx.font = '20px "Press Start 2P"';
+        text = "🔊"
+        if (!this.toggleMusicMute) {
+            text = "🔇";
+        }
+        ctx.fillText(text, (PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 110 + 20, currentY + 11.5);
+        ctx.textAlign = "left";
+        ctx.font = '20px "Press Start 2P"';
+        ctx.fillText((this.currMusicVolume * 100).toFixed(0), (PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 + this.volumeSlider.width / 2 + 20 + 40 + 10, currentY + 15);
+
+
+
+
+        //SFX Volume
+
+        currentY += 75;
+        ctx.font = '28px "Press Start 2P"';
+        ctx.fillStyle ="White";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("SFX Volume", (PARAMS.CANVAS_WIDTH + this.menuSpace) / 2, currentY);
+
+        currentY += 50;
+        
+        ctx.beginPath();
+        ctx.fillStyle = "gray";
+        ctx.roundRect((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2, currentY, 
+            this.volumeSlider.width, this.volumeSlider.height, [5]);
+        ctx.fill();
+        if (this.currSFXVolume > 0.01) {
+            ctx.beginPath();
+            ctx.fillStyle = "white";
+            ctx.roundRect((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2, currentY, 
+                this.volumeSlider.width * this.currSFXVolume, this.volumeSlider.height, [5]);
+            ctx.fill();
+        }
+        //Change the color
+        ctx.beginPath();
+        ctx.fillStyle = "white";
+        ctx.strokeStyle = "Black";
+        ctx.lineWidth = 2;
+        //Slider start X + length 7.5 is half of 15
+        ctx.roundRect((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 + this.volumeSlider.width * this.currSFXVolume - 7.5, 
+            currentY + this.volumeSlider.height / 2 - 7.5, 
+            15, 15, [5]);
+        ctx.fill();
+        ctx.stroke();
+
+        currentY -= 10; //I'm just lazy as it's to center the buttons to bar + 15 button height - 5 bar height
+        ctx.beginPath();
+        ctx.fillStyle = rgb(74, 74, 74);
+        //Mute
+        ctx.roundRect((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 110, currentY, 40, 30, [10]);
+        //-
+        ctx.roundRect((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 60, currentY, 40, 30, [10]);
+        //+
+        ctx.roundRect((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 + this.volumeSlider.width / 2 + 20, currentY, 40, 30, [10]);
+        ctx.fill();
+
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = "White";
+        ctx.font = '12px "Press Start 2P"';
+        ctx.fillText("-", (PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 60 + 20, currentY + 15);
+        ctx.fillText("+", (PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 + this.volumeSlider.width / 2 + 20 + 20, currentY + 15);
+        ctx.font = '20px "Press Start 2P"';
+        text = "🔊"
+        if (!this.toggleSFXMute) {
+            text = "🔇";
+        }
+        ctx.fillText(text, (PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 110 + 20, currentY + 11.5);
+        ctx.textAlign = "left";
+        ctx.font = '20px "Press Start 2P"';
+        ctx.fillText((this.currSFXVolume * 100).toFixed(0), (PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 + this.volumeSlider.width / 2 + 20 + 40 + 10, currentY + 15);
 
     }
     drawHelp(ctx) {

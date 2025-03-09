@@ -21,7 +21,6 @@ class AssetManager {
             var that = this;
 
             var path = this.downloadQueue[i];
-            console.log(path);
             var ext = path.substring(path.length - 3);
 
             switch (ext) {
@@ -99,10 +98,28 @@ class AssetManager {
         }
     };
 
-    adjustVolume(volume) {
+    adjustAllVolume(volume) {
         for (var key in this.cache) {
             let asset = this.cache[key];
             if (asset instanceof Audio) {
+                asset.volume = volume;
+            }
+        }
+    };
+    adjustMusicVolume(volume) {
+        for (var key in this.cache) {
+            let folder = key.split("/").slice(-2, -1)[0];
+            let asset = this.cache[key];
+            if (asset instanceof Audio && folder == "Music") {
+                asset.volume = volume;
+            }
+        }
+    };
+    adjustSFXVolume(volume) {
+        for (var key in this.cache) {
+            let folder = key.split("/").slice(-2, -1)[0];
+            let asset = this.cache[key];
+            if (asset instanceof Audio && folder == "SoundEffects") {
                 asset.volume = volume;
             }
         }
@@ -117,7 +134,6 @@ class AssetManager {
             }
         }
     };
-
     autoRepeat(path) {
         var aud = this.cache[path];
         aud.addEventListener("ended", function () {

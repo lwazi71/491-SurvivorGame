@@ -143,6 +143,13 @@ ASSET_MANAGER.queueDownload("./Sprites/Map/testagain.png");
 //Audio
 ASSET_MANAGER.queueDownload("./Audio/Music/Survivorio Clone Battle Song (1).wav");
 
+//Sfx
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Back.mp3");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Hover.mp3");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Pause.mp3");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Select.mp3");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Unpause.mp3");
+
 
 
 

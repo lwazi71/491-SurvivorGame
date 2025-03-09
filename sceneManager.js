@@ -29,6 +29,7 @@ class SceneManager {
 
         this.deathScreen = new DeathScreen(this.game);
         this.game.addEntity(this.deathScreen);
+        this.levelMusicPath = "./Audio/Music/Survivorio Clone Battle Song (1).wav";
 
         //this.loadTestLevel();
         if (!this.enableTitle) this.loadTestLevel(false);
@@ -47,8 +48,8 @@ class SceneManager {
             this.game.addEntity(new GameMap(this.game));
             //Fade in effect
             this.game.addEntity(new FadeIn(this.game));
-            ASSET_MANAGER.adjustVolume(this.game.settings.currVolume);
-            ASSET_MANAGER.playAsset("./Audio/Music/Survivorio Clone Battle Song (1).wav");
+            this.levelMusicPath = "./Audio/Music/Survivorio Clone Battle Song (1).wav";
+            ASSET_MANAGER.playAsset(this.levelMusicPath);
         var adventurer = false;
         if(!adventurer) this.game.addEntity(this.adventurer);
         this.Hud = new Hud(this.game, this.adventurer);
@@ -156,6 +157,7 @@ class SceneManager {
     }
 
     update() {
+        // this.adjustMusicVolume();
         // PARAMS.DEBUG = document.getElementById("debug").checked;
         //Midpoint of the canvas
         const midPointX = PARAMS.CANVAS_WIDTH / 2 ;
@@ -182,6 +184,11 @@ class SceneManager {
         if (this.startWave) this.waveManager.update();
 
        
+    }
+    adjustMusicVolume() {
+        ASSET_MANAGER.adjustAllVolume(this.game.settings.currVolume);
+        ASSET_MANAGER.adjustMusicVolume(this.game.settings.currMusicVolume * this.game.settings.currVolume);
+        ASSET_MANAGER.adjustSFXVolume(this.game.settings.currSFXVolume * this.game.settings.currVolume);
     }
 
     /**
@@ -422,6 +429,7 @@ class Title {
             ctx.measureText(choice.name).width, this.button.height)) {
                 fontSize = 40;
                 ctx.lineWidth = 5;
+                // console.log(this.hoveringSound);
             }
             ctx.strokeStyle = "Black";
             ctx.font = fontSize + 'px "Press Start 2P"';

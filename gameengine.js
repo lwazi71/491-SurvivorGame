@@ -303,12 +303,15 @@ class GameEngine {
                 this.toggleUpgradePause();
                 this.upgrade.makingChoice = false;
                 this.upgrade.enablePlayerStats = false;
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/Back.mp3");
             } else if (this.upgradePause && this.upgrade.enablePlayerStats){
                 this.upgrade.enablePlayerStats = false;
                 this.upgrade.player.upgradeMenu = false;
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/Back.mp3");
             } else if (this.shopPause && this.chestItems.showPlayer) {
                 this.chestItems.showPlayer = false;
                 this.upgrade.player.upgradeMenu = false;
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/Back.mp3");
             // } else if (this.shopPause && this.camera.enableShop) {
             //     this.shop.enableBuy = false;
             //     this.shop.showUpgrade = false;
@@ -317,6 +320,7 @@ class GameEngine {
                 if (this.levelShop.showPlayer) {
                     this.levelShop.showPlayer = false;
                     this.upgrade.player.upgradeMenu = false;
+                    ASSET_MANAGER.playAsset("./Audio/SoundEffects/Back.mp3");
                 } else if (this.levelShop.showUpgrade) {
                     //Empty so it does nothing
                 } else {
@@ -324,18 +328,30 @@ class GameEngine {
                     this.levelShop.enableBuy = false;
                     this.levelShop.showUpgrade = false;
                     this.shopPause = false;
+                    ASSET_MANAGER.playAsset("./Audio/SoundEffects/Back.mp3");
                 }
             } else if (this.deathPause && this.deathScreen.showUpgrade) {
                 this.deathScreen.showUpgrade = false;
                 this.upgrade.player.upgradeMenu = false;
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/Back.mp3");
             } else if (this.pause && this.pauseMenu.showSettings) {
                 this.pauseMenu.showSettings = false;
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/Back.mp3");
             } else if (this.pause && this.pauseMenu.confirmation) {
                 this.pauseMenu.confirmation = false;
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/Back.mp3");
             } else if (!this.deathPause){ //
                 this.togglePause();
+                if (this.pause) {
+                    ASSET_MANAGER.pauseMusic()
+                    ASSET_MANAGER.playAsset("./Audio/SoundEffects/Pause.mp3");
+                } else {
+                    ASSET_MANAGER.playAsset("./Audio/SoundEffects/Unpause.mp3");
+                    ASSET_MANAGER.playAsset(this.camera.levelMusicPath);
+                }
             } else if (this.game.camera.enableTitle && this.game.camera.title.showSettings) {
-                this.game.camera.title.showSettings = false;
+                this.camera.title.showSettings = false;
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/Back.mp3");
             }
             this.resetDrawingValues();
             this.keys["escape"] = false;
@@ -371,6 +387,10 @@ class GameEngine {
     isClicking(x, y, length, height) {
         this.mouse.x ? this.mouse.x : 0;
         this.mouse.y ? this.mouse.y : 0;
+        if (this.click.x > x && this.click.x < x + length &&
+            this.click.y > y && this.click.y < y + height && this.leftClick) {
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/Select.mp3");
+            }
         return this.click.x > x && this.click.x < x + length &&
         this.click.y > y && this.click.y < y + height && this.leftClick;
     }

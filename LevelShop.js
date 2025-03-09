@@ -91,7 +91,7 @@ class LevelShop {
             //Upgrade Card
             this.updateUpgradeMenu();
         }
-        if (this.game.upgrade.checkExitButton(this.game.click.x, this.game.click.y) && !this.showUpgrade) {
+        if (this.game.upgrade.checkExitButton(this.game.click.x, this.game.click.y, true) && !this.showUpgrade) {
             if (this.showPlayer) {
                 this.showPlayer = false;
                 this.game.upgrade.player.upgradeMenu = false;

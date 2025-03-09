@@ -717,7 +717,7 @@ class Adventurer { //every entity should have update and draw!
             // this.lightningDarkBoltCombo = true;
             if (this.game.settings.enableUpgrades) this.game.upgrade.giveAllUpgrade();
         }
-        this.invincible = this.game.settings.enableInvincibility
+        if (this.game.settings.enableInvincibility) this.invincible = true;
     };
 
     performRolling() {
