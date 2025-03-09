@@ -21,8 +21,8 @@ class Cyclops {
         this.collisionDamage = 33;
         this.knockback = 2000;
         
-        this.health = 105; //Cyclops health 
-        this.maxHealth = 105;
+        this.health = 150; //Cyclops health 
+        this.maxHealth = 150;
         this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 1, 10));
         this.dead = false;
         this.deathAnimationTimer = 8 * 0.1; 

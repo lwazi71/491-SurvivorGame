@@ -34,8 +34,8 @@ class Minotaur {
         this.pushbackVector = { x: 0, y: 0 };
         this.pushbackDecay = 0.9; // Determines how quickly the pushback force decays
 
-        this.health = 70;
-        this.maxHealth = 70;
+        this.health = 150;
+        this.maxHealth = 150;
         this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 5, -80));
         this.dead = false;
 

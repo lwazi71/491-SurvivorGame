@@ -2,7 +2,7 @@ class WaveManager {
     constructor(game) {
         this.game = game;
         this.gameTime = 0; // Total time elapsed in seconds
-        this.spawnBuffer = 500;
+        this.spawnBuffer = 425;
         this.bossSpawned = false;
         this.bossActive = false;
         this.maxEnemies =  700; //set to 700 so game doesnt start to lag or become too difficult
@@ -365,10 +365,10 @@ class WaveManager {
 
 
         // Regular enemy spawning logic
-        if (this.game.camera.currMap < 4) {
+       if (this.game.camera.currMap < 4) {
             this.statsMultiplier.health = 1 + (this.totalGameTime / 120) * this.multiplier; //increase enemy health by 35% every 2:00. This is so enemy still has fighting chance against player
             const twoMinuteIntervals = Math.floor(this.totalGameTime / 15); // Get number of completed 2-minute intervals
-        }
+       }
         // this.statsMultiplier.health = 1 + (this.totalGameTime / 120) * 0.25; //increase enemy health by 30% every 2:00. This is so enemy still has fighting chance against player
         // const twoMinuteIntervals = Math.floor(this.totalGameTime / 15); // Get number of completed 2-minute intervals
         // this.statsMultiplier.health = 1 + (twoMinuteIntervals * 0.2); // 20% increase per interval
@@ -538,7 +538,7 @@ class WaveManager {
             const boss2 = new GolemMech(this.game, spawnPos.x, spawnPos.y);
             const temp = boss2.currentHealth;
             boss2.currentHealth = Math.floor(boss2.currentHealth * this.statsMultiplier.health * 4);
-            boss2.maxHealth = Math.floor(temp * this.statsMultiplier.health * 5);
+            boss2.maxHealth = Math.floor(temp * this.statsMultiplier.health * 4);
             this.game.addEntity(boss2);
             this.bossSpawned = true;
             this.bossActive = true;
@@ -547,7 +547,7 @@ class WaveManager {
             const boss3 = new Boss3(this.game, spawnPos.x, spawnPos.y);
             const temp = boss3.currentHealth;
             boss3.currentHealth = Math.floor(boss3.currentHealth * this.statsMultiplier.health * 4);
-            boss3.maxHealth = Math.floor(temp * this.statsMultiplier.health * 5);
+            boss3.maxHealth = Math.floor(temp * this.statsMultiplier.health * 4);
             this.game.addEntity(boss3);
             this.bossSpawned = true;
             this.bossActive = true;
@@ -556,7 +556,7 @@ class WaveManager {
             const boss4 = new Boss4(this.game, spawnPos.x, spawnPos.y);
             const temp = boss4.currentHealth;
             boss4.currentHealth = Math.floor(boss4.currentHealth * this.statsMultiplier.health * 4);
-            boss4.maxHealth = Math.floor(temp * this.statsMultiplier.health * 5);
+            boss4.maxHealth = Math.floor(temp * this.statsMultiplier.health * 4);
             this.game.addEntity(boss4);
             this.bossSpawned = true;
             this.bossActive = true;
@@ -588,7 +588,7 @@ class WaveManager {
                     interval: 4, // Spawn every 4 seconds
                     count: 1,
                     pool: "melee",
-                    enemy_type: "goblin", // Always spawn zombies
+                    enemy_type: "goblin", // Always spawn goblin
                     oneTime: false //If we want to spawn the enemy one time. If this is true, it won't worry about the interval and just spawn at the start time
                 },
                 // {
@@ -653,7 +653,7 @@ class WaveManager {
                     oneTime: false},
                 {
                     startTime: 180, //After 187 seconds, zombie enemies will spawn faster now
-                    interval: 7, count: 10, pool: "melee", enemy_type: "zombie"},
+                    interval: 7, count: 10, pool: "melee", enemy_type: "zombie", oneTime: false},
                 {
                     startTime: 210, //3:30 minutes
                     interval: 40, count: 2, pool: "rangedAOE", enemy_type: "ratmage", oneTime: false},
@@ -664,11 +664,41 @@ class WaveManager {
             this.statsMultiplier = currentStatsMultiplier;
         } else if (this.game.camera.currMap == 3) {
             //set spawn pattern for map 3 here
-
+            this.spawnPatterns = [
+                {startTime: 0, interval: 3, count: 1, pool: "melee", enemy_type: "ghost", oneTime: false},
+                {
+                    startTime: 0, //After 30 seconds, zombie enemies will spawn faster now
+                    interval: 7, count: 3, pool: "melee", enemy_type: "freakyghoul"},
+                {
+                    startTime: 30, //After 1 minute, melee enemies will spawn 2 times now
+                    interval: 14, count: 2, pool: "melee", enemy_type: "zombie", oneTime: false},
+                {
+                    startTime: 35, //1 minute. The interval makes it go to 1 minute
+                    interval: 20, count: 2, pool: "charge", enemy_type: "hellspawn", oneTime: false},
+                {
+                    startTime: 60, //1:30 minutes
+                    interval: 30, count: 2, pool: "ranged", enemy_type: "imp", oneTime: false},
+                {
+                    startTime: 90, //2:00 minutes
+                    interval: 30, count: 5, pool: "melee", enemy_type: "blueghoul", oneTime: false},
+                {
+                    startTime: 70, //2 and 30 minutes
+                    interval: 50, count: 2, pool: "rangedAOE", enemy_type: "wizard", oneTime: false},
+                {
+                    startTime: 120, // 3 minutes
+                    interval: 60, count: 1, pool: "minibosses", oneTime: false},
+                {
+                    startTime: 210, //3:30 minutes
+                    interval: 40, count: 1, pool: "ranged", enemy_type: "necromancer", oneTime: false},
+                {
+                    startTime: 230, //4:00 minutes
+                    interval: 15, count: 1, pool: "charge", enemy_type: "slime", oneTime: false},
+                ];
+                this.statsMultiplier = currentStatsMultiplier;
         } else if (this.game.camera.currMap == 4) {
             //set spawn pattern for map 4 here
 
-            // this.bossTime = 230; //maybe have the final spawn in earlier?
+             this.bossTime = 180; //maybe have the final spawn in earlier?
         } else {
             //if there's no map right now, there will be no spawn pattern
             this.spawnPatterns = [];

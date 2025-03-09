@@ -6,7 +6,7 @@ class Ghost {
         this.facing = 0; //0 = right, 1 = left
         this.attackPower = 5;
         this.scale = 2.6;
-        this.speed = 280;
+        this.speed = 235;
 
         this.health = 20;
         this.maxHealth = 20;

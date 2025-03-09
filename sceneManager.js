@@ -7,7 +7,7 @@ class SceneManager {
         this.game.camera.x = this.x;
         this.game.camera.y = this.y;
 
-        this.currMap = 1;
+        this.currMap = 4;
         
         this.adventurer = new Adventurer(this.game, 0, 0); //placing player character at 0, 0 in world map
 
