@@ -12,11 +12,11 @@ class SceneManager {
         this.waveManager = new WaveManager(game);
         this.Hud = new Hud(this.game, this.adventurer);
         this.upgrade = new UpgradeSystem(this.game);
-        this.shop = new Shop(this.game);
+        this.shop = new ChestItems(this.game);
         this.levelShop = new LevelShop(this.game);
         new Pause(this.game);
         this.title = new Title(this.game);
-        this.enableShop = false;
+        this.enableChest = false;
         this.enableLevelShop = false;
 
         this.enableTitle = false; //Whether title screen shows up or not
@@ -72,7 +72,7 @@ class SceneManager {
         // this.game.addEntity(new Zombie(this.game, 200, 400));
         // this.game.addEntity(new Zombie(this.game, 300, 450));
         // this.game.addEntity(new Zombie(this.game, 130, 400));
-        this.game.addEntity(new Zombie(this.game, 323, 400));
+        // this.game.addEntity(new Zombie(this.game, 323, 400));
         // this.game.addEntity(new Zombie(this.game, 513, 400));
         // this.game.addEntity(new Zombie(this.game, 42, 400));
         // this.game.addEntity(new BanditNecromancer(this.game, 42, 400));
@@ -91,12 +91,12 @@ class SceneManager {
         // this.game.addEntity(new GoblinMech(this.game, 200, 400));
 
         // this.game.addEntity(new Boss1(this.game, 200, 400));
-        //  this.game.addEntity(new GolemMech(this.game, 200, 200));
+         this.game.addEntity(new GolemMech(this.game, 200, 200));
 
 
 
-        this.game.addEntity(this.generateObject("Barrel", 100, 100));
-        this.game.addEntity(this.generateObject("Crate", 300, 100));
+        // this.game.addEntity(this.generateObject("Barrel", 100, 100));
+        // this.game.addEntity(this.generateObject("Crate", 300, 100));
         // this.game.addEntity(this.generateObject("Pot", 500, 100));
         // this.game.addEntity(this.generateObject("Barrel", 200, 100));
         // this.game.addEntity(this.generateObject("Crate", 100, 300));
@@ -170,14 +170,8 @@ class SceneManager {
             this.game.keys["p"] = false;
         }
         if (this.enableTitle) {
-            // if (this.game.leftClick) {
-            //     this.enableTitle = false;
-            //     this.loadTestLevel(true);
-            // }
-            //if click on quit // window.close();
             this.x += 1;
             this.y += 0.1;
-            // this.game.addEntity(new GameMap(this.game));
         }
         
         if (this.shakeIntensity > 0) {
@@ -217,7 +211,7 @@ class SceneManager {
                 this.Hud.update(); //Comment out both when demoing
                 this.Hud.draw(ctx);
             }
-            if(this.enableShop) {
+            if(this.enableChest) {
                 this.game.shopPause = true;
                 // this.shop.
             }

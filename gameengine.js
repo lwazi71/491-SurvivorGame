@@ -225,7 +225,7 @@ class GameEngine {
         }
         //How to open shop
         if (this.keys["u"]) {
-            this.camera.enableShop = true;
+            this.camera.enableChest = true;
             this.toggleShopPause();
             this.click = {x: 0, y: 0};
         }
@@ -268,10 +268,10 @@ class GameEngine {
                 this.timer.isPaused = true;
                 this.timer.enablePauseTick = true;
                 this.disableMouseInputs();
-            } else if (this.shopPause && this.camera.enableShop) {
-                this.shop.enableBuy = true;
-                this.shop.update();
-                this.shop.draw(this.ctx);
+            } else if (this.shopPause && this.camera.enableChest) {
+                this.chestItems.enableBuy = true;
+                this.chestItems.update();
+                this.chestItems.draw(this.ctx);
                 this.timer.isPaused = true;
                 this.timer.enablePauseTick = true;
                 this.disableMouseInputs();
@@ -305,24 +305,34 @@ class GameEngine {
                 this.upgrade.enablePlayerStats = false;
             } else if (this.upgradePause && this.upgrade.enablePlayerStats){
                 this.upgrade.enablePlayerStats = false;
-            } else if (this.shopPause && this.shop.showPlayer) {
-                this.shop.showPlayer = false;
+                this.upgrade.player.upgradeMenu = false;
+            } else if (this.shopPause && this.chestItems.showPlayer) {
+                this.chestItems.showPlayer = false;
+                this.upgrade.player.upgradeMenu = false;
             // } else if (this.shopPause && this.camera.enableShop) {
             //     this.shop.enableBuy = false;
             //     this.shop.showUpgrade = false;
             //     this.shopPause = false;
             } else if (this.shopPause && this.camera.enableLevelShop) {
-                this.camera.enableLevelShop = false;
-                this.levelShop.enableBuy = false;
-                this.levelShop.showUpgrade = false;
-                this.shopPause = false;
+                if (this.levelShop.showPlayer) {
+                    this.levelShop.showPlayer = false;
+                    this.upgrade.player.upgradeMenu = false;
+                } else if (this.levelShop.showUpgrade) {
+                    //Empty so it does nothing
+                } else {
+                    this.camera.enableLevelShop = false;
+                    this.levelShop.enableBuy = false;
+                    this.levelShop.showUpgrade = false;
+                    this.shopPause = false;
+                }
             } else if (this.deathPause && this.deathScreen.showUpgrade) {
                 this.deathScreen.showUpgrade = false;
+                this.upgrade.player.upgradeMenu = false;
             } else if (this.pause && this.pauseMenu.showSettings) {
                 this.pauseMenu.showSettings = false;
             } else if (this.pause && this.pauseMenu.confirmation) {
                 this.pauseMenu.confirmation = false;
-            } else if (!this.deathPause){
+            } else if (!this.deathPause){ //
                 this.togglePause();
             } else if (this.game.camera.enableTitle && this.game.camera.title.showSettings) {
                 this.game.camera.title.showSettings = false;

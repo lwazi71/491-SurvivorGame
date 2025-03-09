@@ -103,6 +103,7 @@ class DeathScreen {
     }
 
     update() {
+        this.player = this.game.upgrade.player; // Just in case it doesn't update
         if (this.showUpgrade) this.player.update();
         (this.canRespawn) ? this.elapsedTime += 0.01 : this.elapsedTime = 0;
         this.canRespawn = this.game.adventurer.coins >= 350 && !this.respawnBefore;

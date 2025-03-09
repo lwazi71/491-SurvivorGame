@@ -4,6 +4,8 @@ class LevelShop {
         this.game.levelShop = this;
         this.showUpgrade = false;
         this.enableBuy = false;
+        this.player = this.game.upgrade.player;
+        this.showPlayer = false;
         this.length = 150;
         this.height = 150;
         this.center = {x: PARAMS.CANVAS_WIDTH / 2 - this.length / 2, y: PARAMS.CANVAS_HEIGHT / 2 - this.height / 2};
@@ -64,7 +66,7 @@ class LevelShop {
                 game: this.game,
                 description: "Gets a random basic upgrade",
                 price: 20,
-                condition: this.game.shop.checkBasicUpgrade(),
+                condition: this.game.levelShop.checkBasicUpgrade(),
                 num: 3
             }, 
             {
@@ -72,25 +74,38 @@ class LevelShop {
                 game: this.game,
                 description: "Gets a random rare upgrade",
                 price: 40,
-                condition: this.game.shop.checkUniqueUpgrade(),
+                condition: this.game.levelShop.checkUniqueUpgrade(),
                 num: 4
             }
         ];
     }
     update() {
-        if (!this.showUpgrade) {
-            this.optionsUpdate();
-            //In shop selection
-            this.updateShopItems();
-            this.updateBuyArea();
+        this.player = this.game.upgrade.player;
+        if (!this.showPlayer) {
+            if (!this.showUpgrade) {
+                this.optionsUpdate();
+                //In shop selection
+                this.updateShopItems();
+                this.updateBuyArea();
+            }
+            //Upgrade Card
+            this.updateUpgradeMenu();
         }
-        //Upgrade Card
-        this.updateUpgradeMenu();
         if (this.game.upgrade.checkExitButton(this.game.click.x, this.game.click.y) && !this.showUpgrade) {
-            this.enableBuy = false;
-            this.game.camera.enableLevelShop = false;
-            this.showUpgrade = false;
-            this.game.shopPause = false;
+            if (this.showPlayer) {
+                this.showPlayer = false;
+                this.game.upgrade.player.upgradeMenu = false;
+                this.game.click = {x:0, y:0};
+            } else {
+                this.enableBuy = false;
+                this.game.camera.enableLevelShop = false;
+                this.showUpgrade = false;
+                this.game.shopPause = false;
+                this.game.click = {x:0, y:0};
+            }
+        }
+        if (this.game.upgrade.checkHeroStatus() && !this.showUpgrade) {
+            this.showPlayer = true;
             this.game.click = {x:0, y:0};
         }
     }
@@ -127,8 +142,8 @@ class LevelShop {
                 this.currentAmount < 99 && this.game.adventurer.coins >= this.selectedPrice * this.currentAmount) {
                 this.currentAmount ++;
             }
-            this.totalPrice = this.selectedPrice * this.currentAmount;
         }
+        this.totalPrice = this.selectedPrice * this.currentAmount;
     }
     updateUpgradeMenu() {
         let x = PARAMS.CANVAS_WIDTH / 2 - this.upgradeCard.length / 2;
@@ -212,25 +227,31 @@ class LevelShop {
         return upgrades[this.index];
     }
     draw(ctx) {
-        ctx.drawImage(this.background, 
-            0, 0, 
-            640, 480, 
-            0, 0, 
-            PARAMS.CANVAS_WIDTH, PARAMS.CANVAS_HEIGHT
-        );
-        ctx.fillStyle = rgba(0,0,0, 0.75);
-        ctx.fillRect(0, 0, PARAMS.CANVAS_WIDTH, PARAMS.CANVAS_HEIGHT);
-        this.drawOptions(ctx);
-        this.drawBuyArea(ctx);
-        this.drawCoins(ctx);
-        this.drawBuyText(ctx);
-        this.game.upgrade.exitButton(ctx, this.game.mouse.x, this.game.mouse.y);
-        if (this.showUpgrade) {
+        if (this.showPlayer) {
+            this.player.update();
+            this.player.draw(ctx);
+        } else {
+            ctx.drawImage(this.background, 
+                0, 0, 
+                640, 480, 
+                0, 0, 
+                PARAMS.CANVAS_WIDTH, PARAMS.CANVAS_HEIGHT
+            );
             ctx.fillStyle = rgba(0,0,0, 0.75);
             ctx.fillRect(0, 0, PARAMS.CANVAS_WIDTH, PARAMS.CANVAS_HEIGHT);
-            this.drawUpgrade(ctx);
-            this.drawConfirm(ctx);
+            this.drawOptions(ctx);
+            this.drawBuyArea(ctx);
+            this.drawCoins(ctx);
+            this.drawBuyText(ctx);
+            this.game.upgrade.heroStatus(ctx);
+            if (this.showUpgrade) {
+                ctx.fillStyle = rgba(0,0,0, 0.75);
+                ctx.fillRect(0, 0, PARAMS.CANVAS_WIDTH, PARAMS.CANVAS_HEIGHT);
+                this.drawUpgrade(ctx);
+                this.drawConfirm(ctx);
+            }
         }
+        this.game.upgrade.exitButton(ctx, this.game.mouse.x, this.game.mouse.y);
 
     }
     drawOptions(ctx) {

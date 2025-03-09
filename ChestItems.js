@@ -1,8 +1,8 @@
-class Shop {
+class ChestItems {
     constructor(game) {
         Object.assign(this, {game});
-        this.game.shop = this;
-        this.player = new PlayerStatus(game, this.game.upgrade);
+        this.game.chestItems = this;
+        this.player = this.game.upgrade.player;
         this.showPlayer = false;
         this.showUpgrade = false;
         this.enableBuy = false;
@@ -38,12 +38,14 @@ class Shop {
             {
                 name:"Upgrade",
                 game: this.game,
-                description: "Gets a random upgrade",
-                condition: this.game.shop.checkUpgrade()
+                description: "Get a random upgrade",
+                condition: this.game.chestItems.checkUpgrade()
             }
         ];
     }
     update() {
+        this.collected = false;
+        this.player = this.game.upgrade.player;
         this.optionsUpdate();
         let mouseX = 0;
         let mouseY = 0;
@@ -97,6 +99,7 @@ class Shop {
         }
         if (this.game.upgrade.checkExitButton(mouseX, mouseY) && this.showPlayer) {
             this.showPlayer = false;
+            this.game.upgrade.player.upgradeMenu = false;
             // this.enableBuy = false;
             // this.showUpgrade = false;
             // this.game.shopPause = false;
@@ -138,7 +141,7 @@ class Shop {
     }
     getRandomTypeUpgrade() {
         let random = Math.random();
-        (this.checkUniqueUpgrade() && random < 0.75) ? this.getRandomUniqueUpgrade() : this.getRandomBasicUpgrade();
+        (this.checkUniqueUpgrade() && random < 0.25) ? this.getRandomUniqueUpgrade() : this.getRandomBasicUpgrade(); // 25% to get rarer upgrade
     }
     getRandomBasicUpgrade() {
         this.game.upgrade.addValidUpgrade();
@@ -160,16 +163,18 @@ class Shop {
         this.enableBuy = false;
         this.showUpgrade = false;
         this.game.shopPause = false;
-        this.game.camera.enableShop = false;
+        this.game.camera.enableChest = false;
         this.collected = true;
         this.game.click = {x:0, y:0};
     }
     draw(ctx) {
+        if (this.collected) {
+            return;
+        }
         if (!this.enableBuy) {
             // this.game.draw(ctx);
         }
         if (this.showPlayer) {
-            this.game.upgrade.exitButton(ctx);
             this.player.update();
             this.player.draw(ctx);
             this.game.upgrade.exitButton(ctx)

@@ -24,7 +24,7 @@ class Adventurer { //every entity should have update and draw!
         this.invincible = false;
         this.velocity = {x: 0, y: 0};
         this.lastMove = 0;
-        this.health = 10; //default max health of the player
+        this.health = 100; //default max health of the player
         this.maxhealth = 100;
 
         //player getting damaged
@@ -148,12 +148,12 @@ class Adventurer { //every entity should have update and draw!
         this.slashBombCombo = false; //combo where player can hit the bomb with their sword towards enemies
         this.lightningDarkBoltCombo = false; //combo where player can hit dark bolt with lightning to cause wider explosion + more damage
 
-        this.critChance = 1; //5%
+        this.critChance = 0.05; //5%
         this.critDamage = 1.5; //150%
         this.coins = 1000;
         this.level = 1;
         this.experience = 0;
-        this.experienceToNextLvl = 100;
+        this.experienceToNextLvl = 10;
         this.upgrade = null;
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
 
@@ -690,7 +690,7 @@ class Adventurer { //every entity should have update and draw!
 
             if ((entity instanceof Chest) && this.BB.collide(entity.BB)) {
                 //open screen.
-                this.game.camera.enableShop = true;
+                this.game.camera.enableChest = true;
                 entity.removeFromWorld = true;
             } 
         });
@@ -715,7 +715,7 @@ class Adventurer { //every entity should have update and draw!
             // this.slashArrowCombo = true;
             // this.slashBombCombo = true;
             // this.lightningDarkBoltCombo = true;
-            // this.game.upgrade.giveAllUpgrade();
+            if (this.game.settings.enableUpgrades) this.game.upgrade.giveAllUpgrade();
         }
         this.invincible = this.game.settings.enableInvincibility
     };
@@ -1173,14 +1173,13 @@ class Adventurer { //every entity should have update and draw!
 
     levelUp() {
         if (this.experience >= this.experienceToNextLvl) {
-            // this.health = this.maxhealth;
-            this.level++;
-            // this.attackDamage += 1;
-            this.maxhealth += 1;
-            this.health += 1;
-            this.game.upgrade.points++;
-            this.experience -= this.experienceToNextLvl;
-            // this.experienceToNextLvl = Math.floor(this.experienceToNextLvl * 1.1);
+            while (this.experience >= this.experienceToNextLvl) {
+                // this.health = this.maxhealth;
+                this.level++;
+                this.game.upgrade.points++;
+                this.experience -= this.experienceToNextLvl;
+                (this.experienceToNextLvl > 100) ? this.experienceToNextLvl = 100 : this.experienceToNextLvl = Math.floor(this.experienceToNextLvl * 1.1);
+            }
             this.levelUpMenu();
         }
     }

@@ -89,62 +89,63 @@ class BossHealthBar {
         }
     }
     draw(ctx) {
-        ctx.beginPath();
-        ctx.roundRect(PARAMS.CANVAS_WIDTH - 10 - this.length * this.scale + (this.offsetX * this.scale) * 2, 
-            10, this.length * this.scale - (this.offsetX * this.scale) * 2, 
-            this.length * this.scale - (this.offsetX * this.scale) * 2, [5]);
-        ctx.fillStyle = rgba(204, 153, 42, 0.5);
-        ctx.fill();
+        if (this.game.settings.enableHUD) {
+            ctx.beginPath();
+            ctx.roundRect(PARAMS.CANVAS_WIDTH - 10 - this.length * this.scale + (this.offsetX * this.scale) * 2, 
+                10, this.length * this.scale - (this.offsetX * this.scale) * 2, 
+                this.length * this.scale - (this.offsetX * this.scale) * 2, [5]);
+            ctx.fillStyle = rgba(204, 153, 42, 0.5);
+            ctx.fill();
 
-        this.animation.drawFrame(this.game.clockTick, ctx, 
-            PARAMS.CANVAS_WIDTH - 10 - this.length * this.scale + this.offsetX * this.scale, 
-            10 - this.offsetY * this.scale, this.scale);
+            this.animation.drawFrame(this.game.clockTick, ctx, 
+                PARAMS.CANVAS_WIDTH - 10 - this.length * this.scale + this.offsetX * this.scale, 
+                10 - this.offsetY * this.scale, this.scale);
 
-        //Outline for boss icon
-        ctx.beginPath();
-        ctx.roundRect(PARAMS.CANVAS_WIDTH - 10 - this.length * this.scale + (this.offsetX * this.scale) * 2, 
-            10, this.length * this.scale - (this.offsetX * this.scale) * 2, 
-            this.length * this.scale - (this.offsetX * this.scale) * 2, [5]);
-        ctx.strokeStyle = 'Black';
-        ctx.lineWidth = 7 * this.proportion;
-        ctx.stroke();
-        ctx.lineWidth = 1;
+            //Outline for boss icon
+            ctx.beginPath();
+            ctx.roundRect(PARAMS.CANVAS_WIDTH - 10 - this.length * this.scale + (this.offsetX * this.scale) * 2, 
+                10, this.length * this.scale - (this.offsetX * this.scale) * 2, 
+                this.length * this.scale - (this.offsetX * this.scale) * 2, [5]);
+            ctx.strokeStyle = 'Black';
+            ctx.lineWidth = 7 * this.proportion;
+            ctx.stroke();
+            ctx.lineWidth = 1;
 
-        //Start of health bar drawing
-        ctx.beginPath();
-        ctx.roundRect(PARAMS.CANVAS_WIDTH - this.healthBarLength - 20 - this.length * this.scale, (7 * 16) / 2 - 20, this.healthBarLength, this.healthBarHeight, [5]); //Values from Hud 7 is hero scale 16 is hero height 20 is offset
-        ctx.fillStyle = rgba(0, 0, 0, 0.5);
-        ctx.fill();
-        
+            //Start of health bar drawing
+            ctx.beginPath();
+            ctx.roundRect(PARAMS.CANVAS_WIDTH - this.healthBarLength - 20 - this.length * this.scale, (7 * 16) / 2 - 20, this.healthBarLength, this.healthBarHeight, [5]); //Values from Hud 7 is hero scale 16 is hero height 20 is offset
+            ctx.fillStyle = rgba(0, 0, 0, 0.5);
+            ctx.fill();
+            
 
-        ctx.beginPath();
-        ctx.roundRect(PARAMS.CANVAS_WIDTH - this.healthBarLength - 20 - this.length * this.scale + (this.healthBarLength - this.healthBarLength * this.healthRatio)
-            , (7 * 16) / 2 - 20, this.healthBarLength * this.healthRatio, this.healthBarHeight, [5]);
-        // ctx.fillStyle = this.healthRatio < 0.2 ? rgb(150, 0, 0) : this.healthRatio < 0.5 ? rgb(190, 180, 0) : rgb(0, 110, 0);
-        ctx.fillStyle = "Red";
-        ctx.fill();
+            ctx.beginPath();
+            ctx.roundRect(PARAMS.CANVAS_WIDTH - this.healthBarLength - 20 - this.length * this.scale + (this.healthBarLength - this.healthBarLength * this.healthRatio)
+                , (7 * 16) / 2 - 20, this.healthBarLength * this.healthRatio, this.healthBarHeight, [5]);
+            // ctx.fillStyle = this.healthRatio < 0.2 ? rgb(150, 0, 0) : this.healthRatio < 0.5 ? rgb(190, 180, 0) : rgb(0, 110, 0);
+            ctx.fillStyle = "Red";
+            ctx.fill();
 
-        ctx.beginPath();
-        ctx.roundRect(PARAMS.CANVAS_WIDTH - this.healthBarLength - 20 - this.length * this.scale, (7 * 16) / 2 - 20, this.healthBarLength, this.healthBarHeight, [5]);
-        ctx.strokeStyle = 'Black';
-        ctx.stroke();
+            ctx.beginPath();
+            ctx.roundRect(PARAMS.CANVAS_WIDTH - this.healthBarLength - 20 - this.length * this.scale, (7 * 16) / 2 - 20, this.healthBarLength, this.healthBarHeight, [5]);
+            ctx.strokeStyle = 'Black';
+            ctx.stroke();
 
-        //Name on health bar
-        let textSize = 20 * this.proportion;
-        let x = PARAMS.CANVAS_WIDTH - this.healthBarLength / 2 - 20 - this.length * this.scale;
-        let y = (7 * 16) / 2 - 20 + this.healthBarHeight / 2;
-        ctx.font = textSize + 'px Lilita One';
+            //Name on health bar
+            let textSize = 20 * this.proportion;
+            let x = PARAMS.CANVAS_WIDTH - this.healthBarLength / 2 - 20 - this.length * this.scale;
+            let y = (7 * 16) / 2 - 20 + this.healthBarHeight / 2;
+            ctx.font = textSize + 'px Lilita One';
 
-        ctx.strokeStyle = 'Black';
-        ctx.fillStyle = 'white';
-        ctx.textAlign = "center"; 
-        ctx.textBaseline = "middle"; 
+            ctx.strokeStyle = 'Black';
+            ctx.fillStyle = 'white';
+            ctx.textAlign = "center"; 
+            ctx.textBaseline = "middle"; 
 
-        ctx.fillText(`${this.entity.name}`, x, y);
-        ctx.strokeText(`${this.entity.name}`, x, y);
-        ctx.textAlign = "left"; 
-        ctx.textBaseline = "alphabetic";
-        
+            ctx.fillText(`${this.entity.name}`, x, y);
+            ctx.strokeText(`${this.entity.name}`, x, y);
+            ctx.textAlign = "left"; 
+            ctx.textBaseline = "alphabetic";
+        }
         if (this.entity.currentHealth != this.lastHP && !this.entity.dead) {
             this.game.addEntity(new DamageNumbers(this.game, this.entity, this.lastHP, this.entity.currentHealth));
             this.lastHP = this.entity.currentHealth;

@@ -33,33 +33,33 @@ class UpgradeSystem {
         this.noUpgrades = false;
         //Upgrade changes
         //General share values
-        this.attackIncreaseAmount = 5;
+        this.attackIncreaseAmount = 1;
         this.attackSpeedIncreaseAmount = 0.1;
         this.knockbackIncrease = 100;
         this.maxAmount = -1;
         this.lowerMaxAmount = 5;
 
-        this.speedIncrease = 10;
+        this.speedIncrease = 5;
         this.hpIncreaseAmount = 10;
         this.rollingCooldownDecrease = 0.25;
         //Sword
-        this.attackScale = 0.5;
+        this.attackScale = 0.25;
         //Bow
         this.arrowSpeedIncrease = 100;
         //Magic
-        this.magicDamageIncrease = 20;
-        this.cooldownReduction = 10;
+        this.magicDamageIncrease = 5;
+        this.cooldownReduction = 5;
         this.magicKnockback = 1000;
-        this.magicSize = 1;
+        this.magicSize = 0.25;
         //Bomb
         this.bombDamageIncrease = 5;
         this.bombCooldown = 0.1;
         this.bombKnockback = 1000;
-        this.explosionScaleIncrease = 10;
+        this.explosionScaleIncrease = 0.25;
         this.bombRetrieveCD = 0.5;
         this.bombMaxAmountIncrease = 1;
 
-        this.uniqueOdds = 0.2;
+        this.uniqueOdds = 0.1;
 
         this.exitButtonSize = {width: 100, height: 40};
 
@@ -82,7 +82,11 @@ class UpgradeSystem {
             {
                 game: this.game,
                 name: "Sword Attack Speed Increase", 
-                upgrade() {this.game.adventurer.attackCooldown -= this.game.upgrade.attackSpeedIncreaseAmount; }, 
+                upgrade() {this.game.adventurer.attackCooldown -= this.game.upgrade.attackSpeedIncreaseAmount;
+                    if (this.game.adventurer.attackCooldownTimer > this.game.adventurer.attackCooldown) {
+                    this.game.adventurer.attackCooldownTimer -= this.game.upgrade.attackSpeedIncreaseAmount
+                    };
+                 }, 
                 description: `Decreases Attack Cooldown by ${this.attackSpeedIncreaseAmount}`,
                 type: "Sword",
                 max: 10,
@@ -327,7 +331,7 @@ class UpgradeSystem {
                 }, 
                 description: `Decrease Magic Cooldown by ${this.cooldownReduction} seconds`,
                 type: "Magic",
-                max: 4,
+                max: 8,
                 current: 0,
                 color: "White",
             },
@@ -587,7 +591,7 @@ class UpgradeSystem {
         this.third = null;
 
         this.selectedUpgrade = null;
-        this.first = true;
+        this.firstTime = true;
 
     }
     getThreeUpgrades() {
@@ -1179,7 +1183,7 @@ class UpgradeSystem {
         ctx.fillText("X", PARAMS.CANVAS_WIDTH - 60, 32.5)
     }
     giveAllUpgrade() {
-        if (this.first) {
+        if (this.firstTime) {
             this.currentUpgrades.push(...this.basicList);
             this.currentUpgrades.push(...this.uniqueList);
             this.currentUpgrades.push(...this.bombList);
@@ -1189,12 +1193,19 @@ class UpgradeSystem {
             this.currentUpgrades.push(...this.bombUniqueList);
             this.currentUpgrades.push(...this.lightningDarkBoltList);
             this.currentUpgrades.forEach(upgrade => {
-            while(upgrade.current < upgrade.max) {
-                upgrade.upgrade();
-                upgrade.current++;
-            }
-            this.first = false;
-        });
+                if (upgrade.max == -1) {
+                    for(let i = 0; i < 20; i++) {
+                        upgrade.upgrade();
+                    upgrade.current++;
+                    }
+                } else {
+                    while(upgrade.current < upgrade.max) {
+                        upgrade.upgrade();
+                        upgrade.current++;
+                    }
+                }
+            });
+            this.firstTime = false;
         }
     }
 }
@@ -1226,6 +1237,15 @@ class PlayerStatus {
         this.upgradeMenu = false;
 
         this.upgradeButton = {length: 200, height: 40};
+
+        this.pageCount = 1;
+
+        this.stats = [];
+        this.values = [];
+        this.upgradePage1Stats = [];
+        this.upgradePage1Values = [];
+        this.upgradePage2Stats = [];
+        this.upgradePage2Values = [];
 
         this.loadAnimation();
 
@@ -1288,6 +1308,7 @@ class PlayerStatus {
         //Upgrade viewer button
         let upgradeButtonX = this.startX + this.width / 2 - this.upgradeButton.length / 2;
         let upgradeButtonY = y - 30 + this.width - 25 * 2 + 20 - 40;
+        //Upgrade Button
         if (this.game.isClicking(upgradeButtonX, upgradeButtonY, this.upgradeButton.length, this.upgradeButton.height)) {
             this.game.click = {x:0, y:0};
             this.toggleUpgradeMenu();
@@ -1295,6 +1316,7 @@ class PlayerStatus {
         if (this.upgrade.checkExitButton(this.game.click.x, this.game.click.y) && this.game.upgradePause) {
             this.game.click = {x:0, y:0};
             this.upgrade.enablePlayerStats = false;
+            this.upgradeMenu = false;
         }
         if (this.upgrade.checkExitButton(this.game.click.x, this.game.click.y) && this.game.deathScreen.showUpgrade) {
             this.game.click = {x:0, y:0};
@@ -1318,6 +1340,11 @@ class PlayerStatus {
         }
         if (this.currentTimer > 0) {
             this.currentTimer -= this.game.pauseTick;
+        }
+        //Page Change Button
+        if (this.game.isClicking(PARAMS.CANVAS_WIDTH / 2 + this.width / 2 - this.upgradeButton.length / 2, upgradeButtonY, this.upgradeButton.length, this.upgradeButton.height)) {
+            this.game.click = {x:0, y:0};
+            this.togglePage();
         }
 
     }
@@ -1474,6 +1501,28 @@ class PlayerStatus {
         ctx.font = '14px "Press Start 2P"';
         ctx.fillStyle = "White";    
         ctx.fillText("View Upgrades", currentX + this.upgradeButton.length / 2, y + this.upgradeButton.height / 2);
+    }
+    drawPageButton(ctx) {
+        let oldY = this.startY + 50 + 10 + this.healthBarSize.height * 2 + 20 + 70;
+        let y = oldY - 30 + this.width - 25 * 2 + 20;
+        ctx.beginPath();
+        let currentX = PARAMS.CANVAS_WIDTH / 2 + this.width / 2 - this.upgradeButton.length / 2;
+        ctx.lineWidth = 2;
+        ctx.roundRect(currentX, y, this.upgradeButton.length, this.upgradeButton.height, [10, 10, 10, 10]);
+        ctx.strokeStyle = "Black";
+        if (this.game.isHovering(currentX + 20, y, this.upgradeButton.length - 20, this.upgradeButton.height)) {
+            ctx.fillStyle = rgb(70, 70, 70);
+        } else {
+            ctx.fillStyle = rgb(100, 100, 100);
+        }
+        ctx.fill();
+        ctx.stroke();
+        ctx.textAlign = "center"; 
+        ctx.textBaseline = "middle";
+        ctx.font = '14px "Press Start 2P"';
+        ctx.fillStyle = "White";    
+        ctx.fillText(`Page ${this.pageCount}`, currentX + this.upgradeButton.length / 2, y + this.upgradeButton.height / 2);
+        ctx.font = '10px "Press Start 2P"';
     }
     drawAttacksBackground(ctx, y) {
         let mouseX = 0;
@@ -1683,8 +1732,8 @@ class PlayerStatus {
         ctx.textAlign = "left"; 
         ctx.textBaseline = "top"; 
         let y = this.startY + 25;
-        let stats = [];
-        let values = [];
+        // let stats = [];
+        // let values = [];
         let sword = ["Sword Upgrade:"];
         let bow = ["Bow Upgrade:"];
         let swordSpecial = ["Sword Magic Upgrade:"];
@@ -1704,36 +1753,45 @@ class PlayerStatus {
         let otherAmount = [""];
         let list = [sword, bow, swordSpecial, bowSpecial, bomb, darkBolt, combo, other];
         let list2 = [swordAmount, bowAmount, swordSpecialAmount, bowSpecialAmount, bombAmount, darkBoltAmount, comboAmount, otherAmount];
+        let upgradeAmount = 0;
         this.upgrade.currentUpgrades.forEach(upgrade => {
             if (upgrade.type == "Sword") {
+                upgradeAmount++;
                 sword.push(upgrade.name);
                 (upgrade.max != 1) ? swordAmount.push("x" + upgrade.current) : swordAmount.push("");
             }
             if (upgrade.type == "Bow") {
+                upgradeAmount++;
                 bow.push(upgrade.name);
                 (upgrade.max != 1) ? bowAmount.push("x" + upgrade.current) : bowAmount.push("");
             }
             if (upgrade.type == "Magic") {  //Sword Magic
+                upgradeAmount++;
                 swordSpecial.push(upgrade.name);
                 (upgrade.max != 1) ? swordSpecialAmount.push("x" + upgrade.current) : swordSpecialAmount.push("");
             }
             if (upgrade.type == "Bomb") { //Bomb
+                upgradeAmount++;
                 bomb.push(upgrade.name);
                 (upgrade.max != 1) ? bombAmount.push("x" + upgrade.current) : bombAmount.push("");
             }
             if (upgrade.type == "Lightning") { //BowMagic
+                upgradeAmount++;
                 bowSpecial.push(upgrade.name);
                 (upgrade.max != 1) ? bowSpecialAmount.push("x" + upgrade.current) : bowSpecialAmount.push("");
             }
             if (upgrade.type == "DarkBolt") { //DarkBolt
+                upgradeAmount++;
                 darkBolt.push(upgrade.name);
                 (upgrade.max != 1) ? darkBoltAmount.push("x" + upgrade.current) : darkBoltAmount.push("");
             }
             if (upgrade.type == "Combo") {
+                upgradeAmount++;
                 combo.push(upgrade.name);
                 (upgrade.max != 1) ? comboAmount.push("x" + upgrade.current) : comboAmount.push("");
             }
             if (upgrade.type == "Other" || upgrade.type == "All") {
+                upgradeAmount++;
                 other.push(upgrade.name);
                 (upgrade.max != 1) ? otherAmount.push("x" + upgrade.current) : otherAmount.push("");
             }
@@ -1747,79 +1805,96 @@ class PlayerStatus {
         } else {
             for (let i of list) {
                 if (i.length > 1) {
-                    stats.push(...i);
-                    stats.push("");
+                    this.stats.push(...i);
+                    this.stats.push("");
                 }
             }
             for (let i of list2) {
                 if (i.length > 1) {
-                    values.push(...i);
-                    values.push("");
+                    this.values.push(...i);
+                    this.values.push("");
                 }
             }
-            // stats.push(...sword);
-            // values.push(...swordAmount)
-            // // if (sword.length == 1) {
-            // //     stats.push("No Upgrades"); 
-            // //     values.push("");
-            // // }
-            // stats.push("");
-            // values.push("");
-            // stats.push(...swordSpecial);
-            // values.push(...swordSpecialAmount);
-            // // if (swordSpecial.length == 1) {
-            // //     stats.push("No Upgrades"); 
-            // //     values.push("");
-            // // }
-            // stats.push("");
-            // values.push("");
-            // stats.push(...bow);
-            // values.push(...bowAmount);
-            // // if (bow.length == 1) {
-            // //     stats.push("No Upgrades"); 
-            // //     values.push("");
-            // // }
-            // stats.push("");
-            // values.push("");
-            // stats.push(...bowSpecial);
-            // values.push(...bowSpecialAmount);
-            // // if (bowSpecial.length == 1) {
-            // //     stats.push("No Upgrades"); 
-            // //     values.push("");
-            // // }
-            // stats.push("");
-            // values.push("");
-            // stats.push(...bomb);
-            // values.push(...bombAmount);
-            // // if (bomb.length == 1) {
-            // //     stats.push("No Upgrades"); 
-            // //     values.push("");
-            // // }
-            // // stats.push("");
-            // values.push("");
-            // stats.push(...darkBolt);
-            // values.push(...darkBoltAmount);
-            // // if (darkBolt.length == 1) {
-            // //     stats.push("No Upgrades"); 
-            // //     values.push("");
-            // // }
         }
+        // console.log(this.stats);
         ctx.font = '10px "Press Start 2P"';
         ctx.fillStyle = "White";
         let currentY = y;
-        for (let line of stats) {
-            ctx.fillText(line, PARAMS.CANVAS_WIDTH / 2 + 25, currentY);
-            currentY += 15;
+        if (this.stats.length > 35) {
+            this.drawPageButton(ctx);
+            for (let i = 0; i < 35; i++) {
+                this.upgradePage1Stats.push(this.stats[i]);
+                this.upgradePage1Values.push(this.values[i]);
+            }
+            let current = 35;
+            while (current < this.stats.length) {
+                this.upgradePage2Stats.push(this.stats[current]);
+                this.upgradePage2Values.push(this.values[current]);
+                current++;
+            }
+            if (this.upgradePage2Stats[0] == "") {
+                this.upgradePage2Stats.shift();
+                this.upgradePage2Values.shift();
+            } 
+
+            if (this.pageCount == 1) {
+                ctx.textAlign = "left"
+                for (let line of this.upgradePage1Stats) {
+                    ctx.fillText(line, PARAMS.CANVAS_WIDTH / 2 + 25, currentY);
+                    currentY += 15;
+                }
+                currentY = y;
+                ctx.textAlign = "right"; 
+                for (let line of this.upgradePage1Values) {
+                    ctx.fillText(line, PARAMS.CANVAS_WIDTH / 2 + this.width - 25, currentY);
+                    currentY += 15;
+                }
+            } else if (this.pageCount == 2) {
+                ctx.textAlign = "left"
+                for (let line of this.upgradePage2Stats) {
+                    ctx.fillText(line, PARAMS.CANVAS_WIDTH / 2 + 25, currentY);
+                    currentY += 15;
+                }
+                currentY = y;
+                ctx.textAlign = "right"; 
+                for (let line of this.upgradePage2Values) {
+                    ctx.fillText(line, PARAMS.CANVAS_WIDTH / 2 + this.width - 25, currentY);
+                    currentY += 15;
+                }
+            }
         }
-        currentY = y;
-        ctx.textAlign = "right"; 
-        for (let line of values) {
-            ctx.fillText(line, PARAMS.CANVAS_WIDTH / 2 + this.width - 25, currentY);
-            currentY += 15;
+        else {
+            for (let line of this.stats) {
+                ctx.fillText(line, PARAMS.CANVAS_WIDTH / 2 + 25, currentY);
+                currentY += 15;
+            }
+            currentY = y;
+            ctx.textAlign = "right"; 
+            for (let line of this.values) {
+                ctx.fillText(line, PARAMS.CANVAS_WIDTH / 2 + this.width - 25, currentY);
+                currentY += 15;
+            }
         }
+        this.resetLists();
+
+    }
+    resetLists() {
+        this.stats = [];
+        this.values = [];
+        this.upgradePage1Stats = [];
+        this.upgradePage2Stats = [];
+        this.upgradePage1Values = [];
+        this.upgradePage2Values = [];
     }
     toggleUpgradeMenu() {
         this.upgradeMenu = !this.upgradeMenu;
+    }
+    togglePage() {
+        if (this.pageCount == 1) {
+            this.pageCount = 2;
+        } else {
+            this.pageCount = 1;
+        }
     }
     drawCoins(ctx) {
         let buffer = (5 * 3.5) / 2;
@@ -1876,5 +1951,6 @@ class PlayerStatus {
             currentY += 20;
         }
     }
+
     
 }

@@ -210,6 +210,7 @@ class Settings {
         this.enableWeapons = false;
         this.enableInvincibility = false;
         this.enableHUD = true;
+        this.enableUpgrades = false;
         this.enableLevelUpPause = true;
         this.button = {length: 150, height: 40};
         this.toggleButton = {length: 40, height: 40};
@@ -263,6 +264,12 @@ class Settings {
                 game: this.game,
                 action() {this.game.settings.toggleLevelUp()},
                 check: this.enableLevelUpPause
+            },
+            {
+                name: "Add all Upgrades",
+                game: this.game,
+                action() {this.game.settings.toggleUpgrades()},
+                check: this.enableUpgrades && PARAMS.CHEATS
             }
             
         ];
@@ -531,7 +538,13 @@ class Settings {
             ctx.textAlign = "left";
             ctx.fillStyle = "White";
             ctx.font = '14px "Press Start 2P"';
-            ctx.fillText(choice.name, centerX + this.toggleButton.length + 10, currentY + this.toggleButton.height / 2);
+            if (choice.name == "Add all Upgrades") {
+                ctx.fillText(choice.name, centerX + this.toggleButton.length + 10, currentY + this.toggleButton.height / 2 - 9);
+                ctx.fillText("(Requires all Weapons)", centerX + this.toggleButton.length + 10, currentY + this.toggleButton.height / 2 + 10);
+
+            } else {
+                ctx.fillText(choice.name, centerX + this.toggleButton.length + 10, currentY + this.toggleButton.height / 2);
+            }
             currentY += this.toggleButton.height + 10;
         });
     }
@@ -551,5 +564,8 @@ class Settings {
     }
     toggleLevelUp() {
         this.enableLevelUpPause = !this.enableLevelUpPause;
+    }
+    toggleUpgrades() {
+        if (PARAMS.CHEATS) this.enableUpgrades = !this.enableUpgrades;
     }
 }
