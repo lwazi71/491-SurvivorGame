@@ -536,7 +536,7 @@ class WaveManager {
             console.log("boss should now spawn");
             const boss2 = new GolemMech(this.game, spawnPos.x, spawnPos.y);
             const temp = boss2.currentHealth;
-            boss2.currentHealth = Math.floor(boss2.currentHealth * this.statsMultiplier.health * 5);
+            boss2.currentHealth = Math.floor(boss2.currentHealth * this.statsMultiplier.health * 4);
             boss2.maxHealth = Math.floor(temp * this.statsMultiplier.health * 5);
             this.game.addEntity(boss2);
             this.bossSpawned = true;
@@ -545,7 +545,7 @@ class WaveManager {
             console.log("boss should now spawn");
             const boss3 = new Boss3(this.game, spawnPos.x, spawnPos.y);
             const temp = boss3.currentHealth;
-            boss3.currentHealth = Math.floor(boss3.currentHealth * this.statsMultiplier.health * 5);
+            boss3.currentHealth = Math.floor(boss3.currentHealth * this.statsMultiplier.health * 4);
             boss3.maxHealth = Math.floor(temp * this.statsMultiplier.health * 5);
             this.game.addEntity(boss3);
             this.bossSpawned = true;
@@ -554,7 +554,7 @@ class WaveManager {
             console.log("boss should now spawn");
             const boss4 = new Boss4(this.game, spawnPos.x, spawnPos.y);
             const temp = boss4.currentHealth;
-            boss4.currentHealth = Math.floor(boss4.currentHealth * this.statsMultiplier.health * 5);
+            boss4.currentHealth = Math.floor(boss4.currentHealth * this.statsMultiplier.health * 4);
             boss4.maxHealth = Math.floor(temp * this.statsMultiplier.health * 5);
             this.game.addEntity(boss4);
             this.bossSpawned = true;
@@ -643,7 +643,7 @@ class WaveManager {
                 {
                     startTime: 120, // 3 minutes
                     interval: 60, count: 1, pool: "minibosses", 
-                    //enemy_type: "goblinmech", 
+                    enemy_type: "goblinmech", 
                     oneTime: false},
                 {
                     startTime: 180, //After 210 seconds, zombie enemies will spawn faster now
