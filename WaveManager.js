@@ -598,7 +598,7 @@ class WaveManager {
                     interval: 14, count: 2, pool: "melee", enemy_type: "blueghoul", oneTime: false},
                 {
                     startTime: 45, //1 minute. The interval makes it go to 1 minute
-                    interval: 15, count: 2, pool: "melee", enemy_type: "zombie", oneTime: false},
+                    interval: 15, count: 1, pool: "melee", enemy_type: "zombie", oneTime: false},
                 {
                     startTime: 60, //1:30 minutes
                     interval: 30, count: 2, pool: "ranged", enemy_type: "imp", oneTime: false},

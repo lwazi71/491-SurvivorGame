@@ -161,8 +161,10 @@ ASSET_MANAGER.queueDownload("./Sprites/Objects/portal.png");
 
 ASSET_MANAGER.queueDownload("./Sprites/Projectiles/arrow.png")
 ASSET_MANAGER.queueDownload("./Sprites/Projectiles/Arrows_pack.png")
-ASSET_MANAGER.queueDownload("./Sprites/Map/testagain.png");
-ASSET_MANAGER.queueDownload("./Sprites/Map/testlevel1map.png");
+ASSET_MANAGER.queueDownload("./Sprites/Map/level1.png");
+ASSET_MANAGER.queueDownload("./Sprites/Map/level2.png");
+ASSET_MANAGER.queueDownload("./Sprites/Map/level3.png");
+ASSET_MANAGER.queueDownload("./Sprites/Map/level4.png");
 
 
 
