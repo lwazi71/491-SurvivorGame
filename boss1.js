@@ -350,7 +350,7 @@ class Boss1 { //goblin king
                 this.invincible = false;
                 this.healAnimationTimer = 0;
                 this.state = 0;
-                this.currentHealth += 50;
+                this.currentHealth += 150;
                 this.invincible = false;
             }
             return;      
@@ -420,7 +420,7 @@ class Boss1 { //goblin king
                 this.initiateJumpAttack();
             }
 
-            if (randomMove == 1 && this.waveCooldownTimer <= 0 && this.waves > 0 && this.currentHealth <= (this.maxHealth * 0.16) && !this.isPlayingDamageAnimation) { //&& this.goblinsAlive == 0
+            if (randomMove == 1 && this.waveCooldownTimer <= 0 && this.waves > 0 && this.currentHealth <= (this.maxHealth * 0.7) && !this.isPlayingDamageAnimation) { //&& this.goblinsAlive == 0
                 this.waves--;
                 this.invincible = true;
                 this.initiateCommandWave();

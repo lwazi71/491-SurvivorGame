@@ -364,8 +364,8 @@ class WaveManager {
 
 
         // Regular enemy spawning logic
-        if (this.game.camera.currMap < 2) {
-            this.statsMultiplier.health = 1 + (this.totalGameTime / 120) * 0.3; //increase enemy health by 30% every 2:00. This is so enemy still has fighting chance against player
+        if (this.game.camera.currMap < 4) {
+            this.statsMultiplier.health = 1 + (this.totalGameTime / 120) * 0.35; //increase enemy health by 30% every 2:00. This is so enemy still has fighting chance against player
             const twoMinuteIntervals = Math.floor(this.totalGameTime / 15); // Get number of completed 2-minute intervals
         }
         // this.statsMultiplier.health = 1 + (this.totalGameTime / 120) * 0.25; //increase enemy health by 30% every 2:00. This is so enemy still has fighting chance against player
@@ -569,6 +569,7 @@ class WaveManager {
             attackPower: this.statsMultiplier.attackPower
         };
         console.log(this.statsMultiplier.health);
+        this.game.adventurer.health = this.game.adventurer.maxhealth;
 
         // Reset timers
         this.gameTime = 0;
@@ -622,27 +623,37 @@ class WaveManager {
                     startTime: 20, //After 30 seconds, zombie enemies will spawn faster now?
                     interval: 10, count: 2, pool: "melee", enemy_type: "ghost"},
                 {
+                    startTime: 20, //After 30 seconds, zombie enemies will spawn faster now?
+                    interval: 70, count: 1, pool: "minibosses", oneTime: false},
+                {
                     startTime: 20, //After 30 seconds, melee enemies will spawn 2 times now
                     interval: 10, count: 2, pool: "melee", enemy_type: "blueghoul", oneTime: false},
                 {
                     startTime: 45, //1 minute. The interval makes it go to 1 minute
                     interval: 15, count: 3, pool: "melee", enemy_type: "crow", oneTime: false},
                 {
+                    startTime: 60, //1:15 minute. 
+                    interval: 15, count: 1, pool: "melee", enemy_type: "crow", oneTime: false},
+                {
                     startTime: 75, //1:30 minutes
-                    interval: 15, count: 3, pool: "ranged", enemy_type: "banditnecromancer", oneTime: false},
+                    interval: 15, count: 2, pool: "ranged", enemy_type: "banditnecromancer", oneTime: false},
                 {
                     startTime: 70, //2 and 30 minutes
                     interval: 50, count: 2, pool: "rangedAOE", enemy_type: "ratmage", oneTime: false},
                 {
                     startTime: 120, // 3 minutes
-                    interval: 60, count: 1, pool: "minibosses", enemy_type: "goblinmech", oneTime: false},
+                    interval: 60, count: 1, pool: "minibosses", 
+                    //enemy_type: "goblinmech", 
+                    oneTime: false},
+                {
+                    startTime: 180, //After 210 seconds, zombie enemies will spawn faster now
+                    interval: 7, count: 10, pool: "melee", enemy_type: "zombie"},
                 {
                     startTime: 210, //3:30 minutes
                     interval: 40, count: 2, pool: "rangedAOE", enemy_type: "ratmage", oneTime: false},
                 {
                     startTime: 230, //4:00 minutes
                     interval: 15, count: 2, pool: "charge", enemy_type: "slime", oneTime: false},
-
             ];
             this.statsMultiplier = currentStatsMultiplier;
         } else if (this.game.camera.currMap == 3) {

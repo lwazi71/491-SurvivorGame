@@ -104,7 +104,7 @@ class Adventurer { //every entity should have update and draw!
         this.bombCooldownRetrieve = 5; //will be the cooldown for when will get another bomb back in their inventory.
         this.bombCooldownRetrieveTimer = 0; //the timer that will time that retrieve cooldown above.
         this.monkeyBomb = false; //monkey bomb upgrade
-        this.detectionRadius = 200;
+        this.detectionRadius = 110;
 
 
         //LIGHTNING PROPERTIES:
@@ -140,7 +140,7 @@ class Adventurer { //every entity should have update and draw!
 
         this.critChance = 0.05; //5%
         this.critDamage = 1.5; //150%
-        this.coins = 350;
+        this.coins = 0;
         this.level = 1;
         this.experience = 0;
         this.experienceToNextLvl = 100;
@@ -333,22 +333,24 @@ class Adventurer { //every entity should have update and draw!
                 this.game.toggleDeathPause();
                 this.game.camera.triggerDeathScreen(); // Notify SceneManager to show death screen
                 this.deathPosition = { x: this.x, y: this.y }; // Store death position
+                this.deadAnim.elapsedTime = 0;
                // this.removeFromWorld = true;
                 return;
             }
         }
 
         if (this.respawning) {
-            // Handle death animation
+            // Handle respawn animation
             this.respawnAnimationTimer -= this.game.clockTick;
     
             if (this.respawnAnimationTimer > 0) {
-                // Keep playing the death animation
+                // Keep playing the respawn animation
                 return;
             } else {
                 this.respawningUlt = true;
                 this.magicAOE();
                 this.respawnAnimationTimer = 8 * 0.12; //reset animation
+                this.respawnAnim.elapsedTime = 0;
                 this.respawning = false;
                 this.state = 0;
                 return;

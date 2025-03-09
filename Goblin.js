@@ -6,7 +6,7 @@ class Goblin {
         this.facing = 0; //0 = right, 1 = left
         this.attackPower = 10;
         this.scale = 2;
-        this.speed = 125;
+        this.speed = 170;
 
         this.health = 26;
         this.maxHealth = 26;

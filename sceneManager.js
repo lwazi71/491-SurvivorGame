@@ -7,7 +7,7 @@ class SceneManager {
         this.game.camera.x = this.x;
         this.game.camera.y = this.y;
 
-        this.currMap = 1;
+        this.currMap = 2;
         
         this.adventurer = new Adventurer(this.game, 0, 0); //placing player character at 0, 0 in world map
 
@@ -28,7 +28,7 @@ class SceneManager {
         this.deathScreen = new DeathScreen(this.game);
         // this.game.addEntity(this.deathScreen);
 
-        // this.loadTestLevel();
+         //this.loadTestLevel();
         this.loadLevel(this.currMap);
     };
 
@@ -50,19 +50,19 @@ class SceneManager {
     //     this.game.addEntity(new HellSpawn(this.game, 400, 400));
     //     this.game.addEntity(new HellSpawn(this.game, 800, 400));
 
-    //     this.game.addEntity(new FreakyGhoul(this.game, 800, 800));
-    //     this.game.addEntity(new FreakyGhoul(this.game, 300, 800));
-    //     this.game.addEntity(new Ghost(this.game, 400, 400));
-    //     this.game.addEntity(new Ghost(this.game, 400, 400));
+        this.game.addEntity(new FreakyGhoul(this.game, 800, 800));
+        this.game.addEntity(new FreakyGhoul(this.game, 300, 800));
+        this.game.addEntity(new Ghost(this.game, 400, 400));
+        this.game.addEntity(new Ghost(this.game, 400, 400));
 
 
     //     this.game.addEntity(new Zombie(this.game, 400, 400));
-    //     this.game.addEntity(new Zombie(this.game, 200, 400));
-    //     this.game.addEntity(new Zombie(this.game, 300, 450));
-    //     this.game.addEntity(new Zombie(this.game, 130, 400));
-    //     this.game.addEntity(new Zombie(this.game, 323, 400));
-    //     this.game.addEntity(new Zombie(this.game, 513, 400));
-    //     this.game.addEntity(new Zombie(this.game, 42, 400));
+        this.game.addEntity(new Zombie(this.game, 200, 400));
+        this.game.addEntity(new Zombie(this.game, 300, 450));
+        this.game.addEntity(new Zombie(this.game, 130, 400));
+        this.game.addEntity(new Zombie(this.game, 323, 400));
+        this.game.addEntity(new Zombie(this.game, 513, 400));
+        this.game.addEntity(new Zombie(this.game, 42, 400));
     //      this.game.addEntity(new BanditNecromancer(this.game, 42, 400));
     //     this.game.addEntity(new Necromancer(this.game, 42, 400));
     //     this.game.addEntity(new Imp(this.game, 42, 400));
@@ -157,9 +157,11 @@ class SceneManager {
             if(that.adventurer === entity) adventurer = true;
         });
         
-        if(!adventurer) this.game.addEntity(this.adventurer);
+        if(!adventurer) {
+            this.game.addEntity(this.adventurer);
+        }
         this.waveManager.resetForNewMap();
-       // this.game.addEntity(new Boss1(this.game, 200, 400));
+        // this.game.addEntity(new Boss1(this.game, 200, 400));
     }
 
     triggerDeathScreen() {
