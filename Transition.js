@@ -33,7 +33,7 @@ class TransitionScreen {
             this.timer = 0;
         }
         if (this.elapsed > this.loadingTimer) {
-            this.game.camera.loadTestLevel(false);
+            this.game.camera.loadLevel(this.level, false);
             this.removeFromWorld = true;
             this.elapsed = 0;
         }
