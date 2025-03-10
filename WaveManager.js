@@ -2,7 +2,7 @@ class WaveManager {
     constructor(game) {
         this.game = game;
         this.gameTime = 0; // Total time elapsed in seconds
-        this.spawnBuffer = 425;
+        this.spawnBuffer = 500;
         this.bossSpawned = false;
         this.bossActive = false;
         this.maxEnemies =  700; //set to 700 so game doesnt start to lag or become too difficult
