@@ -151,7 +151,7 @@ class Projectile {
                 //Player arrow hitting enemies (for melee and range enemies)
                 if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul || entity instanceof FreakyGhoul 
                     || entity instanceof BanditNecromancer || entity instanceof Necromancer || entity instanceof RatMage || entity instanceof FoxMage || entity instanceof Imp 
-                    || entity instanceof Crow || entity instanceof Wizard || entity instanceof Goblin) 
+                    || entity instanceof Crow || entity instanceof Wizard || entity instanceof Goblin || entity instanceof Summon) 
                     && !entity.dead && !entity.invincible &&
                     this.BB.collide(entity.BB) && !this.hitEntities.has(entity)) {
                      
@@ -221,7 +221,7 @@ class Projectile {
                 }
 
                 //Mini-bosses / bosses
-                if ((entity instanceof Minotaur || entity instanceof GoblinMech || entity instanceof Cyclops || entity instanceof Boss1 || entity instanceof GolemMech) && !entity.invincible) { 
+                if ((entity instanceof Minotaur || entity instanceof GoblinMech || entity instanceof Cyclops || entity instanceof Boss1 || entity instanceof GolemMech || entity instanceof Boss3 || entity instanceof Boss4) && !entity.invincible) { 
                     if (this.BB.collide(entity.BB) && !this.hitEntities.has(entity)) {
                         this.hitEntities.add(entity);
 

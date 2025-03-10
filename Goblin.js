@@ -6,7 +6,7 @@ class Goblin {
         this.facing = 0; //0 = right, 1 = left
         this.attackPower = 10;
         this.scale = 2;
-        this.speed = 217;
+        this.speed = 170;
 
         this.health = 26;
         this.maxHealth = 26;
@@ -74,13 +74,13 @@ class Goblin {
 
         //LOOKNG RIGHT
         //idle, looking to the right
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/Idle.png"), 0, 0, 150, 150, 4, 0.2, false, true);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/Idle.png"), 0, 0, 150, 150, 3.9, 0.2, false, true);
 
         //Walking, looking right
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/Run.png"), 0, 0, 150, 150, 8, 0.09, false, true);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/Run.png"), 0, 0, 150, 150, 7.9, 0.09, false, true);
 
         //Attack, to the right
-        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/Attack.png"), 750, 0, 150, 150, 3, 0.08, false, true);
+        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/Attack.png"), 750, 0, 150, 150, 2.9, 0.08, false, true);
 
         //Damaged, to the right
         this.animations[3][0] =  new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/Hurt.png"), 150, 0, 150, 150, 1, 0.2, false, true); 
@@ -89,13 +89,13 @@ class Goblin {
 
         //LOOKING LEFT
         //idle, looking to the left
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/Idle-flipped.png"), 10, 0, 150, 150, 4, 0.2, true, true);
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/Idle-flipped.png"), 10, 0, 150, 150, 3.9, 0.2, true, true);
 
         //Walking, looking left
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/Run-flipped.png"), 10, 0, 150, 150, 8, 0.09, true, true);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/Run-flipped.png"), 10, 0, 150, 150, 7.9, 0.09, true, true);
 
         //Attack, to the left
-        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/Attack-flipped.png"), 10, 0, 150, 150, 3, 0.08, true, true);
+        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/Attack-flipped.png"), 10, 0, 150, 150, 2.9, 0.08, true, true);
 
         //Damaged, to the left
         this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Goblin/Hurt-flipped.png"), 300, 0, 150, 150, 1, 0.2, true, true);
@@ -296,8 +296,11 @@ class Goblin {
 
 
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
-
         this.health -= damage;
+
+        if (this.dead) {
+            return;
+        }
         
         // Apply knockback
         const dx = (this.x + (this.bitSizeX * this.scale)/2) - sourceX;

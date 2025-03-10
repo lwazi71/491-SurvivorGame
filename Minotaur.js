@@ -34,9 +34,11 @@ class Minotaur {
         this.pushbackVector = { x: 0, y: 0 };
         this.pushbackDecay = 0.9; // Determines how quickly the pushback force decays
 
-        this.health = 70;
-        this.maxHealth = 70;
+
+        this.health = 150;
+        this.maxHealth = 150;
         this.didCrit = false;
+      
         this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 5, -80));
         this.dead = false;
 
@@ -59,16 +61,17 @@ class Minotaur {
 
         //RIGHT
         //idle 
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 0, 96, 96, 5, 0.2, false, true);
+
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 0, 96, 96, 4.9, 0.2, false, true);
 
         //walking
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 96, 96, 96, 8, 0.08, false, true);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 96, 96, 96, 7.9, 0.08, false, true);
 
         //Attack 1
-        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 288, 96, 96, 9, 0.08, false, true);
+        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 288, 96, 96, 8.9, 0.08, false, true);
 
         //Attack 3
-        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 576, 96, 96, 9, 0.08, false, true);
+        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 576, 96, 96, 8.9, 0.08, false, true);
 
         //Damaged
         this.animations[4][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 96, 768, 96, 96, 2, 0.15, false, true);
@@ -76,16 +79,16 @@ class Minotaur {
 
         //LEFT
         //idle
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 960, 96, 96, 5, 0.2, false, true);
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 960, 96, 96, 4.9, 0.2, false, true);
 
         //walking
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 1056, 96, 96, 8, 0.08, false, true);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 1056, 96, 96, 7.9, 0.08, false, true);
 
         //Attack 1
-        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 1248, 96, 96, 9, 0.08, false, true);
+        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 1248, 96, 96, 8.9, 0.08, false, true);
 
         //Attack 2
-        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 1536, 96, 96, 9, 0.08, false, true);
+        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 1536, 96, 96, 8.9, 0.08, false, true);
 
         //Damaged
         this.animations[4][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 96, 1728, 96, 96, 2, 0.15, false, true);
@@ -268,13 +271,16 @@ class Minotaur {
                 const minotaurCenterY = this.BB.y + this.BB.height/2 - 10;
     
                 // Pass the minotaur's center position as the source of the knockback
-                player.takeDamageKnockback(this.damage * 1.5, this.knockback * 2, minotaurCenterX, minotaurCenterY);
+                player.takeDamageKnockback(Math.round(this.damage * 1.5), this.knockback * 2, minotaurCenterX, minotaurCenterY);
             }
         }
     }
 
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
         this.health -= damage;
+        if (this.dead) {
+            return;
+        }
         
         // Apply knockback
         const dx = (this.x + (this.bitSizeX * this.scale)/2) - sourceX;

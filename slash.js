@@ -110,7 +110,7 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
                 //melee/range mobs
                 if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul || entity instanceof FreakyGhoul 
                     || entity instanceof BanditNecromancer || entity instanceof Necromancer || entity instanceof RatMage || entity instanceof FoxMage || entity instanceof Imp 
-                    || entity instanceof Crow || entity instanceof Wizard || entity instanceof Goblin) 
+                    || entity instanceof Crow || entity instanceof Wizard || entity instanceof Goblin || entity instanceof Summon) 
                     && !entity.dead && !entity.invincible) {
                     // Only apply damage if we haven't hit this zombie yet
                     if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
@@ -199,7 +199,7 @@ class AttackSlash { //this class will be for the sword slash entity. This will d
                 }
                 
                 //bosses/mini bosses
-                if ((entity instanceof Minotaur || entity instanceof GoblinMech || entity instanceof Cyclops || entity instanceof Boss1 || entity instanceof GolemMech) && this.friendly && !entity.invincible) {
+                if ((entity instanceof Minotaur || entity instanceof GoblinMech || entity instanceof Cyclops || entity instanceof Boss1 || entity instanceof GolemMech || entity instanceof Boss3 || entity instanceof Boss4) && this.friendly && !entity.invincible) {
                     //if we hit the bomb and another entity, the bomb wont have any knockback
                     if (this.BC.collidesWithBox(entity.BB) && !this.hitEntities.has(entity)) {
                         // Add the entity to our hit set

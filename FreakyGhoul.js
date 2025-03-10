@@ -77,7 +77,7 @@ class FreakyGhoul {
         this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul.png"), 0, 0, 32, 32, 4, 0.2, false, true);
 
         //Walking, looking right
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul.png"), 0, 32, 32, 32, 8, 0.09, false, true);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul.png"), 0, 32, 32, 32, 7.9, 0.09, false, true);
 
         //Attack, to the right
         this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul.png"), 0, 64, 32, 32, 5, 0.08, false, true);
@@ -93,7 +93,7 @@ class FreakyGhoul {
         this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul-Flipped.png"), 125, 0, 32, 32, 3.9, 0.2, true, true);
 
         //Walking, looking left
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul-Flipped.png"), 5, 32, 32, 32,8, 0.09, true, true);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul-Flipped.png"), 5, 32, 32, 32, 7.9, 0.09, true, true);
 
         //Attack, to the left
         this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/FreakyGhoul/FreakyGhoul-Flipped.png"), 64, 64, 32, 32, 5, 0.08, true, true);
@@ -315,6 +315,9 @@ class FreakyGhoul {
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
 
         this.health -= damage;
+        if (this.dead) {
+            return;
+        }
         
         // Apply knockback
         const dx = (this.x + (this.bitSizeX * this.scale)/2) - sourceX;

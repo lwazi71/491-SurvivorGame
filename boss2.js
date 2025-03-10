@@ -95,25 +95,25 @@ class GolemMech {
 
         //RIGHT
         //walking
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 0, 0, 100, 100, 4, 0.1, false, true);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 0, 0, 100, 100, 3.9, 0.1, false, true);
 
         //projectile
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 0, 200, 100, 100, 9, 0.1, false, true);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 0, 200, 100, 100, 8.9, 0.1, false, true);
 
         //immunity transformation
-        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 0, 300, 100, 100, 7, 0.1, false, true);
+        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 0, 300, 100, 100, 6.9, 0.1, false, true);
 
         //immunity last frame. Should be when it starts healing
-        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 700, 300, 100, 100, 1, 0.2, false, true);
+        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 700, 300, 100, 100, 0.95, 0.2, false, true);
 
         //attack
-        this.animations[4][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 0, 400, 100, 100, 7, 0.1, false, true);
+        this.animations[4][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 0, 400, 100, 100, 6.9, 0.1, false, true);
 
         //damaged
-        this.animations[5][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 200, 700, 100, 100, 1, 0.1, false, true);
+        this.animations[5][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 200, 700, 100, 100, 0.9, 0.1, false, true);
 
         //immunity detransformation
-        this.animations[6][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 10, 300, 100, 100, 7, 0.1, true, true);
+        this.animations[6][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 10, 300, 100, 100, 6.9, 0.1, true, true);
 
 
         
@@ -122,25 +122,25 @@ class GolemMech {
 
         //LEFT
         //walking
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 600, 0, 100, 100, 4, 0.1, true, true);
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 611, 0, 100, 100, 3.9, 0.1, true, true);
 
         //projectile
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 100, 200, 100, 100, 9, 0.1, true, true);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 111, 200, 100, 100, 8.9, 0.1, true, true);
 
         //immunity transformation
-        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 300, 300, 100, 100, 7, 0.1, true, true);
+        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 311, 300, 100, 100, 6.9, 0.1, true, true);
 
         //immunity last frame. Should be when it starts healing
-        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 200, 300, 100, 100, 1, 0.2, true, true);
+        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 206, 300, 100, 100, 0.95, 0.2, true, true);
 
         //attack
-        this.animations[4][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 300, 400, 100, 100, 7, 0.1, true, true);
+        this.animations[4][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 311, 400, 100, 100, 6.9, 0.1, true, true);
 
         //damaged
-        this.animations[5][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 700, 700, 100, 100, 1, 0.1, true, true);
+        this.animations[5][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 711, 700, 100, 100, 0.9, 0.1, true, true);
         
         //immunity detransformation
-        this.animations[6][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 300, 300, 100, 100, 7, 0.1, false, true);
+        this.animations[6][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 301, 300, 100, 100, 6.9, 0.1, false, true);
 
         this.deathAnimation1 = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 200, 700, 100, 100, 6, 0.1, false, false);
 
@@ -164,8 +164,11 @@ class GolemMech {
     }
 
     update() {
-       // Get player's center position
-
+        //in case the healing goes above max health
+        if (this.currentHealth >= this.maxHealth) { 
+            this.currentHealth = this.maxHealth;
+        }
+        //Get player's center position
         const player = this.game.adventurer;
         if (!player || player.dead) return;
 
@@ -383,7 +386,7 @@ class GolemMech {
            // this.state = 0; // Return to running state when throw is done
         }
 
-        if (this.currentHealth <= 250 && !this.immunity && distance > 650) { //if the player goes too far, the robot will stop following believing it's safe to heal
+        if (this.currentHealth <= (this.maxHealth/2) && !this.immunity && distance > 650) { //if the player goes too far, the robot will stop following believing it's safe to heal
             this.immunityHealing();
         }
 
@@ -441,7 +444,7 @@ class GolemMech {
 
 
 
-        if (this.currentHealth <= 100) {
+        if (this.currentHealth <= (this.maxHealth * 0.4)) {
             const baseAngle = Math.atan2(dy, dx);
             const spreadAngle = 0.26;
             const angles = [
@@ -474,6 +477,9 @@ class GolemMech {
         if (this.immunity) {
             return;
         }
+        if (this.dead) {
+            return;
+        }
         this.currentHealth -= damage;
         
         
@@ -497,6 +503,13 @@ class GolemMech {
             this.game.addEntity(new BossExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
             this.game.addEntity(new Chest(this.game, (this.x + (this.bitSizeX * this.scale)/2) - 125, (this.y + (this.bitSizeY * this.scale)/2)));
 
+            setTimeout(() => {
+                // Check if the game still exists before adding the entity
+                if (this.game && this.game.addEntity) {
+                    this.game.addEntity(new PortalDoor(this.game, (this.BB.x + this.BB.width/2), (this.BB.y + this.BB.height/2)));
+                }
+            }, 5000);
+            
             this.dead = true;
             this.state = 5;
         } else {

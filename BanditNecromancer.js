@@ -252,6 +252,9 @@ class BanditNecromancer {
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
 
         this.health -= damage;
+        if (this.dead) {
+            return;
+        }
         
         // Apply knockback
         const dx = (this.x + (this.bitSizeX * this.scale)/2) - sourceX;

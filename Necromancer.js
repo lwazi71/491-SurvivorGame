@@ -12,7 +12,7 @@ class Necromancer {
         this.speed = 150;
     
         this.range = 400; //Shooting range (range until our necromancer starts shooting at player)
-        this.shootCooldown = 5; //Shoot every 3 seconds
+        this.shootCooldown = 5; //Shoot every 5 seconds
         this.shootTimer = 0; //should be 0
         this.castSpeed = 400;
         this.castDuration = 13 * 0.1; //How long the cast animation plays
@@ -67,16 +67,16 @@ class Necromancer {
         }
         //RIGHT
         //idle
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/Necromancer.png"), 0, 0, 160, 128, 8, 0.2, false, true);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/Necromancer.png"), 0, 0, 160, 128, 7.9, 0.2, false, true);
 
         //walking
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/Necromancer.png"), 0, 128, 160, 128, 8, 0.1, false, true);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/Necromancer.png"), 0, 128, 160, 128, 7.9, 0.1, false, true);
 
         //casting
-        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/Necromancer.png"), 0, 256, 160, 128, 13, 0.1, false, true);
+        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/Necromancer.png"), 0, 256, 160, 128, 12.9, 0.1, false, true);
 
         //damaged
-        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/Necromancer.png"), 160, 640, 160, 128, 4, 0.2, false, true);
+        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Necromancer/Necromancer.png"), 160, 640, 160, 128, 3.9, 0.2, false, true);
 
         //LEFT
         //idle
@@ -264,6 +264,9 @@ class Necromancer {
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
 
         this.health -= damage;
+        if (this.dead) {
+            return;
+        }
         
         // Apply knockback
         //find the center of our character for the knockback.
