@@ -22,7 +22,7 @@ class SceneManager {
         this.enableLevelShop = false;
         this.shopTransition = null;
 
-        this.enableTitle = true; //Whether title screen shows up or not
+        this.enableTitle = false; //Whether title screen shows up or not
 
         this.shakeIntensity = 0;
         this.shakeDecay = 0.9; 
@@ -34,8 +34,8 @@ class SceneManager {
         this.game.addEntity(this.deathScreen);
         this.levelMusicPath = "./Audio/Music/Survivorio Clone Battle Song (1).wav";
 
-        //this.loadTestLevel();
-        if (!this.enableTitle) this.loadLevel(this.currMap, false);
+        this.loadTestLevel(this.false);
+        // if (!this.enableTitle) this.loadLevel(this.currMap, false);
 
 
         // this.game.addEntity(new GameMap(this.game));
@@ -70,27 +70,27 @@ class SceneManager {
         this.Hud = new Hud(this.game, this.adventurer);
         this.upgrade = new UpgradeSystem(this.game);
         this.deathScreen = new DeathScreen(this.game);
-        this.startWave = true;        
+        // this.startWave = true;        
         // this.game.addEntity(new Adventurer(this.game, 0, 0));
 
+        // this.game.addEntity(new BlueGhoul(this.game, 400, 400));
     //     this.game.addEntity(new BlueGhoul(this.game, 400, 400));
-    //     this.game.addEntity(new BlueGhoul(this.game, 400, 400));
-    //     this.game.addEntity(new HellSpawn(this.game, 400, 400));
+        // this.game.addEntity(new HellSpawn(this.game, 400, 400));
     //     this.game.addEntity(new HellSpawn(this.game, 800, 400));
 
-        this.game.addEntity(new FreakyGhoul(this.game, 800, 800));
-        this.game.addEntity(new FreakyGhoul(this.game, 300, 800));
-        this.game.addEntity(new Ghost(this.game, 400, 400));
-        this.game.addEntity(new Ghost(this.game, 400, 400));
+        // this.game.addEntity(new FreakyGhoul(this.game, 800, 800));
+        // this.game.addEntity(new FreakyGhoul(this.game, 300, 800));
+        // this.game.addEntity(new Ghost(this.game, 400, 400));
+        // this.game.addEntity(new Ghost(this.game, 400, 400));
 
 
     //     this.game.addEntity(new Zombie(this.game, 400, 400));
-        this.game.addEntity(new Zombie(this.game, 200, 400));
-        this.game.addEntity(new Zombie(this.game, 300, 450));
-        this.game.addEntity(new Zombie(this.game, 130, 400));
-        this.game.addEntity(new Zombie(this.game, 323, 400));
-        this.game.addEntity(new Zombie(this.game, 513, 400));
-        this.game.addEntity(new Zombie(this.game, 42, 400));
+        // this.game.addEntity(new Zombie(this.game, 200, 400));
+        // this.game.addEntity(new Zombie(this.game, 300, 450));
+        // this.game.addEntity(new Zombie(this.game, 130, 400));
+        // this.game.addEntity(new Zombie(this.game, 323, 400));
+        // this.game.addEntity(new Zombie(this.game, 513, 400));
+        // this.game.addEntity(new Zombie(this.game, 42, 400));
     //      this.game.addEntity(new BanditNecromancer(this.game, 42, 400));
     //     this.game.addEntity(new Necromancer(this.game, 42, 400));
     //     this.game.addEntity(new Imp(this.game, 42, 400));
@@ -109,7 +109,7 @@ class SceneManager {
         // this.game.addEntity(new Boss1(this.game, 200, 400));
         // this.game.addEntity(new GolemMech(this.game, 200, 200));
         // this.game.addEntity(new Boss3(this.game, 200, 200));
-        // this.game.addEntity(new Boss4(this.game, 200, 200));
+        this.game.addEntity(new Boss4(this.game, 200, 200));
         // this.game.addEntity(new Summon(this.game, 200, 200));
 
        //this.game.addEntity(new PortalDoor(this.game, 100, 100));

@@ -179,6 +179,17 @@ ASSET_MANAGER.queueDownload("./Sprites/Map/level4.png");
 ASSET_MANAGER.queueDownload("./Audio/Music/Survivorio Clone Battle Song (1).wav");
 
 //Sfx
+
+//boss4
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss4 attack.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss4 idle.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss4 death.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss4 summon.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss4 ranged attack.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss4 charging.wav");
+
+
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Enemy damage.mp3");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Back.mp3");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Hover.mp3");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Pause.mp3");
