@@ -10,7 +10,7 @@ class WaveManager {
         this.bossTime = 300; //300 seconds seconds or 5 minutes until boss comes (initialization for map 1, can change it later on).
         this.mapCompleted = false; //will be for if we beat the boss
         this.totalGameTime = 0;
-        this.multiplier = 0.07;
+        this.multiplier = 0.17;
         
         // Enemy pools that unlock at different times
         this.enemyPools = {
@@ -661,6 +661,7 @@ class WaveManager {
                     interval: 15, count: 2, pool: "charge", enemy_type: "slime", oneTime: false},
             ];
             this.statsMultiplier = currentStatsMultiplier;
+            this.multiplier = 0.22;
         } else if (this.game.camera.currMap == 3) {
             //set spawn pattern for map 3 here
             this.spawnPatterns = [
@@ -694,6 +695,7 @@ class WaveManager {
                     interval: 15, count: 1, pool: "charge", enemy_type: "slime", oneTime: false},
                 ];
                 this.statsMultiplier = currentStatsMultiplier;
+                this.multiplier = 0.3;
         } else if (this.game.camera.currMap == 4) {
             //set spawn pattern for map 4 here
 

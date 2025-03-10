@@ -21,7 +21,7 @@ class Boss1 { //goblin king
         this.aoeTargetY = (this.game.adventurer.y + (this.game.adventurer.bitSize * this.game.adventurer.scale)/2);
 
         this.speed = 180;
-        this.damage = 30;
+        this.damage = 18;
         this.knockback = 3500;
 
         //Properties:
@@ -63,7 +63,7 @@ class Boss1 { //goblin king
         this.midAirTimer = 0;
         this.midAirDuration = 2.0; // How long to stay in mid-air
         this.fallingThreshold = 230; // Distance to ground when we switch to landing animation
-        this.landingDamage = 60;
+        this.landingDamage = 27;
 
         this.circleSpawned = false;
         this.invincible = false;
@@ -92,7 +92,7 @@ class Boss1 { //goblin king
         this.moneyLifeTime = 0.7;
         this.range = 500;
         this.moneyBagScale = 5;
-        this.moneyDamage = 23;
+        this.moneyDamage = 20;
         this.moneyKnockback = 1600;
 
         //Healing Properties: 

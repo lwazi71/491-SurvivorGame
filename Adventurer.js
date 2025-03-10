@@ -915,7 +915,7 @@ class Adventurer { //every entity should have update and draw!
                 baseAngle + spreadAngle
             ];
             angles.forEach(angle => {
-                this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, this.bowDamage, this.arrowSpeed, 
+                this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, Math.round(this.bowDamage / 2), this.arrowSpeed, 
                     "./Sprites/Projectiles/Arrows_pack.png", this.bowKnockback, true, 2, this.piercing,
                     2, 0, -6, 32, 32, 1, 0.2, false, true, - 15, -15, this.bitSize * 2 - 35, this.bitSize * 2 - 35, this.bitSize, this.bitSize, this)); 
             });
