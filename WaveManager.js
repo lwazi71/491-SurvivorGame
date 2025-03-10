@@ -7,10 +7,10 @@ class WaveManager {
         this.bossActive = false;
         this.maxEnemies =  700; //set to 700 so game doesnt start to lag or become too difficult
          // Boss fight timing
-        this.bossTime = 10; //300 seconds seconds or 5 minutes until boss comes (initialization for map 1, can change it later on).
+        this.bossTime = 300; //300 seconds seconds or 5 minutes until boss comes (initialization for map 1, can change it later on).
         this.mapCompleted = false; //will be for if we beat the boss
         this.totalGameTime = 0;
-        this.multiplier = 0.35;
+        this.multiplier = 0.07;
         
         // Enemy pools that unlock at different times
         this.enemyPools = {
@@ -365,7 +365,7 @@ class WaveManager {
 
         // Regular enemy spawning logic
        if (this.game.camera.currMap < 4) {
-            this.statsMultiplier.health = 1 + (this.totalGameTime / 120) * this.multiplier; //increase enemy health by 35% every 2:00. This is so enemy still has fighting chance against player
+            this.statsMultiplier.health = 1 + (this.totalGameTime / 120) * this.multiplier; //increase enemy health by 7% every 2:00. This is so enemy still has fighting chance against player
             const twoMinuteIntervals = Math.floor(this.totalGameTime / 15); // Get number of completed 2-minute intervals
        }
         // this.statsMultiplier.health = 1 + (this.totalGameTime / 120) * 0.25; //increase enemy health by 30% every 2:00. This is so enemy still has fighting chance against player

@@ -6,7 +6,7 @@ class Boss1 { //goblin king
         this.maxHealth = 300;
         this.currentHealth = 300;
         this.didCrit = false;
-        this.name = "tbd, The Goblin King";
+        this.name = "Gorvok, The Goblin King";
 
         this.profileAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/HudIcons/Boss1Hud.png"), 0, 0, 32, 32, 13, 0.2, false, true);
         this.healthbar = this.game.addEntity(new BossHealthBar(game, this, this.profileAnimation, 32, 0, 0, 3));

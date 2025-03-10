@@ -90,7 +90,7 @@ class Boss3 {
         this.maxChargeDuration = 3; // Maximum charge duration in seconds
         this.currentChargeDuration = 0; // Tracks how long hellspawn has been charging
 
-        this.name = "Hellspawn Lord";
+        this.name = "Azgorth, The Flameborn";
         this.profileAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/FlyingDemon/IDLE.png"), 0, 0, 48, 48, 3.94, 0.1, false, true);
         this.healthbar = this.game.addEntity(new BossHealthBar(game, this, this.profileAnimation, 48, 0, 0, 2));
         this.pointer = this.game.addEntity(new Pointer(game, this));
