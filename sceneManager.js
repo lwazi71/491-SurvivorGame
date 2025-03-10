@@ -21,7 +21,7 @@ class SceneManager {
         this.enableChest = false;
         this.enableLevelShop = false;
 
-        this.enableTitle = false; //Whether title screen shows up or not
+        this.enableTitle = true; //Whether title screen shows up or not
 
         this.shakeIntensity = 0;
         this.shakeDecay = 0.9; 
@@ -34,15 +34,14 @@ class SceneManager {
         this.levelMusicPath = "./Audio/Music/Survivorio Clone Battle Song (1).wav";
 
         //this.loadTestLevel();
-        //if (!this.enableTitle) this.loadTestLevel(false);
+        if (!this.enableTitle) this.loadLevel(this.currMap, false);
 
 
         // this.game.addEntity(new GameMap(this.game));
 
         // this.game.addEntity(this.deathScreen);
 
-         //this.loadTestLevel();
-        this.loadLevel(this.currMap);
+        // this.loadLevel(this.currMap, true);
     };
 
     clearEntities() {
@@ -60,7 +59,7 @@ class SceneManager {
         if (this.transition) {
             this.game.addEntity(new TransitionScreen(this.game, 1));
         } else {
-            this.game.addEntity(new GameMap(this.game));
+            this.game.addEntity(new GameMap(this.game, 1));
             //Fade in effect
             this.game.addEntity(new FadeIn(this.game));
             this.levelMusicPath = "./Audio/Music/Survivorio Clone Battle Song (1).wav";
@@ -147,49 +146,60 @@ class SceneManager {
         }
     }
 
-    loadLevel(num) {
+    loadLevel(num, transition) {
         this.currMap = num;
         this.clearEntities();
         const player = this.adventurer;
+        this.transition = transition;
+        if (this.transition) {
+            this.game.addEntity(new TransitionScreen(this.game, this.currMap));
+        } else {
+            this.game.addEntity(new FadeIn(this.game));
+            this.startWave = true;  
+            if (this.currMap == 1) {
+                //Honestly this could go in death screen too as it's a reset
+                this.Hud = new Hud(this.game, this.adventurer);
+                this.upgrade = new UpgradeSystem(this.game);
+                this.deathScreen = new DeathScreen(this.game);
 
-        if (this.currMap == 1) {
-            this.game.addEntity(new Sign(this.game, 20, 20, 
-                "KeyBoard Controls:      - Move using WASD              - Attack using left click " +                
-                "                    - Right click on item 1 to use close Range AOE                   - Switch weapons using 1 and 2 (Sword is 1 and Bow is 2)" + 
-                "                - To roll press shift (Will give invincibility frames          - Press e to place bomb down" +
-                "                    - Right click on bow item to use long-ranged AOE"));
-    
-            this.game.addEntity(new Sign(this.game, 220, 20, 
-                "KeyBoard Controls (cont):                  - Press f for Dark-bolt ability (will slow down enemies if hit and be in random places around character"));
-    
-            this.game.addEntity(new Sign(this.game, 420, 20, 
-                "Cool Combos:                  - Slashing your arrow in mid air will double the arrow speed and damage                          " +
-                    "- Putting a bomb down, you can slash it towards enemies                      " + 
-                    "- Striking lightning down on dark-bolt will create an explosion that'll do ALOT of damage"));
+                this.game.addEntity(new Sign(this.game, 20, 20, 
+                    "KeyBoard Controls:      - Move using WASD              - Attack using left click " +                
+                    "                    - Right click on item 1 to use close Range AOE                   - Switch weapons using 1 and 2 (Sword is 1 and Bow is 2)" + 
+                    "                - To roll press shift (Will give invincibility frames          - Press e to place bomb down" +
+                    "                    - Right click on bow item to use long-ranged AOE"));
+        
+                this.game.addEntity(new Sign(this.game, 220, 20, 
+                    "KeyBoard Controls (cont):                  - Press f for Dark-bolt ability (will slow down enemies if hit and be in random places around character"));
+        
+                this.game.addEntity(new Sign(this.game, 420, 20, 
+                    "Cool Combos:                  - Slashing your arrow in mid air will double the arrow speed and damage                          " +
+                        "- Putting a bomb down, you can slash it towards enemies                      " + 
+                        "- Striking lightning down on dark-bolt will create an explosion that'll do ALOT of damage"));
+                
+            }
+
+            //if currMap < 4? else { win screen }
+            this.game.addEntity(new GameMap(this.game, this.currMap));
             
+            // Reset player position
+            player.x = 0;
+            player.y = 0;
+            //player.velocity = { x: 0, y: 0 };
+            player.removeFromWorld = false;  // Ensure the removeFromWorld flag is reset
+            player.state = 0;
+            
+            // Add player to the game
+            var that = this;
+            var adventurer = false;
+            this.game.entities.forEach(function(entity) {
+                if(that.adventurer === entity) adventurer = true;
+            });
+            
+            if(!adventurer) {
+                this.game.addEntity(this.adventurer);
+            }
+            this.waveManager.resetForNewMap();
         }
-
-        //if currMap < 4? else { win screen }
-        this.game.addEntity(new GameMap(this.game, this.currMap));
-        
-        // Reset player position
-        player.x = 0;
-        player.y = 0;
-        //player.velocity = { x: 0, y: 0 };
-        player.removeFromWorld = false;  // Ensure the removeFromWorld flag is reset
-        player.state = 0;
-        
-        // Add player to the game
-        var that = this;
-        var adventurer = false;
-        this.game.entities.forEach(function(entity) {
-            if(that.adventurer === entity) adventurer = true;
-        });
-        
-        if(!adventurer) {
-            this.game.addEntity(this.adventurer);
-        }
-        this.waveManager.resetForNewMap();
         // this.game.addEntity(new Boss1(this.game, 200, 400));
     }
 
@@ -223,6 +233,7 @@ class SceneManager {
     }
 
     update() {
+        console.log(this.game.adventurer.speed);
         // this.adjustMusicVolume();
         // PARAMS.DEBUG = document.getElementById("debug").checked;
         //Midpoint of the canvas
@@ -307,13 +318,13 @@ class Title {
         this.titleEffectTimer = 0;
         this.slashAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Slash/red-slash.png"), 128, 0, 128, 128, 3, 0.15, false, false);
         this.button = {length: 200, height: 60};
-        this.background = new GameMap(this.game); //Will add to title when we get other maps
+        this.background = new GameMap(this.game, 1); //Will add to title when we get other maps
         this.options = [
             {
                 name: "Start",
                 game: this.game,
                 action() {this.game.camera.enableTitle = false;
-                        this.game.camera.loadTestLevel(true);}
+                        this.game.camera.loadLevel(1, true);}
             },
             {
                 name: "Settings",

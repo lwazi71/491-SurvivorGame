@@ -33,7 +33,7 @@ class TransitionScreen {
             this.timer = 0;
         }
         if (this.elapsed > this.loadingTimer) {
-            this.game.camera.loadTestLevel(false);
+            this.game.camera.loadLevel(this.level, false);
             this.removeFromWorld = true;
             this.elapsed = 0;
         }
@@ -52,7 +52,7 @@ class TransitionScreen {
         this.heroAnimation[0].drawFrame(this.game.clockTick, ctx, PARAMS.CANVAS_WIDTH / 2 - 16 * runningScale, PARAMS.CANVAS_HEIGHT / 2 - 16 * runningScale, runningScale);
 
         //Fake loading bar
-
+        ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.fillStyle = "White";
         ctx.roundRect(PARAMS.CANVAS_WIDTH / 2 - 200, PARAMS.CANVAS_HEIGHT - 100, 400 * this.ratio, 50, [10]);

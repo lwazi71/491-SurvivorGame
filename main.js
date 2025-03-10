@@ -194,7 +194,7 @@ ASSET_MANAGER.downloadAll(() => {
 	const canvas = document.getElementById("gameWorld");
 	const ctx = canvas.getContext("2d");
 	ctx.imageSmoothingEnabled = false;
-	// canvas.style.cursor = "crosshair";
+	canvas.style.cursor = "crosshair";
 	ASSET_MANAGER.autoRepeat("./Audio/Music/Survivorio Clone Battle Song (1).wav");
 
 	PARAMS.CHEATS = false;
