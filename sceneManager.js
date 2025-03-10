@@ -152,14 +152,15 @@ class SceneManager {
         const player = this.adventurer;
         this.transition = transition;
         if (this.transition) {
-            this.game.addEntity(new TransitionScreen(this.game, 1));
+            this.game.addEntity(new TransitionScreen(this.game, this.currMap));
         } else {
             this.game.addEntity(new FadeIn(this.game));
-            this.Hud = new Hud(this.game, this.adventurer);
-            this.upgrade = new UpgradeSystem(this.game);
-            this.deathScreen = new DeathScreen(this.game);
             this.startWave = true;  
             if (this.currMap == 1) {
+                //Honestly this could go in death screen too as it's a reset
+                this.Hud = new Hud(this.game, this.adventurer);
+                this.upgrade = new UpgradeSystem(this.game);
+                this.deathScreen = new DeathScreen(this.game);
 
                 this.game.addEntity(new Sign(this.game, 20, 20, 
                     "KeyBoard Controls:      - Move using WASD              - Attack using left click " +                
@@ -190,13 +191,13 @@ class SceneManager {
             // Add player to the game
             var that = this;
             var adventurer = false;
-            // this.game.entities.forEach(function(entity) {
-            //     if(that.adventurer === entity) adventurer = true;
-            // });
+            this.game.entities.forEach(function(entity) {
+                if(that.adventurer === entity) adventurer = true;
+            });
             
-            // if(!adventurer) {
+            if(!adventurer) {
                 this.game.addEntity(this.adventurer);
-            // }
+            }
             this.waveManager.resetForNewMap();
         }
         // this.game.addEntity(new Boss1(this.game, 200, 400));
@@ -232,6 +233,7 @@ class SceneManager {
     }
 
     update() {
+        console.log(this.game.adventurer.speed);
         // this.adjustMusicVolume();
         // PARAMS.DEBUG = document.getElementById("debug").checked;
         //Midpoint of the canvas
