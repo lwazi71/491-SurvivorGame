@@ -45,7 +45,7 @@ class HellSpawn {
         
         this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");  //Just a shadow we'll put under the player 
 
-        this.maxChargeDuration = 10; // Maximum charge duration in seconds
+        this.maxChargeDuration = 4; // Maximum charge duration in seconds
         this.currentChargeDuration = 0; // Tracks how long hellspawn has been charging
 
         this.isSlowed = false;
@@ -82,10 +82,10 @@ class HellSpawn {
 
         //LOOKNG RIGHT
         //idle/walking, looking to the right
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn.png"), 0, 0, 64, 64, 6, 0.2, false, true);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn.png"), 0, 0, 64, 64, 5.9, 0.2, false, true);
 
         //Charge, to the right
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn.png"), 0, 64, 64, 64, 6, 0.05, false, true);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn.png"), 0, 64, 64, 64, 5.3, 0.05, false, true);
 
         //Damaged, to the right
         this.animations[2][0] =  new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn.png"), 64, 128, 64, 64, 3, 0.2, false, true); //wanna start at where the zombie turns white or else there'll be a delay
@@ -94,10 +94,10 @@ class HellSpawn {
 
         //LOOKING LEFT
         //Walking/Idle, looking left
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn-Flipped.png"), 128, 0, 64, 64, 6, 0.09, true, true);
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn-Flipped.png"), 128, 0, 64, 64, 5.9, 0.09, true, true);
 
         //Charge, to the left
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn-Flipped.png"), 135, 64, 64, 64, 6, 0.05, true, true);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn-Flipped.png"), 135, 64, 64, 64, 5.8, 0.05, true, true);
 
         //Damaged, to the left
         this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn-Flipped.png"), 256, 128, 64, 64, 3, 0.2, true, true);
@@ -298,6 +298,9 @@ class HellSpawn {
 
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
         this.health -= damage;
+        if (this.dead) {
+            return;
+        }
         console.log(this.health);
 
         //damage to it when its preparing to charge will stop it from preparing to charge.

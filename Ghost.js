@@ -6,7 +6,7 @@ class Ghost {
         this.facing = 0; //0 = right, 1 = left
         this.attackPower = 5;
         this.scale = 2.6;
-        this.speed = 280;
+        this.speed = 235;
 
         this.health = 20;
         this.maxHealth = 20;
@@ -74,20 +74,20 @@ class Ghost {
 
         //LOOKNG RIGHT
         //Walking, looking right
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost.png"), 0, 0, 32, 32, 4, 0.1, false, true);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost.png"), 0, 0, 32, 32, 3.9, 0.1, false, true);
 
         //Attack, to the right
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost.png"), 0, 32, 32, 32, 4, 0.2, false, true);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost.png"), 0, 32, 32, 32, 3.9, 0.2, false, true);
 
         //Damaged, to the right
         //wanna start at where the ghost turns white or else there'll be a delay
-        this.animations[2][0] =  new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost.png"), 0, 64, 32, 32, 4, 0.2, false, true); 
+        this.animations[2][0] =  new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost.png"), 0, 64, 32, 32, 3.9, 0.2, false, true); 
 
         
 
         //LOOKING LEFT
         //idle, looking to the left
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost-Flipped.png"), 98, 0, 32, 32, 4, 0.2, true, true);
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost-Flipped.png"), 98, 0, 32, 32, 3.9, 0.2, true, true);
 
         //Attack, to the left
         this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghost/Ghost-Flipped.png"), 98, 32, 32, 32, 4, 0.2, true, true);
@@ -284,6 +284,9 @@ class Ghost {
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
 
         this.health -= damage;
+        if (this.dead) {
+            return;
+        }
         
         // Apply knockback
         const dx = (this.x + (this.bitSizeX * this.scale)/2 - 5) - sourceX;

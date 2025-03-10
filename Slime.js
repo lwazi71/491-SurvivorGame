@@ -53,7 +53,7 @@ class Slime {
         this.slowTimer = 0;
         this.baseSpeed = this.speed;
 
-        this.maxChargeDuration = 10; // Maximum charge duration in seconds
+        this.maxChargeDuration = 4; // Maximum charge duration in seconds
         this.currentChargeDuration = 0; 
 
         this.miniBoss = false;
@@ -85,7 +85,7 @@ class Slime {
         this.animations[0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Slime/slime.png"), 0, 0, 26, 17, 2, 0.5, false, true);
 
         //Charge, to the right
-        this.animations[1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Slime/slime.png"), 0, 0, 26, 17, 2, 0.07, false, true);
+        this.animations[1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Slime/slime.png"), 0, 0, 26, 17, 1.9, 0.07, false, true);
 
         //Damaged, to the right
         this.animations[2] =  new Animator(ASSET_MANAGER.getAsset("./Sprites/Slime/slime.png"), 0, 17, 26, 17, 1, 0.2, false, true); 
@@ -283,7 +283,9 @@ class Slime {
 
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
         this.health -= damage;
-        console.log(this.health);
+        if (this.dead) {
+            return;
+        }
 
         //damage to it when its preparing to charge will stop it from preparing to charge.
         if (this.isPreparingCharge) {

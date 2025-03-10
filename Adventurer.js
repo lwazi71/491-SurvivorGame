@@ -82,10 +82,10 @@ class Adventurer { //every entity should have update and draw!
         this.magicking = false;
         this.magicDuration = 6 * 0.1; //for animation
         this.canMagic = true;
-        this.magicCooldown = 45; //long cool down
+        this.magicCooldown = 20; //long cool down
         this.magicCooldownTimer = 0;
         this.magicKnockback = 2000;
-        this.magicDamage = 100;
+        this.magicDamage = 45;
         this.magicScale = 6;
         this.enableMagic = false; //changed to true for now for debugging
 
@@ -105,7 +105,7 @@ class Adventurer { //every entity should have update and draw!
         this.bombCooldownRetrieve = 5; //will be the cooldown for when will get another bomb back in their inventory.
         this.bombCooldownRetrieveTimer = 0; //the timer that will time that retrieve cooldown above.
         this.monkeyBomb = false; //monkey bomb upgrade
-        this.detectionRadius = 200;
+        this.detectionRadius = 110;
 
 
         //LIGHTNING PROPERTIES:
@@ -212,28 +212,28 @@ class Adventurer { //every entity should have update and draw!
         //idle left 
         this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 256, 32, 32, 13, 0.2, false, true); 
         //idle up
-        this.animations[0][2] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/WalkingUp.png"), 96, 0, 32, 32, 1, 0.12, false, true);
+        this.animations[0][2] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/WalkingUp.png"), 96, 0, 32, 32, 0.9, 0.12, false, true);
 
         //idle down
-        this.animations[0][3] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/WalkingDown.png"), 93, 0, 32, 32, 1, 0.12, false, true);
+        this.animations[0][3] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/WalkingDown.png"), 93, 0, 32, 32, 0.9, 0.12, false, true);
 
         //walking right 
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 32, 32, 32, 8, 0.08, false, true);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 32, 32, 32, 7.9, 0.08, false, true);
 
         //walking left 
         this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 288, 32, 32, 8, 0.08, false, true); 
 
         //walking up 
-        this.animations[1][2] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/WalkingUp.png"), 0, -1.5, 32, 32, 8, 0.08, false, true);
+        this.animations[1][2] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/WalkingUp.png"), 0, -1.5, 32, 32, 7.9, 0.08, false, true);
 
         //walking down
-        this.animations[1][3] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/WalkingDown.png"), -3, -2, 32, 32, 8, 0.08, false, true);
+        this.animations[1][3] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/WalkingDown.png"), -3, -2, 32, 32, 7.9, 0.08, false, true);
 
         //jump right/up
-        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 160, 32, 32, 6, 0.08, false, true);
+        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 160, 32, 32, 5.9, 0.08, false, true);
 
         //jump left/maybe down
-        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 416, 32, 32, 6, 0.08, false, true);
+        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite.png"), 0, 416, 32, 32, 5.9, 0.08, false, true);
 
         //attack1 right/down
         this.animations[4][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 0, 64, 32, 32, 10, 0.056, false, true);
@@ -263,10 +263,10 @@ class Adventurer { //every entity should have update and draw!
         this.animations[7][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2Flipped.png"), 256, 384, 32, 32, 5, 0.075, true, true); //maybe take a look at this
 
         //climbing up ladder
-        this.animations[8][2] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 0, 256, 32, 32, 4, 0.15, false, true);
+        this.animations[8][2] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 0, 256, 32, 32, 3.9, 0.15, false, true);
         
         //climbing down ladder
-        this.animations[8][3] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 0, 256, 32, 32, 4, 0.15, true, true);
+        this.animations[8][3] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 0, 256, 32, 32, 3.9, 0.15, true, true);
 
         //bow right
         this.animations[9][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Adventurer/AdventurerSprite2.png"), 160, 288, 32, 32, 3, 0.1, false, true);
@@ -345,22 +345,24 @@ class Adventurer { //every entity should have update and draw!
                 this.game.toggleDeathPause();
                 this.game.camera.triggerDeathScreen(); // Notify SceneManager to show death screen
                 this.deathPosition = { x: this.x, y: this.y }; // Store death position
+                this.deadAnim.elapsedTime = 0;
                // this.removeFromWorld = true;
                 return;
             }
         }
 
         if (this.respawning) {
-            // Handle death animation
+            // Handle respawn animation
             this.respawnAnimationTimer -= this.game.clockTick;
     
             if (this.respawnAnimationTimer > 0) {
-                // Keep playing the death animation
+                // Keep playing the respawn animation
                 return;
             } else {
                 this.respawningUlt = true;
                 this.magicAOE();
                 this.respawnAnimationTimer = 8 * 0.12; //reset animation
+                this.respawnAnim.elapsedTime = 0;
                 this.respawning = false;
                 this.state = 0;
                 return;
@@ -965,11 +967,11 @@ class Adventurer { //every entity should have update and draw!
             //If we want respawning ult to crit
             this.game.addEntity(new CircleAOE(this.game, characterCenterX, characterCenterY , "./Sprites/Magic/magic.png", 
                 null, this.respawningScale, this.respawningDamage, this.respawningKnockback, this, true, 
-                0, 64, 64, 64, 7, 0.08, false, true));
+                0, 64, 64, 64, 7, 0.08, false, false));
         } else {
             this.game.addEntity(new CircleAOE(this.game, characterCenterX, characterCenterY , "./Sprites/Magic/magic.png", 
                 null, this.magicScale, this.magicDamage, this.magicKnockback, this, true, 
-                0, 320, 64, 64, 9, 0.08, false, true));
+                0, 320, 64, 64, 9, 0.08, false, false));
         }
 
         this.respawningUlt = false;

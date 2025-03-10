@@ -77,29 +77,29 @@ class RatMage {
         }
         //RIGHT
         //idle
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage.png"), 0, 0, 32, 32, 8, 0.2, false, true);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage.png"), 0, 0, 32, 32, 7.9, 0.2, false, true);
 
         //walking
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage.png"), 0, 32, 32, 32, 8, 0.1, false, true);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage.png"), 0, 32, 32, 32, 7.9, 0.1, false, true);
 
         //casting
-        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage.png"), 0, 96, 32, 32, 6, 0.1, false, true);
+        this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage.png"), 0, 96, 32, 32, 5.9, 0.1, false, true);
 
         //damaged
-        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage.png"), 32, 128, 32, 32, 3, 0.2, false, true);
+        this.animations[3][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage.png"), 32, 128, 32, 32, 2.9, 0.2, false, true);
 
         //LEFT
         //idle
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage-Flipped.png"), 4, 0, 32, 32, 8, 0.2, true, true);
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage-Flipped.png"), 4, 0, 32, 32, 7.9, 0.2, true, true);
 
         //running
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage-Flipped.png"), 4, 32, 32, 32, 8, 0.1, true, true);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage-Flipped.png"), 4, 32, 32, 32, 7.9, 0.1, true, true);
 
         //casting 
-        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage-Flipped.png"), 68, 96, 32, 32, 6, 0.1, true, true);
+        this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage-Flipped.png"), 68, 96, 32, 32, 5.9, 0.1, true, true);
 
         //damaged
-        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage-Flipped.png"), 132, 128, 32, 32, 3, 0.2, true, true);
+        this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/RatMage-Flipped.png"), 132, 128, 32, 32, 2.9, 0.2, true, true);
     
         this.warning = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/warning.png"), 0, 0, 1024, 1024, 7.9, 0.1, false, true); //used for mini bosses
 
@@ -210,7 +210,7 @@ class RatMage {
             if (this.aoeAttackDelay <= 0) {
                 this.game.addEntity(new CircleAOE(this.game, this.aoeTargetX, this.aoeTargetY , "./Sprites/Magic/magic.png", 
                     null, 5, this.damage, 0, null, false, 
-                    0, 256, 64, 64, 9, 0.07, false, true))
+                    0, 256, 64, 64, 9, 0.07, false, false))
                 this.isPreparingAOE = false;
                 this.isAboutToAOE = false;
             }
@@ -265,6 +265,9 @@ class RatMage {
 
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
         this.health -= damage;
+        if (this.dead) {
+            return;
+        }
         
         // Apply knockback
         const dx = (this.x + (this.bitSizeX * this.scale)/2) - sourceX;

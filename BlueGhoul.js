@@ -76,10 +76,10 @@ class BlueGhoul {
 
         //LOOKNG RIGHT
         //idle, looking to the rights
-        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghoul/Blue_Ghoul.png"), -6, 22, 64, 64, 8, 0.2, false, true);
+        this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghoul/Blue_Ghoul.png"), -6, 22, 64, 64, 7.9, 0.2, false, true);
 
         //Walking, looking right
-        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghoul/Blue_Ghoul.png"), -6, 86, 64, 64, 8, 0.09, false, true);
+        this.animations[1][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghoul/Blue_Ghoul.png"), -6, 86, 64, 64, 7.9, 0.09, false, true);
 
         //Attack, to the right
         this.animations[2][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghoul/Blue_Ghoul.png"), -1, 150, 64, 64, 5, 0.08, false, true);
@@ -92,10 +92,10 @@ class BlueGhoul {
 
         //LOOKING LEFT
         //idle, looking to the left
-        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghoul/Blue_Ghoul-Flipped.png"), 0, 22, 64, 64, 8, 0.2, true, true);
+        this.animations[0][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghoul/Blue_Ghoul-Flipped.png"), 0, 22, 64, 64, 7.9, 0.2, true, true);
 
         //Walking, looking left
-        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghoul/Blue_Ghoul-Flipped.png"), 0, 86, 64, 64, 8, 0.09, true, true);
+        this.animations[1][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghoul/Blue_Ghoul-Flipped.png"), 0, 86, 64, 64, 7.9, 0.09, true, true);
 
         //Attack, to the left
         this.animations[2][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Ghoul/Blue_Ghoul-Flipped.png"), 186, 150, 64, 64, 5, 0.08, true, true);
@@ -317,6 +317,9 @@ class BlueGhoul {
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
 
         this.health -= damage;
+        if (this.dead) {
+            return;
+        }
         
         // Apply knockback
         const dx = (this.x + (this.bitSizeX * this.scale)/2) - sourceX;

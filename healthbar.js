@@ -24,7 +24,7 @@ class HealthBar {
     draw(ctx) {
         var ratio = this.entity.health / this.entity.maxHealth;
         if (ratio < 0) ratio = 0;
-        let hpLength = this.entity.health / 5;
+        let hpLength = 0; //this.entity.health / 5;
         if (ratio < 0) ratio = 0;
         // console.log(this.entity.bit)
         let x = this.entity.x - this.game.camera.x + (this.entity.bitSizeX * this.entity.scale) / 2 + this.offsetX;

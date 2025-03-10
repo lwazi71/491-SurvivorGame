@@ -30,7 +30,7 @@ class Bomb {
 
     loadAnimations() {
         //ticking animation
-        this.animations[0] = new Animator(this.spritesheet, 0, 32, 32, 32, 4, 0.1, false, true);
+        this.animations[0] = new Animator(this.spritesheet, 0, 32, 32, 32, 3.9, 0.1, false, true);
     }
 
 
