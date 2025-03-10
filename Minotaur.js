@@ -34,8 +34,11 @@ class Minotaur {
         this.pushbackVector = { x: 0, y: 0 };
         this.pushbackDecay = 0.9; // Determines how quickly the pushback force decays
 
+
         this.health = 150;
         this.maxHealth = 150;
+        this.didCrit = false;
+      
         this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 5, -80));
         this.dead = false;
 
@@ -58,6 +61,7 @@ class Minotaur {
 
         //RIGHT
         //idle 
+
         this.animations[0][0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Minotaur/Minotaur.png"), 0, 0, 96, 96, 4.9, 0.2, false, true);
 
         //walking

@@ -10,6 +10,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Honk&family=Berkshire+Swash&family=Bungee&family=Pirata+One&display=swap" rel="stylesheet">
+
     <style>
         .menu
         {
@@ -27,6 +31,10 @@
             font-family: "Press Start 2P";
             font-size: 12px;
         }
+        /* body {
+            cursor: url("./Sprites/HudIcons/cursor.png") 32 32, auto;
+        } */
+
     </style>
 
     <script type="text/javascript" src="./assetmanager.js"></script>
@@ -90,7 +98,10 @@
     <script type="text/javascript" src="./rock.js"></script>
     <script type="text/javascript" src="./Experience.js"></script>
     <script type="text/javascript" src="./HUD.js"></script>
-    <script type="text/javascript" src="./Shop.js"></script>
+    <script type="text/javascript" src="./ChestItems.js"></script>
+    <script type="text/javascript" src="./LevelShop.js"></script>
+    <script type="text/javascript" src="./Pause.js"></script>
+    <script type="text/javascript" src="./Transition.js"></script> 
     <script type="text/javascript" src ="./GameMap.js"></script>
     <script type="text/javascript" src="./sceneManager.js"></script> <!-- Scene manager last because it'll need all the objects above -->
     <script type="text/javascript" src="./main.js"></script>
@@ -100,16 +111,6 @@
 <body>
     <div style = "text-align:center;">
     <canvas id="gameWorld" width="1024" height="768" style="background: grey; border: 1px solid black" tabindex="0" autofocus></canvas>
-    </div>
-    <div class = "menu">
-        <input type="checkbox" id="debug"> Debug 
-        <button type="button" id="btn" onclick="Click()">Cheats</button>
-        <script>
-            function Click() {
-            var btnX = document.getElementById("btn");
-            btnX.disabled = true;
-            }
-        </script>
     </div>
 </body>
 </html>

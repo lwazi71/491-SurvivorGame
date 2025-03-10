@@ -22,6 +22,7 @@ class FoxMage {
         
         this.health = 20; //Fox health 
         this.maxHealth = 20;
+        this.didCrit = false;
         this.healthbar = this.game.addEntity(new HealthBar(this.game, this, -1, 10));
         this.dead = false;
         this.deathAnimationTimer = 6 * 0.2; 
@@ -93,6 +94,7 @@ class FoxMage {
         this.animations[3][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/FoxMage-Flipped.png"), 128, 96, 32, 32, 3, 0.2, true, true);
 
         this.warning = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/warning.png"), 0, 0, 1024, 1024, 7.9, 0.1, false, true); //used for mini bosses
+
         //death animation
         this.death = new Animator(ASSET_MANAGER.getAsset("./Sprites/Mages/FoxMage.png"), 32, 128, 32, 32, 6, 0.2, false, false);
     }

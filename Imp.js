@@ -22,6 +22,7 @@ class Imp {
         
         this.health = 12; //Imp Health
         this.maxHealth = 12;
+        this.didCrit = false;
         this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 0, 10));
         this.dead = false;
         this.deathAnimationTimer = 6 * 0.1; 
@@ -258,7 +259,7 @@ class Imp {
         //create the projectile
         this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, this.damage, this.castSpeed, 
             "./Sprites/Magic/FireProjectile.png", 0, false, 3, false, 2,
-            0, 0, 16, 16, 30, 0.1, false, false, -16, -23, 32, 32, 16, 16, this));
+            0, 0, 16, 16, 30, 0.1, false, true, -16, -23, 32, 32, 16, 16, this));
 
     }
 

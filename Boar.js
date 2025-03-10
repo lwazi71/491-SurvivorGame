@@ -12,6 +12,7 @@ class Boar {
 
         this.health = 20;
         this.maxHealth = 20;
+        this.didCrit = false;
         this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 8, -10));
         this.attackPower = 20;
         this.attackCooldown = 1.0; // Cooldown in seconds between attacks
@@ -112,7 +113,7 @@ class Boar {
         this.warning = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/warning.png"), 0, 0, 1024, 1024, 7.9, 0.1, false, true); //used for mini bosses
 
         //death animation
-        this.deadAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boar/boar-flipped.png"), 64, 101, 32, 32, 4.9, 0.15, true, false);
+        this.deadAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boar/boar-flipped.png"), 64, 101, 32, 32, 5, 0.15, true, false);
     }
 
 
