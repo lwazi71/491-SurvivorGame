@@ -307,7 +307,7 @@ class Title {
         this.titleEffectTimer = 0;
         this.slashAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Slash/red-slash.png"), 128, 0, 128, 128, 3, 0.15, false, false);
         this.button = {length: 200, height: 60};
-        this.background = new GameMap(this.game); //Will add to title when we get other maps
+        this.background = new GameMap(this.game, 1); //Will add to title when we get other maps
         this.options = [
             {
                 name: "Start",
