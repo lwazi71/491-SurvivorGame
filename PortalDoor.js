@@ -75,8 +75,6 @@ class PortalDoor {
             if (player && this.BB.collide(player.BB)) {
                 //this.game.currMap++;
                 console.log("touching portal");
-                this.game.camera.enableLevelShop = true;
-                this.game.toggleShopPause();
                 this.game.camera.loadLevel(this.game.camera.currMap += 1, true);
             } 
         }

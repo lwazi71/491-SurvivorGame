@@ -20,6 +20,7 @@ class SceneManager {
         this.title = new Title(this.game);
         this.enableChest = false;
         this.enableLevelShop = false;
+        this.shopTransition = null;
 
         this.enableTitle = true; //Whether title screen shows up or not
 
@@ -177,7 +178,10 @@ class SceneManager {
                         "- Striking lightning down on dark-bolt will create an explosion that'll do ALOT of damage"));
                 
             }
-
+            if (this.currMap != 1) {
+                this.game.camera.enableLevelShop = true;
+                this.game.toggleShopPause();
+            }
             //if currMap < 4? else { win screen }
             this.game.addEntity(new GameMap(this.game, this.currMap));
             
@@ -233,7 +237,6 @@ class SceneManager {
     }
 
     update() {
-        console.log(this.game.adventurer.speed);
         // this.adjustMusicVolume();
         // PARAMS.DEBUG = document.getElementById("debug").checked;
         //Midpoint of the canvas
@@ -263,7 +266,7 @@ class SceneManager {
        
     }
     adjustMusicVolume() {
-        ASSET_MANAGER.adjustAllVolume(this.game.settings.currVolume);
+        // ASSET_MANAGER.adjustAllVolume(this.game.settings.currVolume);
         ASSET_MANAGER.adjustMusicVolume(this.game.settings.currMusicVolume * this.game.settings.currVolume);
         ASSET_MANAGER.adjustSFXVolume(this.game.settings.currSFXVolume * this.game.settings.currVolume);
     }

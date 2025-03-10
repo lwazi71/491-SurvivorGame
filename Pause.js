@@ -29,50 +29,48 @@ class Pause {
         this.centerX = PARAMS.CANVAS_WIDTH / 2 - this.button.length / 2;
     }
     update() {
-        let mouseX = 0;
-        let mouseY = 0;
-        if (this.game.click != null) {
-            mouseX = this.game.click.x;
-            mouseY = this.game.click.y;
-        }
-        this.firstY = PARAMS.CANVAS_HEIGHT / 2 - 50;
-        this.options.forEach(choice => {
-            if (this.game.isClicking(this.centerX, this.firstY, this.button.length, this.button.height) && 
-            this.game.pause && this.game.leftClick && !this.confirmation && !this.showSettings) 
+        let mouseX = this.game.click.x;
+        let mouseY = this.game.click.y;
+        if (!this.showSettings) {
+            this.firstY = PARAMS.CANVAS_HEIGHT / 2 - 50;
+            this.options.forEach(choice => {
+                if (this.game.isClicking(this.centerX, this.firstY, this.button.length, this.button.height) && 
+                this.game.pause && this.game.leftClick && !this.confirmation && !this.showSettings) 
+                {
+                    choice.action();
+                    this.game.click = {x:0, y:0};
+                    this.leftClick = false;
+                    mouseY = 0;
+                }
+                this.firstY += this.button.height + 10;
+            });
+            //Quit Prompt Yes
+            if (this.game.isClicking(this.centerX, PARAMS.CANVAS_HEIGHT / 2, this.button.length, this.button.height) &&
+            this.confirmation) 
             {
-                choice.action();
+                // window.location.reload();
+                //return to title
                 this.game.click = {x:0, y:0};
+                ASSET_MANAGER.pauseMusic();
                 this.leftClick = false;
-                mouseY = 0;
+                this.game.pause = false;
+                this.confirmation = false;
+                this.game.camera.enableTitle = true;
+                this.game.entities = [];
+                this.game.camera.startWave = false;
+                this.game.chestItems.closingShop();
+                this.game.camera.adventurer = new Adventurer(this.game, 0, 0);
             }
-            this.firstY += this.button.height + 10;
-        });
+            //Quit Prompt No
+            if (this.game.isClicking(this.centerX, PARAMS.CANVAS_HEIGHT / 2 + this.button.height + 10, this.button.length, this.button.height) &&
+            this.confirmation) 
+            {
+                this.confirmation = false;
+            }
+        }
         if (this.game.upgrade.checkExitButton(mouseX, mouseY, true) && this.showSettings) {
             this.showSettings = false;
             this.game.click = {x:0, y:0};
-        }
-        //Quit Prompt Yes
-        if (this.game.isClicking(this.centerX, PARAMS.CANVAS_HEIGHT / 2, this.button.length, this.button.height) &&
-        this.confirmation) 
-        {
-            // window.location.reload();
-            //return to title
-            this.game.click = {x:0, y:0};
-            ASSET_MANAGER.pauseMusic();
-            this.leftClick = false;
-            this.game.pause = false;
-            this.confirmation = false;
-            this.game.camera.enableTitle = true;
-            this.game.entities = [];
-            this.game.camera.startWave = false;
-            this.game.chestItems.closingShop();
-            this.game.camera.adventurer = new Adventurer(this.game, 0, 0);
-        }
-        //Quit Prompt No
-        if (this.game.isClicking(this.centerX, PARAMS.CANVAS_HEIGHT / 2 + this.button.height + 10, this.button.length, this.button.height) &&
-        this.confirmation) 
-        {
-            this.confirmation = false;
         }
 
     }
@@ -221,6 +219,7 @@ class Settings {
         this.enableLevelUpPause = true;
         this.button = {length: 150, height: 40};
         this.toggleButton = {length: 40, height: 40};
+        this.first = true;
         this.options = [
             {
                 name: "Volume",
@@ -272,14 +271,18 @@ class Settings {
                 action() {this.game.settings.toggleLevelUp()},
                 check: this.enableLevelUpPause
             },
-            {
-                name: "Add all Upgrades",
-                game: this.game,
-                action() {this.game.settings.toggleUpgrades()},
-                check: this.enableUpgrades && PARAMS.CHEATS
-            }
             
         ];
+        if (this.enableWeapons) {
+            this.cheats.push(
+                {
+                    name: "Add all Upgrades",
+                    game: this.game,
+                    action() {this.game.settings.toggleUpgrades()},
+                    check: this.enableUpgrades && PARAMS.CHEATS
+                }
+            );
+        }
     }
     update() {
         this.updateMenuButtons();
@@ -299,25 +302,32 @@ class Settings {
         if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 70, this.startY + 40, 40, 30) && this.currentMenu == "Volume") {
             this.currVolume -= 0.1;
             if (this.currVolume < 0.01) this.currVolume = 0;
-            ASSET_MANAGER.adjustAllVolume(this.currVolume);
+            ASSET_MANAGER.adjustMusicVolume(this.currMusicVolume * this.currVolume);
+            ASSET_MANAGER.adjustSFXVolume(this.currSFXVolume * this.currVolume);
+            // ASSET_MANAGER.adjustAllVolume(this.currVolume);
             this.game.leftClick = false;
         }
         //Vol Up
         if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 + this.volumeSlider.width / 2 + 20, this.startY + 40, 40, 30) && this.currentMenu == "Volume") {
             this.currVolume += 0.1;
             if (this.currVolume > 0.99) this.currVolume = 1;
-            ASSET_MANAGER.adjustAllVolume(this.currVolume);
+            ASSET_MANAGER.adjustMusicVolume(this.currMusicVolume * this.currVolume);
+            ASSET_MANAGER.adjustSFXVolume(this.currSFXVolume * this.currVolume);
+            // ASSET_MANAGER.adjustAllVolume(this.currVolume);
             this.game.leftClick = false;
         }
         //Mute
         if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 110, this.startY + 40, 40, 30) && this.currentMenu == "Volume") {
             if (this.toggleAllMute) {
                 this.lastMasterVolume = this.currVolume;
-                console.log(this.lastMasterVolume);
                 this.currVolume = 0;
+                ASSET_MANAGER.adjustMusicVolume(this.currMusicVolume * this.currVolume);
+                ASSET_MANAGER.adjustSFXVolume(this.currSFXVolume * this.currVolume);
                 this.toggleAllMute = false;
             } else {
                 this.currVolume = this.lastMasterVolume;
+                ASSET_MANAGER.adjustMusicVolume(this.currMusicVolume * this.currVolume);
+                ASSET_MANAGER.adjustSFXVolume(this.currSFXVolume * this.currVolume);
                 this.toggleAllMute = true;
             }
             // ASSET_MANAGER.muteAudio(!this.toggleMute);
@@ -354,9 +364,11 @@ class Settings {
             if (this.toggleMusicMute) {
                 this.lastMusicVolume = this.currMusicVolume;
                 this.currMusicVolume = 0;
+                ASSET_MANAGER.adjustMusicVolume(this.currMusicVolume);
                 this.toggleMusicMute = false;
             } else {
                 this.currMusicVolume = this.lastMusicVolume;
+                ASSET_MANAGER.adjustMusicVolume(this.currMusicVolume);
                 this.toggleMusicMute = true;
             }
         }
@@ -371,27 +383,29 @@ class Settings {
             this.updateSFXVolume();
         }
         //Vol Down
-        if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 70, this.startY + 50 + 105 * 2, 40, 30) && this.currentMenu == "Volume") {
+        if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 70, this.startY + 50 + 105 * 2 + 10, 40, 30) && this.currentMenu == "Volume") {
             this.currSFXVolume -= 0.1;
             if (this.currSFXVolume < 0.01) this.currSFXVolume = 0;
             ASSET_MANAGER.adjustSFXVolume(this.currSFXVolume);
             this.game.leftClick = false;
         }
         //Vol Up
-        if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 + this.volumeSlider.width / 2 + 20, this.startY + 50 + 105 * 2, 40, 30) && this.currentMenu == "Volume") {
+        if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 + this.volumeSlider.width / 2 + 20, this.startY + 50 + 105 * 2 + 10, 40, 30) && this.currentMenu == "Volume") {
             this.currSFXVolume += 0.1;
             if (this.currSFXVolume > 0.99) this.currSFXVolume = 1;
             ASSET_MANAGER.adjustSFXVolume(this.currSFXVolume);
             this.game.leftClick = false;
         }
         //Mute
-        if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 110, this.startY + 50 + 105 * 2, 40, 30) && this.currentMenu == "Volume") {
+        if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 110, this.startY + 50 + 105 * 2 + 10, 40, 30) && this.currentMenu == "Volume") {
             if (this.toggleSFXMute) {
                 this.lastSFXVolume = this.currSFXVolume;
                 this.currSFXVolume = 0;
+                ASSET_MANAGER.adjustSFXVolume(this.currSFXVolume);
                 this.toggleSFXMute = false;
             } else {
                 this.currSFXVolume = this.lastSFXVolume;
+                ASSET_MANAGER.adjustSFXVolume(this.currSFXVolume);
                 this.toggleSFXMute = true;
             }
         }
