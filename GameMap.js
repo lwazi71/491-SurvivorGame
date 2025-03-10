@@ -9,10 +9,10 @@ class GameMap {
             this.image = ASSET_MANAGER.getAsset("./Sprites/Map/level2.png");
             this.scale = 5;
         } else if (this.map == 3) {
-            this.image = ASSET_MANAGER.getAsset("./Sprites/Map/level3.png");
+            this.image = ASSET_MANAGER.getAsset("./Sprites/Map/level4.png");
             this.scale = 3;
         } else if (this.map == 4) {
-            this.image = ASSET_MANAGER.getAsset("./Sprites/Map/level4.png");
+            this.image = ASSET_MANAGER.getAsset("./Sprites/Map/level3.png");
             this.scale = 3;
         }
         
