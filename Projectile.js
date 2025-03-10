@@ -147,6 +147,7 @@ class Projectile {
             
             // Different collision logic based on shooter.
             if (this.friendly) { //this means the projectile is coming from us, the player
+
                 //Player arrow hitting enemies (for melee and range enemies)
                 if ((entity instanceof Zombie || entity instanceof Ghost || entity instanceof BlueGhoul || entity instanceof FreakyGhoul 
                     || entity instanceof BanditNecromancer || entity instanceof Necromancer || entity instanceof RatMage || entity instanceof FoxMage || entity instanceof Imp 
@@ -158,8 +159,12 @@ class Projectile {
                     //knockback properties
                     const knockbackX = -Math.cos(this.angle) * this.knockback;
                     const knockbackY = -Math.sin(this.angle) * this.knockback;
-                
-                    entity.takeDamage(this.damage, this.knockback, 
+                    // console.log(this.damage);
+                    let damage = this.damage;
+                    if (this.person instanceof Adventurer) damage = this.person.critDamageCheck(damage);
+                    (this.damage != damage) ? entity.didCrit = true : entity.didCrit = false;
+
+                    entity.takeDamage(damage, this.knockback, 
                         this.x + knockbackX, 
                         this.y + knockbackY
                     );
@@ -182,11 +187,15 @@ class Projectile {
                     
 
                         //Pass the center coordinates for knockback calculation and Apply damage and trigger damage state
+                        let damage = this.damage;
+                        if (this.person instanceof Adventurer) damage = this.person.critDamageCheck(damage);
+                        (this.damage != damage) ? entity.didCrit = true : entity.didCrit = false;
+
                         if (entity.isPreparingCharge || entity.isCharging) {
                             //no knockback if the entity is charging
-                            entity.takeDamage(this.damage, 0);
+                            entity.takeDamage(damage, 0);
                         } else {
-                            entity.takeDamage(this.damage, this.knockback, 
+                            entity.takeDamage(damage, this.knockback, 
                                 this.x + knockbackX, 
                                 this.y + knockbackY
                             );                        
@@ -215,7 +224,12 @@ class Projectile {
                 if ((entity instanceof Minotaur || entity instanceof GoblinMech || entity instanceof Cyclops || entity instanceof Boss1 || entity instanceof GolemMech || entity instanceof Boss3 || entity instanceof Boss4) && !entity.invincible) { 
                     if (this.BB.collide(entity.BB) && !this.hitEntities.has(entity)) {
                         this.hitEntities.add(entity);
-                        entity.takeDamage(this.damage, 0);
+
+                        let damage = this.damage;
+                        if (this.person instanceof Adventurer) damage = this.person.critDamageCheck(damage);
+                        (this.damage != damage) ? entity.didCrit = true : entity.didCrit = false;
+
+                        entity.takeDamage(damage, 0);
 
                         if (!this.piercing) {
                             this.removeFromWorld = true;

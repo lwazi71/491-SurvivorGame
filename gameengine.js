@@ -10,10 +10,10 @@ class GameEngine {
         this.entities = [];
 
         // Information on the input
-        this.click = null;
+        this.click = {x: 0, y: 0};
         this.leftclick = null;
         this.rightclick = null;
-        this.mouse = null;
+        this.mouse = {x: 0, y: 0};
         this.wheel = null;
         this.keys = {};
 
@@ -22,6 +22,8 @@ class GameEngine {
         this.upgradePause = false;
         this.shopPause = false;
         this.deathPause = false;
+
+        this.currMap = 1;
         
 
         // Options and the Details
@@ -82,6 +84,20 @@ class GameEngine {
             this.rightclick = getXandY(e);
             this.rightClicks = true;
         });
+
+        this.ctx.canvas.addEventListener('mousedown', e => {
+            if (e.button === 0) { // Left mouse button
+              this.leftClickHeld = true;
+            //   console.log('Left mouse button is held down.');
+            }
+        });
+        this.ctx.canvas.addEventListener('mouseup', e => {
+            if (event.button === 0) { // Left mouse button
+              this.leftClickHeld = false;
+            //   console.log('Left mouse button is released.');
+            }
+          });
+
 
         // this.ctx.canvas.addEventListener("keydown", e => {
         //     if (e.shiftKey && e.repeat) return;
@@ -179,6 +195,7 @@ class GameEngine {
     disableMouseInputs() {
         this.leftClick = false;
         this.rightClicks = false;
+        // this.click = {x:0, y:0};
     }
 
     addEntity(entity) {
@@ -201,12 +218,19 @@ class GameEngine {
 
     update() {
         let entitiesCount = this.entities.length;
-        if (this.keys["b"]) {
+        //Upgrade
+        if (this.keys["b"] && !this.adventurer.dead) {
             this.toggleUpgradePause();
             this.click = {x: 0, y: 0};
         }
         //How to open shop
         if (this.keys["u"]) {
+            this.camera.enableChest = true;
+            this.toggleShopPause();
+            this.click = {x: 0, y: 0};
+        }
+        if (this.keys["i"]) {
+            this.camera.enableLevelShop = true;
             this.toggleShopPause();
             this.click = {x: 0, y: 0};
         }
@@ -228,29 +252,11 @@ class GameEngine {
     };
 
     loop() {
-        if (this.keys["escape"]) {
-            if (this.upgradePause && !this.upgrade.enablePlayerStats) {
-                this.toggleUpgradePause();
-                this.upgrade.makingChoice = false;
-                this.upgrade.enablePlayerStats = false;
-            } else if (this.upgradePause && this.upgrade.enablePlayerStats){
-                this.upgrade.enablePlayerStats = false;
-            } else if (this.shopPause) {
-                this.shop.enableBuy = false;
-                this.shop.showUpgrade = false;
-                this.shopPause = false;
-            } else {
-                this.togglePause();
-                this.disableMouseInputs();
-                this.drawPause(this.ctx);
-            }
-            this.resetDrawingValues();
-            this.keys["escape"] = false;
-        }
-
+        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        this.clockTick = this.timer.tick();
+        this.pauseTick = this.timer.pauseTick();
+        this.escapeButton();
         if (!this.pause) {
-            this.clockTick = this.timer.tick();
-            this.pauseTick = this.timer.pauseTick();
             if (!this.upgradePause && !this.shopPause && !this.deathPause) { //Default loop
                 this.update();
                 this.draw();
@@ -262,9 +268,17 @@ class GameEngine {
                 this.timer.isPaused = true;
                 this.timer.enablePauseTick = true;
                 this.disableMouseInputs();
-            } else if (this.shopPause) {
-                this.shop.update();
-                this.shop.draw(this.ctx);
+            } else if (this.shopPause && this.camera.enableChest) {
+                this.chestItems.enableBuy = true;
+                this.chestItems.update();
+                this.chestItems.draw(this.ctx);
+                this.timer.isPaused = true;
+                this.timer.enablePauseTick = true;
+                this.disableMouseInputs();
+            } else if (this.shopPause && this.camera.enableLevelShop) {
+                this.levelShop.enableBuy = true;
+                this.levelShop.update();
+                this.levelShop.draw(this.ctx);
                 this.timer.isPaused = true;
                 this.timer.enablePauseTick = true;
                 this.disableMouseInputs();
@@ -273,11 +287,76 @@ class GameEngine {
                 this.deathScreen.draw(this.ctx);
                 this.timer.isPaused = true;
                 this.timer.enablePauseTick = true;
-                this.disableMouseInputs();
+                // this.disableMouseInputs();
             }
+        } else {
+            this.pauseMenu.update();
+            this.pauseMenu.draw(this.ctx);
+            this.timer.isPaused = true;
+            this.disableMouseInputs();
         }
     };
-
+    escapeButton() {
+        //escape settings
+        if (this.keys["escape"] && !this.camera.enableTitle && !this.camera.transition) {
+            if (this.upgradePause && !this.upgrade.enablePlayerStats) {
+                this.toggleUpgradePause();
+                this.upgrade.makingChoice = false;
+                this.upgrade.enablePlayerStats = false;
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/Back.mp3");
+            } else if (this.upgradePause && this.upgrade.enablePlayerStats){
+                this.upgrade.enablePlayerStats = false;
+                this.upgrade.player.upgradeMenu = false;
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/Back.mp3");
+            } else if (this.shopPause && this.chestItems.showPlayer) {
+                this.chestItems.showPlayer = false;
+                this.upgrade.player.upgradeMenu = false;
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/Back.mp3");
+            // } else if (this.shopPause && this.camera.enableShop) {
+            //     this.shop.enableBuy = false;
+            //     this.shop.showUpgrade = false;
+            //     this.shopPause = false;
+            } else if (this.shopPause && this.camera.enableLevelShop) {
+                if (this.levelShop.showPlayer) {
+                    this.levelShop.showPlayer = false;
+                    this.upgrade.player.upgradeMenu = false;
+                    ASSET_MANAGER.playAsset("./Audio/SoundEffects/Back.mp3");
+                } else if (this.levelShop.showUpgrade) {
+                    //Empty so it does nothing
+                } else {
+                    this.camera.enableLevelShop = false;
+                    this.levelShop.enableBuy = false;
+                    this.levelShop.showUpgrade = false;
+                    this.shopPause = false;
+                    ASSET_MANAGER.playAsset("./Audio/SoundEffects/Back.mp3");
+                }
+            } else if (this.deathPause && this.deathScreen.showUpgrade) {
+                this.deathScreen.showUpgrade = false;
+                this.upgrade.player.upgradeMenu = false;
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/Back.mp3");
+            } else if (this.pause && this.pauseMenu.showSettings) {
+                this.pauseMenu.showSettings = false;
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/Back.mp3");
+            } else if (this.pause && this.pauseMenu.confirmation) {
+                this.pauseMenu.confirmation = false;
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/Back.mp3");
+            } else if (!this.deathPause){ //
+                this.togglePause();
+                if (this.pause) {
+                    ASSET_MANAGER.pauseMusic()
+                    ASSET_MANAGER.playAsset("./Audio/SoundEffects/Pause.mp3");
+                } else {
+                    ASSET_MANAGER.playAsset("./Audio/SoundEffects/Unpause.mp3");
+                    ASSET_MANAGER.playAsset(this.camera.levelMusicPath);
+                }
+            } else if (this.game.camera.enableTitle && this.game.camera.title.showSettings) {
+                this.camera.title.showSettings = false;
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/Back.mp3");
+            }
+            this.resetDrawingValues();
+            this.keys["escape"] = false;
+        }
+    }
     toggleUpgradePause() {
         this.upgradePause = !this.upgradePause;
     }
@@ -292,23 +371,31 @@ class GameEngine {
     toggleShopPause() {
         this.shopPause = !this.shopPause;
     }
-    drawPause(ctx) {
-        ctx.textAlign = "center"; 
-        ctx.textBaseline = "middle"; 
-        ctx.fillStyle = rgba(0,0,0, 0.5);
-        ctx.fillRect(0, 0, PARAMS.CANVAS_WIDTH, PARAMS.CANVAS_HEIGHT);
-        ctx.fillStyle = "White";
-        ctx.fillText("Paused",PARAMS.CANVAS_WIDTH / 2, PARAMS.CANVAS_HEIGHT / 2);
-
-        ctx.textAlign = "left"; 
-        ctx.textBaseline = "alphabetic";  
-    }
-    resetDrawingValues(ctx) {
+    resetDrawingValues() {
         this.ctx.textAlign = "left";
         this.ctx.textBaseline = "alphabetic";
         this.ctx.lineWidth = 1;
         this.ctx.fillStyle = "Black";
         this.ctx.strokeStyle = "Black";
+    }
+    isHovering(x, y, length, height) {
+        this.mouse.x ? this.mouse.x : 0;
+        this.mouse.y ? this.mouse.y : 0;
+        return this.mouse.x > x && this.mouse.x < x + length &&
+        this.mouse.y > y && this.mouse.y < y + height;
+    }
+    isClicking(x, y, length, height) {
+        this.mouse.x ? this.mouse.x : 0;
+        this.mouse.y ? this.mouse.y : 0;
+        if (this.click.x > x && this.click.x < x + length &&
+            this.click.y > y && this.click.y < y + height && this.leftClick) {
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/Select.mp3");
+            }
+        return this.click.x > x && this.click.x < x + length &&
+        this.click.y > y && this.click.y < y + height && this.leftClick;
+    }
+    isPaused() {
+        return this.pause || this.upgradePause || this.deathPause || this.shopPause;
     }
 };
 

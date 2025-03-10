@@ -23,6 +23,7 @@ class Necromancer {
         
         this.health = 25; //Necromancer health 
         this.maxHealth = 25;
+        this.didCrit = false;
         this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 30, -70));
         this.dead = false;
         this.deathAnimationTimer = 8 * 0.1; //8 frames * 0.1 duration. Should be frameCount * frameDuration for death animation

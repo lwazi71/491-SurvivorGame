@@ -5,9 +5,10 @@ class Boss1 { //goblin king
 
         this.maxHealth = 300;
         this.currentHealth = 300;
+        this.didCrit = false;
         this.name = "tbd, The Goblin King";
 
-        this.profileAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/HudIcons/Boss1Hud.png"), 0, 0, 32, 32, 12.9, 0.2, false, true);
+        this.profileAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/HudIcons/Boss1Hud.png"), 0, 0, 32, 32, 13, 0.2, false, true);
         this.healthbar = this.game.addEntity(new BossHealthBar(game, this, this.profileAnimation, 32, 0, 0, 3));
         this.pointer = this.game.addEntity(new Pointer(game, this));
         this.state = 0; //0 = walk, 1 = attack, 2 = throwing, 3 = order, 4 = healing, 5 = jumping up, 6 = jumping down, 7 = dakmaged
@@ -350,7 +351,7 @@ class Boss1 { //goblin king
                 this.invincible = false;
                 this.healAnimationTimer = 0;
                 this.state = 0;
-                this.currentHealth += 50;
+                this.currentHealth += 150;
                 this.invincible = false;
             }
             return;      
@@ -420,7 +421,7 @@ class Boss1 { //goblin king
                 this.initiateJumpAttack();
             }
 
-            if (randomMove == 1 && this.waveCooldownTimer <= 0 && this.waves > 0 && this.currentHealth <= (this.maxHealth * 0.16) && !this.isPlayingDamageAnimation) { //&& this.goblinsAlive == 0
+            if (randomMove == 1 && this.waveCooldownTimer <= 0 && this.waves > 0 && this.currentHealth <= (this.maxHealth * 0.7) && !this.isPlayingDamageAnimation) { //&& this.goblinsAlive == 0
                 this.waves--;
                 this.invincible = true;
                 this.initiateCommandWave();

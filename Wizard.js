@@ -23,6 +23,7 @@ class Wizard {
         
         this.health = 25;
         this.maxHealth = 25;
+        this.didCrit = false;
         this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 1.5, 12));
         this.dead = false;
         this.deathAnimationTimer = 4 * 0.1;

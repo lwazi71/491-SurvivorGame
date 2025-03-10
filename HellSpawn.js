@@ -12,6 +12,7 @@ class HellSpawn {
 
         this.health = 20;
         this.maxHealth = 20;
+        this.didCrit = false;
         this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 10, -10));
         this.attackPower = 10;
         this.attackCooldown = 1.0; // Cooldown in seconds between attacks
@@ -104,7 +105,7 @@ class HellSpawn {
         this.warning = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/warning.png"), 0, 0, 1024, 1024, 7.9, 0.1, false, true); //used for mini bosses
 
         //death animation
-        this.deadAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn.png"), 64, 192, 64, 64, 6.9, 0.15, false, false);
+        this.deadAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/HellSpawn/Hellspawn.png"), 64, 192, 64, 64, 7, 0.15, false, false);
     }
 
 

@@ -21,8 +21,10 @@ class Cyclops {
         this.collisionDamage = 33;
         this.knockback = 2000;
         
-        this.health = 105; //Cyclops health 
-        this.maxHealth = 105;
+        this.health = 150; //Cyclops health 
+        this.maxHealth = 150;
+        this.didCrit = false;
+      
         this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 1, 10));
         this.dead = false;
         this.deathAnimationTimer = 8 * 0.1; 
@@ -47,6 +49,7 @@ class Cyclops {
         this.dropchance = 0.4;
 
         this.animations = [];
+        this.death = [];
 
         this.updateBB();
         this.loadAnimations();
@@ -60,6 +63,9 @@ class Cyclops {
             for (var j = 0; j < 2; j++) { //2 faces
                 this.animations[i].push([]);
             }
+        }
+        for (var i = 0; i < 2; i++) { //2 death states
+            this.death.push([]);
         }
         //RIGHT
         //idle
@@ -96,7 +102,8 @@ class Cyclops {
         this.warning = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/warning.png"), 0, 0, 1024, 1024, 7.9, 0.1, false, true); //used for mini bosses
     
         //death animation
-        this.death = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 64, 384, 64, 64, 8, 0.1, false, false);
+        this.death[0] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 64, 384, 64, 64, 8, 0.1, false, false);
+        this.death[1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Cyclops/Cyclops.png"), 64, 1024, 64, 64, 8, 0.1, false, false);
     }
 
 
@@ -330,7 +337,7 @@ class Cyclops {
 
         if (this.dead) {
             if (this.deathAnimationTimer > 0) {
-                this.death.drawFrame(
+                this.death[this.facing].drawFrame(
                     this.game.clockTick, 
                     ctx, 
                     this.x - this.game.camera.x, 

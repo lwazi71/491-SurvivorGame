@@ -33,31 +33,33 @@ class UpgradeSystem {
         this.noUpgrades = false;
         //Upgrade changes
         //General share values
-        this.attackIncreaseAmount = 5;
+        this.attackIncreaseAmount = 1;
         this.attackSpeedIncreaseAmount = 0.1;
         this.knockbackIncrease = 100;
-        this.maxAmount = 10;
+        this.maxAmount = -1;
         this.lowerMaxAmount = 5;
 
-        this.speedIncrease = 10;
+        this.speedIncrease = 5;
         this.hpIncreaseAmount = 10;
         this.rollingCooldownDecrease = 0.25;
         //Sword
-        this.attackScale = 0.5;
+        this.attackScale = 0.25;
         //Bow
         this.arrowSpeedIncrease = 100;
         //Magic
-        this.magicDamageIncrease = 20;
-        this.cooldownReduction = 10;
+        this.magicDamageIncrease = 5;
+        this.cooldownReduction = 5;
         this.magicKnockback = 1000;
-        this.magicSize = 1;
+        this.magicSize = 0.25;
         //Bomb
         this.bombDamageIncrease = 5;
         this.bombCooldown = 0.1;
         this.bombKnockback = 1000;
-        this.explosionScaleIncrease = 10;
+        this.explosionScaleIncrease = 0.25;
         this.bombRetrieveCD = 0.5;
         this.bombMaxAmountIncrease = 1;
+
+        this.uniqueOdds = 0.1;
 
         this.exitButtonSize = {width: 100, height: 40};
 
@@ -72,7 +74,7 @@ class UpgradeSystem {
                 name: "Sword Attack Increase", 
                 upgrade() {this.game.adventurer.attackDamage += this.game.upgrade.attackIncreaseAmount;}, //What happens when upgrade() is called
                 description: `Increases Sword Attack by ${this.attackIncreaseAmount}`, //Description of upgrade
-                type: 0, // 0 for sword  
+                type: "Sword", // 0 for sword  
                 max: this.maxAmount, //Number of times this upgrade can so up
                 current: 0, //Current number of times selected
                 color: "White", //Color of text
@@ -80,10 +82,14 @@ class UpgradeSystem {
             {
                 game: this.game,
                 name: "Sword Attack Speed Increase", 
-                upgrade() {this.game.adventurer.attackCooldown -= this.game.upgrade.attackSpeedIncreaseAmount; }, 
+                upgrade() {this.game.adventurer.attackCooldown -= this.game.upgrade.attackSpeedIncreaseAmount;
+                    if (this.game.adventurer.attackCooldownTimer > this.game.adventurer.attackCooldown) {
+                    this.game.adventurer.attackCooldownTimer -= this.game.upgrade.attackSpeedIncreaseAmount
+                    };
+                 }, 
                 description: `Decreases Attack Cooldown by ${this.attackSpeedIncreaseAmount}`,
-                type: 0,
-                max: 3,
+                type: "Sword",
+                max: 10,
                 current: 0,
                 color: "White",
             },
@@ -92,7 +98,7 @@ class UpgradeSystem {
                 name: "Sword Knockback Increase", 
                 upgrade() {this.game.adventurer.knockback += this.game.upgrade.knockbackIncrease; }, 
                 description: `Increase Sword Knockback by ${this.knockbackIncrease / 1000}`,
-                type: 0,
+                type: "Sword",
                 max: this.maxAmount,
                 current: 0,
                 color: "White",
@@ -102,7 +108,7 @@ class UpgradeSystem {
                 name: "Bow Attack Increase", 
                 upgrade() {this.game.adventurer.bowDamage += this.game.upgrade.attackIncreaseAmount;}, 
                 description: `Increase Bow Attack by ${this.attackIncreaseAmount}`,
-                type: 1,
+                type: "Bow",
                 max: this.maxAmount,
                 current: 0,
                 color: "White",
@@ -112,7 +118,7 @@ class UpgradeSystem {
                 name: "Bow Attack Speed Increase", 
                 upgrade() {this.game.adventurer.shootCooldown -= this.game.upgrade.attackSpeedIncreaseAmount; }, 
                 description: `Decreases Bow Attack Cooldown by ${this.attackSpeedIncreaseAmount}`,
-                type: 1,
+                type: "Bow",
                 max: 7,
                 current: 0,
                 color: "White",
@@ -122,7 +128,7 @@ class UpgradeSystem {
                 name: "Bow Knockback Increase", 
                 upgrade() {this.game.adventurer.bowKnockback += this.game.upgrade.knockbackIncrease; }, 
                 description: `Increase Bow Knockback by ${this.knockbackIncrease / 1000}`,
-                type: 1,
+                type: "Bow",
                 max: this.maxAmount,
                 current: 0,
                 color: "White",
@@ -132,7 +138,7 @@ class UpgradeSystem {
                 name: "Arrow Speed Increase", 
                 upgrade() {this.game.adventurer.arrowSpeed += this.game.upgrade.arrowSpeedIncrease; }, 
                 description: `Increase Arrow Speed by ${this.arrowSpeedIncrease}`,
-                type: 1,
+                type: "Bow",
                 max: this.maxAmount,
                 current: 0,
                 color: "White",
@@ -144,7 +150,7 @@ class UpgradeSystem {
                     this.game.adventurer.health += this.game.upgrade.hpIncreaseAmount;
                 }, 
                 description: `Increase Max HP by ${this.hpIncreaseAmount}`,
-                type: -1,
+                type: "Other",
                 max: this.maxAmount,
                 current: 0,
                 color: "White",
@@ -156,7 +162,7 @@ class UpgradeSystem {
                 upgrade() {this.game.adventurer.speed += this.game.upgrade.speedIncrease;
                 }, 
                 description: `Increase Speed by ${this.speedIncrease}`,
-                type: -1,
+                type: "Other",
                 max: this.maxAmount,
                 current: 0,
                 color: "White",
@@ -168,12 +174,42 @@ class UpgradeSystem {
                 upgrade() {this.game.adventurer.rollCooldown -= this.game.upgrade.rollingCooldownDecrease;
                 }, 
                 description: `Decrease Rolling Cooldown by ${this.rollingCooldownDecrease}`,
-                type: -1,
+                type: "Other",
                 max: 4,
                 current: 0,
                 color: "White",
                 
-            },  
+            }, 
+            {
+                game: this.game,
+                name: "Sword Attack Size Increase", 
+                upgrade() {this.game.adventurer.slashScale += this.game.upgrade.attackScale; }, 
+                description: `Increase Sword Attack Size by ${this.attackScale}`,
+                type: "Sword",
+                max: this.maxAmount,
+                current: 0,
+                color: "White",
+            }, 
+            {
+                game: this.game,
+                name: "Crit Chance Increase", 
+                upgrade() {this.game.adventurer.critChance += 0.05; }, 
+                description: `Increase Crit Chance by 5%`,
+                type: "Other",
+                max: 19, // to get to 100%
+                current: 0,
+                color: "White",
+            }, 
+            {
+                game: this.game,
+                name: "Crit Damage Increase", 
+                upgrade() {this.game.adventurer.critDamage += 0.1; }, 
+                description: `Increase Crit Damage by 10%`,
+                type: "Other",
+                max: this.maxAmount,
+                current: 0,
+                color: "White",
+            }, 
         ];
         this.uniqueList = [ //More rare upgrades
             {
@@ -181,7 +217,7 @@ class UpgradeSystem {
                 name: "Bombs", 
                 upgrade() {this.game.adventurer.enableBomb = true;}, 
                 description: `Able to use bombs`,
-                type: -1,
+                type: "Unlock",
                 max: 1,
                 current: 0,
                 color: "Yellow",
@@ -191,8 +227,30 @@ class UpgradeSystem {
                 game: this.game,
                 name: "Magic", 
                 upgrade() {this.game.adventurer.enableMagic = true;}, 
-                description: `Able to use magic`,
-                type: -1,
+                description: `Able to use magic when weapon is sword`,
+                type: "Unlock",
+                max: 1,
+                current: 0,
+                color: "Yellow",
+            
+            },
+            {
+                game: this.game,
+                name: "Lightning", 
+                upgrade() {this.game.adventurer.enableLightning = true;}, 
+                description: `Able to use lightning when weapon is bow`,
+                type: "Unlock",
+                max: 1,
+                current: 0,
+                color: "Yellow",
+            
+            },
+            {
+                game: this.game,
+                name: "DarkBolt", 
+                upgrade() {this.game.adventurer.enableBolt = true;}, 
+                description: `Able to use darkbolt`,
+                type: "Unlock",
                 max: 1,
                 current: 0,
                 color: "Yellow",
@@ -203,7 +261,7 @@ class UpgradeSystem {
                 name: "Piercing Arrows", 
                 upgrade() {this.game.adventurer.piercing = true;}, 
                 description: `Arrows can now pierce`,
-                type: 1,
+                type: "Bow",
                 max: 1,
                 current: 0,
                 color: rgb(65, 255, 90),
@@ -211,20 +269,42 @@ class UpgradeSystem {
             },
             {
                 game: this.game,
-                name: "Sword Attack Size Increase", 
-                upgrade() {this.game.adventurer.slashScale += this.game.upgrade.attackScale; }, 
-                description: `Increase Sword Attack Size by ${this.attackScale}`,
-                type: 0,
-                max: this.lowerMaxAmount,
+                name: "All Weapon Damage Increase", 
+                upgrade() {this.game.adventurer.attackDamage += this.game.upgrade.attackIncreaseAmount;
+                    this.game.adventurer.bowDamage += this.game.upgrade.attackIncreaseAmount;
+                    this.game.adventurer.magicDamage += this.game.upgrade.attackIncreaseAmount;
+                    this.game.adventurer.bombDamage += this.game.upgrade.attackIncreaseAmount;
+                    this.game.adventurer.lightingDamage += this.game.upgrade.attackIncreaseAmount;
+                    this.game.adventurer.boltDamage += this.game.upgrade.attackIncreaseAmount;
+                 }, 
+                description: `Increase all weapon damage by ${this.attackIncreaseAmount * 2}`,
+                type: "All",
+                max: this.maxAmount,
                 current: 0,
                 color: rgb(65, 214, 255),
             },
+            // {
+            //     game: this.game,
+            //     name: "Sword and Bow Attack Speed Increase", 
+            //     upgrade() {this.game.adventurer.attackDamage += this.game.upgrade.attackIncreaseAmount;
+            //         this.game.adventurer.bowDamage += this.game.upgrade.attackIncreaseAmount;
+            //         this.game.adventurer.magicDamage += this.game.upgrade.attackIncreaseAmount;
+            //         this.game.adventurer.bombDamage += this.game.upgrade.attackIncreaseAmount;
+            //         this.game.adventurer.lightingDamage += this.game.upgrade.attackIncreaseAmount;
+            //         this.game.adventurer.boltDamage += this.game.upgrade.attackIncreaseAmount;
+            //      }, 
+            //     description: `Increase all weapon damage by ${this.attackScale}`,
+            //     type: "Other",
+            //     max: this.maxAmount,
+            //     current: 0,
+            //     color: rgb(65, 214, 255),
+            // },
             {
                 game: this.game,
                 name: "Unlocks Sword and Bow Combo", 
                 upgrade() {this.game.adventurer.slashArrowCombo = true; }, 
                 description: `Able to supercharge arrow damage when slashing arrow with sword`,
-                type: 10,
+                type: "Combo",
                 max: 1,
                 current: 0,
                 color: rgb(170, 65, 255),
@@ -234,7 +314,7 @@ class UpgradeSystem {
                 name: "Triple Shot", 
                 upgrade() {this.game.adventurer.tripleShot = true; }, 
                 description: `Fires three arrows at once`,
-                type: 1,
+                type: "Bow",
                 max: 1,
                 current: 0,
                 color: rgb(65, 255, 90),
@@ -250,8 +330,8 @@ class UpgradeSystem {
                     }
                 }, 
                 description: `Decrease Magic Cooldown by ${this.cooldownReduction} seconds`,
-                type: 2,
-                max: 4,
+                type: "Magic",
+                max: 8,
                 current: 0,
                 color: "White",
             },
@@ -260,8 +340,8 @@ class UpgradeSystem {
                 name: "Magic Damage Increase", 
                 upgrade() {this.game.adventurer.magicDamage += this.game.upgrade.magicDamageIncrease; }, 
                 description: `Increase Magic Damage by ${this.magicDamageIncrease}`,
-                type: 2,
-                max: 10,
+                type: "Magic",
+                max: this.maxAmount,
                 current: 0,
                 color: "White",
             },
@@ -270,8 +350,8 @@ class UpgradeSystem {
                 name: "Magic Knockback Increase", 
                 upgrade() {this.game.adventurer.magicKnockback += this.game.upgrade.magicKnockback; }, 
                 description: `Increase Magic Knockback by ${this.magicKnockback/1000}`,
-                type: 2,
-                max: 10,
+                type: "Magic",
+                max: this.maxAmount,
                 current: 0,
                 color: "White",
             },
@@ -280,8 +360,8 @@ class UpgradeSystem {
                 name: "Magic Size Increase", 
                 upgrade() {this.game.adventurer.magicScale += this.game.upgrade.magicSize; }, 
                 description: `Increase Magic Size by ${this.magicSize}`,
-                type: 2,
-                max: 10,
+                type: "Magic",
+                max: this.maxAmount,
                 current: 0,
                 color: "White",
             },
@@ -292,8 +372,8 @@ class UpgradeSystem {
                 name: "Explosion Scale Increase", 
                 upgrade() {this.game.adventurer.bombExplosionScale += this.game.upgrade.explosionScaleIncrease;}, 
                 description: `Increase Explosion Scale by ${this.explosionScaleIncrease}`,
-                type: 3,
-                max: this.lowerMaxAmount,
+                type: "Bomb",
+                max: this.maxAmount,
                 current: 0,
                 color: "White",
             },
@@ -302,8 +382,8 @@ class UpgradeSystem {
                 name: "Bomb Damage Increase", 
                 upgrade() {this.game.adventurer.bombDamage += this.game.upgrade.bombDamageIncrease;}, 
                 description: `Increase Bomb Damage by ${this.bombDamageIncrease}`,
-                type: 3,
-                max: this.lowerMaxAmount,
+                type: "Bomb",
+                max: this.maxAmount,
                 current: 0,
                 color: "White",
             },
@@ -311,8 +391,8 @@ class UpgradeSystem {
                 game: this.game,
                 name: "Bomb Cooldown Decrease", 
                 upgrade() {this.game.adventurer.bombCooldown -= this.game.upgrade.bombCooldown;}, 
-                description: `Decrease Bomb Cooldown by ${this.bombCooldown.toFixed(1)}`,
-                type: 3,
+                description: `Decrease Bomb Cooldown by ${this.bombCooldown.toFixed(1)} seconds`,
+                type: "Bomb",
                 max: 4,
                 current: 0,
                 color: "White",
@@ -322,8 +402,8 @@ class UpgradeSystem {
                 name: "Bomb Knockback Increase ", 
                 upgrade() {this.game.adventurer.bombKnockback += this.game.upgrade.bombKnockback;}, 
                 description: `Increase Bomb Knockback by ${this.bombKnockback / 1000}`,
-                type: 3,
-                max: this.lowerMaxAmount,
+                type: "Bomb",
+                max: this.maxAmount,
                 current: 0,
                 color: "White",
             },
@@ -332,8 +412,8 @@ class UpgradeSystem {
                 name: "Max Bomb Amount Increase", 
                 upgrade() {this.game.adventurer.bombMaxAmount += this.game.upgrade.bombMaxAmountIncrease;}, 
                 description: `Increase Max Bomb Amount by ${this.bombMaxAmountIncrease}`,
-                type: 3,
-                max: this.lowerMaxAmount,
+                type: "Bomb",
+                max: this.maxAmount,
                 current: 0,
                 color: "White",
             },
@@ -341,27 +421,154 @@ class UpgradeSystem {
                 game: this.game,
                 name: "Bomb Retrieval CD Decrease", 
                 upgrade() {this.game.adventurer.bombCooldownRetrieve -= this.game.upgrade.bombRetrieveCD;}, 
-                description: `Decrease Bomb Retrieval Cooldown by ${this.bombRetrieveCD}`,
-                type: 3,
-                max: this.lowerMaxAmount,
+                description: `Decrease Bomb Retrieval Cooldown by ${this.bombRetrieveCD} seconds`,
+                type: "Bomb",
+                max: this.maxAmount,
                 current: 0,
                 color: "White",
             },
 
         ];
-        this.lightningList = []; //4
-        this.darkBoltList = []; //5
+        this.lightningList = [
+            {
+                game: this.game,
+                name: "Lightning Cooldown Decrease", 
+                upgrade() {this.game.adventurer.lightningCooldown -= 0.1; //Make sure the cooldown is not less than 0
+                    if (this.game.adventurer.lightningCooldownTimer != this.game.adventurer.lightningCooldown) {
+                        this.game.adventurer.lightningCooldownTimer -= 0.1;
+                    }
+                }, 
+                description: `Decrease Lightning Cooldown by 0.25 seconds`,
+                type: "Lightning",
+                max: 19,
+                current: 0,
+                color: "White",
+            },
+            {
+                game: this.game,
+                name: "Lightning Damage Increase", 
+                upgrade() {this.game.adventurer.lightingDamage += this.game.upgrade.magicDamageIncrease; }, 
+                description: `Increase Lightning Damage by ${this.magicDamageIncrease}`,
+                type: "Lightning",
+                max: this.maxAmount,
+                current: 0,
+                color: "White",
+            },
+            {
+                game: this.game,
+                name: "Lightning Knockback Increase", 
+                upgrade() {this.game.adventurer.lightningKnockback += this.game.upgrade.magicKnockback; }, 
+                description: `Increase Lightning Knockback by ${this.lightningKnockback/1000}`,
+                type: "Lightning",
+                max: this.maxAmount,
+                current: 0,
+                color: "White",
+            },
+            {
+                game: this.game,
+                name: "Lightning Size Increase", 
+                upgrade() {this.game.adventurer.lightingScale += this.game.upgrade.magicSize; }, 
+                description: `Increase Lightning Size by ${this.magicSize}`,
+                type: "Lightning",
+                max: this.maxAmount,
+                current: 0,
+                color: "White",
+            },
+    ];
+        this.darkBoltList = [
+            {
+                game: this.game,
+                name: "DarkBolt Size Increase", 
+                upgrade() {this.game.adventurer.boltScale += this.game.upgrade.explosionScaleIncrease;}, 
+                description: `Increase Darkbolt size by ${this.explosionScaleIncrease}`,
+                type: "DarkBolt",
+                max: this.maxAmount,
+                current: 0,
+                color: "White",
+            },
+            {
+                game: this.game,
+                name: "DarkBolt Damage Increase", 
+                upgrade() {this.game.adventurer.boltDamage += this.game.upgrade.bombDamageIncrease;}, 
+                description: `Increase DarkBolt Damage by ${this.bombDamageIncrease}`,
+                type: "DarkBolt",
+                max: this.maxAmount,
+                current: 0,
+                color: "White",
+            },
+            {
+                game: this.game,
+                name: "DarkBolt Cooldown Decrease", 
+                upgrade() {this.game.adventurer.boltCooldown -= 0.1;}, 
+                description: `Decrease DarkBolt Cooldown by 0.1 seconds`,
+                type: "DarkBolt",
+                max: 3,
+                current: 0,
+                color: "White",
+            },
+            // {
+            //     game: this.game,
+            //     name: "Darkbolt Slow Increase ", 
+            //     upgrade() {this.game.adventurer.bombKnockback += this.game.upgrade.bombKnockback;}, 
+            //     description: `Increase Bomb Knockback by ${this.bombKnockback / 1000}`,
+            //     type: "DarkBolt",
+            //     max: this.maxAmount,
+            //     current: 0,
+            //     color: "White",
+            // },
+            {
+                game: this.game,
+                name: "Max DarkBolt Amount Increase", 
+                upgrade() {this.game.adventurer.boltMaxAmount += this.game.upgrade.bombMaxAmountIncrease;}, 
+                description: `Increase Max Darkbolt Amount by ${this.bombMaxAmountIncrease}`,
+                type: "DarkBolt",
+                max: this.maxAmount,
+                current: 0,
+                color: "White",
+            },
+            {
+                game: this.game,
+                name: "DarkBolt Retrieval CD Decrease", 
+                upgrade() {this.game.adventurer.boltCooldownRetrieve -= this.game.upgrade.bombRetrieveCD;}, 
+                description: `Decrease Bomb Retrieval Cooldown by ${this.bombRetrieveCD}`,
+                type: "DarkBolt",
+                max: this.maxAmount,
+                current: 0,
+                color: "White",
+            },
+        ];
         this.bombUniqueList = [
             {
                 game: this.game,
                 name: "Unlocks Sword and Bomb Combo", 
                 upgrade() {this.game.adventurer.slashBombCombo = true; }, 
                 description: `Able to bombs when slashing arrow with sword`,
-                type: 10,
+                type: "Combo",
                 max: 1,
                 current: 0,
                 color: rgb(170, 65, 255)
-            }
+            },
+            {
+                game: this.game,
+                name: "Monkey Bomb", 
+                upgrade() {this.game.adventurer.monkeyBomb = true; }, 
+                description: `Bombs can now attract melee enemies`,
+                type: "Bomb",
+                max: 1,
+                current: 0,
+                color: rgb(65, 255, 90)
+            },
+            {
+                game: this.game,
+                name: "Rolling Bomb", 
+                upgrade() {this.game.adventurer.enableRollingBomb = true; }, 
+                description: `Places a bomb when you roll. Does not comsume bomb`,
+                type: "Bomb",
+                max: 1,
+                current: 0,
+                color: rgb(65, 255, 90)
+            },
+
         ];
         this.lightningDarkBoltList = [
             {
@@ -369,7 +576,7 @@ class UpgradeSystem {
                 name: "Unlocks Lightning and Darkbolt Combo", 
                 upgrade() {this.game.adventurer.lightningDarkBoltCombo = true; }, 
                 description: `Able to supercharge Darkbolt when combining it with lightning`,
-                type: 10,
+                type: "Combo",
                 max: 1,
                 current: 0,
                 color: rgb(170, 65, 255),
@@ -384,51 +591,60 @@ class UpgradeSystem {
         this.third = null;
 
         this.selectedUpgrade = null;
-        this.first = true;
+        this.firstTime = true;
 
     }
     getThreeUpgrades() {
         this.addValidUpgrade();
         let random = Math.random();
-        if (this.unique.length > 0 && random < 0.1 && this.totalUpgradeCount > 4) { //Gamble for unique upgrades
+        if (this.unique.length > 0 && random < this.uniqueOdds) { //Gamble for unique upgrades // && this.totalUpgradeCount > 4
             this.first = this.getRandomUpgrade(this.unique); //Set first option to a random unique upgrade
             this.unique.splice(this.index, 1); //Remove the unique upgrade from current pool so no overlap
+            this.noUpgrades1 = false;
         } else if (this.basic.length > 0) { //If we lose the chance for unique upgrade
             this.first = this.getRandomUpgrade(this.basic); //Set first option to a basic upgrade
             this.basic.splice(this.index, 1); // Remove the basic upgrade from pool so no overlap
+            this.noUpgrades1 = false;
         } else if (this.unique.length > 0) { //If no more basic upgrades, use from unique pool
             this.first = this.getRandomUpgrade(this.unique); // Set to unique
             this.unique.splice(this.index, 1); 
+            this.noUpgrades1 = false;
         } else {
             console.log("No upgrade");
             this.first = null;
             this.noUpgrades1 = true;
         }
         random = Math.random();
-        if (this.unique.length > 0 && random < 0.1 && this.totalUpgradeCount > 4) {
+        if (this.unique.length > 0 && random < this.uniqueOdds) {
             this.second = this.getRandomUpgrade(this.unique);
             this.unique.splice(this.index, 1);
+            this.noUpgrades2 = false;
         } else if (this.basic.length > 0) {
             this.second = this.getRandomUpgrade(this.basic);
             this.basic.splice(this.index, 1);
+            this.noUpgrades2 = false;
         } else if (this.unique.length > 0) {
             this.second = this.getRandomUpgrade(this.unique);
             this.unique.splice(this.index, 1);
+            this.noUpgrades2 = false;
         } else {
             console.log("No upgrade");
             this.second = null;
             this.noUpgrades2 = true;
         }
         random = Math.random();
-        if (this.unique.length > 0 && random < 0.1 && this.totalUpgradeCount > 4) { //Gamble for unique upgrades
+        if (this.unique.length > 0 && random < this.uniqueOdds) { //Gamble for unique upgrades
             this.third = this.getRandomUpgrade(this.unique);
             this.unique.splice(this.index, 1);
+            this.noUpgrades3 = false;
         } else if (this.basic.length > 0) { //Defaults to basic upgrades
             this.third = this.getRandomUpgrade(this.basic);
             this.basic.splice(this.index, 1);
+            this.noUpgrades3 = false;
         } else if (this.unique.length > 0) { //If no more basic, then use unique upgrades
             this.third = this.getRandomUpgrade(this.unique);
             this.unique.splice(this.index, 1);
+            this.noUpgrades3 = false;
         } else { // No upgrades left
             console.log("No upgrade");
             this.third = null;
@@ -438,18 +654,20 @@ class UpgradeSystem {
         this.resetList();
         if (this.noUpgrades1 && this.noUpgrades2 && this.noUpgrades3) {
             this.noUpgrades = true;
-            this.game.adventurer.health = this.game.adventurer.maxhealth;
+            // this.game.adventurer.health = this.game.adventurer.maxhealth;
+        } else {
+            this.noUpgrades = false;
         }
         
     }
     addValidUpgrade() {
         for (let i = 0; i < this.basicList.length; i++) {
-            if (this.basicList[i].max > this.basicList[i].current) { //If the amount of time chosen does not reach the max, then add to upgrade pool
+            if (this.basicList[i].max > this.basicList[i].current || this.basicList[i].max == -1) { //If the amount of time chosen does not reach the max, then add to upgrade pool
                 this.basic.push(this.basicList[i]);
             }
         }
         for (let i = 0; i < this.uniqueList.length; i++) { //Lower chance stuff
-            if (this.uniqueList[i].max > this.uniqueList[i].current) {
+            if (this.uniqueList[i].max > this.uniqueList[i].current || this.uniqueList[i].max == -1) {
                 this.unique.push(this.uniqueList[i]);
             }
         }
@@ -466,8 +684,25 @@ class UpgradeSystem {
                     this.basic.push(this.bombList[i]);
                 }
             }
-            if (this.bombUniqueList[0].max > this.bombUniqueList[0].current) this.unique.push(this.bombUniqueList[0]);
+            for (let i = 0; i < this.bombUniqueList.length; i++) {
+                if (this.bombUniqueList[i].max > this.bombUniqueList[i].current || this.bombUniqueList[i]. max == -1) this.unique.push(this.bombUniqueList[i]);
+            }
         }
+        if (this.game.adventurer.enableLightning) {
+            for (let i = 0; i < this.lightningList.length; i++) {
+                if (this.lightningList[i].max > this.lightningList[i].current) {
+                    this.basic.push(this.lightningList[i]);
+                }
+            }
+        }
+        if (this.game.adventurer.enableBolt) {
+            for (let i = 0; i < this.darkBoltList.length; i++) {
+                if (this.darkBoltList[i].max > this.darkBoltList[i].current) {
+                    this.basic.push(this.darkBoltList[i]);
+                }
+            }
+        }
+        
         if (this.game.adventurer.enableLightning && this.game.adventurer.enableBolt) {
             if (this.lightningDarkBoltList[0].max > this.lightningDarkBoltList[0].current) this.unique.push(this.lightningDarkBoltList[0]);
         }
@@ -484,13 +719,6 @@ class UpgradeSystem {
             this.player.update();
         } else {
             this.canReroll = this.game.adventurer.coins >= 10 && !this.noUpgrades3;
-            let mouseX = 0;
-            let mouseY = 0;
-            if (this.game.click != null) {
-                mouseX = this.game.click.x;
-                mouseY = this.game.click.y;
-            }
-            let mouse = {x: mouseX, y: mouseY};
             let width = 275;
             let height = 425;
             let x = PARAMS.CANVAS_WIDTH / 2 - width / 2;
@@ -506,39 +734,35 @@ class UpgradeSystem {
             this.makingChoice = true;
             if (this.rerollTimer <= 0) {
                 //Option 1 keys and mouse area
-                if((this.game.keys["1"] && !this.noUpgrades1) ||
-                (mouseX > x - 300 && mouseX < x - 300 + width &&
-                mouseY > y && mouseY < y + height && this.game.leftClick && !this.noUpgrades1)
-                ) {
+                if ((this.game.keys["1"] && !this.noUpgrades1) || (this.game.isClicking(x - 300, y, width, height) && 
+                this.game.leftClick && !this.noUpgrades1)) 
+                {
                     this.selectedUpgrade = this.first;
                 }
                 //Option 2 keys and mouse area
-                if((this.game.keys["2"] && !this.noUpgrades2) ||
-                        (mouseX > x && mouseX < x + width &&
-                        mouseY > y && mouseY < y + height && this.game.leftClick && !this.noUpgrades2)
-                ) {
+                if ((this.game.keys["2"] && !this.noUpgrades2) || (this.game.isClicking(x, y, width, height) && 
+                this.game.leftClick && !this.noUpgrades2)) 
+                {
                     this.selectedUpgrade = this.second;
                 }
                 //Option 3 keys and mouse area
-                if((this.game.keys["3"] && !this.noUpgrades3) ||
-                    (mouseX > x + 300 && mouseX < x + 300 + width &&
-                    mouseY > y && mouseY < y + height && this.game.leftClick && !this.noUpgrades3)
-                ) {
+                if ((this.game.keys["3"] && !this.noUpgrades3) || (this.game.isClicking(x + 300, y, width, height) && 
+                this.game.leftClick && !this.noUpgrades3)) 
+                {
                     this.selectedUpgrade = this.third;
                 }
                 //Selection Button location
-                if (this.selectedUpgrade != null && mouseX > this.centerButtonX + 150 && mouseX < this.centerButtonX + this.buttonWidth + 150 &&
-                    mouseY > this.centerButtonY && mouseY < this.centerButtonY + this.buttonHeight ||
-                    this.selectedUpgrade != null && this.game.keys["enter"]
-
-                ) {
+                if (this.selectedUpgrade != null && 
+                    this.game.isClicking(this.centerButtonX + 150, this.centerButtonY, this.buttonWidth, this.buttonHeight) ||
+                    this.selectedUpgrade != null && this.game.keys["enter"]) 
+                {
                     this.updateChoice(this.selectedUpgrade);
                     this.game.keys["enter"] = false;
                 }
                 //Reroll Button location
-                if (mouseX > this.centerButtonX - 150 && mouseX < this.centerButtonX + this.buttonWidth - 150 &&
-                    mouseY > this.centerButtonY && mouseY < this.centerButtonY + this.buttonHeight && this.canReroll ||
-                    this.game.keys["r"] && this.canReroll) {
+                if (this.game.isClicking(this.centerButtonX - 150, this.centerButtonY, this.buttonWidth, this.buttonHeight) && 
+                this.canReroll || this.game.keys["r"] && this.canReroll) 
+                {
                     this.getThreeUpgrades();
                     this.game.adventurer.coins -= 10;
                     this.game.keys["r"] = false;
@@ -547,12 +771,13 @@ class UpgradeSystem {
                     this.rerollTimer = 0.5;
                 }
                 //Player stat location
-                if(getDistance(mouse, circle) < circleRadius) {
+                if (this.checkHeroStatus()) {
+                    ASSET_MANAGER.playAsset("./Audio/SoundEffects/Select.mp3");
                     this.enablePlayerStats = true;
                     this.game.click = {x:0, y:0};
                 }
                 //Exit Button
-                if (this.checkExitButton(mouseX, mouseY)) {
+                if (this.checkExitButton(this.game.click.x, this.game.click.y, true)) {
                     this.game.click = {x:0, y:0};
                     this.game.toggleUpgradePause();
                     this.makingChoice = false;
@@ -565,9 +790,20 @@ class UpgradeSystem {
             }
         }
     }
-    checkExitButton(mouseX, mouseY) {
+    checkExitButton(mouseX, mouseY, clicking) {
+        if (mouseX > PARAMS.CANVAS_WIDTH - this.exitButtonSize.width - 10 && mouseX < PARAMS.CANVAS_WIDTH + this.exitButtonSize.width &&
+            mouseY > 10 && mouseY < 10 + this.exitButtonSize.height && clicking) {
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/Back.mp3");
+            }
         return mouseX > PARAMS.CANVAS_WIDTH - this.exitButtonSize.width - 10 && mouseX < PARAMS.CANVAS_WIDTH + this.exitButtonSize.width &&
         mouseY > 10 && mouseY < 10 + this.exitButtonSize.height;
+    }
+    checkHeroStatus() {
+        let circleX = this.heroIconX + (this.heroIconLength * this.heroIconScale / 2);
+        let circleY = this.heroIconY + (this.heroIconHeight * this.heroIconScale / 2);
+        let circle = {x: circleX, y: circleY};
+        let circleRadius = (this.heroIconHeight / 2) * this.heroIconScale;
+        return getDistance(this.game.click, circle) < circleRadius;
     }
     updateChoice(upgrade) {
         this.selectedUpgrade = upgrade;
@@ -585,8 +821,8 @@ class UpgradeSystem {
             this.currentUpgrades.push(upgrade);
         }
         if (this.swordUpgradeCount >= 5) this.updateSwordLevel();
-        if (this.bowUpgradeCount >= 5) this.game.adventurer.bowUpgrade = 1;
-        if (!this.game.shop.showUpgrade) {
+        if (this.bowUpgradeCount >= 5) this.updateBowLevel();
+        if (this.game.upgradePause) {
             if (this.points > 1) {
                 this.points--;
                 //Timer reroll
@@ -596,10 +832,10 @@ class UpgradeSystem {
                 }
             } else {
                 this.points--;
-                // this.game.toggleUpgradePause();
+                if(this.game.settings.enableLevelUpPause) this.game.toggleUpgradePause();
+                this.makingChoice = false;
             }
         }
-        this.makingChoice = false;
         this.game.keys["1"] = false;
         this.game.keys["2"] = false;
         this.game.keys["3"] = false;
@@ -607,9 +843,12 @@ class UpgradeSystem {
         this.selectedUpgrade = null;
     }
     incrementType(type) {
-        if (type == 0) {
+        if (type == "Sword") {
             this.swordUpgradeCount++;
-        } else if (type == 1) {
+        } else if (type == "Bow") {
+            this.bowUpgradeCount++;
+        } else if (type == "All") {
+            this.swordUpgradeCount++;
             this.bowUpgradeCount++;
         } else {
             this.otherUpgradeCount++;
@@ -619,22 +858,30 @@ class UpgradeSystem {
     updateSwordLevel() {
         // if (this.game.adventurer.swordUpgrade >= 20) {
         //     this.game.adventurer.swordUpgrade = 4;
-        // } else if (this.game.adventurer.swordUpgrade >= 15) {
-        //     this.game.adventurer.swordUpgrade = 3;
-        // } else if (this.game.adventurer.swordUpgrade >= 10) {
-        //     this.game.adventurer.swordUpgrade = 2;
-        // } else {
-        //     this.game.adventurer.swordUpgrade = 1;
-        // }
-        this.game.adventurer.swordUpgrade = 1;
+        // } else 
+        if (this.swordUpgradeCount >= 15) {
+            this.game.adventurer.swordUpgrade = 3;
+        } else if (this.swordUpgradeCount >= 10) {
+            this.game.adventurer.swordUpgrade = 2;
+        } else {
+            this.game.adventurer.swordUpgrade = 1;
+        }
+        // this.game.adventurer.swordUpgrade = 1;
+    }
+    updateBowLevel() {
+        // if (this.game.adventurer.swordUpgrade >= 20) {
+        //     this.game.adventurer.swordUpgrade = 4;
+        // } else 
+        if (this.bowUpgradeCount >= 15) {
+            this.game.adventurer.bowUpgrade = 3;
+        } else if (this.bowUpgradeCount >= 10) {
+            this.game.adventurer.bowUpgrade = 2;
+        } else {
+            this.game.adventurer.bowUpgrade = 1;
+        }
+        // this.game.adventurer.swordUpgrade = 1;
     }
     draw(ctx) {
-        let mouseX = 0;
-        let mouseY = 0;
-        if (this.game.mouse != null) {
-            mouseX = this.game.mouse.x;
-            mouseY = this.game.mouse.y;
-        }
         //visual for upgrade screen
         if (this.makingChoice) {
             if (this.enablePlayerStats) {
@@ -642,7 +889,7 @@ class UpgradeSystem {
                 this.player.draw(ctx);
             } else {
                 this.game.draw(ctx); // Only way to make it transparent
-                this.upgradeBackground(ctx, mouseX, mouseY);
+                this.upgradeBackground(ctx);
                 ctx.font = '18px "Press Start 2P"';
                 ctx.lineWidth = 1;
                 ctx.textAlign = "center"; 
@@ -701,17 +948,17 @@ class UpgradeSystem {
                     ctx.fillStyle = "White"
                     ctx.fillText(`Level Up to see Upgrades`, PARAMS.CANVAS_WIDTH / 2, PARAMS.CANVAS_HEIGHT / 2);
                 }
-                this.heroStatus(ctx, mouseX, mouseY); //Last so it draw over everything
+                this.heroStatus(ctx); //Last so it draw over everything
             }
         } 
-        this.exitButton(ctx, mouseX, mouseY);
+        this.exitButton(ctx);
         this.game.resetDrawingValues();
     }
     resetList() {
         this.basic = [];
         this.unique = [];
     }
-    upgradeBackground(ctx, X, Y) {
+    upgradeBackground(ctx) {
         let width = 275;
         let height = 425;
         let x = PARAMS.CANVAS_WIDTH / 2 - width / 2;
@@ -721,8 +968,7 @@ class UpgradeSystem {
         if (!this.noUpgrades && this.points > 0) {
             //First Upgrade
             ctx.beginPath();
-            if (X > x - 300 && X < x - 300 + width &&
-                Y > y && Y < y + height && !this.noUpgrades1 || 
+            if (this.game.isHovering(x - 300, y, width, height) && !this.noUpgrades1 || 
                 this.selectedUpgrade == this.first && this.selectedUpgrade != null
             ) {
                 ctx.fillStyle = rgb(50, 50, 50);
@@ -745,8 +991,7 @@ class UpgradeSystem {
 
             //Second Upgrade
             ctx.beginPath();
-            if (X > x && X < x + width &&
-                Y > y && Y < y + height && !this.noUpgrades2 || 
+            if (this.game.isHovering(x, y, width, height) && !this.noUpgrades2 || 
                 this.selectedUpgrade == this.second && this.selectedUpgrade != null
             ) {
                 ctx.fillStyle = rgb(50, 50, 50);
@@ -769,8 +1014,7 @@ class UpgradeSystem {
 
             //Third Upgrade
             ctx.beginPath();
-            if (X > x + 300 && X < x + 300 + width &&
-                Y > y && Y < y + height && !this.noUpgrades3 || 
+            if (this.game.isHovering(x + 300, y, width, height) && !this.noUpgrades3 || 
                 this.selectedUpgrade == this.third && this.selectedUpgrade != null
             ) {
                 ctx.fillStyle = rgb(50, 50, 50);
@@ -799,10 +1043,9 @@ class UpgradeSystem {
             ctx.textAlign = "center"; 
             ctx.textBaseline = "middle"; 
 
-            if (X > this.centerButtonX - 150 && X < this.centerButtonX + this.buttonWidth - 150 &&
-                Y > this.centerButtonY && Y < this.centerButtonY + this.buttonHeight && this.canReroll
-            ) {
-                // console.log("hovering");
+            if (this.game.isHovering(this.centerButtonX - 150, this.centerButtonY, this.buttonWidth, this.buttonHeight) 
+                && this.canReroll) 
+            {
                 ctx.fillStyle = rgb(41, 41, 41);
             } else {
                 ctx.fillStyle = rgb(74, 74, 74);
@@ -841,8 +1084,7 @@ class UpgradeSystem {
             //Select button
             //Drawing the buttons
             if (this.selectedUpgrade != null) {
-                if (X > this.centerButtonX + 150 && X < this.centerButtonX + this.buttonWidth + 150 &&
-                    Y > this.centerButtonY && Y < this.centerButtonY + this.buttonHeight
+                if (this.game.isHovering(this.centerButtonX + 150, this.centerButtonY, this.buttonWidth, this.buttonHeight)
                 ) {
                     // console.log("hovering");
                     ctx.fillStyle = rgb(41, 41, 41);
@@ -870,14 +1112,16 @@ class UpgradeSystem {
 
         }
     }
-    heroStatus(ctx, X, Y) {
-        let mouse = {x: X, y: Y};
+    heroStatus(ctx) {
+        ctx.textAlign = "center"; 
+        ctx.textBaseline = "middle";
+        ctx.font = '18px "Press Start 2P"';
         let circleX = this.heroIconX + (this.heroIconLength * this.heroIconScale / 2);
         let circleY = this.heroIconY + (this.heroIconHeight * this.heroIconScale / 2);
         let circle = {x: circleX, y: circleY};
         let circleRadius = (this.heroIconHeight / 2) * this.heroIconScale;
         let padding = 10;
-        if(getDistance(mouse, circle) < circleRadius) {
+        if(getDistance(this.game.mouse, circle) < circleRadius) {
             this.heroIconScale = 5;
             this.heroIconX = PARAMS.CANVAS_WIDTH - this.heroIconLength * this.heroIconScale - 5;
             this.heroIconY = PARAMS.CANVAS_HEIGHT - this.heroIconHeight * this.heroIconScale - 5;
@@ -919,8 +1163,6 @@ class UpgradeSystem {
           const testWidth = metrics.width;
       
           if (testWidth > maxWidth && i > 0) {
-            ctx.textAlign = "center"; 
-            ctx.textBaseline = "middle"; 
             ctx.fillText(line, x, y);
             line = ' ' + words[i] + ' ';
             y += lineHeight;
@@ -930,19 +1172,13 @@ class UpgradeSystem {
         }
         ctx.fillText(line, x, y);
     }
-    exitButton(ctx, mouseX, mouseY) {
+    exitButton(ctx) {
         let buffer = 10;
         ctx.beginPath();
         ctx.roundRect(PARAMS.CANVAS_WIDTH - this.exitButtonSize.width - buffer, buffer, this.exitButtonSize.width, this.exitButtonSize.height, [10, 30, 10, 10]);
         ctx.lineWidth = 5;
         ctx.strokeStyle = rgb(200, 0, 0);
-        if (mouseX > PARAMS.CANVAS_WIDTH - this.exitButtonSize.width - buffer && mouseX < PARAMS.CANVAS_WIDTH + this.exitButtonSize.width &&
-            mouseY > buffer && mouseY < buffer+this.exitButtonSize.height
-        ) {
-            ctx.fillStyle = rgb(100, 0, 0);
-        } else {
-            ctx.fillStyle = rgb(150, 0, 0);
-        }
+        (this.checkExitButton(this.game.mouse.x, this.game.mouse.y, false)) ? ctx.fillStyle = rgb(100, 0, 0) : ctx.fillStyle = rgb(150, 0, 0);
         ctx.fill();
         ctx.stroke();
         ctx.font = '36px "Press Start 2P"';
@@ -952,7 +1188,7 @@ class UpgradeSystem {
         ctx.fillText("X", PARAMS.CANVAS_WIDTH - 60, 32.5)
     }
     giveAllUpgrade() {
-        if (this.first) {
+        if (this.firstTime) {
             this.currentUpgrades.push(...this.basicList);
             this.currentUpgrades.push(...this.uniqueList);
             this.currentUpgrades.push(...this.bombList);
@@ -962,12 +1198,19 @@ class UpgradeSystem {
             this.currentUpgrades.push(...this.bombUniqueList);
             this.currentUpgrades.push(...this.lightningDarkBoltList);
             this.currentUpgrades.forEach(upgrade => {
-            while(upgrade.current < upgrade.max) {
-                upgrade.upgrade();
-                upgrade.current++;
-            }
-            this.first = false;
-        });
+                if (upgrade.max == -1) {
+                    for(let i = 0; i < 20; i++) {
+                        upgrade.upgrade();
+                    upgrade.current++;
+                    }
+                } else {
+                    while(upgrade.current < upgrade.max) {
+                        upgrade.upgrade();
+                        upgrade.current++;
+                    }
+                }
+            });
+            this.firstTime = false;
         }
     }
 }
@@ -985,19 +1228,29 @@ class PlayerStatus {
         this.height = PARAMS.CANVAS_HEIGHT - this.startY * 2;
 
         this.bombAnimation =this.bombAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/collectables.png"), 0, 16, 16, 16, 4, 0.1, false, true);
-        this.shadow = ASSET_MANAGER.getAsset("./Sprites/Objects/shadow.png");
+        this.background = ASSET_MANAGER.getAsset("./Sprites/HudIcons/PlayerBackground.png");
+        this.coinImage = ASSET_MANAGER.getAsset("./Sprites/Objects/collectables.png");
         this.animation = [];
         this.actions = 0;
         this.swordDuration = 0.9;
         this.currentTimer = 0;
         this.bowDuration = 0.75;
-        this.magicDuration = 0.6;
+        this.magicDuration = 0.55;
         this.rollDuration = 0.55;
         this.bombDuration = 0.35;
 
         this.upgradeMenu = false;
 
         this.upgradeButton = {length: 200, height: 40};
+
+        this.pageCount = 1;
+
+        this.stats = [];
+        this.values = [];
+        this.upgradePage1Stats = [];
+        this.upgradePage1Values = [];
+        this.upgradePage2Stats = [];
+        this.upgradePage2Values = [];
 
         this.loadAnimation();
 
@@ -1022,17 +1275,10 @@ class PlayerStatus {
         this.stamina = (this.game.adventurer.rollCooldown - this.game.adventurer.rollCooldownTimer) / this.game.adventurer.rollCooldown;
         this.experience = this.game.adventurer.experience / this.game.adventurer.experienceToNextLvl;
 
-        let mouseX = 0;
-        let mouseY = 0;
-        if (this.game.click != null) {
-            mouseX = this.game.click.x;
-            mouseY = this.game.click.y;
-        }
         let button = {width: (this.width - 20) / 4, height: 40};
 
         let y = this.startY + 50 + 10 + this.healthBarSize.height * 2 + 20 + 70 + 40;
-        if (this.game.keys["1"] || mouseX > this.startX + 10 && mouseX < this.startX + 10 + button.width &&
-            mouseY > y && mouseY < y + button.height) {
+        if (this.game.keys["1"] || this.game.isClicking(this.startX + 10, y, button.width, button.height)) {
             this.animation[1].elapsedTime = 0;
             this.actions = 1;
             this.currentTimer = this.swordDuration;
@@ -1040,8 +1286,7 @@ class PlayerStatus {
             this.selected = "Sword";
             this.game.click = {x: 0, y: 0};
         }
-        if (this.game.keys["2"] || mouseX > this.startX + 10 + button.width && mouseX < this.startX + 10 + button.width * 2 &&
-            mouseY > y && mouseY < y + button.height) {
+        if (this.game.keys["2"] || this.game.isClicking(this.startX + 10 + button.width, y, button.width, button.height)) {
             this.animation[2].elapsedTime = 0;
             this.actions = 2;
             this.currentTimer = this.bowDuration;
@@ -1049,8 +1294,7 @@ class PlayerStatus {
             this.selected = "Bow";
             this.game.click = {x: 0, y: 0};
         }
-        if (this.game.keys["3"] || mouseX > this.startX + 10 + button.width * 2 && mouseX < this.startX + 10 + button.width * 3 &&
-            mouseY > y && mouseY < y + button.height) {
+        if (this.game.keys["3"] || this.game.isClicking(this.startX + 10 + button.width * 2, y, button.width, button.height)) {
             this.animation[4].elapsedTime = 0;
             this.actions = 4;
             this.currentTimer = this.rollDuration;
@@ -1058,9 +1302,8 @@ class PlayerStatus {
             this.selected = "Bomb";
             this.game.click = {x: 0, y: 0};
         }
-        if (this.game.keys["4"] || mouseX > this.startX + 10 + button.width * 3 && mouseX < this.startX + 10 + button.width * 4 &&
-            mouseY > y && mouseY < y + button.height) {
-                this.animation[3].elapsedTime = 0;
+        if (this.game.keys["4"] || this.game.isClicking(this.startX + 10 + button.width * 3, y, button.width, button.height)) {
+            this.animation[3].elapsedTime = 0;
             this.actions = 3;
             this.currentTimer = this.magicDuration;
             this.game.keys["4"] = false;
@@ -1070,15 +1313,19 @@ class PlayerStatus {
         //Upgrade viewer button
         let upgradeButtonX = this.startX + this.width / 2 - this.upgradeButton.length / 2;
         let upgradeButtonY = y - 30 + this.width - 25 * 2 + 20 - 40;
-        if (mouseX > upgradeButtonX && mouseX < upgradeButtonX + this.upgradeButton.length &&
-            mouseY > upgradeButtonY && mouseY < upgradeButtonY + this.upgradeButton.height) {
-                this.game.click = {x:0, y:0};
-                this.toggleUpgradeMenu();
+        //Upgrade Button
+        if (this.game.isClicking(upgradeButtonX, upgradeButtonY, this.upgradeButton.length, this.upgradeButton.height)) {
+            this.game.click = {x:0, y:0};
+            this.toggleUpgradeMenu();
         }
-        if (mouseX > PARAMS.CANVAS_WIDTH - this.exitButtonSize.width - 10 && mouseX < PARAMS.CANVAS_WIDTH + this.exitButtonSize.width &&
-            mouseY > 10 && mouseY < 10 + this.exitButtonSize.height) {
+        if (this.upgrade.checkExitButton(this.game.click.x, this.game.click.y, true) && this.game.upgradePause) {
             this.game.click = {x:0, y:0};
             this.upgrade.enablePlayerStats = false;
+            this.upgradeMenu = false;
+        }
+        if (this.upgrade.checkExitButton(this.game.click.x, this.game.click.y, true) && this.game.deathScreen.showUpgrade) {
+            this.game.click = {x:0, y:0};
+            this.game.deathScreen.showUpgrade = false;
         }
         if (this.actions == 1 && this.currentTimer <= 0) {
             this.actions = 0;
@@ -1099,10 +1346,16 @@ class PlayerStatus {
         if (this.currentTimer > 0) {
             this.currentTimer -= this.game.pauseTick;
         }
+        //Page Change Button
+        if (this.game.isClicking(PARAMS.CANVAS_WIDTH / 2 + this.width / 2 - this.upgradeButton.length / 2, upgradeButtonY, this.upgradeButton.length, this.upgradeButton.height)) {
+            this.game.click = {x:0, y:0};
+            this.togglePage();
+        }
 
     }
     draw(ctx) {
         let adventurer = this.game.adventurer;
+
         this.drawBackground(ctx);
         ctx.fillStyle = "White";
         ctx.textAlign = "center"; 
@@ -1139,6 +1392,8 @@ class PlayerStatus {
         ctx.stroke();
         this.drawAttacksBackground(ctx, currentY + 30);
         this.drawUpgradeButton(ctx);
+        this.drawMultipliers(ctx);
+        this.drawCoins(ctx);
         if (this.actions == 4) this.bombAnimation.drawFrame(this.game.pauseTick, ctx, PARAMS.CANVAS_WIDTH * 0.75 - (16 * 15) / 2, PARAMS.CANVAS_HEIGHT / 2 + 70, 15);
         this.animation[this.actions].drawFrame(this.game.pauseTick, ctx, PARAMS.CANVAS_WIDTH * 0.75 - (32 * 15) / 2 - 30, PARAMS.CANVAS_HEIGHT / 2 - 140, 15);
         if (this.upgradeMenu) {
@@ -1148,11 +1403,19 @@ class PlayerStatus {
 
     }
     drawBackground(ctx) {
+        ctx.drawImage(this.background, 
+            0, 0, 
+            1024, 768, 
+            0, 0, 
+            PARAMS.CANVAS_WIDTH, PARAMS.CANVAS_HEIGHT
+        );
+
+
         ctx.beginPath();
         ctx.roundRect(this.startX, this.startY, this.width, this.height, [10]);
         ctx.strokeStyle = "Black";
         ctx.lineWidth = 3;
-        ctx.fillStyle = rgba(0,0,0, 0.5);
+        ctx.fillStyle = rgba(38, 38, 38, 0.9);
         ctx.fill();
         ctx.stroke();
     }
@@ -1226,19 +1489,12 @@ class PlayerStatus {
     drawUpgradeButton(ctx) {
         let oldY = this.startY + 50 + 10 + this.healthBarSize.height * 2 + 20 + 70;
         let y = oldY - 30 + this.width - 25 * 2 + 20;
-        let mouseX = 0;
-        let mouseY = 0;
-        if (this.game.mouse != null) {
-            mouseX = this.game.mouse.x;
-            mouseY = this.game.mouse.y;
-        }
         ctx.beginPath();
         let currentX = this.startX + this.width / 2 - this.upgradeButton.length / 2;
         ctx.lineWidth = 2;
         ctx.roundRect(currentX, y, this.upgradeButton.length, this.upgradeButton.height, [10, 10, 10, 10]);
         ctx.strokeStyle = "Black";
-        if (mouseX > currentX && mouseX < currentX + this.upgradeButton.length &&
-            mouseY > y && mouseY < y + this.upgradeButton.height) {
+        if (this.game.isHovering(currentX, y, this.upgradeButton.length, this.upgradeButton.height)) {
             ctx.fillStyle = rgb(70, 70, 70);
         } else {
             ctx.fillStyle = rgb(100, 100, 100);
@@ -1248,8 +1504,30 @@ class PlayerStatus {
         ctx.textAlign = "center"; 
         ctx.textBaseline = "middle";
         ctx.font = '14px "Press Start 2P"';
-        ctx.fillStyle = "Black";    
+        ctx.fillStyle = "White";    
         ctx.fillText("View Upgrades", currentX + this.upgradeButton.length / 2, y + this.upgradeButton.height / 2);
+    }
+    drawPageButton(ctx) {
+        let oldY = this.startY + 50 + 10 + this.healthBarSize.height * 2 + 20 + 70;
+        let y = oldY - 30 + this.width - 25 * 2 + 20;
+        ctx.beginPath();
+        let currentX = PARAMS.CANVAS_WIDTH / 2 + this.width / 2 - this.upgradeButton.length / 2;
+        ctx.lineWidth = 2;
+        ctx.roundRect(currentX, y, this.upgradeButton.length, this.upgradeButton.height, [10, 10, 10, 10]);
+        ctx.strokeStyle = "Black";
+        if (this.game.isHovering(currentX + 20, y, this.upgradeButton.length - 20, this.upgradeButton.height)) {
+            ctx.fillStyle = rgb(70, 70, 70);
+        } else {
+            ctx.fillStyle = rgb(100, 100, 100);
+        }
+        ctx.fill();
+        ctx.stroke();
+        ctx.textAlign = "center"; 
+        ctx.textBaseline = "middle";
+        ctx.font = '14px "Press Start 2P"';
+        ctx.fillStyle = "White";    
+        ctx.fillText(`Page ${this.pageCount}`, currentX + this.upgradeButton.length / 2, y + this.upgradeButton.height / 2);
+        ctx.font = '10px "Press Start 2P"';
     }
     drawAttacksBackground(ctx, y) {
         let mouseX = 0;
@@ -1259,6 +1537,14 @@ class PlayerStatus {
             mouseX = this.game.mouse.x;
             mouseY = this.game.mouse.y;
         }
+        ctx.beginPath();
+        ctx.lineWidth = 2;
+        ctx.roundRect(this.startX + offset, y + 40, this.width - offset * 2, this.height - y - 50, [0, 0, 10, 10]);
+        ctx.strokeStyle = "Black";
+        ctx.fillStyle = rgba(101, 101, 101, 0.5);
+        ctx.fill();
+        ctx.stroke();
+
         let attacks = ["Sword", "Bow", "Bomb", "DKBolt"];
         let button = {width: (this.width - offset * 2) / attacks.length, height: 40};
         let currentX = this.startX + offset;
@@ -1280,17 +1566,10 @@ class PlayerStatus {
             ctx.textAlign = "center"; 
             ctx.textBaseline = "middle";
             ctx.font = '12px "Press Start 2P"';
-            ctx.fillStyle = "Black";    
+            ctx.fillStyle = "White";    
             ctx.fillText(attack, currentX + button.width / 2, y + button.height / 2);
             currentX += button.width;
         }
-        ctx.beginPath();
-        ctx.lineWidth = 2;
-        ctx.roundRect(this.startX + offset, y + 40, this.width - offset * 2, this.height - y - 50, [0, 0, 10, 10]);
-        ctx.strokeStyle = "Black";
-        // ctx.fillStyle = rgba(0, 0, 0, 0.5);
-        // ctx.fill();
-        ctx.stroke();
         ctx.textAlign = "left"; 
         ctx.textBaseline = "alphabetic";
     }
@@ -1344,7 +1623,7 @@ class PlayerStatus {
             if (!this.game.adventurer.enableBomb) {
                 ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
-                ctx.fillText("Get Upgrade to Unlock", this.startX + 25 + (this.width - 50) / 2, y + 40 + (this.height - y) / 2); //this.height - y - 50
+                ctx.fillText("Get Upgrade to Unlock", this.startX + 25 + (this.width - 50) / 2, y + 20 + (this.height - y) / 2); //this.height - y - 50
             } else {
                 title.push("Bomb Stats:");
                 stats = ["Damage", "Cooldown", "Knockback", "Explosion Size", "Retrieval Speed ", "Max Amount", ""];
@@ -1368,7 +1647,7 @@ class PlayerStatus {
             if (!this.game.adventurer.enableBolt) {
                 ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
-                ctx.fillText("Get Upgrade to Unlock", this.startX + 25 + (this.width - 50) / 2, y + 40 + (this.height - y) / 2);
+                ctx.fillText("Get Upgrade to Unlock", this.startX + 25 + (this.width - 50) / 2, y + 20 + (this.height - y) / 2);
             } else {
                 title.push("Dark Bolt Stats:");
                 stats = ["Damage", "Cooldown", "Explosion Size", "Retrieval Speed ", "Max Amount", ""];
@@ -1451,21 +1730,23 @@ class PlayerStatus {
         ctx.roundRect(PARAMS.CANVAS_WIDTH / 2, this.startY, this.width, this.height, [10]);
         ctx.strokeStyle = "Black";
         ctx.lineWidth = 3;
-        ctx.fillStyle = rgba(0,0,0, 0.5);
+        ctx.fillStyle = rgba(39, 39, 39, 0.9);
         ctx.fill();
         ctx.stroke();
         ctx.lineWidth = 1;
         ctx.textAlign = "left"; 
         ctx.textBaseline = "top"; 
         let y = this.startY + 25;
-        let stats = [];
-        let values = [];
+        // let stats = [];
+        // let values = [];
         let sword = ["Sword Upgrade:"];
         let bow = ["Bow Upgrade:"];
         let swordSpecial = ["Sword Magic Upgrade:"];
         let bowSpecial = ["Bow Magic Upgrade:"];
         let darkBolt = ["DarkBolt Upgrade:"];
         let bomb = ["Bomb Upgrade:"];
+        let combo = ["Combo:"];
+        let other = ["Other Upgrade:"];
 
         let swordAmount = [""];
         let bowAmount = [""];
@@ -1473,32 +1754,51 @@ class PlayerStatus {
         let bowSpecialAmount = [""];
         let darkBoltAmount = [""];
         let bombAmount = [""];
-        let list = [sword, bow, swordSpecial, bowSpecial, bomb, darkBolt];
-        let list2 = [swordAmount, bowAmount, swordSpecialAmount, bowSpecialAmount, bombAmount, darkBoltAmount];
+        let comboAmount = [""];
+        let otherAmount = [""];
+        let list = [sword, bow, swordSpecial, bowSpecial, bomb, darkBolt, combo, other];
+        let list2 = [swordAmount, bowAmount, swordSpecialAmount, bowSpecialAmount, bombAmount, darkBoltAmount, comboAmount, otherAmount];
+        let upgradeAmount = 0;
         this.upgrade.currentUpgrades.forEach(upgrade => {
-            if (upgrade.type == 0) {
+            if (upgrade.type == "Sword") {
+                upgradeAmount++;
                 sword.push(upgrade.name);
                 (upgrade.max != 1) ? swordAmount.push("x" + upgrade.current) : swordAmount.push("");
             }
-            if (upgrade.type == 1) {
+            if (upgrade.type == "Bow") {
+                upgradeAmount++;
                 bow.push(upgrade.name);
                 (upgrade.max != 1) ? bowAmount.push("x" + upgrade.current) : bowAmount.push("");
             }
-            if (upgrade.type == 2) {  //Sword Magic
+            if (upgrade.type == "Magic") {  //Sword Magic
+                upgradeAmount++;
                 swordSpecial.push(upgrade.name);
                 (upgrade.max != 1) ? swordSpecialAmount.push("x" + upgrade.current) : swordSpecialAmount.push("");
             }
-            if (upgrade.type == 3) { //Bomb
+            if (upgrade.type == "Bomb") { //Bomb
+                upgradeAmount++;
                 bomb.push(upgrade.name);
                 (upgrade.max != 1) ? bombAmount.push("x" + upgrade.current) : bombAmount.push("");
             }
-            if (upgrade.type == 4) { //BowMagic
+            if (upgrade.type == "Lightning") { //BowMagic
+                upgradeAmount++;
                 bowSpecial.push(upgrade.name);
                 (upgrade.max != 1) ? bowSpecialAmount.push("x" + upgrade.current) : bowSpecialAmount.push("");
             }
-            if (upgrade.type == 5) { //DarkBolt
+            if (upgrade.type == "DarkBolt") { //DarkBolt
+                upgradeAmount++;
                 darkBolt.push(upgrade.name);
                 (upgrade.max != 1) ? darkBoltAmount.push("x" + upgrade.current) : darkBoltAmount.push("");
+            }
+            if (upgrade.type == "Combo") {
+                upgradeAmount++;
+                combo.push(upgrade.name);
+                (upgrade.max != 1) ? comboAmount.push("x" + upgrade.current) : comboAmount.push("");
+            }
+            if (upgrade.type == "Other" || upgrade.type == "All") {
+                upgradeAmount++;
+                other.push(upgrade.name);
+                (upgrade.max != 1) ? otherAmount.push("x" + upgrade.current) : otherAmount.push("");
             }
         });
         ctx.font = '24px "Press Start 2P"';
@@ -1510,79 +1810,152 @@ class PlayerStatus {
         } else {
             for (let i of list) {
                 if (i.length > 1) {
-                    stats.push(...i);
-                    stats.push("");
+                    this.stats.push(...i);
+                    this.stats.push("");
                 }
             }
             for (let i of list2) {
                 if (i.length > 1) {
-                    values.push(...i);
-                    values.push("");
+                    this.values.push(...i);
+                    this.values.push("");
                 }
             }
-            // stats.push(...sword);
-            // values.push(...swordAmount)
-            // // if (sword.length == 1) {
-            // //     stats.push("No Upgrades"); 
-            // //     values.push("");
-            // // }
-            // stats.push("");
-            // values.push("");
-            // stats.push(...swordSpecial);
-            // values.push(...swordSpecialAmount);
-            // // if (swordSpecial.length == 1) {
-            // //     stats.push("No Upgrades"); 
-            // //     values.push("");
-            // // }
-            // stats.push("");
-            // values.push("");
-            // stats.push(...bow);
-            // values.push(...bowAmount);
-            // // if (bow.length == 1) {
-            // //     stats.push("No Upgrades"); 
-            // //     values.push("");
-            // // }
-            // stats.push("");
-            // values.push("");
-            // stats.push(...bowSpecial);
-            // values.push(...bowSpecialAmount);
-            // // if (bowSpecial.length == 1) {
-            // //     stats.push("No Upgrades"); 
-            // //     values.push("");
-            // // }
-            // stats.push("");
-            // values.push("");
-            // stats.push(...bomb);
-            // values.push(...bombAmount);
-            // // if (bomb.length == 1) {
-            // //     stats.push("No Upgrades"); 
-            // //     values.push("");
-            // // }
-            // // stats.push("");
-            // values.push("");
-            // stats.push(...darkBolt);
-            // values.push(...darkBoltAmount);
-            // // if (darkBolt.length == 1) {
-            // //     stats.push("No Upgrades"); 
-            // //     values.push("");
-            // // }
         }
+        // console.log(this.stats);
         ctx.font = '10px "Press Start 2P"';
         ctx.fillStyle = "White";
-        let currentY = y + 20;
-        for (let line of stats) {
-            ctx.fillText(line, PARAMS.CANVAS_WIDTH / 2 + 25, currentY);
-            currentY += 15;
+        let currentY = y;
+        if (this.stats.length > 35) {
+            this.drawPageButton(ctx);
+            for (let i = 0; i < 35; i++) {
+                this.upgradePage1Stats.push(this.stats[i]);
+                this.upgradePage1Values.push(this.values[i]);
+            }
+            let current = 35;
+            while (current < this.stats.length) {
+                this.upgradePage2Stats.push(this.stats[current]);
+                this.upgradePage2Values.push(this.values[current]);
+                current++;
+            }
+            if (this.upgradePage2Stats[0] == "") {
+                this.upgradePage2Stats.shift();
+                this.upgradePage2Values.shift();
+            } 
+
+            if (this.pageCount == 1) {
+                ctx.textAlign = "left"
+                for (let line of this.upgradePage1Stats) {
+                    ctx.fillText(line, PARAMS.CANVAS_WIDTH / 2 + 25, currentY);
+                    currentY += 15;
+                }
+                currentY = y;
+                ctx.textAlign = "right"; 
+                for (let line of this.upgradePage1Values) {
+                    ctx.fillText(line, PARAMS.CANVAS_WIDTH / 2 + this.width - 25, currentY);
+                    currentY += 15;
+                }
+            } else if (this.pageCount == 2) {
+                ctx.textAlign = "left"
+                for (let line of this.upgradePage2Stats) {
+                    ctx.fillText(line, PARAMS.CANVAS_WIDTH / 2 + 25, currentY);
+                    currentY += 15;
+                }
+                currentY = y;
+                ctx.textAlign = "right"; 
+                for (let line of this.upgradePage2Values) {
+                    ctx.fillText(line, PARAMS.CANVAS_WIDTH / 2 + this.width - 25, currentY);
+                    currentY += 15;
+                }
+            }
         }
-        currentY = y + 20;
-        ctx.textAlign = "right"; 
-        for (let line of values) {
-            ctx.fillText(line, PARAMS.CANVAS_WIDTH / 2 + this.width - 25, currentY);
-            currentY += 15;
+        else {
+            for (let line of this.stats) {
+                ctx.fillText(line, PARAMS.CANVAS_WIDTH / 2 + 25, currentY);
+                currentY += 15;
+            }
+            currentY = y;
+            ctx.textAlign = "right"; 
+            for (let line of this.values) {
+                ctx.fillText(line, PARAMS.CANVAS_WIDTH / 2 + this.width - 25, currentY);
+                currentY += 15;
+            }
         }
+        this.resetLists();
+
+    }
+    resetLists() {
+        this.stats = [];
+        this.values = [];
+        this.upgradePage1Stats = [];
+        this.upgradePage2Stats = [];
+        this.upgradePage1Values = [];
+        this.upgradePage2Values = [];
     }
     toggleUpgradeMenu() {
         this.upgradeMenu = !this.upgradeMenu;
     }
+    togglePage() {
+        if (this.pageCount == 1) {
+            this.pageCount = 2;
+        } else {
+            this.pageCount = 1;
+        }
+    }
+    drawCoins(ctx) {
+        let buffer = (5 * 3.5) / 2;
+        ctx.font = '12px "Press Start 2P"';
+        let width = ctx.measureText(this.game.adventurer.coins.toString()).width + 20 + buffer * 2;
+        let height = buffer * 2 + 20;
+        ctx.beginPath();
+        ctx.fillStyle = rgba(101, 101, 101, 0.5);
+        ctx.strokeStyle = "Black";
+        ctx.lineWidth = 2;
+        ctx.roundRect(PARAMS.CANVAS_WIDTH * 0.75 - width / 2, this.startY + buffer, width, height, [10]);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = "White";
+        ctx.textBaseline = "middle";
+        ctx.textAlign = "left";
+        ctx.fillText(this.game.adventurer.coins, PARAMS.CANVAS_WIDTH * 0.75 - width / 2 + buffer + 20, this.startY + buffer + height / 2);
+        ctx.drawImage(this.coinImage, 
+            14, 143, 
+            5, 5, 
+            PARAMS.CANVAS_WIDTH * 0.75 - width / 2 + buffer, this.startY + buffer + height / 2 - buffer +1, 
+            5 * 3.5, 5 * 3.5
+        );
+        ctx.lineWidth = 1;
+    }
+    drawMultipliers(ctx) {
+        let buffer = 20;
+        ctx.beginPath();
+        ctx.fillStyle = rgba(38, 38, 38, 0.9);
+        ctx.strokeStyle = "Black";
+        ctx.lineWidth = 3;
+        ctx.roundRect(PARAMS.CANVAS_WIDTH * 0.75 - 175, this.startY, 350, 125, [10]);
+        ctx.fill();
+        ctx.stroke();
+
+        let adventurer = this.game.adventurer;
+        let statList = ["Exp Multiplier:", "Coin Multiplier:"];
+        let statValues = [`x${adventurer.expMultiplier.toFixed(1)}`, `x${adventurer.coinMultiplier.toFixed(1)}`]
+        let Y = this.startY + buffer * 2 + 30;
+        ctx.font = '12px "Press Start 2P"';
+
+        ctx.fillStyle = "White";
+        let currentY = Y;
+        ctx.textAlign = "left"; 
+        ctx.textBaseline = "top"; 
+        for (let line of statList) {
+            ctx.fillText(line, PARAMS.CANVAS_WIDTH * 0.75 - 175 + buffer, currentY);
+            currentY += 20;
+        }
+        currentY = Y;
+        ctx.textAlign = "right"; 
+        for (let line of statValues) {
+            ctx.fillText(line, PARAMS.CANVAS_WIDTH * 0.75 + 175 - buffer, currentY);
+            currentY += 20;
+        }
+    }
+
     
 }

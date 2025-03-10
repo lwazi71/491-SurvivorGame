@@ -67,10 +67,11 @@ class GolemMech {
 
         this.currentHealth = 500;
         this.maxHealth = 500;
+        this.didCrit = false;
         this.name = "GolemMech"
 
-        this.profileAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 243, 120, 100, 40, 7.9, 0.12, true, true);
-        this.healthbar = this.game.addEntity(new BossHealthBar(game, this, this.profileAnimation, 40, 0, 0, 3));
+        this.profileAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/HudIcons/Boss2Hud.png"), 0, 0, 32, 32, 7, 0.2, false, true);
+        this.healthbar = this.game.addEntity(new BossHealthBar(game, this, this.profileAnimation, 32, 0, 0, 3));
         this.pointer = this.game.addEntity(new Pointer(game, this));
 
 
@@ -141,9 +142,9 @@ class GolemMech {
         //immunity detransformation
         this.animations[6][1] = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech-flipped.png"), 301, 300, 100, 100, 6.9, 0.1, false, true);
 
-        this.deathAnimation1 = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 200, 700, 100, 100, 5.9, 0.1, false, false);
+        this.deathAnimation1 = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 200, 700, 100, 100, 6, 0.1, false, false);
 
-        this.deathAnimation2 = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 200, 800, 100, 100, 3.9, 0.1, false, false);
+        this.deathAnimation2 = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/GolemMech.png"), 200, 800, 100, 100, 4, 0.1, false, false);
 
     }
 
@@ -499,7 +500,7 @@ class GolemMech {
     
         if (this.currentHealth <= 0) {
             this.game.addEntity(new CoinPile(this.game, (this.x + 28), (this.y + 55)));
-            this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
+            this.game.addEntity(new BossExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
             this.game.addEntity(new Chest(this.game, (this.x + (this.bitSizeX * this.scale)/2) - 125, (this.y + (this.bitSizeY * this.scale)/2)));
 
             setTimeout(() => {

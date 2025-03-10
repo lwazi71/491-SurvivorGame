@@ -6,10 +6,11 @@ class Ghost {
         this.facing = 0; //0 = right, 1 = left
         this.attackPower = 5;
         this.scale = 2.6;
-        this.speed = 280;
+        this.speed = 235;
 
         this.health = 20;
         this.maxHealth = 20;
+        this.didCrit = false;
         this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 2, 13));
         this.attackPower = 10;
         this.attackCooldown = 1.0; // Cooldown in seconds between attacks

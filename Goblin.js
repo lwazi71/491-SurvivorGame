@@ -6,10 +6,11 @@ class Goblin {
         this.facing = 0; //0 = right, 1 = left
         this.attackPower = 10;
         this.scale = 2;
-        this.speed = 217;
+        this.speed = 170;
 
         this.health = 26;
         this.maxHealth = 26;
+        this.didCrit = false;
         this.attackPower = 10;
         this.attackCooldown = 1.0; // Cooldown in seconds between attacks
         this.attackCooldownTimer = 0; // Tracks remaining cooldown time
