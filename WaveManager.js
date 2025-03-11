@@ -698,7 +698,17 @@ class WaveManager {
                 this.multiplier = 0.3;
         } else if (this.game.camera.currMap == 4) {
             //set spawn pattern for map 4 here
+            this.spawnPatterns = [
+                {
+                    startTime: 0, //when they'll start spawning
+                    interval: 0, //Instantly spawns since it's 0 seconds
+                    count: 1,
+                    pool: "minibosses",
+                  //  enemy_type: "miniboss_zombie", //Always spawn miniboss zombies zombies
+                    oneTime: false //If we want to spawn the enemy one time. If this is true, it won't worry about the interval and just spawn at the start time
 
+                }
+            ];
              this.bossTime = 180; //maybe have the final spawn in earlier?
         } else {
             //if there's no map right now, there will be no spawn pattern

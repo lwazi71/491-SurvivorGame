@@ -290,8 +290,8 @@ class Boss3 {
             const randomChoice = Math.random();
             
             // You can adjust this threshold to control how often each action occurs
-            // 40/60 chance between charging and shooting
-            const chargeThreshold = 0.4; 
+            // 45/55 chance between charging and shooting
+            const chargeThreshold = 0.45; 
             if (distance >= 580) {
                 if (!this.isPreparingCharge) {
                     this.isPreparingCharge = true;
@@ -363,7 +363,7 @@ class Boss3 {
                 Math.pow((this.BB.y + this.BB.height/2) - this.chargeTarget.y, 2)
             );
     
-            if (currentDistanceToTarget <= 10) {
+            if (currentDistanceToTarget <= 45) {
                 this.isCharging = false;
                 this.state = 0;
                 this.currentChargeDuration = 0;  // Reset the duration timer
