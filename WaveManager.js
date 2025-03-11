@@ -661,7 +661,7 @@ class WaveManager {
                     interval: 15, count: 2, pool: "charge", enemy_type: "slime", oneTime: false},
             ];
             this.statsMultiplier = currentStatsMultiplier;
-            this.multiplier = 0.17;
+            this.multiplier = 0.13;
         } else if (this.game.camera.currMap == 3) {
             //set spawn pattern for map 3 here
             this.spawnPatterns = [
