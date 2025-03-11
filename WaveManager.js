@@ -2,15 +2,15 @@ class WaveManager {
     constructor(game) {
         this.game = game;
         this.gameTime = 0; // Total time elapsed in seconds
-        this.spawnBuffer = 425;
+        this.spawnBuffer = 500;
         this.bossSpawned = false;
         this.bossActive = false;
         this.maxEnemies =  700; //set to 700 so game doesnt start to lag or become too difficult
          // Boss fight timing
-        this.bossTime = 10; //300 seconds seconds or 5 minutes until boss comes (initialization for map 1, can change it later on).
+        this.bossTime = 300; //300 seconds seconds or 5 minutes until boss comes (initialization for map 1, can change it later on).
         this.mapCompleted = false; //will be for if we beat the boss
         this.totalGameTime = 0;
-        this.multiplier = 0.35;
+        this.multiplier = 0.17;
         
         // Enemy pools that unlock at different times
         this.enemyPools = {
@@ -365,7 +365,7 @@ class WaveManager {
 
         // Regular enemy spawning logic
        if (this.game.camera.currMap < 4) {
-            this.statsMultiplier.health = 1 + (this.totalGameTime / 120) * this.multiplier; //increase enemy health by 35% every 2:00. This is so enemy still has fighting chance against player
+            this.statsMultiplier.health = 1 + (this.totalGameTime / 120) * this.multiplier; //increase enemy health by 7% every 2:00. This is so enemy still has fighting chance against player
             const twoMinuteIntervals = Math.floor(this.totalGameTime / 15); // Get number of completed 2-minute intervals
        }
         // this.statsMultiplier.health = 1 + (this.totalGameTime / 120) * 0.25; //increase enemy health by 30% every 2:00. This is so enemy still has fighting chance against player
@@ -655,12 +655,13 @@ class WaveManager {
                     interval: 7, count: 10, pool: "melee", enemy_type: "zombie", oneTime: false},
                 {
                     startTime: 210, //3:30 minutes
-                    interval: 40, count: 2, pool: "rangedAOE", enemy_type: "ratmage", oneTime: false},
+                    interval: 40, count: 1, pool: "rangedAOE", enemy_type: "ratmage", oneTime: false},
                 {
                     startTime: 230, //4:00 minutes
                     interval: 15, count: 2, pool: "charge", enemy_type: "slime", oneTime: false},
             ];
             this.statsMultiplier = currentStatsMultiplier;
+            this.multiplier = 0.13;
         } else if (this.game.camera.currMap == 3) {
             //set spawn pattern for map 3 here
             this.spawnPatterns = [
@@ -694,9 +695,20 @@ class WaveManager {
                     interval: 15, count: 1, pool: "charge", enemy_type: "slime", oneTime: false},
                 ];
                 this.statsMultiplier = currentStatsMultiplier;
+                this.multiplier = 0.04;
         } else if (this.game.camera.currMap == 4) {
             //set spawn pattern for map 4 here
+            this.spawnPatterns = [
+                {
+                    startTime: 0, //when they'll start spawning
+                    interval: 0, //Instantly spawns since it's 0 seconds
+                    count: 1,
+                    pool: "minibosses",
+                  //  enemy_type: "miniboss_zombie", //Always spawn miniboss zombies zombies
+                    oneTime: false //If we want to spawn the enemy one time. If this is true, it won't worry about the interval and just spawn at the start time
 
+                }
+            ];
              this.bossTime = 180; //maybe have the final spawn in earlier?
         } else {
             //if there's no map right now, there will be no spawn pattern

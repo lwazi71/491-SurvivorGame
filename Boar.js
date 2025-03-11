@@ -222,7 +222,7 @@ class Boar {
                 Math.pow((this.y + (this.bitSizeY * this.scale)/2) - this.chargeTarget.y, 2)
             );
     
-            if (currentDistanceToTarget <= 10) {
+            if (currentDistanceToTarget <= 45) {
                 this.isCharging = false;
                 this.state = 0;
                 this.currentChargeDuration = 0;  // Reset the duration timer

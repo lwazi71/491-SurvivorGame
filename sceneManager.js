@@ -179,6 +179,7 @@ class SceneManager {
             }
 
             //if currMap < 4? else { win screen }
+            console.log(this.currMap);
             this.game.addEntity(new GameMap(this.game, this.currMap));
             
             // Reset player position
@@ -200,7 +201,9 @@ class SceneManager {
             }
             this.waveManager.resetForNewMap();
         }
-        // this.game.addEntity(new Boss1(this.game, 200, 400));
+        //  this.game.addEntity(new Boss3(this.game, 200, 400));
+        // this.game.addEntity(new HellSpawn(this.game, 200, 400));
+        // this.game.addEntity(new Boar(this.game, 200, 400));
     }
 
     triggerDeathScreen() {
@@ -324,7 +327,7 @@ class Title {
                 name: "Start",
                 game: this.game,
                 action() {this.game.camera.enableTitle = false;
-                        this.game.camera.loadLevel(1, true);}
+                        this.game.camera.loadLevel(this.game.camera.currMap, true);}
             },
             {
                 name: "Settings",

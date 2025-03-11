@@ -7,7 +7,7 @@ class GameMap {
             this.scale = 5;
         } else if (this.map == 2) { 
             this.image = ASSET_MANAGER.getAsset("./Sprites/Map/level2.png");
-            this.scale = 4;
+            this.scale = 5;
         } else if (this.map == 3) {
             this.image = ASSET_MANAGER.getAsset("./Sprites/Map/level4.png");
             this.scale = 3;

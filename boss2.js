@@ -68,7 +68,7 @@ class GolemMech {
         this.currentHealth = 500;
         this.maxHealth = 500;
         this.didCrit = false;
-        this.name = "GolemMech"
+        this.name = "Chrono Golem"
 
         this.profileAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/HudIcons/Boss2Hud.png"), 0, 0, 32, 32, 7, 0.2, false, true);
         this.healthbar = this.game.addEntity(new BossHealthBar(game, this, this.profileAnimation, 32, 0, 0, 3));

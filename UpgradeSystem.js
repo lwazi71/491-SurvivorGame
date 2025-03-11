@@ -33,7 +33,7 @@ class UpgradeSystem {
         this.noUpgrades = false;
         //Upgrade changes
         //General share values
-        this.attackIncreaseAmount = 1;
+        this.attackIncreaseAmount = 5;
         this.attackSpeedIncreaseAmount = 0.1;
         this.knockbackIncrease = 100;
         this.maxAmount = -1;
@@ -270,14 +270,14 @@ class UpgradeSystem {
             {
                 game: this.game,
                 name: "All Weapon Damage Increase", 
-                upgrade() {this.game.adventurer.attackDamage += this.game.upgrade.attackIncreaseAmount;
-                    this.game.adventurer.bowDamage += this.game.upgrade.attackIncreaseAmount;
-                    this.game.adventurer.magicDamage += this.game.upgrade.attackIncreaseAmount;
-                    this.game.adventurer.bombDamage += this.game.upgrade.attackIncreaseAmount;
-                    this.game.adventurer.lightingDamage += this.game.upgrade.attackIncreaseAmount;
-                    this.game.adventurer.boltDamage += this.game.upgrade.attackIncreaseAmount;
+                upgrade() {this.game.adventurer.attackDamage += (this.game.upgrade.attackIncreaseAmount * 0.4);
+                    this.game.adventurer.bowDamage += (this.game.upgrade.attackIncreaseAmount * 0.4);
+                    this.game.adventurer.magicDamage += (this.game.upgrade.attackIncreaseAmount * 0.4);
+                    this.game.adventurer.bombDamage += (this.game.upgrade.attackIncreaseAmount * 0.4);
+                    this.game.adventurer.lightingDamage += (this.game.upgrade.attackIncreaseAmount * 0.4);
+                    this.game.adventurer.boltDamage += (this.game.upgrade.attackIncreaseAmount * 0.4);
                  }, 
-                description: `Increase all weapon damage by ${this.attackIncreaseAmount * 2}`,
+                description: `Increase all weapon damage by ${this.attackIncreaseAmount * 0.4}`,
                 type: "All",
                 max: this.maxAmount,
                 current: 0,

@@ -184,6 +184,7 @@ ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Hover.mp3");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Pause.mp3");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Select.mp3");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Unpause.mp3");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Audio_Music_Slash.mp3");
 
 
 
