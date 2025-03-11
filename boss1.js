@@ -73,7 +73,7 @@ class Boss1 { //goblin king
         //order properties
         this.orderAnimationTimer = 0;
         this.orderAnimationDuration = 5.9 * 0.2;
-        this.waveCooldown = 40; //cooldown to how many times the boss can call in waves
+        this.waveCooldown = 55; //cooldown to how many times the boss can call in waves
         this.waveCooldownTimer = 0; 
         this.goblinsAlive = 0;
         this.goblinSpawn = 25;

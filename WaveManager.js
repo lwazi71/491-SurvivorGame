@@ -652,16 +652,16 @@ class WaveManager {
                     oneTime: false},
                 {
                     startTime: 180, //After 187 seconds, zombie enemies will spawn faster now
-                    interval: 7, count: 10, pool: "melee", enemy_type: "zombie", oneTime: false},
+                    interval: 7, count: 8, pool: "melee", enemy_type: "zombie", oneTime: false},
                 {
                     startTime: 210, //3:30 minutes
-                    interval: 40, count: 2, pool: "rangedAOE", enemy_type: "ratmage", oneTime: false},
+                    interval: 40, count: 1, pool: "rangedAOE", enemy_type: "ratmage", oneTime: false},
                 {
                     startTime: 230, //4:00 minutes
                     interval: 15, count: 2, pool: "charge", enemy_type: "slime", oneTime: false},
             ];
             this.statsMultiplier = currentStatsMultiplier;
-            this.multiplier = 0.22;
+            this.multiplier = 0.17;
         } else if (this.game.camera.currMap == 3) {
             //set spawn pattern for map 3 here
             this.spawnPatterns = [
@@ -695,7 +695,7 @@ class WaveManager {
                     interval: 15, count: 1, pool: "charge", enemy_type: "slime", oneTime: false},
                 ];
                 this.statsMultiplier = currentStatsMultiplier;
-                this.multiplier = 0.3;
+                this.multiplier = 0.04;
         } else if (this.game.camera.currMap == 4) {
             //set spawn pattern for map 4 here
             this.spawnPatterns = [
