@@ -22,6 +22,7 @@ class PortalDoor {
         this.animationTimer = 0;
         this.pointer = this.game.addEntity(new Pointer(game, this));
 
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Portal Open.wav");
         
         this.updateBB();
         this.loadAnimations();

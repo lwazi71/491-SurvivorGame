@@ -243,6 +243,7 @@ class Imp {
 
 
     shootProjectiles() {
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Enemy magic attack.wav");
         const player = this.game.adventurer;
         const dx = (player.x + (player.bitSize * player.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2);
         const dy = (player.y + (player.bitSize * player.scale)/2) - (this.y + (this.bitSizeY * this.scale)/2);

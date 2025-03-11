@@ -22,7 +22,7 @@ class SceneManager {
         this.enableLevelShop = false;
         this.shopTransition = null;
 
-        this.enableTitle = false; //Whether title screen shows up or not
+        this.enableTitle = true; //Whether title screen shows up or not
 
         this.shakeIntensity = 0;
         this.shakeDecay = 0.9; 
@@ -34,8 +34,8 @@ class SceneManager {
         this.game.addEntity(this.deathScreen);
         this.levelMusicPath = "./Audio/Music/Survivorio Clone Battle Song (1).wav";
 
-        this.loadTestLevel(this.false);
-        // if (!this.enableTitle) this.loadLevel(this.currMap, false);
+        // this.loadTestLevel(this.false);
+        if (!this.enableTitle) this.loadLevel(this.currMap, false);
 
 
         // this.game.addEntity(new GameMap(this.game));
@@ -153,8 +153,10 @@ class SceneManager {
         const player = this.adventurer;
         this.transition = transition;
         if (this.transition) {
+            ASSET_MANAGER.pauseMusic();
             this.game.addEntity(new TransitionScreen(this.game, this.currMap));
         } else {
+            ASSET_MANAGER.playAsset(this.game.camera.levelMusicPath);
             this.game.addEntity(new FadeIn(this.game));
             this.startWave = true;  
             if (this.currMap == 1) {

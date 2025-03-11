@@ -474,6 +474,7 @@ class GolemMech {
     }
 
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Enemy damage.mp3");
         if (this.immunity) {
             return;
         }

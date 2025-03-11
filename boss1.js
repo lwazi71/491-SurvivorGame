@@ -584,7 +584,7 @@ class Boss1 { //goblin king
     }
 
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
-
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Enemy damage.mp3");
         this.currentHealth -= damage;
 
         if (this.throwTimer > 0) {
@@ -614,7 +614,7 @@ class Boss1 { //goblin king
         if (this.currentHealth <= 0) {
             this.game.addEntity(new CoinPile(this.game, (this.x + 28), (this.y + 55)));
             this.game.addEntity(new Chest(this.game, (this.x + (this.bitSizeX * this.scale)/2) - 125, (this.y + (this.bitSizeY * this.scale)/2)));
-            this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
+            this.game.addEntity(new BossExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
 
             setTimeout(() => {
                 // Check if the game still exists before adding the entity

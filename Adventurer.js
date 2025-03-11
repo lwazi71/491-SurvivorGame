@@ -696,6 +696,7 @@ class Adventurer { //every entity should have update and draw!
 
             if ((entity instanceof Chest) && this.BB.collide(entity.BB)) {
                 //open screen.
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/Chest open.wav");
                 this.game.camera.enableChest = true;
                 entity.removeFromWorld = true;
             } 
