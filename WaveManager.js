@@ -652,7 +652,7 @@ class WaveManager {
                     oneTime: false},
                 {
                     startTime: 180, //After 187 seconds, zombie enemies will spawn faster now
-                    interval: 7, count: 8, pool: "melee", enemy_type: "zombie", oneTime: false},
+                    interval: 7, count: 10, pool: "melee", enemy_type: "zombie", oneTime: false},
                 {
                     startTime: 210, //3:30 minutes
                     interval: 40, count: 1, pool: "rangedAOE", enemy_type: "ratmage", oneTime: false},
