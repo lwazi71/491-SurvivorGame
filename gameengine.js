@@ -328,7 +328,7 @@ class GameEngine {
                     this.camera.enableLevelShop = false;
                     this.levelShop.enableBuy = false;
                     this.levelShop.showUpgrade = false;
-                    this.shopPause = false;
+                    this.toggleShopPause();
                     ASSET_MANAGER.playAsset("./Audio/SoundEffects/Back.mp3");
                 }
             } else if (this.deathPause && this.deathScreen.showUpgrade) {
@@ -362,6 +362,11 @@ class GameEngine {
     }
     toggleUpgradePause() {
         this.upgradePause = !this.upgradePause;
+        // if (this.upgradePause) {
+        //     ASSET_MANAGER.pauseMusic();
+        // } else {
+        //     ASSET_MANAGER.playAsset(this.camera.levelMusicPath);
+        // }
     }
 
     toggleDeathPause() {
@@ -373,6 +378,13 @@ class GameEngine {
     }
     toggleShopPause() {
         this.shopPause = !this.shopPause;
+        if (this.shopPause) {
+            ASSET_MANAGER.pauseMusic();
+            ASSET_MANAGER.playAsset("./Audio/Music/Shop Music.mp3");
+        } else {
+            ASSET_MANAGER.pauseMusic();
+            ASSET_MANAGER.playAsset(this.camera.levelMusicPath);
+        }
     }
     resetDrawingValues() {
         this.ctx.textAlign = "left";

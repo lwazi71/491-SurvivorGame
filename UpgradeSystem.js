@@ -1227,7 +1227,7 @@ class PlayerStatus {
         this.width = PARAMS.CANVAS_WIDTH / 2 - this.startX;
         this.height = PARAMS.CANVAS_HEIGHT - this.startY * 2;
 
-        this.bombAnimation =this.bombAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/collectables.png"), 0, 16, 16, 16, 4, 0.1, false, true);
+        this.bombAnimation = this.bombAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/collectables.png"), 0, 16, 16, 16, 4, 0.1, false, true);
         this.background = ASSET_MANAGER.getAsset("./Sprites/HudIcons/PlayerBackground.png");
         this.coinImage = ASSET_MANAGER.getAsset("./Sprites/Objects/collectables.png");
         this.animation = [];

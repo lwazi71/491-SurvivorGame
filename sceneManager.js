@@ -156,11 +156,11 @@ class SceneManager {
             ASSET_MANAGER.pauseMusic();
             this.game.addEntity(new TransitionScreen(this.game, this.currMap));
         } else {
-            ASSET_MANAGER.playAsset(this.game.camera.levelMusicPath);
             this.game.addEntity(new FadeIn(this.game));
             this.showLevel = true;
             this.startWave = true;  
             if (this.currMap == 1) {
+                ASSET_MANAGER.playAsset(this.game.camera.levelMusicPath);
                 //Honestly this could go in death screen too as it's a reset
                 this.Hud = new Hud(this.game, this.adventurer);
                 this.upgrade = new UpgradeSystem(this.game);

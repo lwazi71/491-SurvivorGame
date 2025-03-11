@@ -179,8 +179,14 @@ ASSET_MANAGER.queueDownload("./Sprites/Map/level4.png");
 //Music
 ASSET_MANAGER.queueDownload("./Audio/Music/Survivorio Clone Battle Song (1).wav");
 ASSET_MANAGER.queueDownload("./Audio/Music/Death.wav");
+ASSET_MANAGER.queueDownload("./Audio/Music/Shop Music.mp3");
 
 //Sfx
+//boss1
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss1 Coin Attack.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss1 Jumping.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss1 summon.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss1 death.wav");
 
 //boss4
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss4 attack.wav");
@@ -227,6 +233,7 @@ ASSET_MANAGER.downloadAll(() => {
 	ctx.imageSmoothingEnabled = false;
 	canvas.style.cursor = "crosshair";
 	ASSET_MANAGER.autoRepeat("./Audio/Music/Survivorio Clone Battle Song (1).wav");
+	ASSET_MANAGER.autoRepeat("./Audio/Music/Shop Music.mp3");
 
 	PARAMS.CHEATS = false;
 	// document.getElementById("btn").addEventListener("click", function() {

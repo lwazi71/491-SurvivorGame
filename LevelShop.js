@@ -100,7 +100,7 @@ class LevelShop {
                 this.enableBuy = false;
                 this.game.camera.enableLevelShop = false;
                 this.showUpgrade = false;
-                this.game.shopPause = false;
+                this.game.toggleShopPause();
                 this.game.click = {x:0, y:0};
             }
         }

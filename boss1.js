@@ -313,6 +313,7 @@ class Boss1 { //goblin king
             this.landingAnimationTimer += this.game.clockTick;
             this.isAboutToAOE = false;
             if (!this.circleSpawned) {
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/Explosion.mp3");
                 this.game.addEntity(new CircleAOE(this.game, this.aoeTargetX, this.aoeTargetY , "./Sprites/Explosion/explosion3.png", 
                     null, 9.4, this.landingDamage, 0, null, false, 
                     0, 0, 48, 48, 6, 0.1, false, false));
@@ -348,6 +349,7 @@ class Boss1 { //goblin king
             this.healAnimationTimer += this.game.clockTick;
             if (this.healAnimationTimer >= this.healAnimationDuration) { //at the end of the animation
                 console.log("HEALING NOW");
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/Healing.wav");
                 this.invincible = false;
                 this.healAnimationTimer = 0;
                 this.state = 0;
@@ -459,6 +461,7 @@ class Boss1 { //goblin king
             if (entity instanceof Adventurer) {
                 if (this.BB.collide(entity.BB) && !entity.invincible) {
                     if (this.attackCooldownTimer <= 0) {
+                        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Enemy melee punch.wav");
                         // Attack the player and reset cooldown timer
                         const centerX = this.BB.x + this.BB.width/2;
                         const centerY = this.BB.y + this.BB.height/2;
@@ -476,6 +479,7 @@ class Boss1 { //goblin king
 
     initiateJumpAttack() {
         if (this.state === 0) { // Only initiate if in normal state
+            ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss1 Jumping.wav");
             this.state = 5; // Start jump animation
             this.isPreparingAOE = false;
             this.isAboutToAOE = false;
@@ -488,6 +492,7 @@ class Boss1 { //goblin king
 
     initiateCommandWave() {
         if (this.state === 0) {
+            ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss1 summon.wav");
             this.state = 3;
             this.orderAnimationTimer = 0; 
             this.animations[3][this.facing].elapsedTime = 0; //reset animation
@@ -509,6 +514,7 @@ class Boss1 { //goblin king
     
     throwMoney() {
         console.log("throwing money!");
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss1 Coin Attack.wav");
         const characterCenterX = this.x + (this.bitSizeX * this.scale) / 2;
         const characterCenterY = this.y + (this.bitSizeY * this.scale) / 2;
         const player = this.game.adventurer;
@@ -612,6 +618,7 @@ class Boss1 { //goblin king
         }
     
         if (this.currentHealth <= 0) {
+            ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss1 death.wav");
             this.game.addEntity(new CoinPile(this.game, (this.x + 28), (this.y + 55)));
             this.game.addEntity(new Chest(this.game, (this.x + (this.bitSizeX * this.scale)/2) - 125, (this.y + (this.bitSizeY * this.scale)/2)));
             this.game.addEntity(new BossExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
