@@ -33,7 +33,7 @@ class UpgradeSystem {
         this.noUpgrades = false;
         //Upgrade changes
         //General share values
-        this.attackIncreaseAmount = 5;
+        this.attackIncreaseAmount = 1;
         this.attackSpeedIncreaseAmount = 0.1;
         this.knockbackIncrease = 100;
         this.maxAmount = -1;
@@ -196,7 +196,7 @@ class UpgradeSystem {
                 upgrade() {this.game.adventurer.critChance += 0.05; }, 
                 description: `Increase Crit Chance by 5%`,
                 type: "Other",
-                max: 3, // to get to 100%
+                max: 19, // to get to 100%
                 current: 0,
                 color: "White",
             }, 
@@ -270,14 +270,14 @@ class UpgradeSystem {
             {
                 game: this.game,
                 name: "All Weapon Damage Increase", 
-                upgrade() {this.game.adventurer.attackDamage += (this.game.upgrade.attackIncreaseAmount * 0.4);
-                    this.game.adventurer.bowDamage += (this.game.upgrade.attackIncreaseAmount * 0.4);
-                    this.game.adventurer.magicDamage += (this.game.upgrade.attackIncreaseAmount * 0.4);
-                    this.game.adventurer.bombDamage += (this.game.upgrade.attackIncreaseAmount * 0.4);
-                    this.game.adventurer.lightingDamage += (this.game.upgrade.attackIncreaseAmount * 0.4);
-                    this.game.adventurer.boltDamage += (this.game.upgrade.attackIncreaseAmount * 0.4);
+                upgrade() {this.game.adventurer.attackDamage += this.game.upgrade.attackIncreaseAmount;
+                    this.game.adventurer.bowDamage += this.game.upgrade.attackIncreaseAmount;
+                    this.game.adventurer.magicDamage += this.game.upgrade.attackIncreaseAmount;
+                    this.game.adventurer.bombDamage += this.game.upgrade.attackIncreaseAmount;
+                    this.game.adventurer.lightingDamage += this.game.upgrade.attackIncreaseAmount;
+                    this.game.adventurer.boltDamage += this.game.upgrade.attackIncreaseAmount;
                  }, 
-                description: `Increase all weapon damage by ${this.attackIncreaseAmount * 0.4}`,
+                description: `Increase all weapon damage by ${this.attackIncreaseAmount * 2}`,
                 type: "All",
                 max: this.maxAmount,
                 current: 0,
@@ -331,7 +331,7 @@ class UpgradeSystem {
                 }, 
                 description: `Decrease Magic Cooldown by ${this.cooldownReduction} seconds`,
                 type: "Magic",
-                max: 3,
+                max: 8,
                 current: 0,
                 color: "White",
             },
@@ -440,7 +440,7 @@ class UpgradeSystem {
                 }, 
                 description: `Decrease Lightning Cooldown by 0.25 seconds`,
                 type: "Lightning",
-                max: 3,
+                max: 19,
                 current: 0,
                 color: "White",
             },
