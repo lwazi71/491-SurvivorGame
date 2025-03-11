@@ -220,6 +220,7 @@ class Minotaur {
     }
     
     attack1() {
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Enemy melee punch.wav");
         this.attacking = true;
         this.state = 2; // Attack1 animation state
         this.currentAttackTimer = this.attack1Duration;
@@ -247,6 +248,7 @@ class Minotaur {
     }
 
     attack2() {
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Enemy melee punch.wav");
         this.attacking = true;
         this.state = 3; // Attack2 animation state
         this.currentAttackTimer = this.attack2Duration;
@@ -277,6 +279,7 @@ class Minotaur {
     }
 
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Enemy damage.mp3");
         this.health -= damage;
         if (this.dead) {
             return;

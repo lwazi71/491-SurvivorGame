@@ -210,6 +210,7 @@ class Wizard {
         } else if (this.isAboutToAOE && !this.isPreparingAOE) {
             this.aoeAttackDelay -= this.game.clockTick;
             if (this.aoeAttackDelay <= 0) {
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/Enemy magic attack.wav");
                 this.game.addEntity(new CircleAOE(this.game, this.aoeTargetX, this.aoeTargetY , "./Sprites/Magic/magic.png", 
                     null, 8, this.damage, 0, null, false, 
                     0, 384, 64, 64, 9, 0.07, false, false))
@@ -246,6 +247,7 @@ class Wizard {
             if (entity instanceof Adventurer) {
                 if (this.BB.collide(entity.BB) && !entity.invincible) {
                     if (this.attackCooldownTimer <= 0) { //used so the enemy wouldn't damage us every tick
+                        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Enemy melee punch.wav");
                         // Attack the player and reset cooldown timer
                         entity.takeDamage(this.collisionDamage);
                         this.attackCooldownTimer = this.attackCooldown; // Reset the cooldown timer
@@ -265,6 +267,7 @@ class Wizard {
 
 
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Enemy damage.mp3");
         this.health -= damage;
 
         if (this.dead) {

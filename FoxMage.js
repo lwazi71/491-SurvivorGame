@@ -226,6 +226,7 @@ class FoxMage {
             if (entity instanceof Adventurer) {
                 if (this.BB.collide(entity.BB) && !entity.invincible) {
                     if (this.attackCooldownTimer <= 0) { //used so the necromancer wouldn't damage us every tick
+                        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Enemy melee punch.wav");
                         // Attack the player and reset cooldown timer
                         entity.takeDamage(this.collisionDamage);
                         this.attackCooldownTimer = this.attackCooldown; // Reset the cooldown timer
@@ -246,6 +247,7 @@ class FoxMage {
 
 
     shootProjectiles() {
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Enemy magic attack.wav");
         const player = this.game.adventurer;
         const dx = (player.x + (player.bitSize * player.scale)/2) - (this.x + (this.bitSizeX * this.scale)/2);
         const dy = (player.y + (player.bitSize * player.scale)/2) - (this.y + (this.bitSizeY * this.scale)/2);
@@ -271,7 +273,7 @@ class FoxMage {
 
     
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
-
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Enemy damage.mp3");
         this.health -= damage;
         if (this.dead) {
             return;

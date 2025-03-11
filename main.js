@@ -190,6 +190,18 @@ ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss4 charging.wav");
 
 
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Enemy damage.mp3");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Enemy magic attack.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Enemy melee bite.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Enemy melee punch.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Rock Throw.wav");
+
+
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Dodge.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Healing.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/LevelUp.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/coinCollecting.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/ExperienceOrb.wav");
+
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Back.mp3");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Hover.mp3");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Pause.mp3");

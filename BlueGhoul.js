@@ -235,6 +235,7 @@ class BlueGhoul {
             if (entity instanceof Adventurer) {
                 if (this.BB.collide(entity.BB) && !entity.invincible) {
                     if (this.attackCooldownTimer <= 0) {
+                        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Enemy melee punch.wav");
                         // Attack the player and reset cooldown timer
                         entity.takeDamage(this.attackPower);
                         this.attackCooldownTimer = this.attackCooldown;
@@ -315,7 +316,7 @@ class BlueGhoul {
 
 
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
-
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Enemy damage.mp3");
         this.health -= damage;
         if (this.dead) {
             return;

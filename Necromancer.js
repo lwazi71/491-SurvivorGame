@@ -179,6 +179,7 @@ class Necromancer {
     
         //Check if we're in range and can shoot. The shootTimer is the shootcooldown. 
         if (distance <= this.range && this.shootTimer <= 0) {
+            ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss4 ranged attack.wav");
             // Start casting animation
             this.castTimer = this.castDuration;
             this.state = 2;
@@ -234,6 +235,7 @@ class Necromancer {
             if (entity instanceof Adventurer) {
                 if (this.BB.collide(entity.BB) && !entity.invincible) {
                     if (this.attackCooldownTimer <= 0) { //used so the necromancer wouldn't damage us every tick
+                        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Enemy melee punch.wav");
                         // Attack the player and reset cooldown timer
                         entity.takeDamage(this.collisionDamage);
                         this.attackCooldownTimer = this.attackCooldown; // Reset the cooldown timer
@@ -262,7 +264,7 @@ class Necromancer {
 
     
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
-
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Enemy damage.mp3");
         this.health -= damage;
         if (this.dead) {
             return;
