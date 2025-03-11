@@ -196,7 +196,7 @@ class UpgradeSystem {
                 upgrade() {this.game.adventurer.critChance += 0.05; }, 
                 description: `Increase Crit Chance by 5%`,
                 type: "Other",
-                max: 19, // to get to 100%
+                max: 3, // to get to 100%
                 current: 0,
                 color: "White",
             }, 
@@ -331,7 +331,7 @@ class UpgradeSystem {
                 }, 
                 description: `Decrease Magic Cooldown by ${this.cooldownReduction} seconds`,
                 type: "Magic",
-                max: 8,
+                max: 3,
                 current: 0,
                 color: "White",
             },
@@ -440,7 +440,7 @@ class UpgradeSystem {
                 }, 
                 description: `Decrease Lightning Cooldown by 0.25 seconds`,
                 type: "Lightning",
-                max: 19,
+                max: 3,
                 current: 0,
                 color: "White",
             },
