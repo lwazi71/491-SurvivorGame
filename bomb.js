@@ -62,6 +62,7 @@ class Bomb {
         const centerX = this.x + (this.bitSize * this.scale) / 2; //start explosion animation in the middle of the bomb.
         const centerY = this.y + (this.bitSize * this.scale) / 2;
 
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Explosion.mp3");
         //48 x 48 explosion
         this.game.camera.cameraShake(100);
         this.game.addEntity(new CircleAOE

@@ -176,7 +176,9 @@ ASSET_MANAGER.queueDownload("./Sprites/Map/level3.png");
 ASSET_MANAGER.queueDownload("./Sprites/Map/level4.png");
 
 //Audio
+//Music
 ASSET_MANAGER.queueDownload("./Audio/Music/Survivorio Clone Battle Song (1).wav");
+ASSET_MANAGER.queueDownload("./Audio/Music/Death.wav");
 
 //Sfx
 
@@ -210,6 +212,9 @@ ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Hover.mp3");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Pause.mp3");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Select.mp3");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Unpause.mp3");
+
+//Player sounds
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Explosion.mp3");
 
 
 

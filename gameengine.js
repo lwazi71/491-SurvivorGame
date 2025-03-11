@@ -350,11 +350,13 @@ class GameEngine {
                     ASSET_MANAGER.playAsset("./Audio/SoundEffects/Unpause.mp3");
                     ASSET_MANAGER.playAsset(this.camera.levelMusicPath);
                 }
-            } else if (this.game.camera.enableTitle && this.game.camera.title.showSettings) {
-                this.camera.title.showSettings = false;
-                ASSET_MANAGER.playAsset("./Audio/SoundEffects/Back.mp3");
             }
             this.resetDrawingValues();
+            this.keys["escape"] = false;
+        }
+        if (this.keys["escape"] && this.camera.enableTitle && this.camera.title.showSettings) {
+            this.camera.title.showSettings = false;
+            ASSET_MANAGER.playAsset("./Audio/SoundEffects/Back.mp3");
             this.keys["escape"] = false;
         }
     }

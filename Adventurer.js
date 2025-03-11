@@ -717,7 +717,7 @@ class Adventurer { //every entity should have update and draw!
             this.enableLightning = true;
             this.enableMagic = true;
             this.enablePotion = true;
-            this.monkeyBomb = true;
+            // this.monkeyBomb = true;
             // this.attackDamage = 10;
             // this.slashArrowCombo = true;
             // this.slashBombCombo = true;

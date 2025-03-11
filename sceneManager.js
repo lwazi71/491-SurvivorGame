@@ -158,6 +158,7 @@ class SceneManager {
         } else {
             ASSET_MANAGER.playAsset(this.game.camera.levelMusicPath);
             this.game.addEntity(new FadeIn(this.game));
+            this.showLevel = true;
             this.startWave = true;  
             if (this.currMap == 1) {
                 //Honestly this could go in death screen too as it's a reset
@@ -210,11 +211,15 @@ class SceneManager {
     }
 
     triggerDeathScreen() {
+        ASSET_MANAGER.pauseMusic();
+        ASSET_MANAGER.playAsset("./Audio/Music/Death.wav");
         this.deathScreen.trigger();
     }
     
 
     respawn() {
+        ASSET_MANAGER.pauseMusic();
+        ASSET_MANAGER.playAsset(this.game.camera.levelMusicPath);
         this.deathScreen.respawn();
     }
 
@@ -288,7 +293,9 @@ class SceneManager {
         // for (let entity of this.game.entities) {
         //     entity.draw(ctx);
         // }
-    
+        if (this.showLevel) {
+
+        }
         // Draw UI text
         if (this.enableTitle) {
             this.title.update(ctx);

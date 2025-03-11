@@ -48,7 +48,7 @@ class UpgradeSystem {
         this.arrowSpeedIncrease = 100;
         //Magic
         this.magicDamageIncrease = 5;
-        this.cooldownReduction = 5;
+        this.cooldownReduction = 1;
         this.magicKnockback = 1000;
         this.magicSize = 0.25;
         //Bomb
@@ -331,7 +331,7 @@ class UpgradeSystem {
                 }, 
                 description: `Decrease Magic Cooldown by ${this.cooldownReduction} seconds`,
                 type: "Magic",
-                max: 8,
+                max: 19,
                 current: 0,
                 color: "White",
             },
