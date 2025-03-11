@@ -17,6 +17,7 @@ class PortalDoor {
         
         // Flag to track if emerge animation is complete
         this.emergeComplete = false;
+        this.transition = true;
         
         // Track animation timer
         this.animationTimer = 0;
@@ -76,7 +77,8 @@ class PortalDoor {
             if (player && this.BB.collide(player.BB)) {
                 //this.game.currMap++;
                 console.log("touching portal");
-                this.game.camera.loadLevel(this.game.camera.currMap += 1, true);
+                if (this.game.camera.currMap + 1 > 4) this.transition = false;
+                this.game.camera.loadLevel(this.game.camera.currMap += 1, this.transition);
             } 
         }
     }

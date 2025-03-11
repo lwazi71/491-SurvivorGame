@@ -50,7 +50,9 @@ class Boss4 {
         this.once = true;
         this.deathOnce = true;
         this.summonOnce = true;
-        this.idleSoundTimer = 0;
+        this.dashingOnce = true;
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss4 idle.wav");
+        this.idleSoundTimer = 3;
 
         // Enhanced projectile patterns based on health
         this.projectilePatterns = {
@@ -420,15 +422,15 @@ class Boss4 {
     
         if (this.isCharging) { 
             this.currentChargeDuration += this.game.clockTick;
-            if(this.once) {
+            if(this.dashingOnce) {
                 ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss4 attack.wav");
-                this.once = false;
+                this.dashingOnce = false;
             }
 
             // Check if charge duration exceeded limit
             if (this.currentChargeDuration >= this.maxChargeDuration) {
                 this.isCharging = false;
-                this.once = true;
+                this.dashingOnce = true;
                 this.state = 0;
                 this.currentChargeDuration = 0;
                 //this.shootTimer = this.shootCooldown; //used so it doesnt fire off projectile right after charge
@@ -589,7 +591,7 @@ class Boss4 {
             !this.isPreparingAOE && !this.isPlayingDamageAnimation && !this.dead && this.orderAnimationTimer < this.orderAnimationDuration) {
             let randomChance = Math.random();
             if (randomChance > 0.25) {
-                // ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss4 idle.wav");
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss4 idle.wav");
                 console.log("idle sound played")
                 
             }
@@ -637,7 +639,7 @@ class Boss4 {
         const dx = (player.BB.x + player.BB.width/2) - characterCenterX;
         const dy = (player.BB.y + player.BB.height/2) - characterCenterY;
         const angle = Math.atan2(dy, dx);
-
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss4 ranged attack.wav");
         this.game.addEntity(new Projectile(
             this.game, 
             characterCenterX, 
@@ -671,7 +673,7 @@ class Boss4 {
         // Create 3 projectiles with a spread
         for (let i = -1; i <= 1; i++) {
             const angle = baseAngle + (i * spread);
-            
+            ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss4 ranged attack.wav");
             this.game.addEntity(new Projectile(
                 this.game, 
                 characterCenterX, 
@@ -728,6 +730,7 @@ class Boss4 {
             
             setTimeout(() => {
                 if (!this.dead && !this.removeFromWorld) {
+                    ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss4 ranged attack.wav");
                     this.game.addEntity(new Projectile(
                         this.game,
                         posX,
@@ -757,7 +760,7 @@ class Boss4 {
         // Fire first wave of projectiles in a complete circle
         for (let i = 0; i < 30; i++) {
             const angle = (Math.PI * 2 * i) / 30;
-            
+            ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss4 ranged attack.wav");
             this.game.addEntity(new Projectile(
                 this.game, 
                 characterCenterX, 
@@ -779,7 +782,7 @@ class Boss4 {
         // Schedule second wave of projectiles after a short delay
         setTimeout(() => {
             if (!this.dead && !this.removeFromWorld) {
-
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/Enemy magic attack.wav");
                 this.projectileTimer = this.projectileDuration;
                 this.shouldShoot = false; // Prevent normal shoot logic from firing again
                 this.state = 4; // Set back to throw/attack state
@@ -886,7 +889,6 @@ class Boss4 {
     shootProjectile() {
         // Check available patterns based on current health percentage
         this.updateAvailablePatterns();
-        ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss4 ranged attack.wav");
         if (this.availablePatterns.length > 0) {
             // Choose a random pattern from available ones
             const randomPatternIndex = Math.floor(Math.random() * this.availablePatterns.length);

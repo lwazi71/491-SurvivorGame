@@ -130,6 +130,7 @@ class LevelShop {
         if (this.game.isClicking(buttonX, buttonCenterY, this.button.length, this.button.height) && 
         this.game.adventurer.coins >= this.selectedPrice * this.currentAmount) {
             this.selectChoice(this.selected);
+            ASSET_MANAGER.playAsset("./Audio/SoundEffects/coinCollecting.wav");
             this.currentAmount = 1;
         }
         if (this.selected != "Basic Upgrade" && this.selected != "Rare Upgrade") {

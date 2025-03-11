@@ -39,6 +39,7 @@ class GolemMech {
         this.immunityTransformAnimationTimer = 0;
         this.immunityTransformAnimationDuration = 6 * 0.1; // Duration should match your animation (5 frames * 0.1s)
         this.immunitydeTransformAnimationTimer = 0;
+        this.healingSound = 0;
 
 
 
@@ -68,14 +69,14 @@ class GolemMech {
         this.currentHealth = 500;
         this.maxHealth = 500;
         this.didCrit = false;
-        this.name = "GolemMech"
+        this.name = "Melog, the Golem Mech"
 
         this.profileAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/HudIcons/Boss2Hud.png"), 0, 0, 32, 32, 7, 0.2, false, true);
         this.healthbar = this.game.addEntity(new BossHealthBar(game, this, this.profileAnimation, 32, 0, 0, 3));
         this.pointer = this.game.addEntity(new Pointer(game, this));
 
 
-        this.healRate = 5; // Health restored per second
+        this.healRate = 50; // Health restored per second
 
         this.entityOrder = 40;
 
@@ -246,6 +247,11 @@ class GolemMech {
         
         if (this.state === 3) {
             //heal here
+            this.healingSound += this.game.clockTick;
+            if (this.healingSound > 1) {
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/Healing.wav");
+                this.healingSound = 0;
+            }
             const healAmount = this.healRate * this.game.clockTick;
             this.currentHealth = Math.min(this.currentHealth + healAmount, this.maxHealth);
             if (distance < 245) {
@@ -419,6 +425,7 @@ class GolemMech {
     }
     
     attack1() {
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Enemy melee punch.wav");
         this.attacking = true;
         this.state = 4; // Attack animation state
         this.currentAttackTimer = this.attackDuration;
@@ -452,13 +459,15 @@ class GolemMech {
                 baseAngle,
                 baseAngle + spreadAngle
             ];
-
+            //Intentional as 3 seems too loud or so
+            ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss2 Arm Launch.mp3");
             angles.forEach(angle => {
                 this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, this.armDamage, this.shootSpeed, 
                     "./Sprites/Boss/arm_projectile.png", this.armKnockback, false, this.armScale, false, this.armLifeTime,
                     0, -10, 100, 100, 3, 0.1, false, true, 200, 200, 32, 32, 100, 100, this, true));
             });
         } else {
+            ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss2 Arm Launch.mp3");
             this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, this.armDamage, this.shootSpeed, 
                 "./Sprites/Boss/arm_projectile.png", this.armKnockback, false, this.armScale, false, this.armLifeTime,
                 0, -10, 100, 100, 3, 0.1, false, true, 200, 200, 32, 32, 100, 100, this, true));
@@ -500,6 +509,7 @@ class GolemMech {
         }
     
         if (this.currentHealth <= 0) {
+            ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss2 Death.wav");
             this.game.addEntity(new CoinPile(this.game, (this.x + 28), (this.y + 55)));
             this.game.addEntity(new BossExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
             this.game.addEntity(new Chest(this.game, (this.x + (this.bitSizeX * this.scale)/2) - 125, (this.y + (this.bitSizeY * this.scale)/2)));

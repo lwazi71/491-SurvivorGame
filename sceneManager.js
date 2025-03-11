@@ -109,7 +109,7 @@ class SceneManager {
 
         // this.game.addEntity(new Boss1(this.game, 200, 400));
         // this.game.addEntity(new GolemMech(this.game, 200, 200));
-        // this.game.addEntity(new Boss3(this.game, 200, 200));
+        this.game.addEntity(new Boss3(this.game, 200, 200));
         // this.game.addEntity(new Boss4(this.game, 200, 200));
 
        //this.game.addEntity(new PortalDoor(this.game, 100, 100));
@@ -181,12 +181,13 @@ class SceneManager {
                         "- Striking lightning down on dark-bolt will create an explosion that'll do ALOT of damage"));
                 
             }
-            if (this.currMap != 1) {
+            if (this.currMap != 1 && this.currMap < 5) {
+                console.log("test");
                 this.game.camera.enableLevelShop = true;
                 this.game.toggleShopPause();
             }
             //if currMap < 4? else { win screen }
-            this.game.addEntity(new GameMap(this.game, this.currMap));
+            if (this.currMap < 5) this.game.addEntity(new GameMap(this.game, this.currMap));
             
             // Reset player position
             player.x = 0;

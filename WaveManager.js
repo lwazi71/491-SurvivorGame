@@ -7,7 +7,7 @@ class WaveManager {
         this.bossActive = false;
         this.maxEnemies =  700; //set to 700 so game doesnt start to lag or become too difficult
          // Boss fight timing
-        this.bossTime = 1; //300 seconds seconds or 5 minutes until boss comes (initialization for map 1, can change it later on).
+        this.bossTime = 300; //300 seconds seconds or 5 minutes until boss comes (initialization for map 1, can change it later on).
         this.mapCompleted = false; //will be for if we beat the boss
         this.totalGameTime = 0;
         this.multiplier = 0.35;
@@ -697,7 +697,19 @@ class WaveManager {
         } else if (this.game.camera.currMap == 4) {
             //set spawn pattern for map 4 here
 
-             this.bossTime = 180; //maybe have the final spawn in earlier?
+             this.bossTime = 1; //maybe have the final spawn in earlier?
+        } else if (this.game.camera.currMap == 5) {
+            this.spawnPatterns = [
+                        {
+                            startTime: 0, //when they'll start spawning
+                            interval: 0, // Spawn every 3 seconds
+                            count: 1,
+                            pool: "minibosses",
+                        //    enemy_type: "miniboss_zombie", // Always spawn zombies
+                            oneTime: false //If we want to spawn the enemy one time. If this is true, it won't worry about the interval and just spawn at the start time
+        
+                        }
+                    ];
         } else {
             //if there's no map right now, there will be no spawn pattern
             this.spawnPatterns = [];

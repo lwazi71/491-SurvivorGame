@@ -188,6 +188,14 @@ ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss1 Jumping.wav");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss1 summon.wav");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss1 death.wav");
 
+//boss2
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss2 Arm Launch.mp3");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss2 Death.wav");
+//boss3
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss3 death.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss3 idle.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss3 ranged attacks.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss3 fire.wav");
 //boss4
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss4 attack.wav");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss4 idle.wav");

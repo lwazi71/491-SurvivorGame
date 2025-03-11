@@ -34,7 +34,7 @@ class Pause {
         if (!this.showSettings) {
             this.firstY = PARAMS.CANVAS_HEIGHT / 2 - 50;
             this.options.forEach(choice => {
-                if (this.game.isClicking(this.centerX, this.firstY, this.button.length, this.button.height) && 
+                if (!this.confirmation && this.game.isClicking(this.centerX, this.firstY, this.button.length, this.button.height) && 
                 this.game.pause && this.game.leftClick && !this.confirmation && !this.showSettings) 
                 {
                     choice.action();
@@ -76,6 +76,9 @@ class Pause {
     }
     draw(ctx) {
         this.game.draw(ctx);
+        if (this.game.camera.enableChest) {
+            this.game.chestItems.draw(ctx);
+        }
         ctx.fillStyle = rgba(0,0,0, 0.5);
         ctx.fillRect(0, 0, PARAMS.CANVAS_WIDTH, PARAMS.CANVAS_HEIGHT);
         if (this.showSettings) {
@@ -83,6 +86,7 @@ class Pause {
             this.settings.draw(ctx);
             this.game.upgrade.exitButton(ctx);
         } else if (this.confirmation) {
+            console.log("drawing")
             this.drawConfirmation(ctx);
         } else {
             this.drawOptions(ctx);
@@ -217,6 +221,9 @@ class Settings {
         this.enableHUD = true;
         this.enableUpgrades = false;
         this.enableLevelUpPause = true;
+        this.enableBoss = false;
+
+        this.bossTime = this.game.camera.waveManager.bossTime;
         this.button = {length: 150, height: 40};
         this.toggleButton = {length: 40, height: 40};
         this.first = true;
@@ -248,12 +255,6 @@ class Settings {
                 check: this.enableDebug
             },
             {
-                name: "Unlock all Weapons",
-                game: this.game,
-                action() {this.game.settings.unlockWeapons()},
-                check: this.enableWeapons
-            },
-            {
                 name: "Toggle Invincibility",
                 game: this.game,
                 action() {this.game.settings.toggleInvincibility()},
@@ -271,21 +272,52 @@ class Settings {
                 action() {this.game.settings.toggleLevelUp()},
                 check: this.enableLevelUpPause
             },
+            // {
+            //     name: "Unlock all Weapons",
+            //     game: this.game,
+            //     action() {this.game.settings.unlockWeapons()},
+            //     check: this.enableWeapons
+            // },
+            // {
+            //     name: "Add all Upgrades",
+            //     game: this.game,
+            //     action() {this.game.settings.toggleUpgrades()},
+            //     check: this.enableUpgrades && PARAMS.CHEATS
+            // }
             
         ];
-        if (this.enableWeapons) {
+        if (this.game.camera.enableTitle) {
             this.cheats.push(
                 {
-                    name: "Add all Upgrades",
+                    name: "Boss Only Mode",
                     game: this.game,
-                    action() {this.game.settings.toggleUpgrades()},
-                    check: this.enableUpgrades && PARAMS.CHEATS
-                }
+                    action() {this.game.settings.bossOnly()},
+                    check: this.enableBoss
+                },
             );
+            this.cheats.push(
+                {
+                    name: "Unlock all Weapons",
+                    game: this.game,
+                    action() {this.game.settings.unlockWeapons()},
+                    check: this.enableWeapons
+                },
+            );
+            if (this.enableWeapons) {
+                this.cheats.push(
+                    {
+                        name: "Add all Upgrades",
+                        game: this.game,
+                        action() {this.game.settings.toggleUpgrades()},
+                        check: this.enableUpgrades && PARAMS.CHEATS
+                    }
+                );
+            }
         }
     }
     update() {
         this.updateMenuButtons();
+        console.log(this.game.click);
         if (this.currentMenu == "Volume") this.updateVolumeMenu();
         // if (this.currentMenu == "Help") this.updateHelpMenu();
         if (this.currentMenu == "Other") this.updateOtherMenu();
@@ -317,18 +349,20 @@ class Settings {
             this.game.leftClick = false;
         }
         //Mute
-        if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 110, this.startY + 40, 40, 30) && this.currentMenu == "Volume") {
+        if (this.game.leftClick && this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 110, this.startY + 40, 40, 30) && this.currentMenu == "Volume") {
             if (this.toggleAllMute) {
                 this.lastMasterVolume = this.currVolume;
                 this.currVolume = 0;
                 ASSET_MANAGER.adjustMusicVolume(this.currMusicVolume * this.currVolume);
                 ASSET_MANAGER.adjustSFXVolume(this.currSFXVolume * this.currVolume);
                 this.toggleAllMute = false;
+                this.game.leftClick = false;
             } else {
                 this.currVolume = this.lastMasterVolume;
                 ASSET_MANAGER.adjustMusicVolume(this.currMusicVolume * this.currVolume);
                 ASSET_MANAGER.adjustSFXVolume(this.currSFXVolume * this.currVolume);
                 this.toggleAllMute = true;
+                this.game.leftClick = false;
             }
             // ASSET_MANAGER.muteAudio(!this.toggleMute);
         }
@@ -360,16 +394,18 @@ class Settings {
             this.game.leftClick = false;
         }
         //Mute
-        if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 110, this.startY + 50 + 105, 40, 30) && this.currentMenu == "Volume") {
+        if (this.game.leftClick && this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 110, this.startY + 50 + 105, 40, 30) && this.currentMenu == "Volume") {
             if (this.toggleMusicMute) {
                 this.lastMusicVolume = this.currMusicVolume;
                 this.currMusicVolume = 0;
                 ASSET_MANAGER.adjustMusicVolume(this.currMusicVolume);
                 this.toggleMusicMute = false;
+                this.game.leftClick = false;
             } else {
                 this.currMusicVolume = this.lastMusicVolume;
                 ASSET_MANAGER.adjustMusicVolume(this.currMusicVolume);
                 this.toggleMusicMute = true;
+                this.game.leftClick = false;
             }
         }
         if (this.currMusicVolume < 0.01) this.currMusicVolume = 0;
@@ -397,16 +433,18 @@ class Settings {
             this.game.leftClick = false;
         }
         //Mute
-        if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 110, this.startY + 50 + 105 * 2 + 10, 40, 30) && this.currentMenu == "Volume") {
+        if (this.game.leftClick && this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 110, this.startY + 50 + 105 * 2 + 10, 40, 30) && this.currentMenu == "Volume") {
             if (this.toggleSFXMute) {
                 this.lastSFXVolume = this.currSFXVolume;
                 this.currSFXVolume = 0;
                 ASSET_MANAGER.adjustSFXVolume(this.currSFXVolume);
                 this.toggleSFXMute = false;
+                this.game.leftClick = false;
             } else {
                 this.currSFXVolume = this.lastSFXVolume;
                 ASSET_MANAGER.adjustSFXVolume(this.currSFXVolume);
                 this.toggleSFXMute = true;
+                this.game.leftClick = false;
             }
         }
         if (this.currSFXVolume < 0.01) this.currSFXVolume = 0;
@@ -799,5 +837,14 @@ class Settings {
     }
     toggleUpgrades() {
         if (PARAMS.CHEATS) this.enableUpgrades = !this.enableUpgrades;
+        if (!this.enableWeapons) this.enableUpgrades = false;
+    }
+    bossOnly() {
+        this.enableBoss = !this.enableBoss;
+        if (this.enableBoss) {
+            this.game.camera.waveManager.bossTime = 1;
+        } else {
+            this.game.camera.waveManager.bossTime = this.bossTime;
+        }
     }
 }

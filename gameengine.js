@@ -400,14 +400,16 @@ class GameEngine {
         this.mouse.y > y && this.mouse.y < y + height;
     }
     isClicking(x, y, length, height) {
-        this.mouse.x ? this.mouse.x : 0;
-        this.mouse.y ? this.mouse.y : 0;
+        // this.mouse.x ? this.mouse.x : 0;
+        // this.mouse.y ? this.mouse.y : 0;
+        let check = false;
         if (this.click.x > x && this.click.x < x + length &&
             this.click.y > y && this.click.y < y + height && this.leftClick) {
                 ASSET_MANAGER.playAsset("./Audio/SoundEffects/Select.mp3");
+                check = true;
+                // this.leftClick = false;
             }
-        return this.click.x > x && this.click.x < x + length &&
-        this.click.y > y && this.click.y < y + height && this.leftClick;
+        return check
     }
     isPaused() {
         return this.pause || this.upgradePause || this.deathPause || this.shopPause;
