@@ -7,6 +7,8 @@ class SceneManager {
         this.game.camera.x = this.x;
         this.game.camera.y = this.y;
 
+        this.game.firstClick = false;
+
         this.currMap = 1;
         
         this.adventurer = new Adventurer(this.game, 0, 0); //placing player character at 0, 0 in world map
@@ -25,7 +27,13 @@ class SceneManager {
         this.enableTitle = true; //Whether title screen shows up or not
 
         this.shakeIntensity = 0;
-        this.shakeDecay = 0.9; 
+        this.shakeDecay = 0.9;
+        //Beginning canvas stuff
+        this.elapsedTime = 0;
+        this.changes = 0;
+        this.reveal = 1;
+        this.enableFade = false;
+        this.revealSpeed = 0.02;
 
 
         // Add the Game Map first so it's always underneath everything
@@ -157,6 +165,8 @@ class SceneManager {
             this.game.addEntity(new TransitionScreen(this.game, this.currMap));
         } else {
             this.game.addEntity(new FadeIn(this.game));
+            let levelText = this.getLevelText();
+            this.game.addEntity(new FadeText(this.game, levelText));
             this.showLevel = true;
             this.startWave = true;  
             if (this.currMap == 1) {
@@ -243,35 +253,75 @@ class SceneManager {
             entity.removeFromWorld = true;
         });
     }
+    getLevelText() {
+        let text = "";
+        switch(this.currMap) {
+            case 1:
+                text = "Level 1: Goblin Forest";
+                break;
+            case 2:
+                text = "Level 2: Ruined City";
+                break;
+            case 3:
+                text = "Level 3: Hell";
+                break;
+            case 4:
+                text = "Level 4: ???";
+                break;
+            default:
+                text = "Level ∞";
+                break;
+        }
+        return text;
+    }
 
     update() {
-        // this.adjustMusicVolume();
-        // PARAMS.DEBUG = document.getElementById("debug").checked;
-        //Midpoint of the canvas
-        const midPointX = PARAMS.CANVAS_WIDTH / 2 ;
-        const midPointY = PARAMS.CANVAS_HEIGHT / 2 ;
-        if (!this.enableTitle) {
-        //Update camera position to middle of the player
-        this.x = this.adventurer.x - midPointX + (this.adventurer.bitSize * this.adventurer.scale)/2; //Removed + 20 here if we find a glitch.
-        this.y = this.adventurer.y - midPointY + (this.adventurer.bitSize * this.adventurer.scale)/2; 
-        }
-        if (this.game.keys["p"]) {// && PARAMS.CHEATS
-            this.game.addEntity(new ExperienceOrb(this.game, this.game.adventurer.x, this.game.adventurer.y));
-            this.game.keys["p"] = false;
+        if (!this.firstClick) {
+            this.elapsedTime += this.game.clockTick;
+            if (this.elapsedTime > 2) this.elapsedTime = 0;
+            if (this.elapsedTime >= 1) {
+                this.changes -= 0.01;
+            } else if (this.elapsedTime >= 0) {
+                this.changes += 0.01;
+            }
+            if (this.game.leftClick) {
+                this.enableFade = true;
+            }
+            if (this.enableFade) {
+                this.reveal -= this.revealSpeed;
+                if (this.reveal < 0) this.reveal = 0;
+            }
+            if (this.reveal <= 0) {
+                this.game.leftClick = false;
+                this.firstClick = true;
+            }
+        } else {
+            // this.adjustMusicVolume();
+            // PARAMS.DEBUG = document.getElementById("debug").checked;
+            //Midpoint of the canvas
+            const midPointX = PARAMS.CANVAS_WIDTH / 2 ;
+            const midPointY = PARAMS.CANVAS_HEIGHT / 2 ;
+            if (!this.enableTitle) {
+            //Update camera position to middle of the player
+            this.x = this.adventurer.x - midPointX + (this.adventurer.bitSize * this.adventurer.scale)/2; //Removed + 20 here if we find a glitch.
+            this.y = this.adventurer.y - midPointY + (this.adventurer.bitSize * this.adventurer.scale)/2; 
+            }
+            // if (this.game.keys["p"]) {// && PARAMS.CHEATS
+            //     this.game.addEntity(new ExperienceOrb(this.game, this.game.adventurer.x, this.game.adventurer.y));
+            //     this.game.keys["p"] = false;
+            // }
+            
+            if (this.shakeIntensity > 0) {
+                this.x += (Math.random() - 0.5) * this.shakeIntensity;
+                this.y += (Math.random() - 0.5) * this.shakeIntensity;
+                this.shakeIntensity *= this.shakeDecay; 
+            }
+            if (this.startWave) this.waveManager.update();
         }
         if (this.enableTitle) {
             this.x += 1;
             this.y += 0.1;
         }
-        
-        if (this.shakeIntensity > 0) {
-            this.x += (Math.random() - 0.5) * this.shakeIntensity;
-            this.y += (Math.random() - 0.5) * this.shakeIntensity;
-            this.shakeIntensity *= this.shakeDecay; 
-        }
-        if (this.startWave) this.waveManager.update();
-
-       
     }
     adjustMusicVolume() {
         // ASSET_MANAGER.adjustAllVolume(this.game.settings.currVolume);
@@ -299,7 +349,7 @@ class SceneManager {
         }
         // Draw UI text
         if (this.enableTitle) {
-            this.title.update(ctx);
+            if (this.firstClick) this.title.update(ctx);
             this.title.draw(ctx);
         } else if (!this.transition){
             ctx.font = '20px Arial';
@@ -317,6 +367,19 @@ class SceneManager {
                 // this.enableLevelShop = false;
             }
             // if (this.startWave) this.waveManager.draw(ctx);
+        }
+        if (!this.firstClick) {
+            ctx.fillStyle = rgba(0,0,0, this.reveal);
+            ctx.fillRect(0, 0, PARAMS.CANVAS_WIDTH, PARAMS.CANVAS_HEIGHT);
+            ctx.font = 32 + this.changes + 'px "Press Start 2P"';
+            // ctx.lineWidth = 1;
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = rgba(255, 255, 255, this.reveal);
+            ctx.fillText("Click to Enter",PARAMS.CANVAS_WIDTH / 2, PARAMS.CANVAS_HEIGHT / 2 + this.changes);
+            // ctx.shadowBlur = 5;
+            ctx.textAlign = "left"; 
+            ctx.textBaseline = "alphabetic";
         }   
     }
 }

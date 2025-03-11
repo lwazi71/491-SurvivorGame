@@ -8,7 +8,7 @@ class TransitionScreen {
         this.timer = 0;
         this.duration = 0.5;
         this.heroAnimation = [];
-        this.loadingTimer = 3; //Math.floor(Math.random() * (5 - 2 + 1) + 2);
+        this.loadingTimer = Math.floor(Math.random() * (5 - 2 + 1) + 2);; //2 to 5 seconds
         this.scale = 2.8;
 
         this.loadHeroAnimation();
@@ -86,5 +86,32 @@ class FadeIn {
     draw(ctx) {
         ctx.fillStyle = rgba(0, 0, 0, this.changes);
         ctx.fillRect(0, 0, PARAMS.CANVAS_WIDTH, PARAMS.CANVAS_HEIGHT);
+    }
+}
+
+class FadeText {
+    constructor(game, text) {
+        this.game = game;
+        this.text = text;
+        this.elapsed = 0;
+        this.changes = 1;
+        this.entityOrder = 100;
+    }
+    update() {
+        this.elapsed += this.game.clockTick;
+        if (this.elapsed > 4) {
+            this.removeFromWorld = true;
+        }
+        if (this.elapsed > 3) this.changes -= 0.02;
+    }
+    draw(ctx) {
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = rgba(255, 255, 255, this.changes);
+        ctx.strokeStyle = rgba(0, 0, 0, this.changes);
+        // ctx.font = 24 + 'px "Press Start 2P"';
+        ctx.font = 36 + 'px Lilita One';
+        ctx.fillText(this.text, PARAMS.CANVAS_WIDTH / 2, 150);
+        ctx.strokeText(this.text, PARAMS.CANVAS_WIDTH / 2, 150);
     }
 }
