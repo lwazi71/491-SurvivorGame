@@ -179,6 +179,9 @@ ASSET_MANAGER.queueDownload("./Sprites/Map/level4.png");
 //Audio
 //Music
 ASSET_MANAGER.queueDownload("./Audio/Music/Survivorio Clone Battle Song (1).wav");
+ASSET_MANAGER.queueDownload("./Audio/Music/Jungle.mp3");
+ASSET_MANAGER.queueDownload("./Audio/Music/devil_music.mp3");
+ASSET_MANAGER.queueDownload("./Audio/Music/spooky.mp3");
 ASSET_MANAGER.queueDownload("./Audio/Music/Death.wav");
 ASSET_MANAGER.queueDownload("./Audio/Music/Shop Music.mp3");
 
