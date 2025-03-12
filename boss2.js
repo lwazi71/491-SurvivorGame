@@ -47,7 +47,7 @@ class GolemMech {
         //Projectile Properties: 
         this.shootArmTimer = 0;
         this.shootDuration = 8.9 * 0.1;
-        this.shootSpeed = 1500;
+        this.shootSpeed = 1200;
         this.shootCooldown = 3.7; //Shoot every 4 seconds
         this.shootTimer = 0; //should be 0
         this.shootAnimationElapsedTime = 0; //used for when boss does throwing animation then it faces other way
