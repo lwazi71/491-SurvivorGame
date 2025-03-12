@@ -276,15 +276,15 @@ class SceneManager {
                 this.levelMusicPath = "./Audio/Music/Survivorio Clone Battle Song (1).wav";
                 break;
             case 3:
-                text = "Level 3: Hell";
+                text = "Level 3: Abyssal Inferno";
                 this.levelMusicPath = "./Audio/Music/devil_music.mp3";
                 break;
             case 4:
-                text = "Level 4: ???";
+                text = "Level 4: The Unknown?";
                  this.levelMusicPath = "./Audio/Music/spooky.mp3";
                 break;
             default:
-                text = "Level ∞";
+                text = "Level ∞ : Prototype";
                 break;
         }
         return text;
