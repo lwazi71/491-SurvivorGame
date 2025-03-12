@@ -411,7 +411,7 @@ class Title {
                 name: "Start",
                 game: this.game,
                 action() {this.game.camera.enableTitle = false;
-                        this.game.camera.loadLevel(this.game.camera.currMap, true);}
+                        this.game.camera.loadLevel(1, true);}
             },
             {
                 name: "Settings",

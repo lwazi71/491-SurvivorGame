@@ -727,7 +727,7 @@ class WaveManager {
                 {starTime: 90, interval: 2, count: 6, pool: "melee", oneTime: false},
                 {starTime: 110, interval: 6, count: 1, pool: "minibosses", oneTime: false}
             ];
-             this.bossTime = 210; //maybe have the final spawn in earlier? 210 seconds
+             if (!this.game.settings.enableBoss) this.bossTime = 210; //maybe have the final spawn in earlier? 210 seconds
         } else if (this.game.camera.currMap == 5) { //secret level map
             this.spawnPatterns = [{startTime: 0, interval: 0, count: 1, pool: "minibosses", oneTime: false}];
             this.bossTime = 10000;
