@@ -74,7 +74,7 @@ class SceneManager {
             this.game.addEntity(new GameMap(this.game, 1));
             //Fade in effect
             this.game.addEntity(new FadeIn(this.game));
-            this.levelMusicPath = "./Audio/Music/Survivorio Clone Battle Song (1).wav";
+            //this.levelMusicPath = "./Audio/Music/Survivorio Clone Battle Song (1).wav";
             ASSET_MANAGER.playAsset(this.levelMusicPath);
         var adventurer = false;
         if(!adventurer) this.game.addEntity(this.adventurer);
@@ -173,7 +173,7 @@ class SceneManager {
             this.showLevel = true;
             this.startWave = true;  
             if (this.currMap == 1) {
-                ASSET_MANAGER.playAsset(this.game.camera.levelMusicPath);
+                ASSET_MANAGER.playAsset(this.levelMusicPath);
                 //Honestly this could go in death screen too as it's a reset
                 this.Hud = new Hud(this.game, this.adventurer);
                 this.upgrade = new UpgradeSystem(this.game);
@@ -267,15 +267,19 @@ class SceneManager {
         switch(this.currMap) {
             case 1:
                 text = "Level 1: Goblin Forest";
+                this.levelMusicPath = "./Audio/Music/Jungle.mp3";
                 break;
             case 2:
                 text = "Level 2: Ruined City";
+                this.levelMusicPath = "./Audio/Music/Survivorio Clone Battle Song (1).wav";
                 break;
             case 3:
                 text = "Level 3: Hell";
+                this.levelMusicPath = "./Audio/Music/devil_music.mp3";
                 break;
             case 4:
                 text = "Level 4: ???";
+                 this.levelMusicPath = "./Audio/Music/spooky.mp3";
                 break;
             default:
                 text = "Level ∞";
@@ -283,7 +287,6 @@ class SceneManager {
         }
         return text;
     }
-
     update() {
         if (!this.firstClick) {
             this.elapsedTime += this.game.clockTick;

@@ -997,6 +997,7 @@ class Adventurer { //every entity should have update and draw!
         this.canLightning = false;
         this.lightningCooldownTimer = this.lightningCooldown;
         this.magicTimer = this.magicDuration;
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/LightningStrike.mp3");
 
         
         // Get character center
