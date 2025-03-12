@@ -34,6 +34,7 @@ class SceneManager {
         this.reveal = 1;
         this.enableFade = false;
         this.revealSpeed = 0.02;
+        this.oneTime = true;
 
 
         // Add the Game Map first so it's always underneath everything
@@ -309,7 +310,8 @@ class SceneManager {
                 this.firstClick = true;
 
                 //Put main menu music here
-                ASSET_MANAGER.playAsset(this.game.camera.menumusicPath);
+                // ASSET_MANAGER.playAsset(this.game.camera.menumusicPath);
+                ASSET_MANAGER.playAsset("./Audio/Music/minecraftmenumusic.mp3");
             }
         } else {
             // this.adjustMusicVolume();
@@ -335,6 +337,10 @@ class SceneManager {
             if (this.startWave) this.waveManager.update();
         }
         if (this.enableTitle) {
+            if(this.oneTime) {
+                ASSET_MANAGER.playAsset("./Audio/Music/minecraftmenumusic.mp3");
+                this.oneTime = false;
+            }
             this.x += 1;
             this.y += 0.1;
         }
@@ -416,6 +422,7 @@ class Title {
                 name: "Start",
                 game: this.game,
                 action() {this.game.camera.enableTitle = false;
+                        ASSET_MANAGER.pauseMusic();
                         this.game.camera.loadLevel(1, true);}
             },
             {

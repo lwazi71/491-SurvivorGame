@@ -289,6 +289,7 @@ class DeathScreen {
     restartGame() {
         this.visible = false;
         this.game.camera.enableTitle = true;
+        this.game.camera.oneTime = true;
         this.game.entities = [];
         this.game.deathPause = false;
         this.game.camera.startWave = false;

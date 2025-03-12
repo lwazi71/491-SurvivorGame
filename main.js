@@ -250,7 +250,12 @@ ASSET_MANAGER.downloadAll(() => {
 	ctx.imageSmoothingEnabled = false;
 	canvas.style.cursor = "crosshair";
 	ASSET_MANAGER.autoRepeat("./Audio/Music/Survivorio Clone Battle Song (1).wav");
+	ASSET_MANAGER.autoRepeat("./Audio/Music/Jungle.mp3");
+	ASSET_MANAGER.autoRepeat("./Audio/Music/devil_music.mp3");
+	ASSET_MANAGER.autoRepeat("./Audio/Music/spooky.mp3");
+
 	ASSET_MANAGER.autoRepeat("./Audio/Music/Shop Music.mp3");
+	ASSET_MANAGER.autoRepeat("./Audio/Music/minecraftmenumusic.mp3");
 
 	PARAMS.CHEATS = false;
 	// document.getElementById("btn").addEventListener("click", function() {

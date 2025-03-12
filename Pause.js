@@ -56,6 +56,7 @@ class Pause {
                 this.game.pause = false;
                 this.confirmation = false;
                 this.game.camera.enableTitle = true;
+                this.game.camera.oneTime = true;
                 this.game.entities = [];
                 this.game.camera.startWave = false;
                 this.game.chestItems.closingShop();
