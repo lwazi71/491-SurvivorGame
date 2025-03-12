@@ -294,8 +294,8 @@ class WaveManager {
                     enemy.maxHealth = Math.floor(temp * this.statsMultiplier.health);
                 } else {
                     const temp = enemy.health;
-                    enemy.health = Math.floor(1.25 * enemy.health * this.statsMultiplier.health);
-                    enemy.maxHealth = Math.floor(1.25 * temp * this.statsMultiplier.health);
+                    enemy.health = Math.floor(1.15 * enemy.health * this.statsMultiplier.health);
+                    enemy.maxHealth = Math.floor(1.15 * temp * this.statsMultiplier.health);
                 }
              }
 
