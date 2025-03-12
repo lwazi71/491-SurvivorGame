@@ -84,7 +84,7 @@ class Boss1 { //goblin king
         //throwing properties:
         this.throwTimer = 0;
         this.throwDuration = 7.9 * 0.1;
-        this.throwSpeed = 1500;
+        this.throwSpeed = 1050;
         this.shootCooldown = 4; //Shoot every 4 seconds
         this.shootTimer = 0; //should be 0
         this.throwAnimationElapsedTime = 0; //used for when boss does throwing animation then it faces other way
@@ -92,7 +92,7 @@ class Boss1 { //goblin king
         this.moneyLifeTime = 0.7;
         this.range = 500;
         this.moneyBagScale = 5;
-        this.moneyDamage = 20;
+        this.moneyDamage = 13;
         this.moneyKnockback = 1600;
 
         //Healing Properties: 

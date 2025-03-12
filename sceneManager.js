@@ -33,6 +33,8 @@ class SceneManager {
         this.game.addEntity(this.deathScreen);
         this.levelMusicPath = "./Audio/Music/Survivorio Clone Battle Song (1).wav";
 
+        this.winScreen = new WinScreen(this.game);
+
         //this.loadTestLevel();
         if (!this.enableTitle) this.loadLevel(this.currMap, false);
 
@@ -208,6 +210,11 @@ class SceneManager {
 
     triggerDeathScreen() {
         this.deathScreen.trigger();
+    }
+
+    
+    triggerWinScreen() {
+        this.winScreen.trigger();
     }
     
 

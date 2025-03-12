@@ -158,6 +158,7 @@ ASSET_MANAGER.queueDownload("./Sprites/HudIcons/AdventurerSpriteTransition.png")
 ASSET_MANAGER.queueDownload("./Sprites/HudIcons/AdventurerSpriteTransition2.png");
 ASSET_MANAGER.queueDownload("./Sprites/HudIcons/PlayerBackground.png");
 ASSET_MANAGER.queueDownload("./Sprites/HudIcons/shopBackground.png");
+ASSET_MANAGER.queueDownload("./Sprites/HudIcons/stars.png");
 ASSET_MANAGER.queueDownload("./Sprites/Objects/spotlight.png");
 ASSET_MANAGER.queueDownload("./Sprites/Objects/brokenheart.png");
 ASSET_MANAGER.queueDownload("./Sprites/Objects/glow.png");

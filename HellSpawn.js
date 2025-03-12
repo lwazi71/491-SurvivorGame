@@ -10,8 +10,8 @@ class HellSpawn {
         this.bitSizeX = 64;
         this.bitSizeY = 64;
 
-        this.health = 20;
-        this.maxHealth = 20;
+        this.health = 27;
+        this.maxHealth = 27;
         this.didCrit = false;
         this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 10, -10));
         this.attackPower = 10;

@@ -165,7 +165,7 @@ class Adventurer { //every entity should have update and draw!
         this.respawningKnockback = 5000;
         this.respawningScale = 6;
 
-        this.dropChance = 0.4; //0.4 chance of dropping something for the player
+        this.dropChance = 0.43; //0.41 chance of dropping something for the player
         this.expMultiplier = 1;
         this.coinMultiplier = 1;
         this.pushbackVector = { x: 0, y: 0 };

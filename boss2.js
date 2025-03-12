@@ -54,7 +54,7 @@ class GolemMech {
         this.armLifeTime = 2;
         this.range = 650; //range is how close our player has to be
         this.armScale = 5;
-        this.armDamage = 23;
+        this.armDamage = 21;
         this.armKnockback = 1600;
 
         //Armour Buff Properties

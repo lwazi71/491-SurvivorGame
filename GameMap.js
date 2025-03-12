@@ -14,6 +14,9 @@ class GameMap {
         } else if (this.map == 4) {
             this.image = ASSET_MANAGER.getAsset("./Sprites/Map/level3.png");
             this.scale = 3;
+        } else if (this.map == 5) {
+            this.image = ASSET_MANAGER.getAsset("./Sprites/Map/level3.png");
+            this.scale = 3;
         }
         
         this.entityOrder = -10; // Keep map underneath everything

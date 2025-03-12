@@ -288,9 +288,15 @@ class WaveManager {
                 enemy.health = Math.floor(enemy.health * this.statsMultiplier.health * 3);
                 enemy.maxHealth = Math.floor(temp * this.statsMultiplier.health *3);
              } else {
-                const temp = enemy.health;
-                enemy.health = Math.floor(enemy.health * this.statsMultiplier.health);
-                enemy.maxHealth = Math.floor(temp * this.statsMultiplier.health);
+                if (this.game.camera.currMap < 2) {
+                    const temp = enemy.health;
+                    enemy.health = Math.floor(enemy.health * this.statsMultiplier.health);
+                    enemy.maxHealth = Math.floor(temp * this.statsMultiplier.health);
+                } else {
+                    const temp = enemy.health;
+                    enemy.health = Math.floor(1.25 * enemy.health * this.statsMultiplier.health);
+                    enemy.maxHealth = Math.floor(1.25 * temp * this.statsMultiplier.health);
+                }
              }
 
             // enemy.speed *= this.statsMultiplier.speed;
@@ -364,10 +370,9 @@ class WaveManager {
 
 
         // Regular enemy spawning logic
-       if (this.game.camera.currMap < 4) {
-            this.statsMultiplier.health = 1 + (this.totalGameTime / 120) * this.multiplier; //increase enemy health by 7% every 2:00. This is so enemy still has fighting chance against player
-            const twoMinuteIntervals = Math.floor(this.totalGameTime / 15); // Get number of completed 2-minute intervals
-       }
+        this.statsMultiplier.health = 1 + (this.totalGameTime / 120) * this.multiplier; //increase enemy health by 7% every 2:00. This is so enemy still has fighting chance against player
+        const twoMinuteIntervals = Math.floor(this.totalGameTime / 15); // Get number of completed 2-minute intervals
+       
         // this.statsMultiplier.health = 1 + (this.totalGameTime / 120) * 0.25; //increase enemy health by 30% every 2:00. This is so enemy still has fighting chance against player
         // const twoMinuteIntervals = Math.floor(this.totalGameTime / 15); // Get number of completed 2-minute intervals
         // this.statsMultiplier.health = 1 + (twoMinuteIntervals * 0.2); // 20% increase per interval
@@ -536,8 +541,8 @@ class WaveManager {
             console.log("boss should now spawn");
             const boss2 = new GolemMech(this.game, spawnPos.x, spawnPos.y);
             const temp = boss2.currentHealth;
-            boss2.currentHealth = Math.floor(boss2.currentHealth * this.statsMultiplier.health * 4);
-            boss2.maxHealth = Math.floor(temp * this.statsMultiplier.health * 4);
+            boss2.currentHealth = Math.floor(boss2.currentHealth * this.statsMultiplier.health * 5);
+            boss2.maxHealth = Math.floor(temp * this.statsMultiplier.health * 5);
             this.game.addEntity(boss2);
             this.bossSpawned = true;
             this.bossActive = true;
@@ -545,8 +550,8 @@ class WaveManager {
             console.log("boss should now spawn");
             const boss3 = new Boss3(this.game, spawnPos.x, spawnPos.y);
             const temp = boss3.currentHealth;
-            boss3.currentHealth = Math.floor(boss3.currentHealth * this.statsMultiplier.health * 4);
-            boss3.maxHealth = Math.floor(temp * this.statsMultiplier.health * 4);
+            boss3.currentHealth = Math.floor(boss3.currentHealth * this.statsMultiplier.health * 7);
+            boss3.maxHealth = Math.floor(temp * this.statsMultiplier.health * 7);
             this.game.addEntity(boss3);
             this.bossSpawned = true;
             this.bossActive = true;
@@ -554,11 +559,14 @@ class WaveManager {
             console.log("boss should now spawn");
             const boss4 = new Boss4(this.game, spawnPos.x, spawnPos.y);
             const temp = boss4.currentHealth;
-            boss4.currentHealth = Math.floor(boss4.currentHealth * this.statsMultiplier.health * 4);
-            boss4.maxHealth = Math.floor(temp * this.statsMultiplier.health * 4);
+            boss4.currentHealth = Math.floor(boss4.currentHealth * this.statsMultiplier.health * 6);
+            boss4.maxHealth = Math.floor(temp * this.statsMultiplier.health * 6);
             this.game.addEntity(boss4);
             this.bossSpawned = true;
             this.bossActive = true;
+        } else if (this.game.camera.currMap == 5) { //impossible map
+            this.bossSpawned = false;
+            this.bossActive = false;
         }
     }
 
@@ -595,13 +603,13 @@ class WaveManager {
                 //     interval: 7, count: 2, pool: "melee", enemy_type: "zombie"},
                 {
                     startTime: 30, //After 1 minute, melee enemies will spawn 2 times now
-                    interval: 14, count: 2, pool: "melee", enemy_type: "blueghoul", oneTime: false},
+                    interval: 14, count: 1, pool: "melee", enemy_type: "blueghoul", oneTime: false},
                 {
                     startTime: 35, //1 minute. The interval makes it go to 1 minute
-                    interval: 20, count: 2, pool: "melee", enemy_type: "zombie", oneTime: false},
+                    interval: 20, count: 3, pool: "melee", enemy_type: "zombie", oneTime: false},
                 {
                     startTime: 60, //1:30 minutes
-                    interval: 30, count: 2, pool: "ranged", enemy_type: "imp", oneTime: false},
+                    interval: 30, count: 1, pool: "ranged", enemy_type: "imp", oneTime: false},
                 {
                     startTime: 70, //2 and 30 minutes
                     interval: 50, count: 1, pool: "rangedAOE", enemy_type: "ratmage", oneTime: false},
@@ -620,10 +628,11 @@ class WaveManager {
                     speed: 1,
                     attackPower: 1
                 };
+                this.maxEnemies = 37;
         } else if (this.game.camera.currMap == 2) {
             //set spawn pattern for map 2 here
             this.spawnPatterns = [
-                {startTime: 0, interval: 7, count: 1, pool: "melee", enemy_type: "zombie", oneTime: false},
+                {startTime: 0, interval: 5, count: 4, pool: "melee", enemy_type: "zombie", oneTime: false},
                 {
                     startTime: 20, //After 30 seconds, zombie enemies will spawn faster now?
                     interval: 10, count: 2, pool: "melee", enemy_type: "ghost"},
@@ -641,10 +650,10 @@ class WaveManager {
                     interval: 15, count: 1, pool: "melee", enemy_type: "crow", oneTime: false},
                 {
                     startTime: 75, //1:30 minutes
-                    interval: 15, count: 2, pool: "ranged", enemy_type: "banditnecromancer", oneTime: false},
+                    interval: 15, count: 1, pool: "ranged", enemy_type: "banditnecromancer", oneTime: false},
                 {
                     startTime: 70, //2 and 30 minutes
-                    interval: 50, count: 2, pool: "rangedAOE", enemy_type: "ratmage", oneTime: false},
+                    interval: 50, count: 1, pool: "rangedAOE", enemy_type: "ratmage", oneTime: false},
                 {
                     startTime: 120, // 3 minutes
                     interval: 60, count: 1, pool: "minibosses", 
@@ -652,7 +661,7 @@ class WaveManager {
                     oneTime: false},
                 {
                     startTime: 180, //After 187 seconds, zombie enemies will spawn faster now
-                    interval: 7, count: 10, pool: "melee", enemy_type: "zombie", oneTime: false},
+                    interval: 7, count: 5, pool: "melee", enemy_type: "zombie", oneTime: false},
                 {
                     startTime: 210, //3:30 minutes
                     interval: 40, count: 1, pool: "rangedAOE", enemy_type: "ratmage", oneTime: false},
@@ -661,17 +670,20 @@ class WaveManager {
                     interval: 15, count: 2, pool: "charge", enemy_type: "slime", oneTime: false},
             ];
             this.statsMultiplier = currentStatsMultiplier;
-            this.multiplier = 0.13;
+            this.maxEnemies = 80;
         } else if (this.game.camera.currMap == 3) {
             //set spawn pattern for map 3 here
             this.spawnPatterns = [
                 {startTime: 0, interval: 3, count: 1, pool: "melee", enemy_type: "ghost", oneTime: false},
                 {
-                    startTime: 0, //After 30 seconds, zombie enemies will spawn faster now
-                    interval: 7, count: 3, pool: "melee", enemy_type: "freakyghoul"},
+                    startTime: 0, 
+                    interval: 7, count: 8, pool: "melee", enemy_type: "freakyghoul"},
                 {
-                    startTime: 30, //After 1 minute, melee enemies will spawn 2 times now
-                    interval: 14, count: 2, pool: "melee", enemy_type: "zombie", oneTime: false},
+                    startTime: 30, 
+                    interval: 14, count: 7, pool: "melee", enemy_type: "zombie", oneTime: false},
+                {
+                    startTime: 30, //After 50 seconds, zombie enemies will spawn faster now
+                    interval: 20, count: 2, pool: "melee", enemy_type: "freakyghoul"},
                 {
                     startTime: 35, //1 minute. The interval makes it go to 1 minute
                     interval: 20, count: 2, pool: "charge", enemy_type: "hellspawn", oneTime: false},
@@ -680,13 +692,13 @@ class WaveManager {
                     interval: 30, count: 2, pool: "ranged", enemy_type: "imp", oneTime: false},
                 {
                     startTime: 90, //2:00 minutes
-                    interval: 30, count: 5, pool: "melee", enemy_type: "blueghoul", oneTime: false},
+                    interval: 30, count: 6, pool: "melee", enemy_type: "blueghoul", oneTime: false},
                 {
-                    startTime: 70, //2 and 30 minutes
-                    interval: 50, count: 2, pool: "rangedAOE", enemy_type: "wizard", oneTime: false},
+                    startTime: 120, //2 and 30 minutes
+                    interval: 30, count: 2, pool: "rangedAOE", enemy_type: "wizard", oneTime: false},
                 {
                     startTime: 120, // 3 minutes
-                    interval: 60, count: 1, pool: "minibosses", oneTime: false},
+                    interval: 60, count: 1, pool: "minibosses", enemy_type: "cyclops", oneTime: false},
                 {
                     startTime: 210, //3:30 minutes
                     interval: 40, count: 1, pool: "ranged", enemy_type: "necromancer", oneTime: false},
@@ -695,21 +707,30 @@ class WaveManager {
                     interval: 15, count: 1, pool: "charge", enemy_type: "slime", oneTime: false},
                 ];
                 this.statsMultiplier = currentStatsMultiplier;
-                this.multiplier = 0.04;
+                this.maxEnemies = 700;
         } else if (this.game.camera.currMap == 4) {
             //set spawn pattern for map 4 here
             this.spawnPatterns = [
+                { //0 seconds, will start with melee enemies randomly
+                    startTime: 0, 
+                    interval: 3, 
+                    count: 8,
+                    pool: "melee",
+                    oneTime: false 
+                },
                 {
-                    startTime: 0, //when they'll start spawning
-                    interval: 0, //Instantly spawns since it's 0 seconds
-                    count: 1,
-                    pool: "minibosses",
-                  //  enemy_type: "miniboss_zombie", //Always spawn miniboss zombies zombies
-                    oneTime: false //If we want to spawn the enemy one time. If this is true, it won't worry about the interval and just spawn at the start time
-
-                }
+                    startTime: 0, 
+                    interval: 10, count: 5, pool: "melee", oneTime: false},
+                {startTime: 15, interval: 15, count: 7, pool: "ranged", oneTime: false}, //30 seconds will spawn in ranged enemies
+                {starTime: 15, interval: 25, count: 3, pool: "rangedAOE", oneTime: false},
+                {startTime: 30, interval: 20, count: 2, pool: "minibosses", oneTime: false}, //50 seconds, we'll start spawning in mini
+                {starTime: 90, interval: 2, count: 6, pool: "melee", oneTime: false},
+                {starTime: 110, interval: 6, count: 1, pool: "minibosses", oneTime: false}
             ];
-             this.bossTime = 180; //maybe have the final spawn in earlier?
+             this.bossTime = 210; //maybe have the final spawn in earlier? 210 seconds
+        } else if (this.game.camera.currMap == 5) { //secret level map
+            this.spawnPatterns = [{startTime: 0, interval: 0, count: 1, pool: "minibosses", oneTime: false}];
+            this.bossTime = 10000;
         } else {
             //if there's no map right now, there will be no spawn pattern
             this.spawnPatterns = [];
