@@ -262,7 +262,7 @@ class Settings {
                 check: this.enableInvincibility
             },
             {
-                name: "Disable HUD",
+                name: "Enable HUD",
                 game: this.game,
                 action() {this.game.settings.toggleHud()},
                 check: this.enableHUD
