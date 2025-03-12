@@ -464,6 +464,13 @@ class LevelShop {
         ctx.font = '14px "Press Start 2P"';
         ctx.textBaseline = "middle";
         ctx.fillText(this.selectedDescription, X, y);
+        if (this.selected == "Health Potion") {
+            ctx.fillText(`(Current Potion Count: ${this.game.adventurer.potion})`, X, y + 20);
+        } else if (this.selected == "Exp Increase Multiplier") {
+            ctx.fillText(`(Current Exp Multiplier: ${this.game.adventurer.expMultiplier})`, X, y + 20);
+        } else if (this.selected == "Coin Increase Multiplier") {
+            ctx.fillText(`(Current Coin Multiplier: ${this.game.adventurer.coinMultiplier})`, X, y + 20);
+        }
     
 
     }

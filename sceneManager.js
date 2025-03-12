@@ -165,7 +165,7 @@ class SceneManager {
             this.game.addEntity(new TransitionScreen(this.game, this.currMap));
         } else {
             this.game.addEntity(new FadeIn(this.game));
-            let levelText = this.getLevelText();
+            let levelText = this.getLevelText(); // Could set 
             this.game.addEntity(new FadeText(this.game, levelText));
             this.showLevel = true;
             this.startWave = true;  
@@ -192,7 +192,6 @@ class SceneManager {
                 
             }
             if (this.currMap != 1 && this.currMap < 5) {
-                console.log("test");
                 this.game.camera.enableLevelShop = true;
                 this.game.toggleShopPause();
             }
@@ -294,6 +293,8 @@ class SceneManager {
             if (this.reveal <= 0) {
                 this.game.leftClick = false;
                 this.firstClick = true;
+
+                //Put main menu music here
             }
         } else {
             // this.adjustMusicVolume();

@@ -317,7 +317,6 @@ class Settings {
     }
     update() {
         this.updateMenuButtons();
-        console.log(this.game.click);
         if (this.currentMenu == "Volume") this.updateVolumeMenu();
         // if (this.currentMenu == "Help") this.updateHelpMenu();
         if (this.currentMenu == "Other") this.updateOtherMenu();

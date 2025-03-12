@@ -224,17 +224,17 @@ class GameEngine {
             this.click = {x: 0, y: 0};
         }
         
-        if (this.keys["u"]) {
-            this.camera.enableChest = true;
-            this.toggleShopPause();
-            this.click = {x: 0, y: 0};
-        }
-        //How to open shop
-        if (this.keys["i"]) {
-            this.camera.enableLevelShop = true;
-            this.toggleShopPause();
-            this.keys["i"] = false;
-        }
+        // if (this.keys["u"]) {
+        //     this.camera.enableChest = true;
+        //     this.toggleShopPause();
+        //     this.click = {x: 0, y: 0};
+        // }
+        // //How to open shop
+        // if (this.keys["i"]) {
+        //     this.camera.enableLevelShop = true;
+        //     this.toggleShopPause();
+        //     this.keys["i"] = false;
+        // }
         for (let i = 0; i < entitiesCount; i++) {
             let entity = this.entities[i];
 
