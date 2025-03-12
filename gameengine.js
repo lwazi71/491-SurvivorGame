@@ -286,6 +286,8 @@ class GameEngine {
             } else if (this.deathPause) {
                 this.deathScreen.update();
                 this.deathScreen.draw(this.ctx);
+                this.winScreen.update();
+                this.winScreen.draw(this.ctx);
                 this.timer.isPaused = true;
                 this.timer.enablePauseTick = true;
                 // this.disableMouseInputs();

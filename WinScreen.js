@@ -1,7 +1,7 @@
 class WinScreen {
     constructor(game) {
         this.game = game;
-        this.game.deathScreen = this;
+        this.game.winScreen = this;
         // this.player = new PlayerStatus(game, this.game.upgrade);
         this.player = this.game.upgrade.player;
         this.visible = false; // Start hidden
