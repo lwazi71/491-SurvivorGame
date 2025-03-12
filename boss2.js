@@ -55,7 +55,7 @@ class GolemMech {
         this.armLifeTime = 2;
         this.range = 650; //range is how close our player has to be
         this.armScale = 5;
-        this.armDamage = 23;
+        this.armDamage = 21;
         this.armKnockback = 1600;
 
         //Armour Buff Properties
@@ -69,7 +69,8 @@ class GolemMech {
         this.currentHealth = 500;
         this.maxHealth = 500;
         this.didCrit = false;
-        this.name = "Melog, the Golem Mech"
+
+        this.name = "Chrono Golem"
 
         this.profileAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/HudIcons/Boss2Hud.png"), 0, 0, 32, 32, 7, 0.2, false, true);
         this.healthbar = this.game.addEntity(new BossHealthBar(game, this, this.profileAnimation, 32, 0, 0, 3));

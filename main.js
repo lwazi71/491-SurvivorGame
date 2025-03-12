@@ -158,6 +158,7 @@ ASSET_MANAGER.queueDownload("./Sprites/HudIcons/AdventurerSpriteTransition.png")
 ASSET_MANAGER.queueDownload("./Sprites/HudIcons/AdventurerSpriteTransition2.png");
 ASSET_MANAGER.queueDownload("./Sprites/HudIcons/PlayerBackground.png");
 ASSET_MANAGER.queueDownload("./Sprites/HudIcons/shopBackground.png");
+ASSET_MANAGER.queueDownload("./Sprites/HudIcons/stars.png");
 ASSET_MANAGER.queueDownload("./Sprites/Objects/spotlight.png");
 ASSET_MANAGER.queueDownload("./Sprites/Objects/brokenheart.png");
 ASSET_MANAGER.queueDownload("./Sprites/Objects/glow.png");
@@ -226,6 +227,7 @@ ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Hover.mp3");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Pause.mp3");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Select.mp3");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Unpause.mp3");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Audio_Music_Slash.mp3");
 
 //Player sounds
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Explosion.mp3");

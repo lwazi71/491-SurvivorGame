@@ -82,10 +82,10 @@ class Adventurer { //every entity should have update and draw!
         this.magicking = false;
         this.magicDuration = 6 * 0.1; //for animation
         this.canMagic = true;
-        this.magicCooldown = 20; //long cool down
+        this.magicCooldown = 15; //long cool down
         this.magicCooldownTimer = 0;
         this.magicKnockback = 2000;
-        this.magicDamage = 45;
+        this.magicDamage = 33;
         this.magicScale = 6;
         this.enableMagic = false; //changed to true for now for debugging
 
@@ -150,7 +150,7 @@ class Adventurer { //every entity should have update and draw!
 
         this.critChance = 0.05; //5%
         this.critDamage = 1.5; //150%
-        this.coins = 1000;
+        this.coins = 0;
         this.level = 1;
         this.experience = 0;
         this.experienceToNextLvl = 10;
@@ -165,7 +165,7 @@ class Adventurer { //every entity should have update and draw!
         this.respawningKnockback = 5000;
         this.respawningScale = 6;
 
-        this.dropChance = 0.4; //0.4 chance of dropping something for the player
+        this.dropChance = 0.43; //0.41 chance of dropping something for the player
         this.expMultiplier = 1;
         this.coinMultiplier = 1;
         this.pushbackVector = { x: 0, y: 0 };
@@ -800,6 +800,7 @@ class Adventurer { //every entity should have update and draw!
 
 
     attack() {
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Audio_Music_Slash.mp3");
         this.attacking = true; 
         this.canAttack = false;
         this.attackCooldownTimer = this.attackCooldown;
@@ -921,7 +922,7 @@ class Adventurer { //every entity should have update and draw!
                 baseAngle + spreadAngle
             ];
             angles.forEach(angle => {
-                this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, this.bowDamage, this.arrowSpeed, 
+                this.game.addEntity(new Projectile(this.game, characterCenterX, characterCenterY, angle, Math.round(this.bowDamage / 2), this.arrowSpeed, 
                     "./Sprites/Projectiles/Arrows_pack.png", this.bowKnockback, true, 2, this.piercing,
                     2, 0, -6, 32, 32, 1, 0.2, false, true, - 15, -15, this.bitSize * 2 - 35, this.bitSize * 2 - 35, this.bitSize, this.bitSize, this)); 
             });

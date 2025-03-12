@@ -90,7 +90,8 @@ class Boss3 {
         this.maxChargeDuration = 3; // Maximum charge duration in seconds
         this.currentChargeDuration = 0; // Tracks how long hellspawn has been charging
 
-        this.name = "Hijaf, the Hellspawn Lord";
+        this.name = "Azgorth, The Flameborn";
+      
         this.profileAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/FlyingDemon/IDLE.png"), 0, 0, 48, 48, 3.94, 0.1, false, true);
         this.healthbar = this.game.addEntity(new BossHealthBar(game, this, this.profileAnimation, 48, 0, 0, 2));
         this.pointer = this.game.addEntity(new Pointer(game, this));
@@ -296,8 +297,8 @@ class Boss3 {
             const randomChoice = Math.random();
             
             // You can adjust this threshold to control how often each action occurs
-            // 40/60 chance between charging and shooting
-            const chargeThreshold = 0.3; 
+            // 45/55 chance between charging and shooting
+            const chargeThreshold = 0.45; 
             if (distance >= 580) {
                 if (!this.isPreparingCharge) {
                     ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss3 idle.wav");
@@ -371,7 +372,7 @@ class Boss3 {
                 Math.pow((this.BB.y + this.BB.height/2) - this.chargeTarget.y, 2)
             );
     
-            if (currentDistanceToTarget <= 10) {
+            if (currentDistanceToTarget <= 45) {
                 this.isCharging = false;
                 this.state = 0;
                 this.currentChargeDuration = 0;  // Reset the duration timer

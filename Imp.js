@@ -14,10 +14,10 @@ class Imp {
         this.range = 400; //Shooting range (range until our Imp starts shooting at player)
         this.shootCooldown = 3; //Shoot every 3 seconds
         this.shootTimer = 0; //should be 0
-        this.castSpeed = 700;
+        this.castSpeed = 500;
         this.castDuration = 6 * 0.1; //How long the cast animation plays
         this.castTimer = 0; //Timer for the cast animation
-        this.damage = 15;
+        this.damage = 11;
         this.collisionDamage = 2;
         
         this.health = 12; //Imp Health

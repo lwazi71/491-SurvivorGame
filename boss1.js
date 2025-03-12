@@ -6,7 +6,7 @@ class Boss1 { //goblin king
         this.maxHealth = 300;
         this.currentHealth = 300;
         this.didCrit = false;
-        this.name = "tbd, The Goblin King";
+        this.name = "Gorvok, The Goblin King";
 
         this.profileAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/HudIcons/Boss1Hud.png"), 0, 0, 32, 32, 13, 0.2, false, true);
         this.healthbar = this.game.addEntity(new BossHealthBar(game, this, this.profileAnimation, 32, 0, 0, 3));
@@ -21,7 +21,7 @@ class Boss1 { //goblin king
         this.aoeTargetY = (this.game.adventurer.y + (this.game.adventurer.bitSize * this.game.adventurer.scale)/2);
 
         this.speed = 180;
-        this.damage = 30;
+        this.damage = 18;
         this.knockback = 3500;
 
         //Properties:
@@ -63,7 +63,7 @@ class Boss1 { //goblin king
         this.midAirTimer = 0;
         this.midAirDuration = 2.0; // How long to stay in mid-air
         this.fallingThreshold = 230; // Distance to ground when we switch to landing animation
-        this.landingDamage = 60;
+        this.landingDamage = 27;
 
         this.circleSpawned = false;
         this.invincible = false;
@@ -73,7 +73,7 @@ class Boss1 { //goblin king
         //order properties
         this.orderAnimationTimer = 0;
         this.orderAnimationDuration = 5.9 * 0.2;
-        this.waveCooldown = 40; //cooldown to how many times the boss can call in waves
+        this.waveCooldown = 55; //cooldown to how many times the boss can call in waves
         this.waveCooldownTimer = 0; 
         this.goblinsAlive = 0;
         this.goblinSpawn = 25;
@@ -84,7 +84,7 @@ class Boss1 { //goblin king
         //throwing properties:
         this.throwTimer = 0;
         this.throwDuration = 7.9 * 0.1;
-        this.throwSpeed = 1500;
+        this.throwSpeed = 1050;
         this.shootCooldown = 4; //Shoot every 4 seconds
         this.shootTimer = 0; //should be 0
         this.throwAnimationElapsedTime = 0; //used for when boss does throwing animation then it faces other way
@@ -92,7 +92,7 @@ class Boss1 { //goblin king
         this.moneyLifeTime = 0.7;
         this.range = 500;
         this.moneyBagScale = 5;
-        this.moneyDamage = 23;
+        this.moneyDamage = 13;
         this.moneyKnockback = 1600;
 
         //Healing Properties: 

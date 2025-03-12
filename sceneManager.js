@@ -42,7 +42,10 @@ class SceneManager {
         this.game.addEntity(this.deathScreen);
         this.levelMusicPath = "./Audio/Music/Survivorio Clone Battle Song (1).wav";
 
+
         // this.loadTestLevel(this.false);
+        this.winScreen = new WinScreen(this.game);
+
         if (!this.enableTitle) this.loadLevel(this.currMap, false);
 
 
@@ -217,13 +220,20 @@ class SceneManager {
             }
             this.waveManager.resetForNewMap();
         }
-        // this.game.addEntity(new Boss1(this.game, 200, 400));
+        //  this.game.addEntity(new Boss3(this.game, 200, 400));
+        // this.game.addEntity(new HellSpawn(this.game, 200, 400));
+        // this.game.addEntity(new Boar(this.game, 200, 400));
     }
 
     triggerDeathScreen() {
         ASSET_MANAGER.pauseMusic();
         ASSET_MANAGER.playAsset("./Audio/Music/Death.wav");
         this.deathScreen.trigger();
+    }
+
+    
+    triggerWinScreen() {
+        this.winScreen.trigger();
     }
     
 
@@ -401,7 +411,7 @@ class Title {
                 name: "Start",
                 game: this.game,
                 action() {this.game.camera.enableTitle = false;
-                        this.game.camera.loadLevel(1, true);}
+                        this.game.camera.loadLevel(this.game.camera.currMap, true);}
             },
             {
                 name: "Settings",
