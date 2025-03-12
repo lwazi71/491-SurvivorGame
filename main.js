@@ -228,6 +228,9 @@ ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Pause.mp3");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Select.mp3");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Unpause.mp3");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Audio_Music_Slash.mp3");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Arrows.mp3");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/FireBall.mp3");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/LightningStrike.mp3");
 
 //Player sounds
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Explosion.mp3");

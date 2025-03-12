@@ -53,7 +53,7 @@ class Adventurer { //every entity should have update and draw!
         this.attackDuration = 0.56;  // Duration of attack animation
         this.attackTimer = 0;
         this.canAttack = true;
-        this.attackCooldown = 1.1;   //Time between attacks.
+        this.attackCooldown = 0.1;   //Time between attacks.
         this.attackCooldownTimer = 0;
         this.slashType = 0; //0 = default right slash animation, 1 = up animation
         this.slashDistance = 27; //Distance from character center to slash
@@ -889,6 +889,7 @@ class Adventurer { //every entity should have update and draw!
         this.canShoot = false;
         this.shootCooldownTimer = this.shootCooldown;
         this.shootingTimer = this.shootingDuration;
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Arrows.mp3");
 
 
         // Get mouse position in world coordinates
@@ -946,7 +947,7 @@ class Adventurer { //every entity should have update and draw!
         this.canMagic = false;
         this.magicCooldownTimer = this.magicCooldown;
         this.magicTimer = this.magicDuration;
-
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/FireBall.mp3");
 
         // Calculate character center
         const characterCenterX = this.x + (this.bitSize * this.scale) / 2;
@@ -1047,6 +1048,7 @@ class Adventurer { //every entity should have update and draw!
         this.canBolt = false;
         this.boltCooldownTimer = this.boltCooldown;
         this.magicTimer = this.magicDuration;
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/LightningStrike.mp3");
 
         const characterCenterX = this.x + (this.bitSize * this.scale) / 2;
         const characterCenterY = this.y + (this.bitSize * this.scale) / 2;
