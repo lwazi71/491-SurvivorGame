@@ -183,6 +183,7 @@ ASSET_MANAGER.queueDownload("./Audio/Music/Jungle.mp3");
 ASSET_MANAGER.queueDownload("./Audio/Music/devil_music.mp3");
 ASSET_MANAGER.queueDownload("./Audio/Music/spooky.mp3");
 ASSET_MANAGER.queueDownload("./Audio/Music/Death.wav");
+ASSET_MANAGER.queueDownload("./Audio/Music/Win.wav");
 ASSET_MANAGER.queueDownload("./Audio/Music/Shop Music.mp3");
 ASSET_MANAGER.queueDownload("./Audio/Music/minecraftmenumusic.mp3");
 
@@ -224,6 +225,11 @@ ASSET_MANAGER.queueDownload("./Audio/SoundEffects/LevelUp.wav");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/coinCollecting.wav");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/ExperienceOrb.wav");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Chest open.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Bomb Placing.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Arrows.mp3");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/FireBall.mp3");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/LightningStrike.mp3");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Audio_Music_Slash.mp3");
 
 //UI sounds
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Back.mp3");
@@ -231,10 +237,6 @@ ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Hover.mp3");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Pause.mp3");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Select.mp3");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Unpause.mp3");
-ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Audio_Music_Slash.mp3");
-ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Arrows.mp3");
-ASSET_MANAGER.queueDownload("./Audio/SoundEffects/FireBall.mp3");
-ASSET_MANAGER.queueDownload("./Audio/SoundEffects/LightningStrike.mp3");
 
 //Player sounds
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Explosion.mp3");

@@ -235,6 +235,8 @@ class SceneManager {
 
     
     triggerWinScreen() {
+        ASSET_MANAGER.pauseMusic();
+        ASSET_MANAGER.playAsset("./Audio/Music/Win.wav");
         this.winScreen.trigger();
     }
     

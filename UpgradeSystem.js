@@ -1279,6 +1279,7 @@ class PlayerStatus {
 
         let y = this.startY + 50 + 10 + this.healthBarSize.height * 2 + 20 + 70 + 40;
         if (this.game.keys["1"] || this.game.isClicking(this.startX + 10, y, button.width, button.height)) {
+            ASSET_MANAGER.playAsset("./Audio/SoundEffects/Audio_Music_Slash.mp3");
             this.animation[1].elapsedTime = 0;
             this.actions = 1;
             this.currentTimer = this.swordDuration;
@@ -1287,6 +1288,7 @@ class PlayerStatus {
             this.game.click = {x: 0, y: 0};
         }
         if (this.game.keys["2"] || this.game.isClicking(this.startX + 10 + button.width, y, button.width, button.height)) {
+            ASSET_MANAGER.playAsset("./Audio/SoundEffects/Arrows.mp3");
             this.animation[2].elapsedTime = 0;
             this.actions = 2;
             this.currentTimer = this.bowDuration;
@@ -1295,6 +1297,7 @@ class PlayerStatus {
             this.game.click = {x: 0, y: 0};
         }
         if (this.game.keys["3"] || this.game.isClicking(this.startX + 10 + button.width * 2, y, button.width, button.height)) {
+            ASSET_MANAGER.playAsset("./Audio/SoundEffects/Bomb Placing.wav");
             this.animation[4].elapsedTime = 0;
             this.actions = 4;
             this.currentTimer = this.rollDuration;
@@ -1303,6 +1306,7 @@ class PlayerStatus {
             this.game.click = {x: 0, y: 0};
         }
         if (this.game.keys["4"] || this.game.isClicking(this.startX + 10 + button.width * 3, y, button.width, button.height)) {
+            ASSET_MANAGER.playAsset("./Audio/SoundEffects/LightningStrike.mp3");
             this.animation[3].elapsedTime = 0;
             this.actions = 3;
             this.currentTimer = this.magicDuration;

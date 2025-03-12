@@ -555,6 +555,7 @@ class Adventurer { //every entity should have update and draw!
         } 
         //bomb controls
         if (this.game.keys["e"] && this.canBomb && !this.rolling && this.bombCurrentAmnt > 0 && this.enableBomb) {
+            ASSET_MANAGER.playAsset("./Audio/SoundEffects/Bomb Placing.wav");
             this.game.keys["e"] = false;
             this.bombCurrentAmnt--;
             const characterCenterX = this.x + (this.bitSize * this.scale) / 2; 
