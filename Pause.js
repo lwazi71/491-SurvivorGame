@@ -205,8 +205,8 @@ class Settings {
         this.volumeSlider = {width: 150, height: 10};
 
         this.currVolume = 0.5;
-        this.currMusicVolume = 1;
-        this.currSFXVolume = 1;
+        this.currMusicVolume = 0.25;
+        this.currSFXVolume = 0.25;
 
         this.toggleAllMute = true; //true == no
         this.toggleMusicMute = true;
