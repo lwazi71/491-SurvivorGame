@@ -29,6 +29,9 @@ class LevelShop {
         
         this.buyMenuY = 75 + 50 + this.length + 50 + 60;
         this.menu = {width: PARAMS.CANVAS_WIDTH - 150, height: PARAMS.CANVAS_HEIGHT - 150};
+        this.fade = true;
+        this.elapsedTime = 0;
+        this.changes = 1;
 
         this.basic = [];
         this.unique = [];
@@ -80,6 +83,13 @@ class LevelShop {
         ];
     }
     update() {
+        if (this.fade) {
+            this.elapsed += this.game.clockTick;
+            if (this.elapsed > 1) {
+                this.fade = false;
+            }
+            this.changes -= 0.02;
+        }
         this.player = this.game.upgrade.player;
         if (!this.showPlayer) {
             if (!this.showUpgrade) {
@@ -101,6 +111,9 @@ class LevelShop {
                 this.game.camera.enableLevelShop = false;
                 this.showUpgrade = false;
                 this.game.toggleShopPause();
+                this.fade = true;
+                this.elapsedTime = 0;
+                this.changes = 1;
                 this.game.click = {x:0, y:0};
             }
         }
@@ -253,6 +266,11 @@ class LevelShop {
             }
         }
         this.game.upgrade.exitButton(ctx, this.game.mouse.x, this.game.mouse.y);
+        if (this.fade) {
+            //Draw fade in
+            ctx.fillStyle = rgba(0, 0, 0, this.changes);
+            ctx.fillRect(0, 0, PARAMS.CANVAS_WIDTH, PARAMS.CANVAS_HEIGHT);
+        }
 
     }
     drawOptions(ctx) {

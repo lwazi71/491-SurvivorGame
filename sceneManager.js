@@ -354,7 +354,7 @@ class SceneManager {
         } else if (!this.transition){
             ctx.font = '20px Arial';
             ctx.fillStyle = 'white';
-            if (!this.game.adventurer.dead && this.game.settings.enableHUD) {
+            if (!this.game.adventurer.dead && this.game.settings.enableHUD && !this.game.shopPause) {
                 this.Hud.update(); //Comment out both when demoing
                 this.Hud.draw(ctx);
             }

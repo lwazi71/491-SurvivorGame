@@ -325,6 +325,9 @@ class GameEngine {
                 } else if (this.levelShop.showUpgrade) {
                     //Empty so it does nothing
                 } else {
+                    this.levelShop.fade = true;
+                    this.levelShop.elapsedTime = 1;
+                    this.levelShop.changes = 1;
                     this.camera.enableLevelShop = false;
                     this.levelShop.enableBuy = false;
                     this.levelShop.showUpgrade = false;
