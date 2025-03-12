@@ -267,19 +267,19 @@ class SceneManager {
         switch(this.currMap) {
             case 1:
                 text = "Level 1: Goblin Forest";
-                ASSET_MANAGER.playAsset("./Audio/Music/Jungle.mp3");
+                this.levelMusicPath = "./Audio/Music/Jungle.mp3";
                 break;
             case 2:
                 text = "Level 2: Ruined City";
-                ASSET_MANAGER.playAsset("./Audio/Music/Survivorio Clone Battle Song (1).wav");
+                this.levelMusicPath = "./Audio/Music/Survivorio Clone Battle Song (1).wav";
                 break;
             case 3:
                 text = "Level 3: Hell";
-                ASSET_MANAGER.playAsset("./Audio/Music/devil_music.mp3");
+                this.levelMusicPath = "./Audio/Music/devil_music.mp3";
                 break;
             case 4:
                 text = "Level 4: ???";
-                ASSET_MANAGER.playAsset("./Audio/Music/spooky.mp3");
+                 this.levelMusicPath = "./Audio/Music/spooky.mp3";
                 break;
             default:
                 text = "Level ∞";
