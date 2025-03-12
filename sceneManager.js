@@ -182,19 +182,7 @@ class SceneManager {
                 this.deathScreen = new DeathScreen(this.game);
 
                 this.game.addEntity(new Sign(this.game, 20, 20, 
-                    "KeyBoard Controls:      - Move using WASD              - Attack using left click " +                
-                    "                    - Right click on item 1 to use close Range AOE                   - Switch weapons using 1 and 2 (Sword is 1 and Bow is 2)" + 
-                    "                - To roll press shift (Will give invincibility frames          - Press e to place bomb down" +
-                    "                    - Right click on bow item to use long-ranged AOE"));
-        
-                this.game.addEntity(new Sign(this.game, 220, 20, 
-                    "KeyBoard Controls (cont):                  - Press f for Dark-bolt ability (will slow down enemies if hit and be in random places around character"));
-        
-                this.game.addEntity(new Sign(this.game, 420, 20, 
-                    "Cool Combos:                  - Slashing your arrow in mid air will double the arrow speed and damage                          " +
-                        "- Putting a bomb down, you can slash it towards enemies                      " + 
-                        "- Striking lightning down on dark-bolt will create an explosion that'll do ALOT of damage"));
-                
+                    "Good luck!!! Also, Alan, Holden, Lwazi, and Murad were here!!!"));
             }
             if (this.currMap != 1 && this.currMap < 5) {
                 this.game.camera.enableLevelShop = true;
@@ -235,8 +223,6 @@ class SceneManager {
 
     
     triggerWinScreen() {
-        ASSET_MANAGER.pauseMusic();
-        ASSET_MANAGER.playAsset("./Audio/Music/Win.wav");
         this.winScreen.trigger();
     }
     
