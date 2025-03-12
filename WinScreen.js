@@ -46,7 +46,7 @@ class WinScreen {
         this.player = this.game.upgrade.player; // Just in case it doesn't update
         if (this.showUpgrade) this.player.update();
         (this.canRespawn) ? this.elapsedTime += 0.01 : this.elapsedTime = 0;
-        this.canRespawn = this.game.adventurer.coins >= 1000;
+        this.canRespawn = this.game.adventurer.coins >= 1;
 
         this.rotationAngle += this.rotationSpeed;
         
@@ -191,7 +191,7 @@ class WinScreen {
 
             // Draw coin count for respawn
             ctx.font = 14 + 'px "Press Start 2P"';
-            let coinWidth = ctx.measureText("1000").width + 20;
+            let coinWidth = ctx.measureText("1").width + 20;
             let coinScale = 3;
             
             ctx.drawImage(this.coinImage, 
@@ -213,7 +213,7 @@ class WinScreen {
             // let coinX = this.centerButtonX + (this.buttonWidth - coinWidth) / 2 - 100;
             // let coinY = this.centerButtonY - 42 + this.buttonHeight / 2 + 100;
             ctx.textBaseline = "middle";
-            ctx.fillText("1000", center - coinWidth / 2 + (5 * coinScale), buttonY - (5 * coinScale) / 2 + this.buttonHeight - 7.5);
+            ctx.fillText("1", center - coinWidth / 2 + (5 * coinScale), buttonY - (5 * coinScale) / 2 + this.buttonHeight - 7.5);
 
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
