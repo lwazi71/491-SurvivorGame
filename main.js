@@ -177,15 +177,60 @@ ASSET_MANAGER.queueDownload("./Sprites/Map/level3.png");
 ASSET_MANAGER.queueDownload("./Sprites/Map/level4.png");
 
 //Audio
+//Music
 ASSET_MANAGER.queueDownload("./Audio/Music/Survivorio Clone Battle Song (1).wav");
+ASSET_MANAGER.queueDownload("./Audio/Music/Death.wav");
+ASSET_MANAGER.queueDownload("./Audio/Music/Shop Music.mp3");
 
 //Sfx
+//boss1
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss1 Coin Attack.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss1 Jumping.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss1 summon.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss1 death.wav");
+
+//boss2
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss2 Arm Launch.mp3");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss2 Death.wav");
+//boss3
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss3 death.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss3 idle.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss3 ranged attacks.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss3 fire.wav");
+//boss4
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss4 attack.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss4 idle.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss4 death.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss4 summon.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss4 ranged attack.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/boss4 charging.wav");
+
+//Common enemies
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Enemy damage.mp3");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Enemy magic attack.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Enemy melee bite.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Enemy melee punch.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Rock Throw.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Portal Open.wav");
+
+//Player sounds
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Dodge.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Healing.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/LevelUp.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/coinCollecting.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/ExperienceOrb.wav");
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Chest open.wav");
+
+//UI sounds
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Back.mp3");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Hover.mp3");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Pause.mp3");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Select.mp3");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Unpause.mp3");
 ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Audio_Music_Slash.mp3");
+
+//Player sounds
+ASSET_MANAGER.queueDownload("./Audio/SoundEffects/Explosion.mp3");
 
 
 
@@ -198,6 +243,7 @@ ASSET_MANAGER.downloadAll(() => {
 	ctx.imageSmoothingEnabled = false;
 	canvas.style.cursor = "crosshair";
 	ASSET_MANAGER.autoRepeat("./Audio/Music/Survivorio Clone Battle Song (1).wav");
+	ASSET_MANAGER.autoRepeat("./Audio/Music/Shop Music.mp3");
 
 	PARAMS.CHEATS = false;
 	// document.getElementById("btn").addEventListener("click", function() {

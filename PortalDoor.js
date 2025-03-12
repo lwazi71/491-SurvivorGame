@@ -17,11 +17,13 @@ class PortalDoor {
         
         // Flag to track if emerge animation is complete
         this.emergeComplete = false;
+        this.transition = true;
         
         // Track animation timer
         this.animationTimer = 0;
         this.pointer = this.game.addEntity(new Pointer(game, this));
 
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Portal Open.wav");
         
         this.updateBB();
         this.loadAnimations();
@@ -76,8 +78,6 @@ class PortalDoor {
                 //this.game.currMap++;
                 console.log("touching portal");
                 if (this.game.camera.currMap < 4) {
-                    this.game.camera.enableLevelShop = true;
-                    this.game.toggleShopPause();
                     this.game.camera.loadLevel(this.game.camera.currMap += 1, true);
                 } else {
                     this.game.toggleDeathPause();

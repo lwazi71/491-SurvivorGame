@@ -224,17 +224,17 @@ class GameEngine {
             this.click = {x: 0, y: 0};
         }
         
-        if (this.keys["u"]) {
-            this.camera.enableChest = true;
-            this.toggleShopPause();
-            this.click = {x: 0, y: 0};
-        }
-        //How to open shop
-        if (this.keys["i"]) {
-            this.camera.enableLevelShop = true;
-            this.toggleShopPause();
-            this.keys["i"] = false;
-        }
+        // if (this.keys["u"]) {
+        //     this.camera.enableChest = true;
+        //     this.toggleShopPause();
+        //     this.click = {x: 0, y: 0};
+        // }
+        // //How to open shop
+        // if (this.keys["i"]) {
+        //     this.camera.enableLevelShop = true;
+        //     this.toggleShopPause();
+        //     this.keys["i"] = false;
+        // }
         for (let i = 0; i < entitiesCount; i++) {
             let entity = this.entities[i];
 
@@ -325,10 +325,13 @@ class GameEngine {
                 } else if (this.levelShop.showUpgrade) {
                     //Empty so it does nothing
                 } else {
+                    this.levelShop.fade = true;
+                    this.levelShop.elapsedTime = 1;
+                    this.levelShop.changes = 1;
                     this.camera.enableLevelShop = false;
                     this.levelShop.enableBuy = false;
                     this.levelShop.showUpgrade = false;
-                    this.shopPause = false;
+                    this.toggleShopPause();
                     ASSET_MANAGER.playAsset("./Audio/SoundEffects/Back.mp3");
                 }
             } else if (this.deathPause && this.deathScreen.showUpgrade) {
@@ -350,16 +353,23 @@ class GameEngine {
                     ASSET_MANAGER.playAsset("./Audio/SoundEffects/Unpause.mp3");
                     ASSET_MANAGER.playAsset(this.camera.levelMusicPath);
                 }
-            } else if (this.game.camera.enableTitle && this.game.camera.title.showSettings) {
-                this.camera.title.showSettings = false;
-                ASSET_MANAGER.playAsset("./Audio/SoundEffects/Back.mp3");
             }
             this.resetDrawingValues();
+            this.keys["escape"] = false;
+        }
+        if (this.keys["escape"] && this.camera.enableTitle && this.camera.title.showSettings) {
+            this.camera.title.showSettings = false;
+            ASSET_MANAGER.playAsset("./Audio/SoundEffects/Back.mp3");
             this.keys["escape"] = false;
         }
     }
     toggleUpgradePause() {
         this.upgradePause = !this.upgradePause;
+        // if (this.upgradePause) {
+        //     ASSET_MANAGER.pauseMusic();
+        // } else {
+        //     ASSET_MANAGER.playAsset(this.camera.levelMusicPath);
+        // }
     }
 
     toggleDeathPause() {
@@ -371,6 +381,13 @@ class GameEngine {
     }
     toggleShopPause() {
         this.shopPause = !this.shopPause;
+        if (this.shopPause) {
+            ASSET_MANAGER.pauseMusic();
+            ASSET_MANAGER.playAsset("./Audio/Music/Shop Music.mp3");
+        } else {
+            ASSET_MANAGER.pauseMusic();
+            ASSET_MANAGER.playAsset(this.camera.levelMusicPath);
+        }
     }
     resetDrawingValues() {
         this.ctx.textAlign = "left";
@@ -386,14 +403,16 @@ class GameEngine {
         this.mouse.y > y && this.mouse.y < y + height;
     }
     isClicking(x, y, length, height) {
-        this.mouse.x ? this.mouse.x : 0;
-        this.mouse.y ? this.mouse.y : 0;
+        // this.mouse.x ? this.mouse.x : 0;
+        // this.mouse.y ? this.mouse.y : 0;
+        let check = false;
         if (this.click.x > x && this.click.x < x + length &&
             this.click.y > y && this.click.y < y + height && this.leftClick) {
                 ASSET_MANAGER.playAsset("./Audio/SoundEffects/Select.mp3");
+                check = true;
+                // this.leftClick = false;
             }
-        return this.click.x > x && this.click.x < x + length &&
-        this.click.y > y && this.click.y < y + height && this.leftClick;
+        return check
     }
     isPaused() {
         return this.pause || this.upgradePause || this.deathPause || this.shopPause;

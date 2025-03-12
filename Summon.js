@@ -150,6 +150,7 @@ class Summon {
 
             if (player && this.BB.collide(player.BB)) {
                 if (this.attackCooldownTimer <= 0) {
+                    ASSET_MANAGER.playAsset("./Audio/SoundEffects/Enemy melee punch.wav");
                     player.takeDamage(this.attackPower);
                     this.attackCooldownTimer = this.attackCooldown;
                 }
@@ -182,6 +183,7 @@ class Summon {
 
 
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Enemy damage.mp3");
         this.health -= damage;
         if (this.dead) {
             return;

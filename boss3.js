@@ -91,10 +91,12 @@ class Boss3 {
         this.currentChargeDuration = 0; // Tracks how long hellspawn has been charging
 
         this.name = "Azgorth, The Flameborn";
+      
         this.profileAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Boss/FlyingDemon/IDLE.png"), 0, 0, 48, 48, 3.94, 0.1, false, true);
         this.healthbar = this.game.addEntity(new BossHealthBar(game, this, this.profileAnimation, 48, 0, 0, 2));
         this.pointer = this.game.addEntity(new Pointer(game, this));
 
+        this.rangedOnce = true;
 
         this.animations = []; //will be used to store animations
 
@@ -252,12 +254,17 @@ class Boss3 {
         if (this.projectileTimer > 0) {
             this.projectileTimer -= this.game.clockTick;
             this.state = 3; // Keep in throw state while timer is active
+            if (this.rangedOnce) {
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss3 ranged attacks.wav");
+                this.rangedOnce = false;
+            }
             // Update the stored elapsed time
             this.projectileAnimationElapsedTime = this.animations[3][this.facing].elapsedTime;
             // Check if we're at the end of the throw animation
             if (this.projectileTimer <= 0.55 && this.shouldShoot && !this.isPreparingCharge && !this.isCharging) {
                 this.shootProjectile(); 
                 this.shouldShoot = false; //Reset the flag
+                this.rangedOnce = true;
             }
             
             // Don't reset animation state if we're in the middle of a double nova cast
@@ -294,6 +301,7 @@ class Boss3 {
             const chargeThreshold = 0.45; 
             if (distance >= 580) {
                 if (!this.isPreparingCharge) {
+                    ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss3 idle.wav");
                     this.isPreparingCharge = true;
                     this.chargePrepTimer = this.chargePrepTime;
                     this.state = 1; // Preparation state (same as charge state visually)
@@ -301,6 +309,7 @@ class Boss3 {
                 }
             } else if (randomChoice < chargeThreshold) {
                 if (!this.isPreparingCharge) {
+                    ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss3 idle.wav");
                     this.isPreparingCharge = true;
                     this.chargePrepTimer = this.chargePrepTime;
                     this.state = 1; // Preparation state (same as charge state visually)
@@ -389,8 +398,10 @@ class Boss3 {
                 if (this.BB.collide(entity.BB) && !entity.invincible) {
                     if (this.attackCooldownTimer <= 0) {
                         if (this.isCharging) {
+                            ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss3 ranged attacks.wav");
                             entity.takeDamage(this.chargingDamage);
                         } else {
+                            ASSET_MANAGER.playAsset("./Audio/SoundEffects/Enemy melee bite.wav");
                             entity.takeDamage(this.attackPower);
                         }
                         this.attackCooldownTimer = this.attackCooldown; // Reset the cooldown timer
@@ -436,7 +447,7 @@ class Boss3 {
         const dx = (player.BB.x + player.BB.width/2) - characterCenterX;
         const dy = (player.BB.y + player.BB.height/2) - characterCenterY;
         const angle = Math.atan2(dy, dx);
-
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss3 fire.wav");
         this.game.addEntity(new Projectile(
             this.game, 
             characterCenterX, 
@@ -463,10 +474,9 @@ class Boss3 {
         const dx = (player.BB.x + player.BB.width/2) - characterCenterX;
         const dy = (player.BB.y + player.BB.height/2) - characterCenterY;
         const baseAngle = Math.atan2(dy, dx);
-        
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss3 fire.wav");
         // Spread angle in radians
         const spread = 0.2; 
-        
         // Create 3 projectiles with a spread
         for (let i = -1; i <= 1; i++) {
             const angle = baseAngle + (i * spread);
@@ -501,7 +511,7 @@ class Boss3 {
         
         // Number of projectiles to fire
         const projectileCount = 50;
-        
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss3 fire.wav");
         // Create multiple projectiles with random angle variations
         for (let i = 0; i < projectileCount; i++) {
             // Random angle variation within a cone facing the player
@@ -541,7 +551,7 @@ class Boss3 {
     fireNovaProjectile() {
         const characterCenterX = (this.BB.x + this.BB.width/2);
         const characterCenterY = (this.BB.y + this.BB.height/2);
-        
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss3 fire.wav");
         // Fire first wave of projectiles in a complete circle
         for (let i = 0; i < 30; i++) {
             const angle = (Math.PI * 2 * i) / 30;
@@ -567,7 +577,7 @@ class Boss3 {
         // Schedule second wave of projectiles after a short delay
         setTimeout(() => {
             if (!this.dead && !this.removeFromWorld) {
-
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss3 fire.wav");
                 this.projectileTimer = this.projectileDuration;
                 this.shouldShoot = false; // Prevent normal shoot logic from firing again
                 this.state = 3; // Set back to throw/attack state
@@ -621,6 +631,7 @@ class Boss3 {
 
 
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Enemy damage.mp3");
         this.currentHealth -= damage;
 
         if (this.dead) {
@@ -648,9 +659,10 @@ class Boss3 {
         }
     
         if (this.currentHealth <= 0) {
+            ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss3 death.wav");
             this.game.addEntity(new CoinPile(this.game, (this.x + 28), (this.y + 55)));
             this.game.addEntity(new Chest(this.game, (this.x + (this.bitSizeX * this.scale)/2) - 125, (this.y + (this.bitSizeY * this.scale)/2)));
-            this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
+            this.game.addEntity(new BossExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
 
             // Add portal after 5 seconds (5000 milliseconds)
             setTimeout(() => {

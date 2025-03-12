@@ -29,6 +29,9 @@ class LevelShop {
         
         this.buyMenuY = 75 + 50 + this.length + 50 + 60;
         this.menu = {width: PARAMS.CANVAS_WIDTH - 150, height: PARAMS.CANVAS_HEIGHT - 150};
+        this.fade = true;
+        this.elapsedTime = 0;
+        this.changes = 1;
 
         this.basic = [];
         this.unique = [];
@@ -80,6 +83,13 @@ class LevelShop {
         ];
     }
     update() {
+        if (this.fade) {
+            this.elapsed += this.game.clockTick;
+            if (this.elapsed > 1) {
+                this.fade = false;
+            }
+            this.changes -= 0.02;
+        }
         this.player = this.game.upgrade.player;
         if (!this.showPlayer) {
             if (!this.showUpgrade) {
@@ -100,7 +110,10 @@ class LevelShop {
                 this.enableBuy = false;
                 this.game.camera.enableLevelShop = false;
                 this.showUpgrade = false;
-                this.game.shopPause = false;
+                this.game.toggleShopPause();
+                this.fade = true;
+                this.elapsedTime = 0;
+                this.changes = 1;
                 this.game.click = {x:0, y:0};
             }
         }
@@ -130,6 +143,7 @@ class LevelShop {
         if (this.game.isClicking(buttonX, buttonCenterY, this.button.length, this.button.height) && 
         this.game.adventurer.coins >= this.selectedPrice * this.currentAmount) {
             this.selectChoice(this.selected);
+            ASSET_MANAGER.playAsset("./Audio/SoundEffects/coinCollecting.wav");
             this.currentAmount = 1;
         }
         if (this.selected != "Basic Upgrade" && this.selected != "Rare Upgrade") {
@@ -252,6 +266,11 @@ class LevelShop {
             }
         }
         this.game.upgrade.exitButton(ctx, this.game.mouse.x, this.game.mouse.y);
+        if (this.fade) {
+            //Draw fade in
+            ctx.fillStyle = rgba(0, 0, 0, this.changes);
+            ctx.fillRect(0, 0, PARAMS.CANVAS_WIDTH, PARAMS.CANVAS_HEIGHT);
+        }
 
     }
     drawOptions(ctx) {
@@ -445,6 +464,13 @@ class LevelShop {
         ctx.font = '14px "Press Start 2P"';
         ctx.textBaseline = "middle";
         ctx.fillText(this.selectedDescription, X, y);
+        if (this.selected == "Health Potion") {
+            ctx.fillText(`(Current Potion Count: ${this.game.adventurer.potion})`, X, y + 20);
+        } else if (this.selected == "Exp Increase Multiplier") {
+            ctx.fillText(`(Current Exp Multiplier: ${this.game.adventurer.expMultiplier})`, X, y + 20);
+        } else if (this.selected == "Coin Increase Multiplier") {
+            ctx.fillText(`(Current Coin Multiplier: ${this.game.adventurer.coinMultiplier})`, X, y + 20);
+        }
     
 
     }

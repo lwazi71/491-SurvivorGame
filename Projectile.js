@@ -117,6 +117,7 @@ class Projectile {
         if (this.person instanceof GolemMech && (this.timer <= 0 || distance <= 150)) { //This will only be used for boss2 because he'll have an explosion at the end of his projectile
             this.removeFromWorld = true;
             this.game.camera.cameraShake(100);
+            ASSET_MANAGER.playAsset("./Audio/SoundEffects/Explosion.mp3");
             this.game.addEntity(new CircleAOE
                 (this.game, this.boundingBoxX, this.boundingBoxY, "./Sprites/Explosion/explosion.png", null, 10, 25, 0, this, false, 0, 0, 48, 48, 8, 0.1, false, false));
             return;

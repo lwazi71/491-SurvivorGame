@@ -236,6 +236,7 @@ class Cyclops {
             if (entity instanceof Adventurer) {
                 if (this.BB.collide(entity.BB) && !entity.invincible) {
                     if (this.attackCooldownTimer <= 0) {
+                        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Enemy melee bite.wav");
                         // Attack the player and reset cooldown timer
                         const centerX = this.BB.x + this.BB.width/2;
                         const centerY = this.BB.y + this.BB.height/2;
@@ -260,6 +261,7 @@ class Cyclops {
 
 
     shootRock() {
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Rock Throw.wav");
         const characterCenterX = this.x + (this.bitSize * this.scale) / 2;
         const characterCenterY = this.y + (this.bitSize * this.scale) / 2;
         const player = this.game.adventurer;
@@ -276,7 +278,7 @@ class Cyclops {
 
     
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
-
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Enemy damage.mp3");
         this.health -= damage;
         if (this.dead) {
             return;

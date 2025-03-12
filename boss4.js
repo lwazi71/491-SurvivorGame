@@ -47,6 +47,13 @@ class Boss4 {
         this.projectileDamage = 33;
         this.projectileKnockback = 1600;
 
+        this.once = true;
+        this.deathOnce = true;
+        this.summonOnce = true;
+        this.dashingOnce = true;
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss4 idle.wav");
+        this.idleSoundTimer = 3;
+
         // Enhanced projectile patterns based on health
         this.projectilePatterns = {
             // Unlocked from the start
@@ -133,7 +140,6 @@ class Boss4 {
         this.profileAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/HudIcons/boss4Hud_32x32.png"), 0, 0, 32, 32, 12, 0.12, false, true);
         this.healthbar = this.game.addEntity(new BossHealthBar(game, this, this.profileAnimation, 32, 0, 0, 3));
         this.pointer = this.game.addEntity(new Pointer(game, this));
-
 
         this.animations = []; //will be used to store animations
 
@@ -234,6 +240,7 @@ class Boss4 {
 
 
     update () {
+
         // Handle damage animation
         if (this.isPlayingDamageAnimation) {
             this.damageAnimationTimer -= this.game.clockTick;
@@ -258,6 +265,7 @@ class Boss4 {
         if (this.dead) {
             this.deathAnimationTimer -= this.game.clockTick;
             if (this.deathAnimationTimer <= 0) {
+                this.deathOnce = true;
                 this.removeFromWorld = true;
             }
             return;
@@ -277,8 +285,13 @@ class Boss4 {
         //Summoning:
         if (this.state == 5) {
             this.orderAnimationTimer += this.game.clockTick;
+            if (this.summonOnce) {
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss4 summon.wav");
+                this.summonOnce = false;
+            }
             if (this.orderAnimationTimer >= this.orderAnimationDuration) { //at the end of the animation
                 this.state = 0;
+                this.summonOnce = true;
                 this.waveCooldownTimer = this.waveCooldown; //reset cooldown timer
                 this.spawningWave()
             }
@@ -380,10 +393,15 @@ class Boss4 {
           // Countdown preparation time
             this.chargePrepTimer -= this.game.clockTick;
             this.facing = dx < 0 ? 1 : 0; // 1 = left, 0 = right
+            if (this.once) {
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss4 charging.wav");
+                this.once = false;
+            }
             if (this.chargePrepTimer <= 0) {
                 // Initiate actual charge
                 this.isPreparingCharge = false;
                 this.isCharging = true;
+                this.once = true;
                 this.chargeTimer = 0;
                 this.currentChargeDuration = 0;
 
@@ -404,10 +422,15 @@ class Boss4 {
     
         if (this.isCharging) { 
             this.currentChargeDuration += this.game.clockTick;
+            if(this.dashingOnce) {
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss4 attack.wav");
+                this.dashingOnce = false;
+            }
 
             // Check if charge duration exceeded limit
             if (this.currentChargeDuration >= this.maxChargeDuration) {
                 this.isCharging = false;
+                this.dashingOnce = true;
                 this.state = 0;
                 this.currentChargeDuration = 0;
                 //this.shootTimer = this.shootCooldown; //used so it doesnt fire off projectile right after charge
@@ -507,9 +530,11 @@ class Boss4 {
             if ((this.BB.collide(player.BB) || dy > 5) && distance < 200) {
                 //Player is touching/inside boss - do attack2
                 this.attack2();
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss4 attack.wav");
             } else if (dy < 5 && distance < 310) { 
                 //player is above AND more horizontal than vertical - do attack1. dy < 0 checks if player is above minotaur
                 this.attack1();
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss4 attack.wav");
             }
         }
 
@@ -558,7 +583,20 @@ class Boss4 {
            if (this.attackCooldownTimer > 0) { 
                 this.attackCooldownTimer -= this.game.clockTick;
             }
-
+        if (this.idleSoundTimer > 0) {
+            this.idleSoundTimer -= this.game.clockTick;
+        }
+        //Occasionally have idle sound effect
+        if (this.idleSoundTimer <= 0  && !this.attacking && !this.isCharging && !this.isPreparingCharge && 
+            !this.isPreparingAOE && !this.isPlayingDamageAnimation && !this.dead && this.orderAnimationTimer < this.orderAnimationDuration) {
+            let randomChance = Math.random();
+            if (randomChance > 0.25) {
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss4 idle.wav");
+                console.log("idle sound played")
+                
+            }
+            this.idleSoundTimer = 3; 
+        }
         // Update bounding box
         this.updateBB();
     }
@@ -601,7 +639,7 @@ class Boss4 {
         const dx = (player.BB.x + player.BB.width/2) - characterCenterX;
         const dy = (player.BB.y + player.BB.height/2) - characterCenterY;
         const angle = Math.atan2(dy, dx);
-
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss4 ranged attack.wav");
         this.game.addEntity(new Projectile(
             this.game, 
             characterCenterX, 
@@ -635,7 +673,7 @@ class Boss4 {
         // Create 3 projectiles with a spread
         for (let i = -1; i <= 1; i++) {
             const angle = baseAngle + (i * spread);
-            
+            ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss4 ranged attack.wav");
             this.game.addEntity(new Projectile(
                 this.game, 
                 characterCenterX, 
@@ -692,6 +730,7 @@ class Boss4 {
             
             setTimeout(() => {
                 if (!this.dead && !this.removeFromWorld) {
+                    ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss4 ranged attack.wav");
                     this.game.addEntity(new Projectile(
                         this.game,
                         posX,
@@ -721,7 +760,7 @@ class Boss4 {
         // Fire first wave of projectiles in a complete circle
         for (let i = 0; i < 30; i++) {
             const angle = (Math.PI * 2 * i) / 30;
-            
+            ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss4 ranged attack.wav");
             this.game.addEntity(new Projectile(
                 this.game, 
                 characterCenterX, 
@@ -743,7 +782,7 @@ class Boss4 {
         // Schedule second wave of projectiles after a short delay
         setTimeout(() => {
             if (!this.dead && !this.removeFromWorld) {
-
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/Enemy magic attack.wav");
                 this.projectileTimer = this.projectileDuration;
                 this.shouldShoot = false; // Prevent normal shoot logic from firing again
                 this.state = 4; // Set back to throw/attack state
@@ -850,7 +889,6 @@ class Boss4 {
     shootProjectile() {
         // Check available patterns based on current health percentage
         this.updateAvailablePatterns();
-        
         if (this.availablePatterns.length > 0) {
             // Choose a random pattern from available ones
             const randomPatternIndex = Math.floor(Math.random() * this.availablePatterns.length);
@@ -871,6 +909,7 @@ class Boss4 {
 
 
     takeDamage(damage, knockbackForce, sourceX, sourceY) {
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Enemy damage.mp3");
         this.currentHealth -= damage;
 
         if (this.dead) {
@@ -900,7 +939,8 @@ class Boss4 {
         if (this.currentHealth <= 0) {
             this.game.addEntity(new CoinPile(this.game, (this.x + 28), (this.y + 55)));
             this.game.addEntity(new Chest(this.game, (this.x + (this.bitSizeX * this.scale)/2) - 125, (this.y + (this.bitSizeY * this.scale)/2)));
-            this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
+            // this.game.addEntity(new ExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
+            this.game.addEntity(new BossExperienceOrb(this.game, (this.x + (this.bitSizeX * this.scale)/2), (this.y + (this.bitSizeY * this.scale)/2)));
 
             // Add portal after 5 seconds (5000 milliseconds)
             setTimeout(() => {
@@ -943,9 +983,14 @@ class Boss4 {
         const drawY = this.y - this.game.camera.y;
 
         if (this.dead) {
+            if (this.deathOnce) {
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/boss4 death.wav");
+                this.deathOnce = false;
+            }
             // Only draw shadow if death animation is still playing
            if (this.deathAnimationTimer > 0) {
                 this.deadAnimation.drawFrame(this.game.clockTick, ctx, drawX, drawY, this.scale);
+
            }
         } else if (this.isPlayingDamageAnimation) {
             this.animations[7][this.facing].drawFrame(this.game.clockTick, ctx, drawX, drawY, this.scale);

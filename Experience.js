@@ -35,6 +35,7 @@ class ExperienceOrb {
                 this.speed = 0.1;
             }
             if (getDistance(this.location, this.target) < this.pickupDistance && !this.game.adventurer.dead) {
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/ExperienceOrb.wav");
                 let expAmount = Math.floor(Math.random() * (5 - 3 + 1)) + 3; //3 - 5
                 this.game.adventurer.experience += Math.round(expAmount * this.game.adventurer.expMultiplier); // Change value to acceptable amount
                 this.game.adventurer.levelUp();
@@ -68,7 +69,7 @@ class BossExperienceOrb {
         this.scale = 1;
         this.animations = new Animator(this.spritesheet, 0, 0, 64, 64, 13, 0.1, false, true);
 
-        this.radius = 200;
+        this.radius = 200 * 3;
         this.speed = 0.1;
         this.location = {x: this.x, y: this.y};
         this.pickupDistance = 20;
@@ -88,13 +89,14 @@ class BossExperienceOrb {
                 
                 this.location.x += deltaX / distance * this.speed;
                 this.location.y += deltaY / distance * this.speed;
-                this.speed += 0.1;
+                this.speed += 0.3;
                 this.x = this.location.x;
                 this.y = this.location.y;
             } else {
                 this.speed = 0.1;
             }
             if (getDistance(this.location, this.target) < this.pickupDistance && !this.game.adventurer.dead) {
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/ExperienceOrb.wav");
                 this.game.adventurer.experience += Math.round(50 * this.game.adventurer.expMultiplier); // Change value to acceptable amount
                 this.game.adventurer.levelUp();
                 this.removeFromWorld = true;

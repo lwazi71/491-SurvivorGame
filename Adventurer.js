@@ -675,23 +675,28 @@ class Adventurer { //every entity should have update and draw!
                 //Math.floor(Math.random() * (max - min + 1)) + min;
                 const coinAmnt = Math.floor(Math.random() * 2) + 1; //1 - 2 when picking up a coin that looks like just 1
                 this.coins += Math.round(coinAmnt * this.coinMultiplier);
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/coinCollecting.wav");
                 entity.removeFromWorld = true;
             } else if ((entity instanceof Threecoin) && this.BB.collide(entity.BB)) {
                 const coinAmnt = Math.floor(Math.random() * (5 - 3 + 1)) + 3; //3 - 5 when picking up a coin that looks like 3 coins
                 this.coins += Math.round(coinAmnt * this.coinMultiplier);
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/coinCollecting.wav");
                 entity.removeFromWorld = true;
             } else if ((entity instanceof MultipleCoins) && this.BB.collide(entity.BB)) {
                 const coinAmnt = Math.floor(Math.random() * (50 - 20 + 1)) + 20; //20 - 50 when picking up mulitple coins
                 this.coins += Math.round(coinAmnt * this.coinMultiplier);
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/coinCollecting.wav");
                 entity.removeFromWorld = true;
             } else if ((entity instanceof CoinPile) && this.BB.collide(entity.BB)) {
                 const coinAmnt = Math.floor(Math.random() * (120 - 51 + 1)) + 51; //51 - 120 when picking up mulitple coins
                 this.coins += Math.round(coinAmnt * this.coinMultiplier);
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/coinCollecting.wav");
                 entity.removeFromWorld = true;
             } 
 
             if ((entity instanceof Chest) && this.BB.collide(entity.BB)) {
                 //open screen.
+                ASSET_MANAGER.playAsset("./Audio/SoundEffects/Chest open.wav");
                 this.game.camera.enableChest = true;
                 entity.removeFromWorld = true;
             } 
@@ -712,7 +717,7 @@ class Adventurer { //every entity should have update and draw!
             this.enableLightning = true;
             this.enableMagic = true;
             this.enablePotion = true;
-            this.monkeyBomb = true;
+            // this.monkeyBomb = true;
             // this.attackDamage = 10;
             // this.slashArrowCombo = true;
             // this.slashBombCombo = true;
@@ -723,6 +728,7 @@ class Adventurer { //every entity should have update and draw!
     };
 
     performRolling() {
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Dodge.wav");
         this.rolling = true;
         this.canRoll = false;
         this.rollCooldownTimer = this.rollCooldown;
@@ -1079,6 +1085,7 @@ class Adventurer { //every entity should have update and draw!
     }
     usePotion() {
         this.canPotion = false;
+        ASSET_MANAGER.playAsset("./Audio/SoundEffects/Healing.wav");
         this.potionCooldownTimer = this.potionCooldown;
         this.potionHealingAmount = Math.round(this.maxhealth * 0.2);
         (this.health + this.potionHealingAmount > this.maxhealth) ? this.health = this.maxhealth : this.health += this.potionHealingAmount;
@@ -1176,6 +1183,7 @@ class Adventurer { //every entity should have update and draw!
 
     levelUp() {
         if (this.experience >= this.experienceToNextLvl) {
+            ASSET_MANAGER.playAsset("./Audio/SoundEffects/LevelUp.wav");
             while (this.experience >= this.experienceToNextLvl) {
                 // this.health = this.maxhealth;
                 this.level++;
@@ -1189,7 +1197,7 @@ class Adventurer { //every entity should have update and draw!
     levelUpMenu() {
         this.game.upgrade.getThreeUpgrades();
         if (!this.game.upgrade.noUpgrades) {
-            if (this.game.settings.enableLevelUpPause) this.game.upgradePause = true;
+            if (this.game.settings.enableLevelUpPause) this.game.toggleUpgradePause();
         }
     }
     critDamageCheck(damage) {

@@ -48,7 +48,7 @@ class UpgradeSystem {
         this.arrowSpeedIncrease = 100;
         //Magic
         this.magicDamageIncrease = 5;
-        this.cooldownReduction = 5;
+        this.cooldownReduction = 1;
         this.magicKnockback = 1000;
         this.magicSize = 0.25;
         //Bomb
@@ -331,7 +331,7 @@ class UpgradeSystem {
                 }, 
                 description: `Decrease Magic Cooldown by ${this.cooldownReduction} seconds`,
                 type: "Magic",
-                max: 8,
+                max: 19,
                 current: 0,
                 color: "White",
             },
@@ -1227,7 +1227,7 @@ class PlayerStatus {
         this.width = PARAMS.CANVAS_WIDTH / 2 - this.startX;
         this.height = PARAMS.CANVAS_HEIGHT - this.startY * 2;
 
-        this.bombAnimation =this.bombAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/collectables.png"), 0, 16, 16, 16, 4, 0.1, false, true);
+        this.bombAnimation = this.bombAnimation = new Animator(ASSET_MANAGER.getAsset("./Sprites/Objects/collectables.png"), 0, 16, 16, 16, 4, 0.1, false, true);
         this.background = ASSET_MANAGER.getAsset("./Sprites/HudIcons/PlayerBackground.png");
         this.coinImage = ASSET_MANAGER.getAsset("./Sprites/Objects/collectables.png");
         this.animation = [];
