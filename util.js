@@ -57,3 +57,37 @@ window.requestAnimFrame = (() => {
 const getDistance = (p1, p2) => {
     return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
 };
+
+// add global parameters here
+
+const wrapText = (ctx, text, maxWidth) => {
+    const words = text.split(' ');
+    let line = '';
+    const lines = [];
+
+    for (let word of words) {
+        const testLine = line + (line ? ' ' : '') + word;
+        const metrics = ctx.measureText(testLine);
+        
+        if (metrics.width > maxWidth) {
+            if (line) {
+                lines.push(line);
+                line = word;
+            } else {
+                // If a single word is too long, split it
+                line = word;
+            }
+        } else {
+            line = testLine;
+        }
+    }
+    if (line) {
+        lines.push(line);
+    }
+    return lines;
+}
+const PARAMS = {
+    DEBUG: true,
+    SCALE: 3,
+    BITWIDTH: 16
+};

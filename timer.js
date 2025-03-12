@@ -5,9 +5,14 @@ class Timer {
         this.gameTime = 0;
         this.maxStep = 0.05;
         this.lastTimestamp = 0;
+        this.lastTimestamp2 = 0;
+        this.isPaused = false;
+        this.enablePauseTick = false;
     };
 
     tick() {
+        if (this.isPaused) return 0;
+        
         const current = Date.now();
         const delta = (current - this.lastTimestamp) / 1000;
         this.lastTimestamp = current;
@@ -16,4 +21,15 @@ class Timer {
         this.gameTime += gameDelta;
         return gameDelta;
     };
+    pauseTick() {
+        if (!this.enablePauseTick) return 0;
+
+        const current = Date.now();
+        const delta = (current - this.lastTimestamp2) / 1000;
+        this.lastTimestamp2 = current;
+
+        const gameDelta = Math.min(delta, this.maxStep);
+        this.gameTime += gameDelta;
+        return gameDelta;
+    }
 };
