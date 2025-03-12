@@ -184,6 +184,7 @@ ASSET_MANAGER.queueDownload("./Audio/Music/devil_music.mp3");
 ASSET_MANAGER.queueDownload("./Audio/Music/spooky.mp3");
 ASSET_MANAGER.queueDownload("./Audio/Music/Death.wav");
 ASSET_MANAGER.queueDownload("./Audio/Music/Shop Music.mp3");
+ASSET_MANAGER.queueDownload("./Audio/Music/minecraftmenumusic.mp3");
 
 //Sfx
 //boss1

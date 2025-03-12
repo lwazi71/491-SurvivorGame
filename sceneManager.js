@@ -42,6 +42,7 @@ class SceneManager {
         this.game.addEntity(this.deathScreen);
         this.levelMusicPath = "./Audio/Music/Survivorio Clone Battle Song (1).wav";
 
+        this.menumusicPath = "./Audio/Music/minecraftmenumusic.mp3";
 
         // this.loadTestLevel(this.false);
         this.winScreen = new WinScreen(this.game);
@@ -308,6 +309,7 @@ class SceneManager {
                 this.firstClick = true;
 
                 //Put main menu music here
+                ASSET_MANAGER.playAsset(this.game.camera.menumusicPath);
             }
         } else {
             // this.adjustMusicVolume();
