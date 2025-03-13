@@ -613,6 +613,6 @@ class Title {
         ctx.font = 12 + 'px "Press Start 2P"';
         ctx.textAlign = "right";
         ctx.textBaseline = "bottom";
-        ctx.fillText("Version 1.002", PARAMS.CANVAS_WIDTH, PARAMS.CANVAS_HEIGHT)
+        ctx.fillText("Version 1.03", PARAMS.CANVAS_WIDTH, PARAMS.CANVAS_HEIGHT)
     }
 }
