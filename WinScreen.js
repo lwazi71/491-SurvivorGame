@@ -98,7 +98,7 @@ class WinScreen {
     draw(ctx) {
         if (!this.visible) return;
         if (this.showUpgrade) {
-            this.player.update();
+            // this.player.update();
             this.player.draw(ctx);
             this.game.upgrade.exitButton(ctx);
         } else {

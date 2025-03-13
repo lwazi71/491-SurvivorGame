@@ -723,6 +723,7 @@ class Adventurer { //every entity should have update and draw!
             // this.slashArrowCombo = true;
             // this.slashBombCombo = true;
             // this.lightningDarkBoltCombo = true;
+            // this.game.upgrade.unlockAllWeapons();
             if (this.game.settings.enableUpgrades) this.game.upgrade.giveAllUpgrade();
         }
         if (this.game.settings.enableInvincibility) this.invincible = true;

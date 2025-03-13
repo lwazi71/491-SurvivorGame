@@ -4,7 +4,7 @@ class HealthBar {
         this.length = 40;
         this.height = 8;
         this.entityOrder = 99;
-        this.deathDelay = this.entity.deathAnimationTimer;
+        this.deathDelay = 0.5;
         this.deathTimer = this.deathDelay;
         this.lastHP = this.entity.health;
         this.count = 0;
@@ -73,7 +73,7 @@ class BossHealthBar {
         this.healthBarHeight = 25 * this.proportion;
 
         this.lastHP = this.entity.currentHealth;
-        this.deathDelay = 1;
+        this.deathDelay = 0.5;
         this.deathTimer = this.deathDelay;
     }
     update() {

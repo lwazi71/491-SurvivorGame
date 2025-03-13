@@ -669,6 +669,7 @@ class Boss3 {
                 // Check if the game still exists before adding the entity
                 if (this.game && this.game.addEntity) {
                     this.game.addEntity(new PortalDoor(this.game, (this.BB.x + this.BB.width/2), (this.BB.y + this.BB.height/2)));
+                    this.game.camera.bossDead = true;
                 }
             }, 5000);
     

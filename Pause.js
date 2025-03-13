@@ -205,7 +205,7 @@ class Settings {
         this.game.settings = this;
         this.volumeSlider = {width: 150, height: 10};
 
-        this.currVolume = 0.5;
+        this.currVolume = 0.25;
         this.currMusicVolume = 0.25;
         this.currSFXVolume = 0.25;
 
