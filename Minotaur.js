@@ -35,8 +35,8 @@ class Minotaur {
         this.pushbackDecay = 0.9; // Determines how quickly the pushback force decays
 
 
-        this.health = 150;
-        this.maxHealth = 150;
+        this.health = 128;
+        this.maxHealth = 128;
         this.didCrit = false;
       
         this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 5, -80));
@@ -213,6 +213,27 @@ class Minotaur {
             } else if (dy < 5 && distance < 120) {
                 //player is above AND more horizontal than vertical - do attack1. dy < 0 checks if player is above minotaur
                 this.attack1();
+            }
+        }
+
+        const separationDistance = 200; 
+        const entities = this.game.entities;
+        for (let i = 0; i < entities.length; i++) {
+            let entity = entities[i];
+            if ((entity instanceof Minotaur) && entity !== this) {
+                const dx = entity.x - this.x;
+                const dy = entity.y - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+    
+                if (distance < separationDistance && distance > 0) {
+                    // Apply a repelling force
+                    const repelFactor = 40; // Adjust for stronger/weaker repulsion
+                    const repelX = dx / distance * repelFactor * this.game.clockTick;
+                    const repelY = dy / distance * repelFactor * this.game.clockTick;
+    
+                    this.x -= repelX;
+                    this.y -= repelY;
+                }
             }
         }
 

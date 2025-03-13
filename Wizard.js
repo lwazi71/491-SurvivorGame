@@ -21,8 +21,8 @@ class Wizard {
         this.damage = 33;
         this.collisionDamage = 14;
         
-        this.health = 25;
-        this.maxHealth = 25;
+        this.health = 33;
+        this.maxHealth = 33;
         this.didCrit = false;
         this.healthbar = this.game.addEntity(new HealthBar(this.game, this, 1.5, 12));
         this.dead = false;

@@ -288,14 +288,14 @@ class WaveManager {
                 enemy.health = Math.floor(enemy.health * this.statsMultiplier.health * 3);
                 enemy.maxHealth = Math.floor(temp * this.statsMultiplier.health *3);
              } else {
-                if (this.game.camera.currMap < 2) {
+                if (this.game.camera.currMap < 3) {
                     const temp = enemy.health;
                     enemy.health = Math.floor(enemy.health * this.statsMultiplier.health);
                     enemy.maxHealth = Math.floor(temp * this.statsMultiplier.health);
                 } else {
                     const temp = enemy.health;
-                    enemy.health = Math.floor(1.15 * enemy.health * this.statsMultiplier.health);
-                    enemy.maxHealth = Math.floor(1.15 * temp * this.statsMultiplier.health);
+                    enemy.health = Math.floor(1.17 * enemy.health * this.statsMultiplier.health);
+                    enemy.maxHealth = Math.floor(1.17 * temp * this.statsMultiplier.health);
                 }
              }
 
@@ -550,8 +550,8 @@ class WaveManager {
             console.log("boss should now spawn");
             const boss3 = new Boss3(this.game, spawnPos.x, spawnPos.y);
             const temp = boss3.currentHealth;
-            boss3.currentHealth = Math.floor(boss3.currentHealth * this.statsMultiplier.health * 5);
-            boss3.maxHealth = Math.floor(temp * this.statsMultiplier.health * 5);
+            boss3.currentHealth = Math.floor(boss3.currentHealth * this.statsMultiplier.health * 7);
+            boss3.maxHealth = Math.floor(temp * this.statsMultiplier.health * 7);
             this.game.addEntity(boss3);
             this.bossSpawned = true;
             this.bossActive = true;
@@ -559,8 +559,8 @@ class WaveManager {
             console.log("boss should now spawn");
             const boss4 = new Boss4(this.game, spawnPos.x, spawnPos.y);
             const temp = boss4.currentHealth;
-            boss4.currentHealth = Math.floor(boss4.currentHealth * this.statsMultiplier.health * 5);
-            boss4.maxHealth = Math.floor(temp * this.statsMultiplier.health * 5);
+            boss4.currentHealth = Math.floor(boss4.currentHealth * this.statsMultiplier.health * 10);
+            boss4.maxHealth = Math.floor(temp * this.statsMultiplier.health * 10);
             this.game.addEntity(boss4);
             this.bossSpawned = true;
             this.bossActive = true;
@@ -628,6 +628,7 @@ class WaveManager {
                     speed: 1,
                     attackPower: 1
                 };
+                this.totalGameTime = 0;
                 this.maxEnemies = 35;
         } else if (this.game.camera.currMap == 2) {
             //set spawn pattern for map 2 here
@@ -689,22 +690,25 @@ class WaveManager {
                     interval: 20, count: 2, pool: "charge", enemy_type: "hellspawn", oneTime: false},
                 {
                     startTime: 60, //1:30 minutes
-                    interval: 30, count: 2, pool: "ranged", enemy_type: "imp", oneTime: false},
+                    interval: 30, count: 3, pool: "ranged", enemy_type: "imp", oneTime: false},
                 {
                     startTime: 90, //2:00 minutes
                     interval: 30, count: 3, pool: "melee", enemy_type: "blueghoul", oneTime: false},
                 {
-                    startTime: 120, //2 and 30 minutes
-                    interval: 30, count: 2, pool: "rangedAOE", enemy_type: "wizard", oneTime: false},
+                    startTime: 103, //2 and 30 minutes
+                    interval: 17, count: 2, pool: "rangedAOE", enemy_type: "wizard", oneTime: false},
                 {
                     startTime: 120, // 3 minutes
                     interval: 60, count: 1, pool: "minibosses", enemy_type: "cyclops", oneTime: false},
                 {
-                    startTime: 210, //3:30 minutes
-                    interval: 40, count: 1, pool: "ranged", enemy_type: "necromancer", oneTime: false},
+                    startTime: 190, //3:30 minutes
+                    interval: 20, count: 2, pool: "ranged", enemy_type: "necromancer", oneTime: false},
                 {
                     startTime: 230, //4:00 minutes
                     interval: 15, count: 1, pool: "charge", enemy_type: "slime", oneTime: false},
+                {
+                    startTime: 240, //4:30
+                    interval: 30, count: 1, pool: "minibosses", enemy_type: "cyclops", oneTime: true},
                 ];
                 this.statsMultiplier = currentStatsMultiplier;
                 this.maxEnemies = 700;
@@ -721,11 +725,12 @@ class WaveManager {
                 {
                     startTime: 0, 
                     interval: 10, count: 5, pool: "melee", oneTime: false},
-                {startTime: 15, interval: 15, count: 7, pool: "ranged", oneTime: false}, //30 seconds will spawn in ranged enemies
+                {startTime: 15, interval: 15, count: 6, pool: "ranged", oneTime: false}, //30 seconds will spawn in ranged enemies
                 {starTime: 15, interval: 25, count: 3, pool: "rangedAOE", oneTime: false},
                 {startTime: 30, interval: 20, count: 2, pool: "minibosses", oneTime: false}, //50 seconds, we'll start spawning in mini
                 {starTime: 90, interval: 2, count: 6, pool: "melee", oneTime: false},
-                {starTime: 110, interval: 6, count: 1, pool: "minibosses", oneTime: false}
+                {starTime: 110, interval: 6, count: 1, pool: "minibosses", oneTime: false},
+                {startTime: 15, interval: 3, count: 2, pool: "ranged", oneTime: false}, //30 seconds will spawn in ranged enemies
             ];
              if (!this.game.settings.enableBoss) this.bossTime = 210; //maybe have the final spawn in earlier? 210 seconds
         } else if (this.game.camera.currMap == 5) { //secret level map
