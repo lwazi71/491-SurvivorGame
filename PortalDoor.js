@@ -79,6 +79,7 @@ class PortalDoor {
                 console.log("touching portal");
                 if (this.game.camera.currMap < 4) {
                     this.game.camera.loadLevel(this.game.camera.currMap += 1, true);
+                    this.game.camera.bossDead = false;
                 } else {
                     this.game.toggleDeathPause();
                     this.game.camera.triggerWinScreen(); // Notify SceneManager to show death screen

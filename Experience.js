@@ -21,7 +21,8 @@ class ExperienceOrb {
         this.target = {x: this.game.adventurer.x + (32 * 2.8) / 2, 
                     y: this.game.adventurer.y + (32 * 2.8) / 2}; //(this.x + (this.bitSize * this.scale)/2)
         if (this.target != null && this.location != null) {
-            if (this.target != this.location && getDistance(this.location, this.target) < this.radius) {
+            if ((this.target != this.location && getDistance(this.location, this.target) < this.radius) ||
+                (this.target != this.location && this.game.camera.bossDead)) {
                 let deltaX = this.target.x - this.location.x;
                 let deltaY = this.target.y - this.location.y;
                 let distance = Math.sqrt(deltaX*deltaX+deltaY*deltaY);
@@ -82,7 +83,7 @@ class BossExperienceOrb {
         this.target = {x: this.game.adventurer.x + (32 * 2.8) / 2, 
                     y: this.game.adventurer.y + (32 * 2.8) / 2}; //(this.x + (this.bitSize * this.scale)/2)
         if (this.target != null && this.location != null) {
-            if (this.target != this.location && getDistance(this.location, this.target) < this.radius) {
+            if ((this.target != this.location && getDistance(this.location, this.target) < this.radius)) {
                 let deltaX = this.target.x - this.location.x;
                 let deltaY = this.target.y - this.location.y;
                 let distance = Math.sqrt(deltaX*deltaX+deltaY*deltaY);

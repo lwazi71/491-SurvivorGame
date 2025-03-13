@@ -35,6 +35,7 @@ class SceneManager {
         this.enableFade = false;
         this.revealSpeed = 0.02;
         this.oneTime = true;
+        this.bossDead = false;
 
 
         // Add the Game Map first so it's always underneath everything
@@ -47,6 +48,7 @@ class SceneManager {
 
         // this.loadTestLevel(this.false);
         this.winScreen = new WinScreen(this.game);
+        this.game.addEntity(this.winScreen);
 
         if (!this.enableTitle) this.loadLevel(this.currMap, false);
 
@@ -180,7 +182,11 @@ class SceneManager {
                 this.Hud = new Hud(this.game, this.adventurer);
                 this.upgrade = new UpgradeSystem(this.game);
                 this.deathScreen = new DeathScreen(this.game);
-                this.waveManager = new WaveManager(this.game);
+                this.waveManager.statsMultiplier = {
+                    health: 1,
+                    speed: 1,
+                    attackPower: 1
+                };
 
                 this.game.addEntity(new Sign(this.game, 20, 20, 
                     "Good luck!!! Also, Alan, Holden, Lwazi, and Murad were here!!!"));
@@ -224,6 +230,8 @@ class SceneManager {
 
     
     triggerWinScreen() {
+        ASSET_MANAGER.pauseMusic();
+        ASSET_MANAGER.playAsset("./Audio/Music/Win.wav");
         this.winScreen.trigger();
     }
     
@@ -605,6 +613,6 @@ class Title {
         ctx.font = 12 + 'px "Press Start 2P"';
         ctx.textAlign = "right";
         ctx.textBaseline = "bottom";
-        ctx.fillText("Version 1.001", PARAMS.CANVAS_WIDTH, PARAMS.CANVAS_HEIGHT)
+        ctx.fillText("Version 1.002", PARAMS.CANVAS_WIDTH, PARAMS.CANVAS_HEIGHT)
     }
 }

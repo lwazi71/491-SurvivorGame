@@ -592,6 +592,7 @@ class UpgradeSystem {
 
         this.selectedUpgrade = null;
         this.firstTime = true;
+        this.firstTimeWeapons = true;
 
     }
     getThreeUpgrades() {
@@ -859,7 +860,7 @@ class UpgradeSystem {
         // if (this.game.adventurer.swordUpgrade >= 20) {
         //     this.game.adventurer.swordUpgrade = 4;
         // } else 
-        if (this.swordUpgradeCount >= 15) {
+        if (this.swordUpgradeCount >= 20) {
             this.game.adventurer.swordUpgrade = 3;
         } else if (this.swordUpgradeCount >= 10) {
             this.game.adventurer.swordUpgrade = 2;
@@ -872,7 +873,7 @@ class UpgradeSystem {
         // if (this.game.adventurer.swordUpgrade >= 20) {
         //     this.game.adventurer.swordUpgrade = 4;
         // } else 
-        if (this.bowUpgradeCount >= 15) {
+        if (this.bowUpgradeCount >= 20) {
             this.game.adventurer.bowUpgrade = 3;
         } else if (this.bowUpgradeCount >= 10) {
             this.game.adventurer.bowUpgrade = 2;
@@ -1214,12 +1215,15 @@ class UpgradeSystem {
         }
     }
     // unlockAllWeapons() {
+    //     if (this.firstTimeWeapons) {
     //     this.uniqueList.forEach(upgrade => {
     //         if (upgrade.type == "Unlock") {
     //             upgrade.current++;
     //             this.currentUpgrades.push(upgrade);
     //         }
     //     });
+    //     this.firstTimeWeapons = false;
+    //     }
     // }
 }
 class PlayerStatus {
@@ -1338,6 +1342,10 @@ class PlayerStatus {
         if (this.upgrade.checkExitButton(this.game.click.x, this.game.click.y, true) && this.game.deathScreen.showUpgrade) {
             this.game.click = {x:0, y:0};
             this.game.deathScreen.showUpgrade = false;
+        }
+        if (this.upgrade.checkExitButton(this.game.click.x, this.game.click.y, true) && this.game.winScreen.showUpgrade) {
+            this.game.click = {x:0, y:0};
+            this.game.winScreen.showUpgrade = false;
         }
         if (this.actions == 1 && this.currentTimer <= 0) {
             this.actions = 0;
