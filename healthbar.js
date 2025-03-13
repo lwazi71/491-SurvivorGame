@@ -4,7 +4,7 @@ class HealthBar {
         this.length = 40;
         this.height = 8;
         this.entityOrder = 99;
-        this.deathDelay = 1;
+        this.deathDelay = this.entity.deathAnimationTimer;
         this.deathTimer = this.deathDelay;
         this.lastHP = this.entity.health;
         this.count = 0;

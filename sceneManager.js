@@ -180,6 +180,7 @@ class SceneManager {
                 this.Hud = new Hud(this.game, this.adventurer);
                 this.upgrade = new UpgradeSystem(this.game);
                 this.deathScreen = new DeathScreen(this.game);
+                this.waveManager = new WaveManager(this.game);
 
                 this.game.addEntity(new Sign(this.game, 20, 20, 
                     "Good luck!!! Also, Alan, Holden, Lwazi, and Murad were here!!!"));
@@ -601,5 +602,9 @@ class Title {
             ctx.fillText(choice.name, buttonX + this.button.length / 2, firstY + this.button.height / 2);
             firstY += this.button.height + 10;
         });
+        ctx.font = 12 + 'px "Press Start 2P"';
+        ctx.textAlign = "right";
+        ctx.textBaseline = "bottom";
+        ctx.fillText("Version 1.001", PARAMS.CANVAS_WIDTH, PARAMS.CANVAS_HEIGHT)
     }
 }

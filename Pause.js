@@ -383,14 +383,14 @@ class Settings {
         if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 70, this.startY + 50 + 105, 40, 30) && this.currentMenu == "Volume") {
             this.currMusicVolume -= 0.1;
             if (this.currMusicVolume < 0.01) this.currMusicVolume = 0;
-            ASSET_MANAGER.adjustMusicVolume(this.currMusicVolume);
+            ASSET_MANAGER.adjustMusicVolume(this.currMusicVolume * this.currVolume);
             this.game.leftClick = false;
         }
         //Vol Up
         if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 + this.volumeSlider.width / 2 + 20, this.startY + 50 + 105, 40, 30) && this.currentMenu == "Volume") {
             this.currMusicVolume += 0.1;
             if (this.currMusicVolume > 0.99) this.currMusicVolume = 1;
-            ASSET_MANAGER.adjustMusicVolume(this.currMusicVolume);
+            ASSET_MANAGER.adjustMusicVolume(this.currMusicVolume * this.currVolume);
             this.game.leftClick = false;
         }
         //Mute
@@ -398,12 +398,12 @@ class Settings {
             if (this.toggleMusicMute) {
                 this.lastMusicVolume = this.currMusicVolume;
                 this.currMusicVolume = 0;
-                ASSET_MANAGER.adjustMusicVolume(this.currMusicVolume);
+                ASSET_MANAGER.adjustMusicVolume(this.currMusicVolume * this.currVolume);
                 this.toggleMusicMute = false;
                 this.game.leftClick = false;
             } else {
                 this.currMusicVolume = this.lastMusicVolume;
-                ASSET_MANAGER.adjustMusicVolume(this.currMusicVolume);
+                ASSET_MANAGER.adjustMusicVolume(this.currMusicVolume * this.currVolume);
                 this.toggleMusicMute = true;
                 this.game.leftClick = false;
             }
@@ -422,14 +422,14 @@ class Settings {
         if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 - this.volumeSlider.width / 2 - 70, this.startY + 50 + 105 * 2 + 10, 40, 30) && this.currentMenu == "Volume") {
             this.currSFXVolume -= 0.1;
             if (this.currSFXVolume < 0.01) this.currSFXVolume = 0;
-            ASSET_MANAGER.adjustSFXVolume(this.currSFXVolume);
+            ASSET_MANAGER.adjustSFXVolume(this.currSFXVolume * this.currVolume);
             this.game.leftClick = false;
         }
         //Vol Up
         if (this.game.isClicking((PARAMS.CANVAS_WIDTH + this.menuSpace) / 2 + this.volumeSlider.width / 2 + 20, this.startY + 50 + 105 * 2 + 10, 40, 30) && this.currentMenu == "Volume") {
             this.currSFXVolume += 0.1;
             if (this.currSFXVolume > 0.99) this.currSFXVolume = 1;
-            ASSET_MANAGER.adjustSFXVolume(this.currSFXVolume);
+            ASSET_MANAGER.adjustSFXVolume(this.currSFXVolume * this.currVolume);
             this.game.leftClick = false;
         }
         //Mute
@@ -437,12 +437,12 @@ class Settings {
             if (this.toggleSFXMute) {
                 this.lastSFXVolume = this.currSFXVolume;
                 this.currSFXVolume = 0;
-                ASSET_MANAGER.adjustSFXVolume(this.currSFXVolume);
+                ASSET_MANAGER.adjustSFXVolume(this.currSFXVolume * this.currVolume);
                 this.toggleSFXMute = false;
                 this.game.leftClick = false;
             } else {
                 this.currSFXVolume = this.lastSFXVolume;
-                ASSET_MANAGER.adjustSFXVolume(this.currSFXVolume);
+                ASSET_MANAGER.adjustSFXVolume(this.currSFXVolume * this.currVolume);
                 this.toggleSFXMute = true;
                 this.game.leftClick = false;
             }
@@ -463,7 +463,7 @@ class Settings {
         if (volume < 0) volume = 0;
         if (volume > 1) volume = 1;
         this.currMusicVolume = volume;
-        ASSET_MANAGER.adjustMusicVolume(volume * this.currVolume);
+        ASSET_MANAGER.adjustMusicVolume(volume * this.currMusicVolume);
         this.toggleMusicMute = true;
     }
     updateSFXVolume() {
@@ -471,7 +471,7 @@ class Settings {
         if (volume < 0) volume = 0;
         if (volume > 1) volume = 1;
         this.currSFXVolume = volume;
-        ASSET_MANAGER.adjustSFXVolume(volume * this.currVolume);
+        ASSET_MANAGER.adjustSFXVolume(volume * this.currSFXVolume);
         this.toggleSFXMute = true;
     }
     updateMenuButtons() {

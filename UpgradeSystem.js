@@ -1213,6 +1213,14 @@ class UpgradeSystem {
             this.firstTime = false;
         }
     }
+    // unlockAllWeapons() {
+    //     this.uniqueList.forEach(upgrade => {
+    //         if (upgrade.type == "Unlock") {
+    //             upgrade.current++;
+    //             this.currentUpgrades.push(upgrade);
+    //         }
+    //     });
+    // }
 }
 class PlayerStatus {
     constructor(game, upgrade) {

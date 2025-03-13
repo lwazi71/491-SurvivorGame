@@ -135,9 +135,9 @@ class Adventurer { //every entity should have update and draw!
         this.lightningOption = 0; //0 = normal lightning, 1 = Dark-Bolt lightning
 
         //POTION PROPERTIES:
-        this.enablePotion = false;
+        this.enablePotion = true;
         this.canPotion = true;
-        this.potion = 0;
+        this.potion = 3;
         this.potionMaxAmount = 99;
         this.potionCooldown = 0.5;
         this.potionCooldownTimer = 0;
