@@ -674,14 +674,14 @@ class UpgradeSystem {
         }
         if (this.game.adventurer.enableMagic) {
             for (let i = 0; i < this.magicList.length; i++) { //If we get magic enabled, add to basic pool
-                if (this.magicList[i].max > this.magicList[i].current) {
+                if (this.magicList[i].max > this.magicList[i].current || this.magicList[i].max == -1) {
                     this.basic.push(this.magicList[i]);
                 }
             }
         }
         if (this.game.adventurer.enableBomb) {
             for (let i = 0; i < this.bombList.length; i++) { //If we get magic enabled, add to basic pool
-                if (this.bombList[i].max > this.bombList[i].current) {
+                if (this.bombList[i].max > this.bombList[i].current || this.bombList[i].max == -1) {
                     this.basic.push(this.bombList[i]);
                 }
             }
@@ -691,14 +691,14 @@ class UpgradeSystem {
         }
         if (this.game.adventurer.enableLightning) {
             for (let i = 0; i < this.lightningList.length; i++) {
-                if (this.lightningList[i].max > this.lightningList[i].current) {
+                if (this.lightningList[i].max > this.lightningList[i].current || this.lightningList[i].max == -1) {
                     this.basic.push(this.lightningList[i]);
                 }
             }
         }
         if (this.game.adventurer.enableBolt) {
             for (let i = 0; i < this.darkBoltList.length; i++) {
-                if (this.darkBoltList[i].max > this.darkBoltList[i].current) {
+                if (this.darkBoltList[i].max > this.darkBoltList[i].current || this.darkBoltList[i].max == -1) {
                     this.basic.push(this.darkBoltList[i]);
                 }
             }
