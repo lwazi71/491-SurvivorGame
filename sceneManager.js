@@ -334,7 +334,7 @@ class SceneManager {
             if (this.startWave) this.waveManager.update();
         }
         if (this.enableTitle) {
-            if(this.oneTime) {
+            if(this.oneTime && this.firstClick) {
                 ASSET_MANAGER.playAsset("./Audio/Music/minecraftmenumusic.mp3");
                 this.oneTime = false;
             }
