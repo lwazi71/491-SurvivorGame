@@ -50,6 +50,7 @@ class UpgradeSystem {
         this.magicDamageIncrease = 5;
         this.cooldownReduction = 1;
         this.magicKnockback = 1000;
+        this.lightningKnockback = 1000;
         this.magicSize = 0.25;
         //Bomb
         this.bombDamageIncrease = 5;
